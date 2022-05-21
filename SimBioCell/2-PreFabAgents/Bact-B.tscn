@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://SimBioCell/5-Materials/Red.tres" type="Shader" id=1]
+[ext_resource path="res://SimBioCell/5-Materials/Blue.tres" type="Shader" id=1]
 
 [sub_resource type="SphereMesh" id=1]
 
@@ -9,9 +9,12 @@ shader = ExtResource( 1 )
 
 [sub_resource type="SphereShape" id=3]
 
-[node name="Virus" type="RigidBody" groups=["Bouge", "Virus"]]
+[node name="Bact-B-1" type="RigidBody" groups=["Bact", "Bouge"]]
 contacts_reported = 1
 contact_monitor = true
+__meta__ = {
+"E": 1000.0
+}
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
 mesh = SubResource( 1 )

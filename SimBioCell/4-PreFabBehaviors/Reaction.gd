@@ -1,6 +1,11 @@
 tool
 extends VisualScriptCustomNode
 
+# TODO
+# - add R1 for P2
+# - add R2 for P1
+# => could be enhanced by a more comprehensible switch case
+
 var MAX_AGENTS:int = 500
 
 func _get_caption():
@@ -83,9 +88,9 @@ func _get_input_value_port_name(idx):
 	elif idx == 3:
 		return "Reactive Gp R2/0"
 	elif idx == 4:
-		return "Product PreFab/0/R1"
+		return "Product PreFab/0/R1/R2"
 	elif idx == 5:
-		return "Product PreFab/0/R2"
+		return "Product PreFab/0/R1/R2"
 	return "default"
 func _get_input_value_port_type(idx):
 	if idx == 0:
