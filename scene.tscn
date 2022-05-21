@@ -1,0 +1,12 @@
+[gd_scene format=2]
+
+[node name="Label" type="Label"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -624.0
+margin_bottom = -300.0
+rect_scale = Vector2( 2, 2 )
+text = "Try a scene example by opening the folder
+SimBioCell / SceneExamples"
+align = 1
+valign = 1

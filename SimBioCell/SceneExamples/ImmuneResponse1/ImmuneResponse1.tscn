@@ -1,0 +1,202 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://SimBioCell/2-PreFabAgents/Lympho.tscn" type="PackedScene" id=1]
+[ext_resource path="res://SimBioCell/2-PreFabAgents/Macrophage.tscn" type="PackedScene" id=2]
+[ext_resource path="res://SimBioCell/2-PreFabAgents/Virus.tscn" type="PackedScene" id=3]
+[ext_resource path="res://SimBioCell/6-ExpertMode/Engine/Behaviours.gd" type="Script" id=4]
+[ext_resource path="res://SimBioCell/4-PreFabBehaviors/ForceRndXZ.gd" type="Script" id=5]
+[ext_resource path="res://SimBioCell/1-PreFabObjects/PetriDish.tscn" type="PackedScene" id=6]
+[ext_resource path="res://SimBioCell/4-PreFabBehaviors/Reaction.gd" type="Script" id=7]
+[ext_resource path="res://SimBioCell/SceneExamples/ImmuneResponse1/EnergyLow.vs" type="Script" id=8]
+
+[sub_resource type="VisualScriptFunction" id=1]
+resource_name = "Start"
+argument_count = 1
+argument_1/type = 17
+argument_1/name = "Agent"
+
+[sub_resource type="VisualScriptCustomNode" id=2]
+_default_input_values = [ null, "Bouge", 1.0 ]
+script = ExtResource( 5 )
+
+[sub_resource type="VisualScript" id=3]
+data = {
+"base_type": "Node",
+"functions": [ {
+"data_connections": [ 0, 0, 1, 0 ],
+"function_id": 0,
+"name": "Start",
+"nodes": [ 0, Vector2( 460, 380 ), SubResource( 1 ), 1, Vector2( 630, 380 ), SubResource( 2 ) ],
+"scroll": Vector2( -50, -100 ),
+"sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 277.5, -1.47242e-06 ),
+"sequence_connections": [  ]
+} ],
+"is_tool_script": false,
+"signals": [  ],
+"variables": [  ],
+"vs_unify": true
+}
+
+[sub_resource type="VisualScriptFunction" id=5]
+resource_name = "Start"
+argument_count = 1
+argument_1/type = 17
+argument_1/name = "Agent"
+
+[sub_resource type="VisualScriptCustomNode" id=6]
+_default_input_values = [ null, "Lympho", "Virus", "R1", "Lympho" ]
+script = ExtResource( 7 )
+
+[sub_resource type="VisualScript" id=4]
+resource_name = "Lympho+Virus=>0+0"
+data = {
+"base_type": "Node",
+"functions": [ {
+"data_connections": [ 0, 0, 1, 0 ],
+"function_id": 0,
+"name": "Start",
+"nodes": [ 0, Vector2( 460, 260 ), SubResource( 5 ), 1, Vector2( 720, 260 ), SubResource( 6 ) ],
+"scroll": Vector2( -50, -100 ),
+"sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 360, -26.7 ),
+"sequence_connections": [  ]
+} ],
+"is_tool_script": false,
+"signals": [  ],
+"variables": [  ],
+"vs_unify": true
+}
+
+[node name="ImmuneResponse1" type="Spatial"]
+
+[node name="Agents" type="Node" parent="."]
+
+[node name="Lympho1" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.619, 3, 7.795 )
+
+[node name="Lympho2" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.619, 3, 10.9632 )
+
+[node name="Lympho3" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.73686, 3, 7.795 )
+
+[node name="Lympho4" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.73686, 3, 10.9632 )
+
+[node name="Lympho5" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.83924, 3, 7.795 )
+
+[node name="Lympho6" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.83924, 3, 10.9632 )
+
+[node name="Lympho7" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9571, 3, 7.795 )
+
+[node name="Lympho8" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9571, 3, 10.9632 )
+
+[node name="Lympho9" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.619, 3, 1.48973 )
+
+[node name="Lympho10" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.619, 3, 4.65792 )
+
+[node name="Lympho11" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.73686, 3, 1.48973 )
+
+[node name="Lympho12" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.73686, 3, 4.65792 )
+
+[node name="Lympho13" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.83924, 3, 1.48973 )
+
+[node name="Lympho14" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.83924, 3, 4.65792 )
+
+[node name="Lympho15" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9571, 3, 1.48973 )
+
+[node name="Lympho16" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9571, 3, 4.65792 )
+
+[node name="Virus1" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70529, 3, 7.81503 )
+
+[node name="Virus2" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70529, 3, 10.5194 )
+
+[node name="Virus3" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70529, 3, 1.81068 )
+
+[node name="Virus4" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70529, 3, 4.51503 )
+
+[node name="Virus5" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.42009, 3, 7.81503 )
+
+[node name="Virus6" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.42009, 3, 10.5194 )
+
+[node name="Virus7" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.42009, 3, 1.81068 )
+
+[node name="Virus8" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.42009, 3, 4.51503 )
+
+[node name="Virus9" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1681, 3, 7.81503 )
+
+[node name="Virus10" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1681, 3, 10.5194 )
+
+[node name="Virus11" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1681, 3, 1.81068 )
+
+[node name="Virus12" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1681, 3, 4.51503 )
+
+[node name="Virus13" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8829, 3, 7.81503 )
+
+[node name="Virus14" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8829, 3, 10.5194 )
+
+[node name="Virus15" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8829, 3, 1.81068 )
+
+[node name="Virus16" parent="Agents" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8829, 3, 4.51503 )
+
+[node name="Macrophage" parent="Agents" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.56621, 3.65699, 6.49949 )
+
+[node name="Behaviours" type="Node" parent="."]
+script = ExtResource( 4 )
+
+[node name="RandomForce" type="Node" parent="Behaviours"]
+script = SubResource( 3 )
+
+[node name="L+V=>L+L" type="Node" parent="Behaviours"]
+script = SubResource( 4 )
+
+[node name="Macro E is Low=>death" type="Node" parent="Behaviours"]
+script = ExtResource( 8 )
+
+[node name="PetriDish" parent="." instance=ExtResource( 6 )]
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 30, 30 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 40, 40 )
