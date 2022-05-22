@@ -1,16 +1,16 @@
 [gd_scene load_steps=33 format=2]
 
-[ext_resource path="res://SimBioCell/2-PreFabAgents/Lympho.tscn" type="PackedScene" id=1]
-[ext_resource path="res://SimBioCell/2-PreFabAgents/Macrophage.tscn" type="PackedScene" id=2]
-[ext_resource path="res://SimBioCell/2-PreFabAgents/Virus.tscn" type="PackedScene" id=3]
-[ext_resource path="res://SimBioCell/6-ExpertMode/Engine/Behaviours.gd" type="Script" id=4]
-[ext_resource path="res://SimBioCell/4-PreFabBehaviors/ForceRndXZ.gd" type="Script" id=5]
-[ext_resource path="res://SimBioCell/1-PreFabObjects/PetriDish.tscn" type="PackedScene" id=6]
-[ext_resource path="res://SimBioCell/4-PreFabBehaviors/Reaction.gd" type="Script" id=7]
+[ext_resource path="res://SimBioCell/3-PrefabAgents/Lympho.tscn" type="PackedScene" id=1]
+[ext_resource path="res://SimBioCell/3-PrefabAgents/Macrophage.tscn" type="PackedScene" id=2]
+[ext_resource path="res://SimBioCell/3-PrefabAgents/Virus.tscn" type="PackedScene" id=3]
+[ext_resource path="res://SimBioCell/7-ExpertMode/Engine/Behaviours.gd" type="Script" id=4]
+[ext_resource path="res://SimBioCell/4-PrefabBehaviors/ForceRndXZ.gd" type="Script" id=5]
+[ext_resource path="res://SimBioCell/2-PrefabObjects/PetriDish.tscn" type="PackedScene" id=6]
+[ext_resource path="res://SimBioCell/4-PrefabBehaviors/Reaction.gd" type="Script" id=7]
 [ext_resource path="res://SimBioCell/SceneExamples/ImmuneResponse1/EnergyLow.vs" type="Script" id=8]
 [ext_resource path="res://addons/goutte.camera.trackball/trackball_camera.gd" type="Script" id=9]
-[ext_resource path="res://SimBioCell/5-Materials/Blue.tres" type="Shader" id=10]
-[ext_resource path="res://SimBioCell/4-PreFabBehaviors/DeathProba.gd" type="Script" id=11]
+[ext_resource path="res://SimBioCell/6-PrefabMaterials/Blue.tres" type="Shader" id=10]
+[ext_resource path="res://SimBioCell/4-PrefabBehaviors/DeathProba.gd" type="Script" id=11]
 
 [sub_resource type="CapsuleMesh" id=13]
 
@@ -33,19 +33,19 @@ script = ExtResource( 5 )
 data = {
 "base_type": "Node",
 "functions": [ {
-"data_connections": [  ],
-"function_id": -1,
-"name": "f_312843592",
-"nodes": [  ],
-"scroll": Vector2( 0, 0 ),
-"sequence_connections": [  ]
-}, {
 "data_connections": [ 0, 0, 1, 0 ],
 "function_id": 0,
 "name": "Start",
 "nodes": [ 0, Vector2( 460, 380 ), SubResource( 1 ), 1, Vector2( 630, 380 ), SubResource( 2 ) ],
 "scroll": Vector2( -50, -100 ),
 "sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 135.068, 109.575 ),
+"sequence_connections": [  ]
 } ],
 "is_tool_script": false,
 "signals": [  ],
@@ -68,19 +68,19 @@ resource_name = "Lympho+Virus=>0+0"
 data = {
 "base_type": "Node",
 "functions": [ {
-"data_connections": [  ],
-"function_id": -1,
-"name": "f_312843592",
-"nodes": [  ],
-"scroll": Vector2( 0, 0 ),
-"sequence_connections": [  ]
-}, {
 "data_connections": [ 0, 0, 1, 0 ],
 "function_id": 0,
 "name": "Start",
 "nodes": [ 0, Vector2( 460, 260 ), SubResource( 5 ), 1, Vector2( 720, 260 ), SubResource( 6 ) ],
 "scroll": Vector2( -50, -100 ),
 "sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 0, 0 ),
+"sequence_connections": [  ]
 } ],
 "is_tool_script": false,
 "signals": [  ],
@@ -102,19 +102,19 @@ script = ExtResource( 7 )
 data = {
 "base_type": "Node",
 "functions": [ {
-"data_connections": [  ],
-"function_id": -1,
-"name": "f_312843592",
-"nodes": [  ],
-"scroll": Vector2( 0, 0 ),
-"sequence_connections": [  ]
-}, {
 "data_connections": [ 0, 0, 1, 0 ],
 "function_id": 0,
 "name": "Start",
 "nodes": [ 0, Vector2( 460, 250 ), SubResource( 7 ), 1, Vector2( 700, 250 ), SubResource( 8 ) ],
 "scroll": Vector2( -50, -100 ),
 "sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 0, 0 ),
+"sequence_connections": [  ]
 } ],
 "is_tool_script": false,
 "signals": [  ],
@@ -136,19 +136,19 @@ script = ExtResource( 7 )
 data = {
 "base_type": "Node",
 "functions": [ {
-"data_connections": [  ],
-"function_id": -1,
-"name": "f_312843592",
-"nodes": [  ],
-"scroll": Vector2( 46.125, 169.575 ),
-"sequence_connections": [  ]
-}, {
 "data_connections": [ 0, 0, 1, 0 ],
 "function_id": 0,
 "name": "Start",
 "nodes": [ 0, Vector2( 170, 320 ), SubResource( 10 ), 1, Vector2( 380, 320 ), SubResource( 11 ) ],
 "scroll": Vector2( -50, -100 ),
 "sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 46.125, 169.575 ),
+"sequence_connections": [  ]
 } ],
 "is_tool_script": false,
 "signals": [  ],
@@ -171,19 +171,19 @@ resource_name = "M=>M+L"
 data = {
 "base_type": "Node",
 "functions": [ {
-"data_connections": [  ],
-"function_id": -1,
-"name": "f_312843592",
-"nodes": [  ],
-"scroll": Vector2( 184.5, 29.07 ),
-"sequence_connections": [  ]
-}, {
 "data_connections": [ 0, 0, 1, 0 ],
 "function_id": 0,
 "name": "Start",
 "nodes": [ 0, Vector2( 460, 260 ), SubResource( 16 ), 1, Vector2( 640, 260 ), SubResource( 17 ) ],
 "scroll": Vector2( -50, -100 ),
 "sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 184.5, 29.07 ),
+"sequence_connections": [  ]
 } ],
 "is_tool_script": false,
 "signals": [  ],
@@ -206,19 +206,19 @@ resource_name = "V=>0"
 data = {
 "base_type": "Node",
 "functions": [ {
-"data_connections": [  ],
-"function_id": -1,
-"name": "f_312843592",
-"nodes": [  ],
-"scroll": Vector2( 399.75, -111.435 ),
-"sequence_connections": [  ]
-}, {
 "data_connections": [ 0, 0, 1, 0 ],
 "function_id": 0,
 "name": "Start",
 "nodes": [ 0, Vector2( 460, 220 ), SubResource( 19 ), 1, Vector2( 630, 210 ), SubResource( 20 ) ],
 "scroll": Vector2( -50, -100 ),
 "sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 399.75, -111.435 ),
+"sequence_connections": [  ]
 } ],
 "is_tool_script": false,
 "signals": [  ],
@@ -230,116 +230,27 @@ data = {
 
 [node name="Agents" type="Node" parent="."]
 
-[node name="Lympho1" parent="Agents" instance=ExtResource( 1 )]
+[node name="Lymphocyte1" parent="Agents" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.619, 3, 7.795 )
 
-[node name="Lympho2" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.619, 3, 10.9632 )
-
-[node name="Lympho3" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.73686, 3, 7.795 )
-
-[node name="Lympho4" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.73686, 3, 10.9632 )
-
-[node name="Lympho5" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.83924, 3, 7.795 )
-
-[node name="Lympho6" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.83924, 3, 10.9632 )
-
-[node name="Lympho7" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9571, 3, 7.795 )
-
-[node name="Lympho8" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9571, 3, 10.9632 )
-
-[node name="Lympho9" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.619, 3, 1.48973 )
-
-[node name="Lympho10" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.619, 3, 4.65792 )
-
-[node name="Lympho11" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.73686, 3, 1.48973 )
-
-[node name="Lympho12" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.73686, 3, 4.65792 )
-
-[node name="Lympho13" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.83924, 3, 1.48973 )
-
-[node name="Lympho14" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.83924, 3, 4.65792 )
-
-[node name="Lympho15" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9571, 3, 1.48973 )
-
-[node name="Lympho16" parent="Agents" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9571, 3, 4.65792 )
+[node name="Lymphocyte2" parent="Agents" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.619, 3, 10.795 )
 
 [node name="Virus1" parent="Agents" instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70529, 3, 7.81503 )
 
-[node name="Virus2" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70529, 3, 10.5194 )
-
-[node name="Virus3" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70529, 3, 1.81068 )
-
-[node name="Virus4" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70529, 3, 4.51503 )
-
-[node name="Virus5" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.42009, 3, 7.81503 )
-
-[node name="Virus6" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.42009, 3, 10.5194 )
-
-[node name="Virus7" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.42009, 3, 1.81068 )
-
-[node name="Virus8" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.42009, 3, 4.51503 )
-
-[node name="Virus9" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1681, 3, 7.81503 )
-
-[node name="Virus10" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1681, 3, 10.5194 )
-
-[node name="Virus11" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1681, 3, 1.81068 )
-
-[node name="Virus12" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1681, 3, 4.51503 )
-
-[node name="Virus13" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8829, 3, 7.81503 )
-
-[node name="Virus14" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8829, 3, 10.5194 )
-
-[node name="Virus15" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8829, 3, 1.81068 )
-
-[node name="Virus16" parent="Agents" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8829, 3, 4.51503 )
-
-[node name="StaticBody" type="StaticBody" parent="Agents" groups=["Moelle"]]
+[node name="BoneMarrow" type="StaticBody" parent="Agents" groups=["Moelle"]]
 transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 4, -18.8827, 3.47942, 7.96784 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Agents/StaticBody"]
+[node name="MeshInstance" type="MeshInstance" parent="Agents/BoneMarrow"]
 mesh = SubResource( 13 )
 material/0 = SubResource( 14 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Agents/StaticBody"]
+[node name="CollisionShape" type="CollisionShape" parent="Agents/BoneMarrow"]
 shape = SubResource( 15 )
 
 [node name="Macrophage" parent="Agents" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.56621, 3.65699, 6.49949 )
-
-[node name="Objects" type="Node" parent="."]
 
 [node name="Behaviours" type="Node" parent="."]
 script = ExtResource( 4 )
@@ -365,7 +276,9 @@ script = SubResource( 18 )
 [node name="V=>0" type="Node" parent="Behaviours"]
 script = SubResource( 21 )
 
-[node name="PetriDish" parent="." instance=ExtResource( 6 )]
+[node name="Objects" type="Node" parent="."]
+
+[node name="PetriDish" parent="Objects" instance=ExtResource( 6 )]
 transform = Transform( 2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0 )
 
 [node name="TrackballCamera" type="Camera" parent="."]

@@ -1,15 +1,15 @@
 [gd_scene load_steps=22 format=2]
 
-[ext_resource path="res://SimBioCell/1-PreFabObjects/PetriDish.tscn" type="PackedScene" id=1]
-[ext_resource path="res://SimBioCell/2-PreFabAgents/Bact-B.tscn" type="PackedScene" id=2]
-[ext_resource path="res://SimBioCell/2-PreFabAgents/Bact-A.tscn" type="PackedScene" id=3]
-[ext_resource path="res://SimBioCell/4-PreFabBehaviors/Reaction.gd" type="Script" id=4]
-[ext_resource path="res://SimBioCell/6-ExpertMode/Engine/Behaviours.gd" type="Script" id=5]
-[ext_resource path="res://SimBioCell/2-PreFabAgents/Sugar.tscn" type="PackedScene" id=6]
-[ext_resource path="res://SimBioCell/5-Materials/Red.tres" type="Shader" id=7]
+[ext_resource path="res://SimBioCell/2-PrefabObjects/PetriDish.tscn" type="PackedScene" id=1]
+[ext_resource path="res://SimBioCell/3-PrefabAgents/Bact-B.tscn" type="PackedScene" id=2]
+[ext_resource path="res://SimBioCell/3-PrefabAgents/Bact-A.tscn" type="PackedScene" id=3]
+[ext_resource path="res://SimBioCell/4-PrefabBehaviors/Reaction.gd" type="Script" id=4]
+[ext_resource path="res://SimBioCell/7-ExpertMode/Engine/Behaviours.gd" type="Script" id=5]
+[ext_resource path="res://SimBioCell/3-PrefabAgents/Sugar.tscn" type="PackedScene" id=6]
+[ext_resource path="res://SimBioCell/6-PrefabMaterials/Red.tres" type="Shader" id=7]
 [ext_resource path="res://addons/goutte.camera.trackball/trackball_camera.gd" type="Script" id=8]
 [ext_resource path="res://SimBioCell/SceneExamples/BacteriaCompetition/PreFabBehaviours/RandomPosition.vs" type="Script" id=9]
-[ext_resource path="res://SimBioCell/4-PreFabBehaviors/ForceRndXZ.gd" type="Script" id=10]
+[ext_resource path="res://SimBioCell/4-PrefabBehaviors/ForceRndXZ.gd" type="Script" id=10]
 
 [sub_resource type="CylinderMesh" id=11]
 
@@ -31,19 +31,19 @@ resource_name = "B=>B+B"
 data = {
 "base_type": "Node",
 "functions": [ {
-"data_connections": [  ],
-"function_id": -1,
-"name": "f_312843592",
-"nodes": [  ],
-"scroll": Vector2( 247.624, -10.08 ),
-"sequence_connections": [  ]
-}, {
 "data_connections": [ 0, 0, 1, 0 ],
 "function_id": 0,
 "name": "Start",
 "nodes": [ 0, Vector2( 460, 220 ), SubResource( 1 ), 1, Vector2( 690, 220 ), SubResource( 2 ) ],
 "scroll": Vector2( -50, -100 ),
 "sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 247.624, -10.08 ),
+"sequence_connections": [  ]
 } ],
 "is_tool_script": false,
 "signals": [  ],
@@ -66,19 +66,19 @@ resource_name = "AddSugar"
 data = {
 "base_type": "Node",
 "functions": [ {
-"data_connections": [  ],
-"function_id": -1,
-"name": "f_312843592",
-"nodes": [  ],
-"scroll": Vector2( 0, 0 ),
-"sequence_connections": [  ]
-}, {
 "data_connections": [ 0, 0, 1, 0 ],
 "function_id": 0,
 "name": "Start",
 "nodes": [ 0, Vector2( 140, 280 ), SubResource( 13 ), 1, Vector2( 390, 270 ), SubResource( 14 ) ],
 "scroll": Vector2( -50, -100 ),
 "sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 0, 0 ),
+"sequence_connections": [  ]
 } ],
 "is_tool_script": false,
 "signals": [  ],
@@ -101,19 +101,19 @@ resource_name = "MvtBouge"
 data = {
 "base_type": "Node",
 "functions": [ {
-"data_connections": [  ],
-"function_id": -1,
-"name": "f_312843592",
-"nodes": [  ],
-"scroll": Vector2( 0, 0 ),
-"sequence_connections": [  ]
-}, {
 "data_connections": [ 0, 0, 1, 0 ],
 "function_id": 0,
 "name": "Start",
 "nodes": [ 0, Vector2( 200, 280 ), SubResource( 16 ), 1, Vector2( 440, 280 ), SubResource( 17 ) ],
 "scroll": Vector2( -50, -100 ),
 "sequence_connections": [ 0, 0, 1 ]
+}, {
+"data_connections": [  ],
+"function_id": -1,
+"name": "f_312843592",
+"nodes": [  ],
+"scroll": Vector2( 0, 0 ),
+"sequence_connections": [  ]
 } ],
 "is_tool_script": false,
 "signals": [  ],
