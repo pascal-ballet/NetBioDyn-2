@@ -1,0 +1,455 @@
+[gd_scene format=2]
+
+[node name="VBoxNetBioDyn" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Toolbar" type="HBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 22.0
+grow_horizontal = 0
+alignment = 1
+
+[node name="ButtonPlay" type="ToolButton" parent="Toolbar"]
+margin_left = 473.0
+margin_right = 493.0
+margin_bottom = 22.0
+text = ">"
+
+[node name="ButtonPause" type="ToolButton" parent="Toolbar"]
+margin_left = 497.0
+margin_right = 523.0
+margin_bottom = 22.0
+text = "||"
+
+[node name="ButtonStop" type="ToolButton" parent="Toolbar"]
+margin_left = 527.0
+margin_right = 550.0
+margin_bottom = 22.0
+text = "O"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+margin_top = 26.0
+margin_right = 1024.0
+margin_bottom = 30.0
+
+[node name="VBoxFrame" type="VBoxContainer" parent="."]
+margin_top = 34.0
+margin_right = 1024.0
+margin_bottom = 582.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxWindows" type="HBoxContainer" parent="VBoxFrame"]
+margin_right = 1024.0
+margin_bottom = 548.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VSeparator" type="VSeparator" parent="VBoxFrame/HBoxWindows"]
+margin_right = 4.0
+margin_bottom = 548.0
+
+[node name="VBoxAgentsBehav" type="VBoxContainer" parent="VBoxFrame/HBoxWindows"]
+margin_left = 8.0
+margin_right = 308.0
+margin_bottom = 548.0
+
+[node name="HBoxAddAgents" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxAgentsBehav"]
+margin_right = 300.0
+margin_bottom = 22.0
+
+[node name="LabelPlusAgt" type="Label" parent="VBoxFrame/HBoxWindows/VBoxAgentsBehav/HBoxAddAgents"]
+margin_top = 4.0
+margin_right = 44.0
+margin_bottom = 18.0
+text = "Agents"
+
+[node name="ToolPlusAgent" type="ToolButton" parent="VBoxFrame/HBoxWindows/VBoxAgentsBehav/HBoxAddAgents"]
+margin_left = 48.0
+margin_right = 68.0
+margin_bottom = 22.0
+text = "+"
+
+[node name="TreeAgents" type="Tree" parent="VBoxFrame/HBoxWindows/VBoxAgentsBehav"]
+margin_top = 26.0
+margin_right = 300.0
+margin_bottom = 272.0
+rect_min_size = Vector2( 300, 0 )
+rect_clip_content = false
+size_flags_horizontal = 0
+size_flags_vertical = 3
+select_mode = 1
+
+[node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxAgentsBehav"]
+margin_top = 276.0
+margin_right = 300.0
+margin_bottom = 298.0
+
+[node name="LabelPlusBehav" type="Label" parent="VBoxFrame/HBoxWindows/VBoxAgentsBehav/HBoxAddBehav"]
+margin_top = 4.0
+margin_right = 63.0
+margin_bottom = 18.0
+text = "Behaviors"
+
+[node name="ToolPlusBehav" type="ToolButton" parent="VBoxFrame/HBoxWindows/VBoxAgentsBehav/HBoxAddBehav"]
+margin_left = 67.0
+margin_right = 87.0
+margin_bottom = 22.0
+text = "+"
+
+[node name="ListBehaviors" type="ItemList" parent="VBoxFrame/HBoxWindows/VBoxAgentsBehav"]
+margin_top = 302.0
+margin_right = 300.0
+margin_bottom = 548.0
+rect_min_size = Vector2( 300, 0 )
+rect_clip_content = false
+size_flags_horizontal = 0
+size_flags_vertical = 3
+select_mode = 1
+auto_height = true
+same_column_width = true
+
+[node name="VSeparator2" type="VSeparator" parent="VBoxFrame/HBoxWindows"]
+margin_left = 312.0
+margin_right = 316.0
+margin_bottom = 548.0
+
+[node name="VBoxProps" type="VBoxContainer" parent="VBoxFrame/HBoxWindows"]
+margin_left = 320.0
+margin_right = 620.0
+margin_bottom = 548.0
+rect_min_size = Vector2( 300, 0 )
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps"]
+margin_right = 300.0
+margin_bottom = 14.0
+text = "Properties"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxFrame/HBoxWindows/VBoxProps"]
+margin_top = 18.0
+margin_right = 300.0
+margin_bottom = 22.0
+
+[node name="VBoxPropsAgt" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps"]
+margin_top = 26.0
+margin_right = 300.0
+margin_bottom = 268.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt"]
+margin_right = 300.0
+margin_bottom = 31.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt/HBoxProp1"]
+margin_right = 148.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "Prop 1
+"
+valign = 1
+
+[node name="TextEdit" type="TextEdit" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt/HBoxProp1"]
+margin_left = 152.0
+margin_right = 300.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "100"
+
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt"]
+margin_top = 35.0
+margin_right = 300.0
+margin_bottom = 66.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt/HBoxProp2"]
+margin_right = 148.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "Prop 1
+"
+valign = 1
+
+[node name="TextEdit" type="TextEdit" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt/HBoxProp2"]
+margin_left = 152.0
+margin_right = 300.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "100"
+
+[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt"]
+margin_top = 70.0
+margin_right = 300.0
+margin_bottom = 101.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt/HBoxProp3"]
+margin_right = 148.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "Prop 1
+"
+valign = 1
+
+[node name="TextEdit" type="TextEdit" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt/HBoxProp3"]
+margin_left = 152.0
+margin_right = 300.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "100"
+
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt"]
+margin_top = 105.0
+margin_right = 300.0
+margin_bottom = 136.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt/HBoxProp4"]
+margin_right = 148.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "Prop 1
+"
+valign = 1
+
+[node name="TextEdit" type="TextEdit" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsAgt/HBoxProp4"]
+margin_left = 152.0
+margin_right = 300.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "100"
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxFrame/HBoxWindows/VBoxProps"]
+margin_top = 272.0
+margin_right = 300.0
+margin_bottom = 276.0
+
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps"]
+margin_top = 280.0
+margin_right = 300.0
+margin_bottom = 294.0
+text = "Properties"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxFrame/HBoxWindows/VBoxProps"]
+margin_top = 298.0
+margin_right = 300.0
+margin_bottom = 302.0
+
+[node name="VBoxPropsBehav" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps"]
+margin_top = 306.0
+margin_right = 300.0
+margin_bottom = 548.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav"]
+margin_right = 300.0
+margin_bottom = 31.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav/HBoxProp1"]
+margin_right = 148.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "Prop 1
+"
+valign = 1
+
+[node name="TextEdit" type="TextEdit" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav/HBoxProp1"]
+margin_left = 152.0
+margin_right = 300.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "100"
+
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav"]
+margin_top = 35.0
+margin_right = 300.0
+margin_bottom = 66.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav/HBoxProp2"]
+margin_right = 148.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "Prop 1
+"
+valign = 1
+
+[node name="TextEdit" type="TextEdit" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav/HBoxProp2"]
+margin_left = 152.0
+margin_right = 300.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "100"
+
+[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav"]
+margin_top = 70.0
+margin_right = 300.0
+margin_bottom = 101.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav/HBoxProp3"]
+margin_right = 148.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "Prop 1
+"
+valign = 1
+
+[node name="TextEdit" type="TextEdit" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav/HBoxProp3"]
+margin_left = 152.0
+margin_right = 300.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "100"
+
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav"]
+margin_top = 105.0
+margin_right = 300.0
+margin_bottom = 136.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav/HBoxProp4"]
+margin_right = 148.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "Prop 1
+"
+valign = 1
+
+[node name="TextEdit" type="TextEdit" parent="VBoxFrame/HBoxWindows/VBoxProps/VBoxPropsBehav/HBoxProp4"]
+margin_left = 152.0
+margin_right = 300.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+text = "100"
+
+[node name="VSeparator3" type="VSeparator" parent="VBoxFrame/HBoxWindows"]
+margin_left = 624.0
+margin_right = 628.0
+margin_bottom = 548.0
+
+[node name="VBoxEnvGraph" type="VBoxContainer" parent="VBoxFrame/HBoxWindows"]
+margin_left = 632.0
+margin_right = 1016.0
+margin_bottom = 548.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label3" type="Label" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_right = 384.0
+margin_bottom = 14.0
+text = "Environment"
+
+[node name="Panel" type="Panel" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 18.0
+margin_right = 384.0
+margin_bottom = 200.0
+rect_clip_content = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph/Panel"]
+position = Vector2( 164, 232 )
+scale = Vector2( 5, 5 )
+amount = 200
+lifetime = 5.0
+emission_shape = 2
+emission_rect_extents = Vector2( 150, 100 )
+
+[node name="ToolbarPaint" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 204.0
+margin_right = 384.0
+margin_bottom = 226.0
+grow_horizontal = 0
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph/ToolbarPaint"]
+margin_left = 106.0
+margin_top = 4.0
+margin_right = 197.0
+margin_bottom = 18.0
+text = "Drawing tools:"
+
+[node name="ButtonPlay" type="ToolButton" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph/ToolbarPaint"]
+margin_left = 201.0
+margin_right = 218.0
+margin_bottom = 22.0
+hint_tooltip = "Pen"
+text = "/"
+
+[node name="ButtonPause" type="ToolButton" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph/ToolbarPaint"]
+margin_left = 222.0
+margin_right = 250.0
+margin_bottom = 22.0
+hint_tooltip = "Spray"
+text = "<<"
+
+[node name="ButtonStop" type="ToolButton" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph/ToolbarPaint"]
+margin_left = 254.0
+margin_right = 277.0
+margin_bottom = 22.0
+hint_tooltip = "Eraser"
+text = "O"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 230.0
+margin_right = 384.0
+margin_bottom = 234.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 238.0
+margin_right = 384.0
+margin_bottom = 252.0
+text = "Graph"
+
+[node name="PanelGraph" type="Panel" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 256.0
+margin_right = 384.0
+margin_bottom = 438.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Line2D" type="Line2D" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph/PanelGraph"]
+position = Vector2( 9.78098, 7.57627 )
+scale = Vector2( 0.864553, 0.79661 )
+points = PoolVector2Array( 1, 3, 18, 18, 52, 38, 106, 149, 183, 113, 217, 58, 239, 26, 248, 84, 254, 185, 291, 205, 328, 219 )
+
+[node name="HSeparator" type="HSeparator" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 442.0
+margin_right = 384.0
+margin_bottom = 446.0
+
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 450.0
+margin_right = 384.0
+margin_bottom = 464.0
+text = "Options"
+
+[node name="CheckBoxOpt1" type="CheckBox" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 468.0
+margin_right = 384.0
+margin_bottom = 492.0
+text = "Option 1"
+
+[node name="CheckBoxOpt2" type="CheckBox" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 496.0
+margin_right = 384.0
+margin_bottom = 520.0
+text = "Option 1"
+
+[node name="CheckBoxOpt3" type="CheckBox" parent="VBoxFrame/HBoxWindows/VBoxEnvGraph"]
+margin_top = 524.0
+margin_right = 384.0
+margin_bottom = 548.0
+text = "Option 1"
+
+[node name="VSeparator4" type="VSeparator" parent="VBoxFrame/HBoxWindows"]
+margin_left = 1020.0
+margin_right = 1024.0
+margin_bottom = 548.0
+
+[node name="LabelStatusbar" type="Label" parent="."]
+margin_top = 586.0
+margin_right = 1024.0
+margin_bottom = 600.0
+text = "Nb agents = 0 | Nb behaviours = 0 | NetBioDyn-2 2022"
+align = 1

@@ -9,7 +9,7 @@ shader = ExtResource( 1 )
 
 [sub_resource type="SphereShape" id=3]
 
-[node name="Bact-A-1" type="RigidBody" groups=["Bact", "Bouge"]]
+[node name="Agent-Green" type="RigidBody" groups=["Bact", "Bouge"]]
 contacts_reported = 1
 contact_monitor = true
 
