@@ -3,6 +3,7 @@
 [node name="VBoxNetBioDyn" type="VBoxContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_bottom = -66.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -264,29 +265,46 @@ margin_bottom = 452.0
 text = "Properties"
 align = 1
 
-[node name="HBoxProps" type="HBoxContainer" parent="."]
+[node name="TabContainer" type="TabContainer" parent="."]
 margin_top = 456.0
 margin_right = 1024.0
-margin_bottom = 602.0
+margin_bottom = 516.0
+tab_align = 0
+use_hidden_tabs_for_min_size = true
+
+[node name="Tabs" type="Tabs" parent="TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="HBoxProps" type="HBoxContainer" parent="TabContainer/Tabs"]
+margin_left = -4.0
+margin_top = 32.0
+margin_right = 1020.0
+margin_bottom = 178.0
 rect_min_size = Vector2( 300, 0 )
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VSeparator" type="VSeparator" parent="HBoxProps"]
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Tabs/HBoxProps"]
 margin_right = 4.0
 margin_bottom = 146.0
 
-[node name="VBoxPropsAgt" type="VBoxContainer" parent="HBoxProps"]
+[node name="VBoxPropsAgt" type="VBoxContainer" parent="TabContainer/Tabs/HBoxProps"]
 margin_left = 8.0
 margin_right = 510.0
 margin_bottom = 146.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxProp1" type="HBoxContainer" parent="HBoxProps/VBoxPropsAgt"]
+[node name="HBoxProp1" type="HBoxContainer" parent="TabContainer/Tabs/HBoxProps/VBoxPropsAgt"]
 margin_right = 502.0
 margin_bottom = 24.0
 
-[node name="Label" type="Label" parent="HBoxProps/VBoxPropsAgt/HBoxProp1"]
+[node name="Label" type="Label" parent="TabContainer/Tabs/HBoxProps/VBoxPropsAgt/HBoxProp1"]
 margin_top = 5.0
 margin_right = 249.0
 margin_bottom = 19.0
@@ -294,19 +312,19 @@ size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="HBoxProps/VBoxPropsAgt/HBoxProp1"]
+[node name="LineEdit" type="LineEdit" parent="TabContainer/Tabs/HBoxProps/VBoxPropsAgt/HBoxProp1"]
 margin_left = 253.0
 margin_right = 502.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "Macrophage"
 
-[node name="HBoxProp3" type="HBoxContainer" parent="HBoxProps/VBoxPropsAgt"]
+[node name="HBoxProp3" type="HBoxContainer" parent="TabContainer/Tabs/HBoxProps/VBoxPropsAgt"]
 margin_top = 28.0
 margin_right = 502.0
 margin_bottom = 48.0
 
-[node name="Label" type="Label" parent="HBoxProps/VBoxPropsAgt/HBoxProp3"]
+[node name="Label" type="Label" parent="TabContainer/Tabs/HBoxProps/VBoxPropsAgt/HBoxProp3"]
 margin_top = 3.0
 margin_right = 249.0
 margin_bottom = 17.0
@@ -314,7 +332,7 @@ size_flags_horizontal = 3
 text = "Type"
 valign = 1
 
-[node name="OptionButton" type="OptionButton" parent="HBoxProps/VBoxPropsAgt/HBoxProp3"]
+[node name="OptionButton" type="OptionButton" parent="TabContainer/Tabs/HBoxProps/VBoxPropsAgt/HBoxProp3"]
 margin_left = 253.0
 margin_right = 502.0
 margin_bottom = 20.0
@@ -324,12 +342,12 @@ text = "Agent"
 items = [ "Agent", null, false, -1, null, "Taxon", null, false, 0, null ]
 selected = 0
 
-[node name="HBoxProp2" type="HBoxContainer" parent="HBoxProps/VBoxPropsAgt"]
+[node name="HBoxProp2" type="HBoxContainer" parent="TabContainer/Tabs/HBoxProps/VBoxPropsAgt"]
 margin_top = 52.0
 margin_right = 502.0
 margin_bottom = 72.0
 
-[node name="Label" type="Label" parent="HBoxProps/VBoxPropsAgt/HBoxProp2"]
+[node name="Label" type="Label" parent="TabContainer/Tabs/HBoxProps/VBoxPropsAgt/HBoxProp2"]
 margin_top = 3.0
 margin_right = 249.0
 margin_bottom = 17.0
@@ -337,30 +355,30 @@ size_flags_horizontal = 3
 text = "Couleur"
 valign = 1
 
-[node name="LineEdit" type="ColorPickerButton" parent="HBoxProps/VBoxPropsAgt/HBoxProp2"]
+[node name="LineEdit" type="ColorPickerButton" parent="TabContainer/Tabs/HBoxProps/VBoxPropsAgt/HBoxProp2"]
 margin_left = 253.0
 margin_right = 502.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 color = Color( 0.4, 0.498039, 1, 1 )
 
-[node name="VSeparator2" type="VSeparator" parent="HBoxProps"]
+[node name="VSeparator2" type="VSeparator" parent="TabContainer/Tabs/HBoxProps"]
 margin_left = 514.0
 margin_right = 518.0
 margin_bottom = 146.0
 
-[node name="VBoxPropsBehav" type="VBoxContainer" parent="HBoxProps"]
+[node name="VBoxPropsBehav" type="VBoxContainer" parent="TabContainer/Tabs/HBoxProps"]
 margin_left = 522.0
 margin_right = 1024.0
 margin_bottom = 146.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxProp1" type="HBoxContainer" parent="HBoxProps/VBoxPropsBehav"]
+[node name="HBoxProp1" type="HBoxContainer" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav"]
 margin_right = 502.0
 margin_bottom = 43.0
 
-[node name="Label" type="Label" parent="HBoxProps/VBoxPropsBehav/HBoxProp1"]
+[node name="Label" type="Label" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav/HBoxProp1"]
 margin_top = 14.0
 margin_right = 226.0
 margin_bottom = 28.0
@@ -368,21 +386,21 @@ size_flags_horizontal = 3
 text = "Groupes"
 valign = 1
 
-[node name="ButtonAddGp" type="Button" parent="HBoxProps/VBoxPropsBehav/HBoxProp1"]
+[node name="ButtonAddGp" type="Button" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav/HBoxProp1"]
 margin_left = 230.0
 margin_right = 250.0
 margin_bottom = 20.0
 size_flags_vertical = 0
 text = "+"
 
-[node name="ButtonDelGp" type="Button" parent="HBoxProps/VBoxPropsBehav/HBoxProp1"]
+[node name="ButtonDelGp" type="Button" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav/HBoxProp1"]
 margin_left = 254.0
 margin_right = 271.0
 margin_bottom = 20.0
 size_flags_vertical = 0
 text = "-"
 
-[node name="ItemList" type="ItemList" parent="HBoxProps/VBoxPropsBehav/HBoxProp1"]
+[node name="ItemList" type="ItemList" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav/HBoxProp1"]
 margin_left = 275.0
 margin_right = 502.0
 margin_bottom = 43.0
@@ -393,12 +411,12 @@ select_mode = 1
 auto_height = true
 max_columns = 5
 
-[node name="HBoxProp2" type="HBoxContainer" parent="HBoxProps/VBoxPropsBehav"]
+[node name="HBoxProp2" type="HBoxContainer" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav"]
 margin_top = 47.0
 margin_right = 502.0
 margin_bottom = 146.0
 
-[node name="Label" type="Label" parent="HBoxProps/VBoxPropsBehav/HBoxProp2"]
+[node name="Label" type="Label" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav/HBoxProp2"]
 margin_top = 42.0
 margin_right = 226.0
 margin_bottom = 56.0
@@ -406,21 +424,21 @@ size_flags_horizontal = 3
 text = "Paramètres"
 valign = 1
 
-[node name="ButtonAddParam" type="Button" parent="HBoxProps/VBoxPropsBehav/HBoxProp2"]
+[node name="ButtonAddParam" type="Button" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav/HBoxProp2"]
 margin_left = 230.0
 margin_right = 250.0
 margin_bottom = 20.0
 size_flags_vertical = 0
 text = "+"
 
-[node name="ButtonDelParam" type="Button" parent="HBoxProps/VBoxPropsBehav/HBoxProp2"]
+[node name="ButtonDelParam" type="Button" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav/HBoxProp2"]
 margin_left = 254.0
 margin_right = 271.0
 margin_bottom = 20.0
 size_flags_vertical = 0
 text = "-"
 
-[node name="ItemList" type="ItemList" parent="HBoxProps/VBoxPropsBehav/HBoxProp2"]
+[node name="ItemList" type="ItemList" parent="TabContainer/Tabs/HBoxProps/VBoxPropsBehav/HBoxProp2"]
 margin_left = 275.0
 margin_right = 502.0
 margin_bottom = 99.0
@@ -432,8 +450,8 @@ auto_height = true
 max_columns = 5
 
 [node name="LabelStatusbar" type="Label" parent="."]
-margin_top = 606.0
+margin_top = 520.0
 margin_right = 1024.0
-margin_bottom = 620.0
+margin_bottom = 534.0
 text = "Nb agents = 0 | Nb behaviours = 0 | NetBioDyn-2 2022"
 align = 1
