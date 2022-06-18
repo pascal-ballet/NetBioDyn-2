@@ -3,7 +3,6 @@
 [node name="VBoxNetBioDyn" type="VBoxContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_bottom = -66.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -43,71 +42,71 @@ margin_bottom = 30.0
 [node name="VBoxFrame" type="VBoxContainer" parent="."]
 margin_top = 34.0
 margin_right = 1024.0
-margin_bottom = 516.0
+margin_bottom = 582.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxWindows" type="HBoxContainer" parent="VBoxFrame"]
 margin_right = 1024.0
-margin_bottom = 482.0
+margin_bottom = 548.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VSeparator" type="VSeparator" parent="VBoxFrame/HBoxWindows"]
 margin_right = 4.0
-margin_bottom = 482.0
+margin_bottom = 548.0
 
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxFrame/HBoxWindows"]
 margin_left = 8.0
 margin_right = 1016.0
-margin_bottom = 482.0
+margin_bottom = 548.0
 size_flags_horizontal = 3
+size_flags_vertical = 3
+split_offset = 225
 
 [node name="HSplitContainer2" type="HSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer"]
-margin_right = 746.0
-margin_bottom = 482.0
+margin_right = 723.0
+margin_bottom = 548.0
 size_flags_horizontal = 3
 
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2"]
-margin_right = 367.0
-margin_bottom = 482.0
+margin_right = 355.0
+margin_bottom = 548.0
 size_flags_horizontal = 3
 
 [node name="VBoxAgentsGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer"]
-margin_right = 177.0
-margin_bottom = 482.0
+margin_right = 171.0
+margin_bottom = 548.0
 rect_min_size = Vector2( 0, 400 )
 size_flags_horizontal = 3
 
 [node name="HBoxAddAgents" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp"]
-margin_right = 177.0
-margin_bottom = 22.0
+margin_right = 171.0
+margin_bottom = 20.0
 
 [node name="LabelPlusAgt" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents"]
-margin_top = 4.0
-margin_right = 132.0
-margin_bottom = 18.0
+margin_top = 3.0
+margin_right = 126.0
+margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Agents"
 
-[node name="ToolPlusAgent" type="ToolButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents"]
-margin_left = 136.0
-margin_right = 156.0
-margin_bottom = 22.0
+[node name="ToolPlusAgent" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents"]
+margin_left = 130.0
+margin_right = 150.0
+margin_bottom = 20.0
 text = "+"
-flat = false
 
-[node name="ToolPlusAgent2" type="ToolButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents"]
-margin_left = 160.0
-margin_right = 177.0
-margin_bottom = 22.0
+[node name="ToolPlusAgent2" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents"]
+margin_left = 154.0
+margin_right = 171.0
+margin_bottom = 20.0
 text = "-"
-flat = false
 
 [node name="TreeAgents" type="Tree" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp"]
-margin_top = 26.0
-margin_right = 177.0
-margin_bottom = 239.0
+margin_top = 24.0
+margin_right = 171.0
+margin_bottom = 272.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
 size_flags_horizontal = 3
@@ -115,35 +114,33 @@ size_flags_vertical = 3
 select_mode = 1
 
 [node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp"]
-margin_top = 243.0
-margin_right = 177.0
-margin_bottom = 265.0
+margin_top = 276.0
+margin_right = 171.0
+margin_bottom = 296.0
 
 [node name="LabelGp" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddBehav"]
-margin_top = 4.0
-margin_right = 132.0
-margin_bottom = 18.0
+margin_top = 3.0
+margin_right = 126.0
+margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Groupes"
 
-[node name="ToolPlusBehav" type="ToolButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddBehav"]
-margin_left = 136.0
-margin_right = 156.0
-margin_bottom = 22.0
+[node name="ToolPlusBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddBehav"]
+margin_left = 130.0
+margin_right = 150.0
+margin_bottom = 20.0
 text = "+"
-flat = false
 
-[node name="ToolPlusBehav2" type="ToolButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddBehav"]
-margin_left = 160.0
-margin_right = 177.0
-margin_bottom = 22.0
+[node name="ToolPlusBehav2" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddBehav"]
+margin_left = 154.0
+margin_right = 171.0
+margin_bottom = 20.0
 text = "-"
-flat = false
 
 [node name="ListGroups" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp"]
-margin_top = 269.0
-margin_right = 177.0
-margin_bottom = 482.0
+margin_top = 300.0
+margin_right = 171.0
+margin_bottom = 548.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
 size_flags_horizontal = 3
@@ -153,40 +150,38 @@ auto_height = true
 same_column_width = true
 
 [node name="VBoxAgentsBehav" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer"]
-margin_left = 189.0
-margin_right = 367.0
-margin_bottom = 482.0
+margin_left = 183.0
+margin_right = 355.0
+margin_bottom = 548.0
 size_flags_horizontal = 3
 
 [node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav"]
-margin_right = 178.0
-margin_bottom = 22.0
+margin_right = 172.0
+margin_bottom = 20.0
 
 [node name="LabelPlusBehav" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddBehav"]
-margin_top = 4.0
-margin_right = 133.0
-margin_bottom = 18.0
+margin_top = 3.0
+margin_right = 127.0
+margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Comportements"
 
-[node name="ToolPlusBehav" type="ToolButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddBehav"]
-margin_left = 137.0
-margin_right = 157.0
-margin_bottom = 22.0
+[node name="ToolPlusBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddBehav"]
+margin_left = 131.0
+margin_right = 151.0
+margin_bottom = 20.0
 text = "+"
-flat = false
 
-[node name="ToolPlusBehav2" type="ToolButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddBehav"]
-margin_left = 161.0
-margin_right = 178.0
-margin_bottom = 22.0
+[node name="ToolPlusBehav2" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddBehav"]
+margin_left = 155.0
+margin_right = 172.0
+margin_bottom = 20.0
 text = "-"
-flat = false
 
 [node name="TreeAgents" type="Tree" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav"]
-margin_top = 26.0
-margin_right = 178.0
-margin_bottom = 239.0
+margin_top = 24.0
+margin_right = 172.0
+margin_bottom = 272.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
 size_flags_horizontal = 3
@@ -194,35 +189,33 @@ size_flags_vertical = 3
 select_mode = 1
 
 [node name="HBoxAddGrids" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav"]
-margin_top = 243.0
-margin_right = 178.0
-margin_bottom = 265.0
+margin_top = 276.0
+margin_right = 172.0
+margin_bottom = 296.0
 
 [node name="LabelPlusGrid" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddGrids"]
-margin_top = 4.0
-margin_right = 133.0
-margin_bottom = 18.0
+margin_top = 3.0
+margin_right = 127.0
+margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Grilles"
 
-[node name="ToolPlusAgent" type="ToolButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddGrids"]
-margin_left = 137.0
-margin_right = 157.0
-margin_bottom = 22.0
+[node name="ToolPlusAgent" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddGrids"]
+margin_left = 131.0
+margin_right = 151.0
+margin_bottom = 20.0
 text = "+"
-flat = false
 
-[node name="ToolPlusAgent2" type="ToolButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddGrids"]
-margin_left = 161.0
-margin_right = 178.0
-margin_bottom = 22.0
+[node name="ToolPlusAgent2" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddGrids"]
+margin_left = 155.0
+margin_right = 172.0
+margin_bottom = 20.0
 text = "-"
-flat = false
 
 [node name="ListGrids" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav"]
-margin_top = 269.0
-margin_right = 178.0
-margin_bottom = 482.0
+margin_top = 300.0
+margin_right = 172.0
+margin_bottom = 548.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
 size_flags_horizontal = 3
@@ -232,26 +225,26 @@ auto_height = true
 same_column_width = true
 
 [node name="VBoxEnvGraph" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2"]
-margin_left = 379.0
-margin_right = 746.0
-margin_bottom = 482.0
+margin_left = 367.0
+margin_right = 723.0
+margin_bottom = 548.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph"]
-margin_right = 367.0
+margin_right = 356.0
 margin_bottom = 20.0
 
 [node name="LabelEnv" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/HBoxContainer"]
 margin_top = 3.0
-margin_right = 301.0
+margin_right = 290.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Environnement   "
 
 [node name="ButtonDessin" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/HBoxContainer"]
-margin_left = 305.0
-margin_right = 367.0
+margin_left = 294.0
+margin_right = 356.0
 margin_bottom = 20.0
 hint_tooltip = "Pen"
 text = "Point"
@@ -260,8 +253,8 @@ selected = 0
 
 [node name="Panel" type="Panel" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph"]
 margin_top = 24.0
-margin_right = 367.0
-margin_bottom = 240.0
+margin_right = 356.0
+margin_bottom = 273.0
 rect_min_size = Vector2( 100, 0 )
 rect_clip_content = true
 size_flags_horizontal = 3
@@ -276,23 +269,23 @@ emission_shape = 2
 emission_rect_extents = Vector2( 150, 100 )
 
 [node name="ToolbarPaint" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph"]
-margin_top = 244.0
-margin_right = 367.0
-margin_bottom = 244.0
+margin_top = 277.0
+margin_right = 356.0
+margin_bottom = 277.0
 grow_horizontal = 0
 alignment = 1
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph"]
-margin_top = 248.0
-margin_right = 367.0
-margin_bottom = 262.0
+margin_top = 281.0
+margin_right = 356.0
+margin_bottom = 295.0
 size_flags_horizontal = 3
 text = "Graph"
 
 [node name="PanelGraph" type="Panel" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph"]
-margin_top = 266.0
-margin_right = 367.0
-margin_bottom = 482.0
+margin_top = 299.0
+margin_right = 356.0
+margin_bottom = 548.0
 rect_min_size = Vector2( 100, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -303,65 +296,70 @@ scale = Vector2( 0.864553, 0.648305 )
 points = PoolVector2Array( 1, 3, 18, 18, 52, 38, 106, 149, 183, 113, 217, 58, 239, 26, 248, 84, 254, 185, 291, 205, 328, 219 )
 
 [node name="TabContainer" type="TabContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer"]
-margin_left = 758.0
+margin_left = 735.0
 margin_right = 1008.0
-margin_bottom = 482.0
+margin_bottom = 548.0
 rect_min_size = Vector2( 250, 200 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
 tab_align = 0
 all_tabs_in_front = true
 use_hidden_tabs_for_min_size = true
 
-[node name="Agt" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+[node name="Agents" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
 margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
-
-[node name="VBoxPropsAgt" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt"]
-margin_left = -4.0
-margin_top = 32.0
-margin_right = 246.0
-margin_bottom = 310.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt"]
-margin_right = 250.0
-margin_bottom = 24.0
+[node name="VBoxPropsAgt" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp1"]
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt"]
+margin_right = 265.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp1"]
 margin_top = 5.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp1"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp1"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "Macrophage"
 
-[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt"]
+[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt"]
 margin_top = 28.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 48.0
+size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp3"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp3"]
 margin_top = 3.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Type"
 valign = 1
 
-[node name="OptionButton" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp3"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="OptionButton" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp3"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 20.0
 hint_tooltip = "Un Agent est une entité bien réelle alors qu'un Taxon regroupe les agents ayant des traits communs."
 size_flags_horizontal = 3
@@ -369,97 +367,99 @@ text = "Agent"
 items = [ "Agent", null, false, -1, null, "Taxon", null, false, 0, null ]
 selected = 0
 
-[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt"]
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt"]
 margin_top = 52.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 72.0
+size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp2"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp2"]
 margin_top = 3.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Couleur"
 valign = 1
 
-[node name="LineEdit" type="ColorPickerButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp2"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="LineEdit" type="ColorPickerButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp2"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 color = Color( 0.4, 0.498039, 1, 1 )
 
-[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt"]
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt"]
 margin_top = 76.0
-margin_right = 250.0
-margin_bottom = 175.0
+margin_right = 265.0
+margin_bottom = 292.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp4"]
-margin_right = 100.0
-margin_bottom = 99.0
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp4"]
+margin_right = 108.0
+margin_bottom = 216.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Groupes"
 
-[node name="ButtonAddGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp4"]
-margin_left = 104.0
-margin_right = 124.0
+[node name="ButtonAddGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp4"]
+margin_left = 112.0
+margin_right = 132.0
 margin_bottom = 20.0
 size_flags_vertical = 0
 text = "+"
 
-[node name="ButtonDelGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp4"]
-margin_left = 128.0
-margin_right = 145.0
+[node name="ButtonDelGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp4"]
+margin_left = 136.0
+margin_right = 153.0
 margin_bottom = 20.0
 size_flags_vertical = 0
 text = "-"
 
-[node name="ItemList" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp4"]
-margin_left = 149.0
-margin_right = 250.0
-margin_bottom = 99.0
+[node name="ItemList" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp4"]
+margin_left = 157.0
+margin_right = 265.0
+margin_bottom = 216.0
 hint_tooltip = "Un agent ou un Taxon peut appartenir à différents Groupes sur lesquels agissent les Comportements."
 size_flags_horizontal = 3
+size_flags_vertical = 3
 items = [ "Groupe 1", null, false, "Gp 2", null, false, "Gp 3", null, false, "Group 4", null, false, "Gp 5", null, false ]
 select_mode = 1
 auto_height = true
 max_columns = 5
 
-[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt"]
-margin_top = 179.0
-margin_right = 250.0
-margin_bottom = 278.0
+[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt"]
+margin_top = 296.0
+margin_right = 265.0
+margin_bottom = 512.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp5"]
-margin_right = 100.0
-margin_bottom = 99.0
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp5"]
+margin_right = 108.0
+margin_bottom = 216.0
 size_flags_horizontal = 3
-size_flags_vertical = 7
+size_flags_vertical = 3
 text = "Paramètres"
 
-[node name="ButtonAddParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp5"]
-margin_left = 104.0
-margin_right = 124.0
+[node name="ButtonAddParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp5"]
+margin_left = 112.0
+margin_right = 132.0
 margin_bottom = 20.0
 size_flags_vertical = 0
 text = "+"
 
-[node name="ButtonDelParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp5"]
-margin_left = 128.0
-margin_right = 145.0
+[node name="ButtonDelParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp5"]
+margin_left = 136.0
+margin_right = 153.0
 margin_bottom = 20.0
 size_flags_vertical = 0
 text = "-"
 
-[node name="ItemList" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agt/VBoxPropsAgt/HBoxProp5"]
-margin_left = 149.0
-margin_right = 250.0
-margin_bottom = 99.0
+[node name="ItemList" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agents/VBoxPropsAgt/HBoxProp5"]
+margin_left = 157.0
+margin_right = 265.0
+margin_bottom = 216.0
 hint_tooltip = "Les paramètres ajoutent des données aux Agents et Taxons utilisables dans les Comportements."
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -468,7 +468,7 @@ select_mode = 1
 auto_height = true
 max_columns = 5
 
-[node name="Comp" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+[node name="Comportements" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -476,50 +476,50 @@ margin_left = 4.0
 margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
-
-[node name="VBoxPropsComport" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp"]
-margin_left = -4.0
-margin_top = 32.0
-margin_right = 246.0
-margin_bottom = 310.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport"]
-margin_right = 250.0
+[node name="VBoxPropsComport" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport"]
+margin_right = 265.0
 margin_bottom = 24.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/HBoxProp1"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp1"]
 margin_top = 5.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/HBoxProp1"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp1"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "Degrader"
 
-[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport"]
+[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport"]
 margin_top = 28.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 48.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/HBoxProp3"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp3"]
 margin_top = 3.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Type"
 valign = 1
 
-[node name="OptionButton" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/HBoxProp3"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="OptionButton" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp3"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 20.0
 hint_tooltip = "Un Agent est une entité bien réelle alors qu'un Taxon regroupe les agents ayant des traits communs."
 size_flags_horizontal = 3
@@ -527,22 +527,22 @@ text = "Reaction"
 items = [ "Reaction", null, false, -1, null ]
 selected = 0
 
-[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport"]
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport"]
 margin_top = 52.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 68.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/HBoxProp2"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp2"]
 margin_top = 1.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 15.0
 size_flags_horizontal = 3
 text = "Probabilite"
 valign = 1
 
-[node name="HSlider" type="HSlider" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/HBoxProp2"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="HSlider" type="HSlider" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp2"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 16.0
 size_flags_horizontal = 3
 min_value = 0.001
@@ -553,91 +553,91 @@ exp_edit = true
 tick_count = 10
 ticks_on_borders = true
 
-[node name="VBoxReaction" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport"]
+[node name="VBoxReaction" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport"]
 margin_top = 72.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 180.0
 
-[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction"]
-margin_right = 250.0
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction"]
+margin_right = 265.0
 margin_bottom = 24.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction/HBoxProp4"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp4"]
 margin_top = 5.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "R1"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction/HBoxProp4"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp4"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "agent/taxon/gp"
 
-[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction"]
 margin_top = 28.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 52.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction/HBoxProp5"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp5"]
 margin_top = 5.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "R2"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction/HBoxProp5"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp5"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "agent/taxon/gp"
 
-[node name="HBoxProp6" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp6" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction"]
 margin_top = 56.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 80.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction/HBoxProp6"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp6"]
 margin_top = 5.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "P1"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction/HBoxProp6"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp6"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "agent/R1/R2/0"
 
-[node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction"]
 margin_top = 84.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 108.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction/HBoxProp7"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp7"]
 margin_top = 5.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "P2"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comp/VBoxPropsComport/VBoxReaction/HBoxProp7"]
-margin_left = 127.0
-margin_right = 250.0
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp7"]
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "agent/R1/R2/0"
 
-[node name="Env" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+[node name="Grilles" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -645,90 +645,185 @@ margin_left = 4.0
 margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxPropsEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv"]
+margin_right = 265.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp2"]
+margin_top = 5.0
+margin_right = 130.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+text = "Nom"
+valign = 1
+
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp2"]
+margin_left = 134.0
+margin_right = 265.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "Densité"
+
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv"]
+margin_top = 28.0
+margin_right = 265.0
+margin_bottom = 52.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp1"]
+margin_top = 5.0
+margin_right = 130.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+text = "Subdivisions X"
+valign = 1
+
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp1"]
+margin_left = 134.0
+margin_right = 265.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "10"
+
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv"]
+margin_top = 56.0
+margin_right = 265.0
+margin_bottom = 80.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp4"]
+margin_top = 5.0
+margin_right = 130.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+text = "Subdivisions Y"
+valign = 1
+
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp4"]
+margin_left = 134.0
+margin_right = 265.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "10"
+
+[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv"]
+margin_top = 84.0
+margin_right = 265.0
+margin_bottom = 108.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp5"]
+margin_top = 5.0
+margin_right = 130.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+text = "Subdivisions Z"
+valign = 1
+
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp5"]
+margin_left = 134.0
+margin_right = 265.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "10"
+
+[node name="Env" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="VBoxPropsEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env"]
-margin_left = -4.0
-margin_top = 32.0
-margin_right = 246.0
-margin_bottom = 310.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv"]
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 24.0
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1"]
 margin_top = 5.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "Taille X"
 valign = 1
 
 [node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1"]
-margin_left = 127.0
-margin_right = 250.0
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "10"
 
 [node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_top = 28.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 52.0
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4"]
 margin_top = 5.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "Taille Y"
 valign = 1
 
 [node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4"]
-margin_left = 127.0
-margin_right = 250.0
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "10"
 
 [node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_top = 56.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 80.0
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5"]
 margin_top = 5.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "Taille Z"
 valign = 1
 
 [node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5"]
-margin_left = 127.0
-margin_right = 250.0
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "10"
 
 [node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_top = 84.0
-margin_right = 250.0
+margin_right = 265.0
 margin_bottom = 104.0
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp3"]
 margin_top = 3.0
-margin_right = 123.0
+margin_right = 130.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Unité"
 valign = 1
 
 [node name="OptionButton" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp3"]
-margin_left = 127.0
-margin_right = 250.0
+margin_left = 134.0
+margin_right = 265.0
 margin_bottom = 20.0
 hint_tooltip = "Un Agent est une entité bien réelle alors qu'un Taxon regroupe les agents ayant des traits communs."
 size_flags_horizontal = 3
@@ -736,110 +831,15 @@ text = "micro"
 items = [ "nano", null, false, -1, null, "micro", null, false, 0, null, "mm", null, false, 1, null, "cm", null, false, 2, null, "m", null, false, 3, null, "km", null, false, 4, null, "parsec", null, false, 5, null ]
 selected = 1
 
-[node name="Gril" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
-
-[node name="VBoxPropsEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril"]
-margin_left = -4.0
-margin_top = 32.0
-margin_right = 246.0
-margin_bottom = 310.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv"]
-margin_right = 250.0
-margin_bottom = 24.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv/HBoxProp2"]
-margin_top = 5.0
-margin_right = 123.0
-margin_bottom = 19.0
-size_flags_horizontal = 3
-text = "Nom"
-valign = 1
-
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv/HBoxProp2"]
-margin_left = 127.0
-margin_right = 250.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "Densité"
-
-[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv"]
-margin_top = 28.0
-margin_right = 250.0
-margin_bottom = 52.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv/HBoxProp1"]
-margin_top = 5.0
-margin_right = 123.0
-margin_bottom = 19.0
-size_flags_horizontal = 3
-text = "Subdivisions X"
-valign = 1
-
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv/HBoxProp1"]
-margin_left = 127.0
-margin_right = 250.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "10"
-
-[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv"]
-margin_top = 56.0
-margin_right = 250.0
-margin_bottom = 80.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv/HBoxProp4"]
-margin_top = 5.0
-margin_right = 123.0
-margin_bottom = 19.0
-size_flags_horizontal = 3
-text = "Subdivisions Y"
-valign = 1
-
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv/HBoxProp4"]
-margin_left = 127.0
-margin_right = 250.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "10"
-
-[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv"]
-margin_top = 84.0
-margin_right = 250.0
-margin_bottom = 108.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv/HBoxProp5"]
-margin_top = 5.0
-margin_right = 123.0
-margin_bottom = 19.0
-size_flags_horizontal = 3
-text = "Subdivisions Z"
-valign = 1
-
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Gril/VBoxPropsEnv/HBoxProp5"]
-margin_left = 127.0
-margin_right = 250.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "10"
-
 [node name="VSeparator3" type="VSeparator" parent="VBoxFrame/HBoxWindows"]
 margin_left = 1020.0
 margin_right = 1024.0
-margin_bottom = 482.0
+margin_bottom = 548.0
 
 [node name="LabelStatusbar" type="Label" parent="."]
-margin_top = 520.0
+margin_top = 586.0
 margin_right = 1024.0
-margin_bottom = 534.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
 text = "Nb agents = 0 | Nb behaviours = 0 | NetBioDyn-2 version 6/2022"
 align = 1
