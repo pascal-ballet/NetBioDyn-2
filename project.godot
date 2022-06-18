@@ -20,7 +20,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="SimBioCell"
+config/name="NetBioDyn-2"
 run/main_scene="res://scene.tscn"
 config/icon="res://icon.png"
 
