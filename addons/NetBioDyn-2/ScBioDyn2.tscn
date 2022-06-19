@@ -92,7 +92,7 @@ margin_top = 3.0
 margin_right = 126.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
-text = "Agents"
+text = "Entités"
 
 [node name="ToolPlusAgent" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents"]
 margin_left = 130.0
@@ -114,7 +114,6 @@ rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
-select_mode = 1
 
 [node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp"]
 margin_top = 276.0
