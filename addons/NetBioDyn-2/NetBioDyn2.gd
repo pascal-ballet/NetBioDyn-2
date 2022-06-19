@@ -1,11 +1,13 @@
 tool
 extends EditorPlugin
 
-const ScNetBioDyn2 = preload("res://addons/NetBioDyn-2/ScBioDyn2.tscn")
+var ScNetBioDyn2 = preload("res://addons/NetBioDyn-2/ScBioDyn2.tscn")
+
 var main_panel:VBoxContainer = null
 var treeAgents:Tree = null
 
 func _enter_tree() -> void:
+	print ("Enter Tree...")
 	main_panel = ScNetBioDyn2.instance()
 	get_editor_interface().get_editor_viewport().add_child(main_panel)
 	treeAgents = main_panel.find_node("TreeAgents", true, true)
