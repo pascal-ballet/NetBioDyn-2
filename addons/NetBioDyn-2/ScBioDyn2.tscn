@@ -280,7 +280,7 @@ margin_top = 281.0
 margin_right = 356.0
 margin_bottom = 295.0
 size_flags_horizontal = 3
-text = "Graph"
+text = "Courbes"
 
 [node name="PanelGraph" type="Panel" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph"]
 margin_top = 299.0
@@ -307,7 +307,6 @@ all_tabs_in_front = true
 use_hidden_tabs_for_min_size = true
 
 [node name="Agents" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -734,6 +733,7 @@ size_flags_horizontal = 3
 text = "10"
 
 [node name="Env" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
