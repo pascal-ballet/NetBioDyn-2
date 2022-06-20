@@ -77,4 +77,28 @@ func _on_BtnDelBehav_pressed() -> void:
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
 
+# Groups
+# *********
+func _on_BtnAddGp_pressed() -> void:
+	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/ListGp")
+	lst.add_item("Groupe")
+	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
 
+func _on_BtnDelGp_pressed() -> void:
+	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/ListGp")
+	var sel:PoolIntArray = lst.get_selected_items()
+	if sel.size() > 0:
+		lst.remove_item(sel[0])
+
+# Grids
+# *********
+func _on_BtnAddGrid_pressed() -> void:
+	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListGrids")
+	lst.add_item("Grille")
+	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
+
+func _on_BtnDelGrid_pressed() -> void:
+	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListGrids")
+	var sel:PoolIntArray = lst.get_selected_items()
+	if sel.size() > 0:
+		lst.remove_item(sel[0])
