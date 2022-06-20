@@ -20,6 +20,8 @@ func _ready() -> void:
 #func _process(delta: float) -> void:
 #	pass
 
+# Entities
+# ********
 func addAgent(var name) -> void:	
 	# Selected node
 	var parent:TreeItem = treeAgents.get_selected()
@@ -27,7 +29,7 @@ func addAgent(var name) -> void:
 	# Create new Agent
 	var agt:TreeItem = treeAgents.create_item(parent)
 	agt.set_text(0, name)
-	#
+	agt.set_meta("type","Agent")
 	#var child1 = treeAgents.create_item(agt)
 	#child1.set_text(0, "Child1")
 	#var child2 = treeAgents.create_item(agt)
@@ -40,7 +42,7 @@ func addTaxon() -> void:
 	pass
 	
 func _on_ToolPlusAgent_pressed() -> void:
-	var btn_add = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents/ToolPlusAgent")
+	var btn_add = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents/BtnAddAgent")
 	_pm.popup(Rect2(btn_add.get_position().x, btn_add.get_position().y, _pm.rect_size.x, _pm.rect_size.y))
 	
 
@@ -51,5 +53,9 @@ func _on_PopupMenu_index_pressed(index: int) -> void:
 		addTaxon()
 	pass # Replace with function body.
 
-func _on_TreeAgents_item_selected() -> void:
-	print("clic") #item, column, id)
+# Behaviors
+# *********
+func _on_BtnAddBehav_pressed() -> void:
+	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListBehav")
+	lst.add_item("Comportement")
+	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
