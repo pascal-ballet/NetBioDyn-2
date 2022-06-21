@@ -6,7 +6,7 @@ extends Node
 
 var _pm
 var _treeAgents:Tree 
-enum Prop {AGENT, BEHAVIOR, GRID, ENV, GROUP}
+enum Prop {ENTITY, BEHAVIOR, GRID, ENV, EMPTY }
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -67,10 +67,22 @@ func _on_BtnDelAgent_pressed() -> void:
 
 func _on_TreeAgents_item_selected() -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-	tabs.current_tab = Prop.AGENT
+	tabs.current_tab = Prop.ENTITY
 
+#var last_selected_entity = null
+func _on_TreeAgents_focus_exited() -> void:
+	#last_selected_entity = _treeAgents.get_selected()
+	#_treeAgents.get_selected().deselect(0)
+	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	tabs.current_tab = Prop.EMPTY
 
-
+func _on_TreeAgents_focus_entered() -> void:
+	var selected_entity = _treeAgents.get_selected()
+	if selected_entity != null:
+		var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+		tabs.current_tab = Prop.ENTITY
+		# show selected_entity
+	
 # Behaviors
 # *********
 func _on_BtnAddBehav_pressed() -> void:
@@ -88,7 +100,12 @@ func _on_ListBehav_item_selected(index: int) -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.BEHAVIOR
 
-
+func _on_ListBehav_focus_exited() -> void:
+	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListBehav")
+	lst.unselect_all()
+	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	tabs.current_tab = Prop.EMPTY
+		
 # Groups
 # *********
 func _on_BtnAddGp_pressed() -> void:
@@ -101,10 +118,6 @@ func _on_BtnDelGp_pressed() -> void:
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
-
-func _on_ListGp_item_selected(index: int) -> void:
-	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-	tabs.current_tab = Prop.GROUP
 
 # Grids
 # *********
@@ -123,8 +136,15 @@ func _on_ListGrids_item_selected(index: int) -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.GRID
 
+func _on_ListGrids_focus_exited() -> void:
+	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListGrids")
+	lst.unselect_all()
+	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	tabs.current_tab = Prop.EMPTY
+	
 # Env
 # *********
 func _on_Button_pressed() -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.ENV
+
