@@ -6,7 +6,7 @@ extends Node
 
 var _pm
 var _treeAgents:Tree 
-enum Prop {AGENT, BEHAVIOR, GROUP, GRID, ENV}
+enum Prop {AGENT, BEHAVIOR, GRID, ENV, GROUP}
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -102,6 +102,10 @@ func _on_BtnDelGp_pressed() -> void:
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
 
+func _on_ListGp_item_selected(index: int) -> void:
+	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	tabs.current_tab = Prop.GROUP
+
 # Grids
 # *********
 func _on_BtnAddGrid_pressed() -> void:
@@ -115,10 +119,12 @@ func _on_BtnDelGrid_pressed() -> void:
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
 
+func _on_ListGrids_item_selected(index: int) -> void:
+	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	tabs.current_tab = Prop.GRID
 
 # Env
 # *********
-func _on_PanelEnv_focus_entered() -> void:
+func _on_Button_pressed() -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.ENV
-
