@@ -4,9 +4,9 @@ extends Node
 # var a: int = 2
 # var b: String = "text"
 
-var _pm
+var _pm:PopupMenu
 var _treeAgents:Tree 
-enum Prop {ENTITY, BEHAVIOR, GRID, ENV, EMPTY }
+enum Prop {EMPTY, ENTITY, BEHAVIOR, GRID, ENV }
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -71,10 +71,9 @@ func _on_TreeAgents_item_selected() -> void:
 
 #var last_selected_entity = null
 func _on_TreeAgents_focus_exited() -> void:
-	#last_selected_entity = _treeAgents.get_selected()
-	#_treeAgents.get_selected().deselect(0)
-	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-	tabs.current_tab = Prop.EMPTY
+	#var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	#tabs.current_tab = Prop.EMPTY
+	pass
 
 func _on_TreeAgents_focus_entered() -> void:
 	var selected_entity = _treeAgents.get_selected()
@@ -102,9 +101,9 @@ func _on_ListBehav_item_selected(index: int) -> void:
 
 func _on_ListBehav_focus_exited() -> void:
 	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListBehav")
-	lst.unselect_all()
-	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-	tabs.current_tab = Prop.EMPTY
+	#lst.unselect_all()
+	#var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	#tabs.current_tab = Prop.EMPTY
 		
 # Groups
 # *********
@@ -137,10 +136,11 @@ func _on_ListGrids_item_selected(index: int) -> void:
 	tabs.current_tab = Prop.GRID
 
 func _on_ListGrids_focus_exited() -> void:
-	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListGrids")
-	lst.unselect_all()
-	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-	tabs.current_tab = Prop.EMPTY
+	#var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListGrids")
+	#lst.unselect_all()
+	#var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	#tabs.current_tab = Prop.EMPTY
+	pass
 	
 # Env
 # *********
