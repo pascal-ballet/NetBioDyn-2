@@ -304,14 +304,13 @@ rect_min_size = Vector2( 250, 200 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 tab_align = 0
-all_tabs_in_front = true
+tabs_visible = false
 use_hidden_tabs_for_min_size = true
 
 [node name="Entités" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 size_flags_horizontal = 3
@@ -391,13 +390,13 @@ color = Color( 0.4, 0.498039, 1, 1 )
 [node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Entités/VBoxPropsAgt"]
 margin_top = 76.0
 margin_right = 265.0
-margin_bottom = 292.0
+margin_bottom = 308.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Entités/VBoxPropsAgt/HBoxProp4"]
 margin_right = 108.0
-margin_bottom = 216.0
+margin_bottom = 232.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Groupes"
@@ -419,7 +418,7 @@ text = "-"
 [node name="ItemList" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Entités/VBoxPropsAgt/HBoxProp4"]
 margin_left = 157.0
 margin_right = 265.0
-margin_bottom = 216.0
+margin_bottom = 232.0
 hint_tooltip = "Un agent ou un Taxon peut appartenir à différents Groupes sur lesquels agissent les Comportements."
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -429,15 +428,15 @@ auto_height = true
 max_columns = 5
 
 [node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Entités/VBoxPropsAgt"]
-margin_top = 296.0
+margin_top = 312.0
 margin_right = 265.0
-margin_bottom = 512.0
+margin_bottom = 544.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Entités/VBoxPropsAgt/HBoxProp5"]
 margin_right = 108.0
-margin_bottom = 216.0
+margin_bottom = 232.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Paramètres"
@@ -459,7 +458,7 @@ text = "-"
 [node name="ItemList" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Entités/VBoxPropsAgt/HBoxProp5"]
 margin_left = 157.0
 margin_right = 265.0
-margin_bottom = 216.0
+margin_bottom = 232.0
 hint_tooltip = "Les paramètres ajoutent des données aux Agents et Taxons utilisables dans les Comportements."
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -473,7 +472,6 @@ visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 size_flags_horizontal = 3
@@ -642,7 +640,6 @@ visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 size_flags_horizontal = 3
@@ -738,7 +735,6 @@ visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 size_flags_horizontal = 3
@@ -856,6 +852,7 @@ items = [ "Ajouter Agent", null, 0, false, false, 0, 0, null, "", false, "Ajoute
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddBehav/BtnDelGp" to="." method="_on_BtnDelGp_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddBehav/BtnAddBehav" to="." method="_on_BtnAddBehav_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddBehav/BtnDelBehav" to="." method="_on_BtnDelBehav_pressed"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListBehav" to="." method="_on_ListBehav_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddGrids/BtnAddGrid" to="." method="_on_BtnAddGrid_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/HBoxAddGrids/BtnDelGrid" to="." method="_on_BtnDelGrid_pressed"]
 [connection signal="index_pressed" from="PopupMenu" to="." method="_on_PopupMenu_index_pressed"]

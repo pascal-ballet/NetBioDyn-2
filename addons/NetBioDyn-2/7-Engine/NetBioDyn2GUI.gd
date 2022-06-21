@@ -77,6 +77,10 @@ func _on_BtnDelBehav_pressed() -> void:
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
 
+func _on_ListBehav_item_selected(index: int) -> void:
+	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	tabs.current_tab = 1
+
 # Groups
 # *********
 func _on_BtnAddGp_pressed() -> void:
@@ -102,3 +106,5 @@ func _on_BtnDelGrid_pressed() -> void:
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
+
+
