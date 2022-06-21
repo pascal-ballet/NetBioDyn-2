@@ -1,9 +1,5 @@
 extends Node
 
-# Declare member variables here. Examples:
-# var a: int = 2
-# var b: String = "text"
-
 var _pm:PopupMenu
 var _treeAgents:Tree 
 enum Prop {EMPTY, ENTITY, BEHAVIOR, GRID, ENV }
@@ -13,14 +9,10 @@ func _ready() -> void:
 	# Tree of entities
 	_treeAgents = find_node("TreeAgents", true, true)
 	_treeAgents.set_hide_root(false)
-	addAgent("--------------------")
-	#print("trouvé", treeAgents)
+	addTaxon("Racine")
+	
 	_pm = $PopupMenu
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-#	pass
-
 # Entities
 # ********
 func addAgent(var name) -> void:	
@@ -31,27 +23,25 @@ func addAgent(var name) -> void:
 	var agt:TreeItem = _treeAgents.create_item(parent)
 	agt.set_text(0, name)
 	agt.set_meta("type","Agent")
-	#var child1 = treeAgents.create_item(agt)
-	#child1.set_text(0, "Child1")
-	#var child2 = treeAgents.create_item(agt)
-	#treeAgents.add_item("Agent 1", null, true)
-	#treeAgents.add_item("Agent 2", null, true)
-	#var subchild1 = treeAgents.create_item(child1)
-	#subchild1.set_text(0, "Subchild1")
 
-func addTaxon() -> void:
-	pass
+func addTaxon(var name) -> void:
+	# Selected node
+	var parent:TreeItem = _treeAgents.get_selected()
+	
+	# Create new Agent
+	var txn:TreeItem = _treeAgents.create_item(parent)
+	txn.set_text(0, name)
+	txn.set_meta("type","Taxon")
 	
 func _on_ToolPlusAgent_pressed() -> void:
 	var btn_add = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents/BtnAddAgent")
 	_pm.popup(Rect2(btn_add.get_position().x, btn_add.get_position().y, _pm.rect_size.x, _pm.rect_size.y))
-	
 
 func _on_PopupMenu_index_pressed(index: int) -> void:
 	if index == 0:
 		addAgent("Agent")
 	if index == 1:
-		addTaxon()
+		addTaxon("Taxon")
 	pass # Replace with function body.
 
 func _on_BtnDelAgent_pressed() -> void:
@@ -69,18 +59,11 @@ func _on_TreeAgents_item_selected() -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.ENTITY
 
-#var last_selected_entity = null
-func _on_TreeAgents_focus_exited() -> void:
-	#var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-	#tabs.current_tab = Prop.EMPTY
-	pass
-
 func _on_TreeAgents_focus_entered() -> void:
 	var selected_entity = _treeAgents.get_selected()
 	if selected_entity != null:
 		var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 		tabs.current_tab = Prop.ENTITY
-		# show selected_entity
 	
 # Behaviors
 # *********
@@ -98,12 +81,6 @@ func _on_BtnDelBehav_pressed() -> void:
 func _on_ListBehav_item_selected(index: int) -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.BEHAVIOR
-
-func _on_ListBehav_focus_exited() -> void:
-	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListBehav")
-	#lst.unselect_all()
-	#var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-	#tabs.current_tab = Prop.EMPTY
 		
 # Groups
 # *********
@@ -134,13 +111,6 @@ func _on_BtnDelGrid_pressed() -> void:
 func _on_ListGrids_item_selected(index: int) -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.GRID
-
-func _on_ListGrids_focus_exited() -> void:
-	#var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListGrids")
-	#lst.unselect_all()
-	#var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-	#tabs.current_tab = Prop.EMPTY
-	pass
 	
 # Env
 # *********
