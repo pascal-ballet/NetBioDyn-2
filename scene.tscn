@@ -8,4 +8,4 @@ margin_bottom = -300.0
 rect_scale = Vector2( 4, 4 )
 text = "Try a scene example by
 opening the folder :
-SimBioCell / SceneExamples"
+addons / NetBioDyn-2 / SceneExamples"

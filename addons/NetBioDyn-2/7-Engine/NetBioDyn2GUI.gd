@@ -1,3 +1,7 @@
+# This class is the Controler in the MVC
+# The View is scene called ScBioDyn2.tscn
+# The Model is the 3D scene
+
 extends Node
 
 var _pm:PopupMenu
