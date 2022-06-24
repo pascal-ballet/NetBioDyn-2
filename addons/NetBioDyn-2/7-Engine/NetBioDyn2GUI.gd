@@ -68,7 +68,22 @@ func _on_TreeAgents_focus_entered() -> void:
 	if selected_entity != null:
 		var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 		tabs.current_tab = Prop.ENTITY
-	
+
+func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == BUTTON_LEFT:
+			if event.pressed:
+				var n_entities = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
+				var entity:Spatial = load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
+				n_entities.add_child(entity)
+				entity.global_transform.origin = Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
+				pass
+
+func _entity_2_properties(var entity):
+	pass
+
+
+
 # Behaviors
 # *********
 func _on_BtnAddBehav_pressed() -> void:
@@ -121,4 +136,5 @@ func _on_ListGrids_item_selected(index: int) -> void:
 func _on_Button_pressed() -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.ENV
+
 

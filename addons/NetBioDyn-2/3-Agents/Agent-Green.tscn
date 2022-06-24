@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://SimBioCell/6-PrefabMaterials/Green.tres" type="Shader" id=1]
+[ext_resource path="res://addons/NetBioDyn-2/6-Materials/Green.tres" type="Shader" id=1]
 
 [sub_resource type="SphereMesh" id=1]
 
@@ -10,6 +10,7 @@ shader = ExtResource( 1 )
 [sub_resource type="SphereShape" id=3]
 
 [node name="Agent-Green" type="RigidBody" groups=["Bact", "Bouge"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.3935, 0, 0 )
 contacts_reported = 1
 contact_monitor = true
 

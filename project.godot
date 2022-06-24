@@ -24,6 +24,10 @@ config/name="NetBioDyn-2"
 run/main_scene="res://scene.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/size/fullscreen=true
+
 [editor_plugins]
 
 enabled=PoolStringArray( "res://addons/NetBioDyn-2/plugin.cfg", "res://addons/goutte.camera.trackball/plugin.cfg", "res://addons/metadata_inspector/plugin.cfg" )
