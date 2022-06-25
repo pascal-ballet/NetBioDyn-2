@@ -80,7 +80,7 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
 				#print(cursorPos)
 				# Spawn the new entity
-				var n_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
+				var n_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/EntityInstances")
 				var entity:RigidBody  = load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)

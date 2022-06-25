@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd" type="Script" id=1]
 [ext_resource path="res://bg_focus.tres" type="StyleBox" id=2]
+[ext_resource path="res://addons/NetBioDyn-2/7-Engine/Scheduler.gd" type="Script" id=3]
 [ext_resource path="res://addons/NetBioDyn-2/3-Agents/Agent-Red.tscn" type="PackedScene" id=5]
 
 [sub_resource type="Environment" id=1]
@@ -302,13 +303,16 @@ size = 50.0
 [node name="DirectionalLight" type="DirectionalLight" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 transform = Transform( 1, 0, 0, 0, 0.903993, 0.427547, 0, -0.427547, 0.903993, 0, 11.9488, 0 )
 
-[node name="Entities" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
+[node name="EntityClasses" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 
-[node name="Virus16" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities" instance=ExtResource( 5 )]
+[node name="EntityInstances" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
+
+[node name="Virus16" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/EntityInstances" instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.13737, 0, -3.90749 )
 gravity_scale = 0.0
 
 [node name="Behaviors" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
+script = ExtResource( 3 )
 
 [node name="ToolbarPaint" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph"]
 margin_top = 277.0
