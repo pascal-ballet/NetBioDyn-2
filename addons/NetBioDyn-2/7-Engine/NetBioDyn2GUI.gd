@@ -85,6 +85,10 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
 				entity.global_transform.origin = cursorPos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
+				# to be saved as scene, the owner is the simulation "root" node
+				#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
+				#   - see https://github.com/godotengine/godot-proposals/issues/390
+				entity.set_owner(get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"))
 				pass
 
 func _entity_2_properties(var entity):
