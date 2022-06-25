@@ -294,7 +294,7 @@ render_target_update_mode = 3
 [node name="Simulator" type="Spatial" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport"]
 
 [node name="Camera" type="Camera" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 14.2594, 0 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 39.5832, 0 )
 environment = SubResource( 1 )
 projection = 1
 size = 50.0

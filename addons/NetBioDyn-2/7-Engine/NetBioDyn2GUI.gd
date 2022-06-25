@@ -73,10 +73,18 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
-				var n_entities = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
-				var entity:Spatial = load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
+				# Position of the mouse click
+				var camera = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Camera")
+				var from = camera.project_ray_origin(event.position)
+				var to = camera.project_ray_normal(event.position) * 100
+				var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
+				#print(cursorPos)
+				# Spawn the new entity
+				var n_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
+				var entity:RigidBody  = load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
+				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
-				entity.global_transform.origin = Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
+				entity.global_transform.origin = cursorPos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
 				pass
 
 func _entity_2_properties(var entity):
