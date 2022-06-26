@@ -14,32 +14,32 @@ func _ready() -> void:
 	_treeAgents = find_node("TreeAgents", true, true)
 	_treeAgents.set_hide_root(false)
 	addTaxon("Racine")
-	
 	_pm = $PopupMenu
 	
+# **********************************************************
 # Entities
-# ********
+# **********************************************************
 func addAgent(var name) -> void:	
 	# Selected node
 	var parent:TreeItem = _treeAgents.get_selected()
 	
-	# Create new Agent in GUI ******************************
+	# Create new Agent in GUI -----------------------------
 	var agt:TreeItem = _treeAgents.create_item(parent)
 	agt.set_text(0, name)
 	agt.set_meta("type","Agent")
-	# Create new Agent in Scene ****************************
+	# Create new Agent in Scene -----------------------------
 	var node_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
-	# - material
+	#  - material
 	var mat:SpatialMaterial = SpatialMaterial.new()
 	mat.albedo_color = Color(1.0, 0.4, 0.2, 1.0)
-	# - mesh
+	#  - mesh
 	var mh:MeshInstance = MeshInstance.new()
 	mh.mesh = SphereMesh.new()
 	mh.set_material_override(mat)
-	# - collision
+	#  - collision
 	var col:CollisionShape = CollisionShape.new()
 	col.shape = SphereShape.new()
-	# - rigidbody
+	#  - rigidbody
 	var rb:RigidBody = RigidBody.new()
 	rb.set_gravity_scale(0)
 	rb.set_collision_layer_bit(0,false)
@@ -48,7 +48,7 @@ func addAgent(var name) -> void:
 	rb.add_child(mh)
 	rb.add_child(col)
 	#rb.set_translation(Vector3(0,5,0))
-	# - add the Agent to the scene
+	#  - add the Agent to the scene
 	node_entities.add_child(rb)
 	rb.set_owner(get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"))
 
@@ -61,6 +61,7 @@ func addTaxon(var name) -> void:
 	txn.set_text(0, name)
 	txn.set_meta("type","Taxon")
 	
+# Add entity PopUp Menu -----------------------------
 func _on_ToolPlusAgent_pressed() -> void:
 	var btn_add = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents/BtnAddAgent")
 	_pm.popup(Rect2(btn_add.get_position().x, btn_add.get_position().y, _pm.rect_size.x, _pm.rect_size.y))
@@ -72,6 +73,7 @@ func _on_PopupMenu_index_pressed(index: int) -> void:
 		addTaxon("Taxon")
 	pass # Replace with function body.
 
+# Remove entity -----------------------------
 func _on_BtnDelAgent_pressed() -> void:
 	# Selected item
 	var selected:TreeItem = _treeAgents.get_selected()
@@ -83,24 +85,27 @@ func _on_BtnDelAgent_pressed() -> void:
 	parent.remove_child(selected)
 	selected.free()
 
+# TREE of entities -----------------------------
 func _on_TreeAgents_item_selected() -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.ENTITY
-	var entity_name:String = String("RigidBody") #_treeAgents.get_selected().get_text(0)
+	var entity_name:String = _treeAgents.get_selected().get_text(0)
 	var entity:Node = get_entity_from_GUI(entity_name)
 	_fill_properties_of_entity(entity)
 	
+func get_entity_from_GUI(var name:String) -> Node:
+	var node_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
+	return node_entities.find_node(name) as Node
+
 func _fill_properties_of_entity(var entity:Node):
 	if entity is RigidBody:
 		var box_name:LineEdit = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/LineEdit")
-		box_name.text = "TOTO"
+		box_name.text = entity.name
 
-func _on_TreeAgents_focus_entered() -> void:
-	var selected_entity = _treeAgents.get_selected()
-	if selected_entity != null:
-		var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-		tabs.current_tab = Prop.ENTITY
+func _entity_2_properties(var entity):
+	pass
 
+# ENV of entities -----------------------------
 func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
@@ -122,13 +127,6 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				#   - see https://github.com/godotengine/godot-proposals/issues/390
 				entity.set_owner(get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"))
 				pass
-
-func get_entity_from_GUI(var name:String) -> Node:
-	var node_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
-	return node_entities.find_node(name) as Node
-
-func _entity_2_properties(var entity):
-	pass
 
 
 
