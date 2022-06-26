@@ -23,10 +23,34 @@ func addAgent(var name) -> void:
 	# Selected node
 	var parent:TreeItem = _treeAgents.get_selected()
 	
-	# Create new Agent
+	# Create new Agent in GUI ******************************
 	var agt:TreeItem = _treeAgents.create_item(parent)
 	agt.set_text(0, name)
 	agt.set_meta("type","Agent")
+	# Create new Agent in Scene ****************************
+	var node_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
+	# - material
+	var mat:SpatialMaterial = SpatialMaterial.new()
+	mat.albedo_color = Color(1.0, 0.4, 0.2, 1.0)
+	# - mesh
+	var mh:MeshInstance = MeshInstance.new()
+	mh.mesh = SphereMesh.new()
+	mh.set_material_override(mat)
+	# - collision
+	var col:CollisionShape = CollisionShape.new()
+	col.shape = SphereShape.new()
+	# - rigidbody
+	var rb:RigidBody = RigidBody.new()
+	rb.set_gravity_scale(0)
+	rb.set_collision_layer_bit(0,false)
+	rb.set_collision_mask_bit(0,false)
+	
+	rb.add_child(mh)
+	rb.add_child(col)
+	#rb.set_translation(Vector3(0,5,0))
+	# - add the Agent to the scene
+	node_entities.add_child(rb)
+	rb.set_owner(get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"))
 
 func addTaxon(var name) -> void:
 	# Selected node
@@ -62,6 +86,14 @@ func _on_BtnDelAgent_pressed() -> void:
 func _on_TreeAgents_item_selected() -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.ENTITY
+	var entity_name:String = String("RigidBody") #_treeAgents.get_selected().get_text(0)
+	var entity:Node = get_entity_from_GUI(entity_name)
+	_fill_properties_of_entity(entity)
+	
+func _fill_properties_of_entity(var entity:Node):
+	if entity is RigidBody:
+		var box_name:LineEdit = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/LineEdit")
+		box_name.text = "TOTO"
 
 func _on_TreeAgents_focus_entered() -> void:
 	var selected_entity = _treeAgents.get_selected()
@@ -80,7 +112,7 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
 				#print(cursorPos)
 				# Spawn the new entity
-				var n_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/EntityInstances")
+				var n_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Environment")
 				var entity:RigidBody  = load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
@@ -90,6 +122,10 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				#   - see https://github.com/godotengine/godot-proposals/issues/390
 				entity.set_owner(get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"))
 				pass
+
+func get_entity_from_GUI(var name:String) -> Node:
+	var node_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
+	return node_entities.find_node(name) as Node
 
 func _entity_2_properties(var entity):
 	pass
