@@ -528,7 +528,7 @@ size_flags_horizontal = 3
 text = "Couleur"
 valign = 1
 
-[node name="LineEdit" type="ColorPickerButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2"]
+[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2"]
 margin_left = 134.0
 margin_right = 265.0
 margin_bottom = 20.0

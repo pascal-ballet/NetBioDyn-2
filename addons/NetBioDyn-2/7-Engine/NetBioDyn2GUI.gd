@@ -99,12 +99,14 @@ func get_entity_from_GUI(var name:String) -> Node:
 
 func _fill_properties_of_entity(var entity:Node):
 	if entity is RigidBody:
+		# name
 		var box_name:LineEdit = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/LineEdit")
 		box_name.text = entity.name
-
-func _entity_2_properties(var entity):
-	pass
-
+		# color
+		var box_color:ColorPickerButton = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2/ColorPickerButton")
+		var mesh:MeshInstance = entity.get_child(0)
+		box_color.color = mesh.get_surface_material(0).albedo_color
+		
 # ENV of entities -----------------------------
 func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
