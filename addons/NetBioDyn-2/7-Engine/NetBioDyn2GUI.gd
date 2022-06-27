@@ -185,4 +185,6 @@ func _on_Button_pressed() -> void:
 	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
 	tabs.current_tab = Prop.ENV
 
-
+# Window / App control
+func _on_BtnClose_pressed():
+	get_tree().quit()
