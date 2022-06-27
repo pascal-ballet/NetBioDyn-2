@@ -370,7 +370,7 @@ material/0 = SubResource( 5 )
 shape = SubResource( 4 )
 
 [node name="RigidBody2" type="RigidBody" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.99087, 0, -3.87657 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.37868, 0, -3.87657 )
 collision_layer = 0
 collision_mask = 0
 gravity_scale = 0.0
@@ -383,7 +383,7 @@ material/0 = SubResource( 6 )
 shape = SubResource( 4 )
 
 [node name="RigidBody3" type="RigidBody" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.99087, 0, -3.87657 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8272, 0, -3.87657 )
 collision_layer = 0
 collision_mask = 0
 gravity_scale = 0.0
