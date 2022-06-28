@@ -87,17 +87,21 @@ func _on_BtnDelAgent_pressed() -> void:
 
 # TREE of entities -----------------------------
 func _on_TreeAgents_item_selected() -> void:
-	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
-	tabs.current_tab = Prop.ENTITY
 	var entity_name:String = _treeAgents.get_selected().get_text(0)
 	var entity:Node = get_entity_from_GUI(entity_name)
-	_fill_properties_of_entity(entity)
-	
+	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	if entity is RigidBody:
+		tabs.current_tab = Prop.ENTITY
+		_fill_properties_of_agent(entity)
+	else:
+		var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")		if entity is Node:
+		tabs.current_tab = Prop.EMPTY
+			
 func get_entity_from_GUI(var name:String) -> Node:
 	var node_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
 	return node_entities.find_node(name) as Node
 
-func _fill_properties_of_entity(var entity:Node):
+func _fill_properties_of_agent(var entity:Node):
 	if entity is RigidBody:
 		# name
 		var box_name:LineEdit = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/LineEdit")
@@ -106,6 +110,9 @@ func _fill_properties_of_entity(var entity:Node):
 		var box_color:ColorPickerButton = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2/ColorPickerButton")
 		var mesh:MeshInstance = entity.get_child(0)
 		box_color.color = mesh.get_surface_material(0).albedo_color
+		# type
+		var opt_type:OptionButton = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp3/OptionButton")
+		opt_type.select(0)
 		
 # ENV of entities -----------------------------
 func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
