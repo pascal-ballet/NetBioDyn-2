@@ -50,26 +50,50 @@ grow_horizontal = 0
 size_flags_horizontal = 3
 alignment = 1
 
+[node name="Marge" type="ToolButton" parent="Toolbar"]
+margin_right = 457.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+disabled = true
+flat = false
+
 [node name="BtnPlay" type="ToolButton" parent="Toolbar"]
-margin_left = 473.0
-margin_right = 493.0
+margin_left = 461.0
+margin_right = 481.0
 margin_bottom = 22.0
 text = ">"
 flat = false
 
 [node name="BtnPause" type="ToolButton" parent="Toolbar"]
-margin_left = 497.0
-margin_right = 523.0
+margin_left = 485.0
+margin_right = 511.0
 margin_bottom = 22.0
 text = "||"
 flat = false
 
 [node name="BtnStop" type="ToolButton" parent="Toolbar"]
-margin_left = 527.0
-margin_right = 550.0
+margin_left = 515.0
+margin_right = 538.0
 margin_bottom = 22.0
 text = "O"
 flat = false
+
+[node name="Marge2" type="ToolButton" parent="Toolbar"]
+margin_left = 542.0
+margin_right = 1000.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+disabled = true
+flat = false
+
+[node name="BtnClose" type="ToolButton" parent="Toolbar"]
+margin_left = 1004.0
+margin_right = 1024.0
+margin_bottom = 22.0
+grow_horizontal = 0
+text = "X"
+flat = false
+align = 2
 
 [node name="HSeparator" type="HSeparator" parent="."]
 margin_top = 26.0
@@ -346,7 +370,7 @@ material/0 = SubResource( 5 )
 shape = SubResource( 4 )
 
 [node name="RigidBody2" type="RigidBody" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.99087, 0, -3.87657 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.37868, 0, -3.87657 )
 collision_layer = 0
 collision_mask = 0
 gravity_scale = 0.0
@@ -359,7 +383,7 @@ material/0 = SubResource( 6 )
 shape = SubResource( 4 )
 
 [node name="RigidBody3" type="RigidBody" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.99087, 0, -3.87657 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8272, 0, -3.87657 )
 collision_layer = 0
 collision_mask = 0
 gravity_scale = 0.0
@@ -1021,6 +1045,7 @@ margin_right = 20.0
 margin_bottom = 20.0
 items = [ "Agent", null, 0, false, false, 0, 0, null, "", false, "Taxon", null, 0, false, false, 1, 0, null, "", false ]
 
+[connection signal="pressed" from="Toolbar/BtnClose" to="." method="_on_BtnClose_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents/BtnAddAgent" to="." method="_on_ToolPlusAgent_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents/BtnDelAgent" to="." method="_on_BtnDelAgent_pressed"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/TreeAgents" to="." method="_on_TreeAgents_item_selected"]
