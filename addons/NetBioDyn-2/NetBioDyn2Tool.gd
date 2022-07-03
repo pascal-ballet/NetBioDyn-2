@@ -22,7 +22,6 @@ func _exit_tree() -> void:
 	if main_panel:
 		main_panel.queue_free()
 	remove_custom_type("NBD_Agent")
-	remove_custom_type("Agent")
 			
 func has_main_screen() -> bool:
 	return true
