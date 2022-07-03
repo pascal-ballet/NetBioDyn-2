@@ -7,30 +7,23 @@ var main_panel:VBoxContainer = null
 var treeAgents:Tree = null
 
 func _enter_tree() -> void:
-	print ("Enter Tree...")
+	# Instance a ScBioDyn2 scene
 	main_panel = ScNetBioDyn2.instance()
+	# Add the scene to the interface of Godot
 	get_editor_interface().get_editor_viewport().add_child(main_panel)
+	# Get the scene tree of NetBioDyn scene
 	treeAgents = main_panel.find_node("TreeAgents", true, true)
-	print("trouvé", treeAgents)
-	var agt:TreeItem = treeAgents.create_item()
-	agt.set_text(0, "Agents")
-	#treeAgents.set_hide_root(true)
-	var child1 = treeAgents.create_item(agt)
-	child1.set_text(0, "Child1")
-		#var child2 = treeAgents.create_item(agt)
-	#treeAgents.add_item("Agent 1", null, true)
-	#treeAgents.add_item("Agent 2", null, true)
-	var subchild1 = treeAgents.create_item(child1)
-	subchild1.set_text(0, "Subchild1")
-
-	#listAgents.rect_min_size = Vector2(500,0)
-	#listAgents.rect_min_size()
+	# create a new node type: Agent
+	add_custom_type("NBD_Agent", "Node", preload("res://addons/NetBioDyn-2/7-Engine/agent.gd"), preload("res://addons/NetBioDyn-2/7-Engine/agent.png"))
+	# Hide NetBioDyn from the main godot gui (must be done)
 	make_visible(false)
 
 func _exit_tree() -> void:
 	if main_panel:
 		main_panel.queue_free()
-		
+	remove_custom_type("NBD_Agent")
+	remove_custom_type("Agent")
+			
 func has_main_screen() -> bool:
 	return true
 	

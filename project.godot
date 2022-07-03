@@ -9,12 +9,18 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node",
+"class": "NBD_Agent",
+"language": "GDScript",
+"path": "res://addons/NetBioDyn-2/7-Engine/agent.gd"
+}, {
 "base": "Object",
 "class": "TypeFormattingLogic",
 "language": "GDScript",
 "path": "res://addons/metadata_inspector/TypeFormattingLogic.gd"
 } ]
 _global_script_class_icons={
+"NBD_Agent": "",
 "TypeFormattingLogic": ""
 }
 

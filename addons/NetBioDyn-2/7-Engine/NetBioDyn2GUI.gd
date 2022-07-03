@@ -94,8 +94,9 @@ func _on_TreeAgents_item_selected() -> void:
 		tabs.current_tab = Prop.ENTITY
 		_fill_properties_of_agent(entity)
 	else:
-		var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")		if entity is Node:
-		tabs.current_tab = Prop.EMPTY
+		tabs = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")	
+		if entity is Node:
+			tabs.current_tab = Prop.EMPTY
 			
 func get_entity_from_GUI(var name:String) -> Node:
 	var node_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")

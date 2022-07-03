@@ -27,7 +27,7 @@ script/source = "extends Node
 
 var env:Node
 func _ready():
-	env = get_node(\"../Envirnment\")
+	env = get_node(\"../Environment\")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -447,7 +447,6 @@ tabs_visible = false
 use_hidden_tabs_for_min_size = true
 
 [node name="Vide" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -471,6 +470,7 @@ text = "Aucun objets sélectionné."
 valign = 1
 
 [node name="Agent" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
