@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd" type="Script" id=1]
 [ext_resource path="res://bg_focus.tres" type="StyleBox" id=2]
@@ -7,19 +7,6 @@
 [sub_resource type="Environment" id=1]
 background_mode = 1
 background_color = Color( 1, 1, 1, 1 )
-
-[sub_resource type="SphereMesh" id=3]
-
-[sub_resource type="SpatialMaterial" id=5]
-albedo_color = Color( 0.266667, 0.588235, 0.447059, 1 )
-
-[sub_resource type="SphereShape" id=4]
-
-[sub_resource type="SpatialMaterial" id=6]
-albedo_color = Color( 0.282353, 0.396078, 1, 1 )
-
-[sub_resource type="SpatialMaterial" id=7]
-albedo_color = Color( 0.486275, 0.0588235, 0.368627, 1 )
 
 [sub_resource type="GDScript" id=2]
 script/source = "extends Node
@@ -356,52 +343,13 @@ transform = Transform( 1, 0, 0, 0, 0.903993, 0.427547, 0, -0.427547, 0.903993, 0
 
 [node name="Entities" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 
-[node name="Agent" type="RigidBody" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.560661, 0, -3.87657 )
-collision_layer = 0
-collision_mask = 0
-gravity_scale = 0.0
-
-[node name="MeshInstance" type="MeshInstance" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities/Agent"]
-mesh = SubResource( 3 )
-material/0 = SubResource( 5 )
-
-[node name="CollisionShape" type="CollisionShape" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities/Agent"]
-shape = SubResource( 4 )
-
-[node name="RigidBody2" type="RigidBody" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.37868, 0, -3.87657 )
-collision_layer = 0
-collision_mask = 0
-gravity_scale = 0.0
-
-[node name="MeshInstance" type="MeshInstance" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities/RigidBody2"]
-mesh = SubResource( 3 )
-material/0 = SubResource( 6 )
-
-[node name="CollisionShape" type="CollisionShape" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities/RigidBody2"]
-shape = SubResource( 4 )
-
-[node name="RigidBody3" type="RigidBody" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8272, 0, -3.87657 )
-collision_layer = 0
-collision_mask = 0
-gravity_scale = 0.0
-
-[node name="MeshInstance" type="MeshInstance" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities/RigidBody3"]
-mesh = SubResource( 3 )
-material/0 = SubResource( 7 )
-
-[node name="CollisionShape" type="CollisionShape" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities/RigidBody3"]
-shape = SubResource( 4 )
-
 [node name="Behaviors" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 script = SubResource( 2 )
 
 [node name="Environment" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 
 [node name="Virus16" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Environment" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.73289, 0, -3.90749 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.74736, 0, -3.90749 )
 gravity_scale = 0.0
 
 [node name="Groups" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
@@ -448,8 +396,10 @@ use_hidden_tabs_for_min_size = true
 [node name="Vide" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -8.0
-margin_bottom = -12.0
+margin_left = 4.0
+margin_top = 8.0
+margin_right = -4.0
+margin_bottom = -4.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
