@@ -121,13 +121,13 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				# Position of the mouse click
-				var camera = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Camera")
+				var camera = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Camera")
 				var from = camera.project_ray_origin(event.position)
 				var to = camera.project_ray_normal(event.position) * 100
 				var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
 				#print(cursorPos)
 				# Spawn the new entity
-				var n_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Environment")
+				var n_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Environment")
 				var entity:RigidBody  = load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
@@ -135,7 +135,7 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				# to be saved as scene, the owner is the simulation "root" node
 				#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
 				#   - see https://github.com/godotengine/godot-proposals/issues/390
-				entity.set_owner(get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"))
+				entity.set_owner(get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"))
 				pass
 
 
