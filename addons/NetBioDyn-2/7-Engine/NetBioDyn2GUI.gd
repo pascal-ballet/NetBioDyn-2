@@ -5,52 +5,31 @@
 extends Node
 
 var _pm:PopupMenu
-var _treeAgents:Tree 
+var _listAgents:ItemList 
 enum Prop {EMPTY, ENTITY, BEHAVIOR, GRID, ENV }
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Tree of entities
-	_treeAgents = find_node("TreeAgents", true, true)
-	_treeAgents.set_hide_root(false)
-	addTaxon("Racine")
+	_listAgents = find_node("ListAgents", true, true)
 	_pm = $PopupMenu
 	
 # **********************************************************
 # Entities
 # **********************************************************
 func addAgent(var name) -> void:	
-	# Selected node
-	var parent:TreeItem = _treeAgents.get_selected()
-	
 	# Create new Agent in GUI -----------------------------
-	var agt:TreeItem = _treeAgents.create_item(parent)
-	agt.set_text(0, name)
-	agt.set_meta("type","Agent")
+	var lst:ItemList = _listAgents
+	lst.add_item(name)
+	lst.set_item_metadata(lst.get_item_count()-1, "Agent") # type of the item
 	
 	# Create new Agent Type in 3D Scene -----------------------------
 	var rb:RigidBody = create_rigid_body_agent(name)
 	var node_entities:Node = get_node("%Entities")
 
-	#rb.set_translation(Vector3(0,5,0))
 	#  - add the Agent to the scene
 	node_entities.add_child(rb)
 	rb.set_owner(get_node("%Simulator"))
-
-func addTaxon(var name) -> void:
-	# Selected node
-	var parent:TreeItem = _treeAgents.get_selected()
-	
-	# Create new Taxon in GUI
-	var txn:TreeItem = _treeAgents.create_item(parent)
-	txn.set_text(0, name)
-	txn.set_meta("type","Taxon")
-	
-	#var col_txt:Color = VisualServer.get_default_clear_color() #txn.get_custom_color(0)
-	#var col_bg:Color = txn.get_custom_bg_color(0)
-	txn.set_custom_bg_color	(0, Color(0.1, 0.1, 0.1, 1.0))
-	txn.set_custom_color		(0, Color(0.9, 0.9, 0.9, 1.0))
-	
 	
 func create_rigid_body_agent(var name:String) -> RigidBody:
 	#  - material
@@ -83,43 +62,34 @@ func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
 	
 # Add entity PopUp Menu -----------------------------
 func _on_ToolPlusAgent_pressed() -> void:
-	var btn_add = get_node("%BtnAddAgent")
-	_pm.popup(Rect2(btn_add.get_position().x, btn_add.get_position().y, _pm.rect_size.x, _pm.rect_size.y))
+	var name:String = key_name_create("Agent-")
+	addAgent(name)
 
-func _on_PopupMenu_index_pressed(index: int) -> void:
-	if index == 0: # Create Agent
-		var name:String = key_name_create("Agent-")
-		addAgent(name)
-	if index == 1: # Create Taxon
-		addTaxon("Taxon-")
-	pass # Replace with function body.
 
 # Remove entity -----------------------------
 func _on_BtnDelAgent_pressed() -> void:
-	# Selected item
-	var selected:TreeItem = _treeAgents.get_selected()
-	if selected == null:
-		return
-	var parent = selected.get_parent()
-	if parent == null:
-		return
-	parent.remove_child(selected)
-	selected.free()
+	var lst:ItemList = _listAgents
+	var sel:PoolIntArray = lst.get_selected_items()
+	if sel.size() > 0:
+		lst.remove_item(sel[0])
 
 # TREE of entities -----------------------------
 var _selected_name:String = ""
-func _on_TreeAgents_item_selected() -> void:
-	var entity_name:String = _treeAgents.get_selected().get_text(0)
-	var entity:Node = get_entity_from_GUI(entity_name)
-	var tabs:TabContainer = get_node("%TabContainer")
-	if entity is RigidBody:
-		tabs.current_tab = Prop.ENTITY
-		_fill_properties_of_agent(entity)
-		_selected_name = entity_name
-	else:
-		tabs = get_node("%TabContainer")	
-		if entity is Node:
-			tabs.current_tab = Prop.EMPTY
+func _on_ListAgents_item_selected(index: int) -> void:
+	var sel:PoolIntArray = _listAgents.get_selected_items()
+	if sel.size() > 0:
+		#_listAgents.remove_item(sel[0])
+		var entity_name:String = _listAgents.get_item_text(sel[0])
+		var entity:Node = get_entity_from_GUI(entity_name)
+		var tabs:TabContainer = get_node("%TabContainer")
+		if entity is RigidBody:
+			tabs.current_tab = Prop.ENTITY
+			_fill_properties_of_agent(entity)
+			_selected_name = entity_name
+		else:
+			tabs = get_node("%TabContainer")	
+			if entity is Node:
+				tabs.current_tab = Prop.EMPTY
 			
 func get_entity_from_GUI(var name:String) -> Node:
 	var node_entities:Node = get_node("%Entities")
@@ -153,7 +123,7 @@ func _on_AgentName_focus_exited() -> void:
 	if new_name == _selected_name:
 		return
 	if key_name_exists(new_name) == false: # The new name doesn't exists => can be applied
-		_treeAgents.get_selected().set_text(0, new_name) # change in 2D tree
+		_listAgents.get_selected().set_text(0, new_name) # change in 2D tree
 		var rb:RigidBody = find_node(_selected_name) # change in ENV
 		rb.name = new_name
 		_selected_name = new_name
@@ -265,5 +235,4 @@ func key_name_exists(var key_name:String) -> bool:
 			return false
 		else:
 			return true
-
 
