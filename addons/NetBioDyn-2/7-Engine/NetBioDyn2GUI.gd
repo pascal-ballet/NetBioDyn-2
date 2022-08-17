@@ -27,11 +27,12 @@ func addAgent(var name) -> void:
 	var agt:TreeItem = _treeAgents.create_item(parent)
 	agt.set_text(0, name)
 	agt.set_meta("type","Agent")
-	# Create new Agent in Scene -----------------------------
-	var node_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
+	
+	# Create new Agent in 3D Scene -----------------------------
+	var node_entities:Node = get_node("%Entities")
 	#  - material
 	var mat:SpatialMaterial = SpatialMaterial.new()
-	mat.albedo_color = Color(1.0, 0.4, 0.2, 1.0)
+	mat.albedo_color = Color(1.0, 0.0, 0.0, 1.0)
 	#  - mesh
 	var mh:MeshInstance = MeshInstance.new()
 	mh.mesh = SphereMesh.new()
@@ -41,6 +42,7 @@ func addAgent(var name) -> void:
 	col.shape = SphereShape.new()
 	#  - rigidbody
 	var rb:RigidBody = RigidBody.new()
+	rb.name = name
 	rb.set_gravity_scale(0)
 	rb.set_collision_layer_bit(0,false)
 	rb.set_collision_mask_bit(0,false)
@@ -50,7 +52,7 @@ func addAgent(var name) -> void:
 	#rb.set_translation(Vector3(0,5,0))
 	#  - add the Agent to the scene
 	node_entities.add_child(rb)
-	rb.set_owner(get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"))
+	rb.set_owner(get_node("%Simulator"))
 
 func addTaxon(var name) -> void:
 	# Selected node
@@ -63,7 +65,7 @@ func addTaxon(var name) -> void:
 	
 # Add entity PopUp Menu -----------------------------
 func _on_ToolPlusAgent_pressed() -> void:
-	var btn_add = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/HBoxAddAgents/BtnAddAgent")
+	var btn_add = get_node("%BtnAddAgent")
 	_pm.popup(Rect2(btn_add.get_position().x, btn_add.get_position().y, _pm.rect_size.x, _pm.rect_size.y))
 
 func _on_PopupMenu_index_pressed(index: int) -> void:
@@ -89,30 +91,30 @@ func _on_BtnDelAgent_pressed() -> void:
 func _on_TreeAgents_item_selected() -> void:
 	var entity_name:String = _treeAgents.get_selected().get_text(0)
 	var entity:Node = get_entity_from_GUI(entity_name)
-	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	var tabs:TabContainer = get_node("%TabContainer")
 	if entity is RigidBody:
 		tabs.current_tab = Prop.ENTITY
 		_fill_properties_of_agent(entity)
 	else:
-		tabs = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")	
+		tabs = get_node("%TabContainer")	
 		if entity is Node:
 			tabs.current_tab = Prop.EMPTY
 			
 func get_entity_from_GUI(var name:String) -> Node:
-	var node_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Entities")
+	var node_entities:Node = get_node("%Entities")
 	return node_entities.find_node(name) as Node
 
 func _fill_properties_of_agent(var entity:Node):
 	if entity is RigidBody:
 		# name
-		var box_name:LineEdit = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/LineEdit")
+		var box_name:LineEdit = get_node("%AgentName")
 		box_name.text = entity.name
 		# color
-		var box_color:ColorPickerButton = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2/ColorPickerButton")
+		var box_color:ColorPickerButton = get_node("%ColorAgent")
 		var mesh:MeshInstance = entity.get_child(0)
-		box_color.color = mesh.get_surface_material(0).albedo_color
-		# type
-		var opt_type:OptionButton = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp3/OptionButton")
+		#box_color.color = mesh.get_surface_material(0).albedo_color
+		box_color.color = mesh.material_override.albedo_color		# type
+		var opt_type:OptionButton = get_node("%OptionAgentType")
 		opt_type.select(0)
 		
 # ENV of entities -----------------------------
@@ -121,13 +123,13 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				# Position of the mouse click
-				var camera = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Camera")
+				var camera = get_node("%Camera")
 				var from = camera.project_ray_origin(event.position)
 				var to = camera.project_ray_normal(event.position) * 100
 				var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
 				#print(cursorPos)
 				# Spawn the new entity
-				var n_entities:Node = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator/Environment")
+				var n_entities:Node = get_node("%Environment")
 				var entity:RigidBody  = load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
@@ -135,7 +137,7 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				# to be saved as scene, the owner is the simulation "root" node
 				#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
 				#   - see https://github.com/godotengine/godot-proposals/issues/390
-				entity.set_owner(get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"))
+				entity.set_owner(get_node("%Simulator"))
 				pass
 
 
@@ -143,29 +145,29 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 # Behaviors
 # *********
 func _on_BtnAddBehav_pressed() -> void:
-	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListBehav")
+	var lst:ItemList = get_node("%ListBehav")
 	lst.add_item("Comportement")
 	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
 
 func _on_BtnDelBehav_pressed() -> void:
-	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListBehav")
+	var lst:ItemList = get_node("%ListBehav")
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
 
 func _on_ListBehav_item_selected(index: int) -> void:
-	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.BEHAVIOR
 		
 # Groups
 # *********
 func _on_BtnAddGp_pressed() -> void:
-	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/ListGp")
+	var lst:ItemList = get_node("%ListGp")
 	lst.add_item("Groupe")
 	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
 
 func _on_BtnDelGp_pressed() -> void:
-	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/ListGp")
+	var lst:ItemList = get_node("%ListGp")
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
@@ -173,24 +175,24 @@ func _on_BtnDelGp_pressed() -> void:
 # Grids
 # *********
 func _on_BtnAddGrid_pressed() -> void:
-	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListGrids")
+	var lst:ItemList = get_node("%ListGrids")
 	lst.add_item("Grille")
 	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
 
 func _on_BtnDelGrid_pressed() -> void:
-	var lst:ItemList = get_node("VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/ListGrids")
+	var lst:ItemList = get_node("%ListGrids")
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
 
 func _on_ListGrids_item_selected(index: int) -> void:
-	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GRID
 	
 # Env
 # *********
 func _on_Button_pressed() -> void:
-	var tabs:TabContainer = get_node("VBoxFrame/HBoxWindows/HSplitContainer/TabContainer")
+	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.ENV
 
 # Window / App control
