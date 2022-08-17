@@ -4,7 +4,6 @@
 
 extends Node
 
-var _pm:PopupMenu
 var _listAgents:ItemList 
 enum Prop {EMPTY, ENTITY, BEHAVIOR, GRID, ENV }
 
@@ -12,7 +11,6 @@ enum Prop {EMPTY, ENTITY, BEHAVIOR, GRID, ENV }
 func _ready() -> void:
 	# Tree of entities
 	_listAgents = find_node("ListAgents", true, true)
-	_pm = $PopupMenu
 	
 # **********************************************************
 # Entities
@@ -25,6 +23,7 @@ func addAgent(var name) -> void:
 	
 	# Create new Agent Type in 3D Scene -----------------------------
 	var rb:RigidBody = create_rigid_body_agent(name)
+	rb.visible = false
 	var node_entities:Node = get_node("%Entities")
 
 	#  - add the Agent to the scene
@@ -60,7 +59,7 @@ func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
 	return rb0.duplicate() as RigidBody 	# warning : parameters are not cloned (same ref)
 										# it's ok now, but could be wrong for some param
 	
-# Add entity PopUp Menu -----------------------------
+# Add Agent -----------------------------
 func _on_ToolPlusAgent_pressed() -> void:
 	var name:String = key_name_create("Agent-")
 	addAgent(name)
@@ -73,7 +72,7 @@ func _on_BtnDelAgent_pressed() -> void:
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
 
-# TREE of entities -----------------------------
+# List of entities -----------------------------
 var _selected_name:String = ""
 func _on_ListAgents_item_selected(index: int) -> void:
 	var sel:PoolIntArray = _listAgents.get_selected_items()
@@ -123,7 +122,12 @@ func _on_AgentName_focus_exited() -> void:
 	if new_name == _selected_name:
 		return
 	if key_name_exists(new_name) == false: # The new name doesn't exists => can be applied
-		_listAgents.get_selected().set_text(0, new_name) # change in 2D tree
+		var sel:PoolIntArray = _listAgents.get_selected_items()
+		if sel.size() == 0:
+			return
+		var pos = sel[0] # pos of agent in list
+		_listAgents.set_item_text(pos, new_name) # set new name
+		# 3D ENV	
 		var rb:RigidBody = find_node(_selected_name) # change in ENV
 		rb.name = new_name
 		_selected_name = new_name
@@ -152,6 +156,7 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				var n_entities:Node = get_node("%Environment")
 				var rb:RigidBody = find_node(_selected_name)
 				var entity:RigidBody  = clone_rigid_body_agent(rb) #load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
+				entity.visible = true
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
 				entity.global_transform.origin = cursorPos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
