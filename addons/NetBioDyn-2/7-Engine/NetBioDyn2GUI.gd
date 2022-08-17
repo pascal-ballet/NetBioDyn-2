@@ -37,6 +37,21 @@ func addAgent(var name) -> void:
 	node_entities.add_child(rb)
 	rb.set_owner(get_node("%Simulator"))
 
+func addTaxon(var name) -> void:
+	# Selected node
+	var parent:TreeItem = _treeAgents.get_selected()
+	
+	# Create new Taxon in GUI
+	var txn:TreeItem = _treeAgents.create_item(parent)
+	txn.set_text(0, name)
+	txn.set_meta("type","Taxon")
+	
+	#var col_txt:Color = VisualServer.get_default_clear_color() #txn.get_custom_color(0)
+	#var col_bg:Color = txn.get_custom_bg_color(0)
+	txn.set_custom_bg_color	(0, Color(0.1, 0.1, 0.1, 1.0))
+	txn.set_custom_color		(0, Color(0.9, 0.9, 0.9, 1.0))
+	
+	
 func create_rigid_body_agent(var name:String) -> RigidBody:
 	#  - material
 	var mat:SpatialMaterial = SpatialMaterial.new()
@@ -65,15 +80,6 @@ func create_rigid_body_agent(var name:String) -> RigidBody:
 func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
 	return rb0.duplicate() as RigidBody 	# warning : parameters are not cloned (same ref)
 										# it's ok now, but could be wrong for some param
-
-func addTaxon(var name) -> void:
-	# Selected node
-	var parent:TreeItem = _treeAgents.get_selected()
-	
-	# Create new Agent
-	var txn:TreeItem = _treeAgents.create_item(parent)
-	txn.set_text(0, name)
-	txn.set_meta("type","Taxon")
 	
 # Add entity PopUp Menu -----------------------------
 func _on_ToolPlusAgent_pressed() -> void:
@@ -128,8 +134,8 @@ func _fill_properties_of_agent(var entity:Node):
 		# color
 		var box_color:ColorPickerButton = get_node("%ColorAgent")
 		var mesh:MeshInstance = entity.get_child(0)
-		#box_color.color = mesh.get_surface_material(0).albedo_color
-		box_color.color = mesh.material_override.albedo_color		# type
+		box_color.color = mesh.material_override.albedo_color
+		# type
 		var opt_type:OptionButton = get_node("%OptionAgentType")
 		opt_type.select(0)
 		
