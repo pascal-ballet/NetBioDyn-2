@@ -63,36 +63,8 @@ func create_rigid_body_agent(var name:String) -> RigidBody:
 	return rb
 
 func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
-	return rb0.duplicate() as RigidBody
-	
-#
-#	#  - material
-#	var mat1:SpatialMaterial = SpatialMaterial.new()
-#	var mesh0:MeshInstance = rb0.get_child(0)
-#	var mat0:SpatialMaterial = mesh0.material_override
-#	mat1.albedo_color = mat0.albedo_color
-#
-#	#  - mesh
-#	var mh:MeshInstance = MeshInstance.new()
-#	mh.mesh = SphereMesh.new()
-#	mh.set_material_override(mat)
-#	#  - collision
-#	var col:CollisionShape = CollisionShape.new()
-#	col.shape = SphereShape.new()
-#	#  - rigidbody
-#	var rb:RigidBody = RigidBody.new()
-#	rb.name = name
-#	rb.set_gravity_scale(0)
-#	rb.set_collision_layer_bit(0,true)
-#	rb.set_collision_mask_bit(0,true)
-#	rb.contacts_reported = 1
-#	rb.contact_monitor = true
-#
-#	rb.add_child(mh)
-#	rb.add_child(col)
-#
-#	return rb
-
+	return rb0.duplicate() as RigidBody 	# warning : parameters are not cloned (same ref)
+										# it's ok now, but could be wrong for some param
 
 func addTaxon(var name) -> void:
 	# Selected node
@@ -110,7 +82,7 @@ func _on_ToolPlusAgent_pressed() -> void:
 
 func _on_PopupMenu_index_pressed(index: int) -> void:
 	if index == 0: # Create Agent
-		var name:String = create_key_name("Agent-")
+		var name:String = key_name_create("Agent-")
 		addAgent(name)
 	if index == 1: # Create Taxon
 		addTaxon("Taxon-")
@@ -168,6 +140,23 @@ func _on_ColorAgent_color_changed(color: Color) -> void:
 	var msh:MeshInstance = rb.get_child(0)
 	var mat:SpatialMaterial = msh.material_override
 	mat.albedo_color = color
+# Agent Name
+func _on_AgentName_focus_exited() -> void:
+	var line_edit:LineEdit = get_node("%AgentName")
+	var new_name:String = line_edit.text
+	if new_name == _selected_name:
+		return
+	if key_name_exists(new_name) == false: # The new name doesn't exists => can be applied
+		_treeAgents.get_selected().set_text(0, new_name) # change in 2D tree
+		var rb:RigidBody = find_node(_selected_name) # change in ENV
+		rb.name = new_name
+		_selected_name = new_name
+	else: # the new name EXISTS => cannot be changed
+		OS.alert("Ce nom est deja attribue", "Information")
+		line_edit.text = _selected_name
+		
+func _on_AgentName_text_entered(new_text: String) -> void:
+	_on_AgentName_focus_exited()
 
 		
 # ENVIRONMENT  -----------------------------
@@ -175,6 +164,8 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
+				if _selected_name == "":
+					return
 				# Position of the mouse click
 				var camera = get_node("%Camera")
 				var from = camera.project_ray_origin(event.position)
@@ -253,7 +244,7 @@ func _on_BtnClose_pressed():
 	get_tree().quit()
 
 # Utilities
-func create_key_name(var prefix:String) -> String:
+func key_name_create(var prefix:String) -> String:
 	var simu:Node = get_node("%Simulator")
 	for n in 999999:
 		var key_name:String = prefix + String(n)
@@ -262,3 +253,11 @@ func create_key_name(var prefix:String) -> String:
 			return key_name
 	return ""
 	
+func key_name_exists(var key_name:String) -> bool:
+		var node:Node = find_node(key_name)
+		if node == null:
+			return false
+		else:
+			return true
+
+
