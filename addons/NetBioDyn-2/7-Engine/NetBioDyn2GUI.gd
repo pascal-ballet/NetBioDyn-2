@@ -28,8 +28,16 @@ func addAgent(var name) -> void:
 	agt.set_text(0, name)
 	agt.set_meta("type","Agent")
 	
-	# Create new Agent in 3D Scene -----------------------------
+	# Create new Agent Type in 3D Scene -----------------------------
+	var rb:RigidBody = create_rigid_body_agent(name)
 	var node_entities:Node = get_node("%Entities")
+
+	#rb.set_translation(Vector3(0,5,0))
+	#  - add the Agent to the scene
+	node_entities.add_child(rb)
+	rb.set_owner(get_node("%Simulator"))
+
+func create_rigid_body_agent(var name:String) -> RigidBody:
 	#  - material
 	var mat:SpatialMaterial = SpatialMaterial.new()
 	mat.albedo_color = Color(1.0, 0.0, 0.0, 1.0)
@@ -44,15 +52,15 @@ func addAgent(var name) -> void:
 	var rb:RigidBody = RigidBody.new()
 	rb.name = name
 	rb.set_gravity_scale(0)
-	rb.set_collision_layer_bit(0,false)
-	rb.set_collision_mask_bit(0,false)
+	rb.set_collision_layer_bit(0,true)
+	rb.set_collision_mask_bit(0,true)
+	rb.contacts_reported = 1
+	rb.contact_monitor = true
 	
 	rb.add_child(mh)
 	rb.add_child(col)
-	#rb.set_translation(Vector3(0,5,0))
-	#  - add the Agent to the scene
-	node_entities.add_child(rb)
-	rb.set_owner(get_node("%Simulator"))
+	
+	return rb
 
 func addTaxon(var name) -> void:
 	# Selected node
@@ -69,10 +77,11 @@ func _on_ToolPlusAgent_pressed() -> void:
 	_pm.popup(Rect2(btn_add.get_position().x, btn_add.get_position().y, _pm.rect_size.x, _pm.rect_size.y))
 
 func _on_PopupMenu_index_pressed(index: int) -> void:
-	if index == 0:
-		addAgent("Agent")
-	if index == 1:
-		addTaxon("Taxon")
+	if index == 0: # Create Agent
+		var name:String = create_key_name("Agent-")
+		addAgent(name)
+	if index == 1: # Create Taxon
+		addTaxon("Taxon-")
 	pass # Replace with function body.
 
 # Remove entity -----------------------------
@@ -88,6 +97,7 @@ func _on_BtnDelAgent_pressed() -> void:
 	selected.free()
 
 # TREE of entities -----------------------------
+var _selected_name:String = ""
 func _on_TreeAgents_item_selected() -> void:
 	var entity_name:String = _treeAgents.get_selected().get_text(0)
 	var entity:Node = get_entity_from_GUI(entity_name)
@@ -95,6 +105,7 @@ func _on_TreeAgents_item_selected() -> void:
 	if entity is RigidBody:
 		tabs.current_tab = Prop.ENTITY
 		_fill_properties_of_agent(entity)
+		_selected_name = entity_name
 	else:
 		tabs = get_node("%TabContainer")	
 		if entity is Node:
@@ -104,6 +115,7 @@ func get_entity_from_GUI(var name:String) -> Node:
 	var node_entities:Node = get_node("%Entities")
 	return node_entities.find_node(name) as Node
 
+# Agent => Properties ----------------------------
 func _fill_properties_of_agent(var entity:Node):
 	if entity is RigidBody:
 		# name
@@ -117,7 +129,16 @@ func _fill_properties_of_agent(var entity:Node):
 		var opt_type:OptionButton = get_node("%OptionAgentType")
 		opt_type.select(0)
 		
-# ENV of entities -----------------------------
+# Properties => Agent -----------------------------
+# Agent Color
+func _on_ColorAgent_color_changed(color: Color) -> void:
+	var rb:RigidBody = find_node(_selected_name)
+	var msh:MeshInstance = rb.get_child(0)
+	var mat:SpatialMaterial = msh.material_override
+	mat.albedo_color = color
+
+		
+# ENVIRONMENT  -----------------------------
 func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
@@ -130,7 +151,7 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				#print(cursorPos)
 				# Spawn the new entity
 				var n_entities:Node = get_node("%Environment")
-				var entity:RigidBody  = load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
+				var entity:RigidBody  = create_rigid_body_agent("TOTO") #load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
 				entity.global_transform.origin = cursorPos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
@@ -198,3 +219,14 @@ func _on_Button_pressed() -> void:
 # Window / App control
 func _on_BtnClose_pressed():
 	get_tree().quit()
+
+# Utilities
+func create_key_name(var prefix:String) -> String:
+	var simu:Node = get_node("%Simulator")
+	for n in 999999:
+		var key_name:String = prefix + String(n)
+		var node:Node = find_node(key_name)
+		if node == null:
+			return key_name
+	return ""
+	
