@@ -62,6 +62,38 @@ func create_rigid_body_agent(var name:String) -> RigidBody:
 	
 	return rb
 
+func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
+	return rb0.duplicate() as RigidBody
+	
+#
+#	#  - material
+#	var mat1:SpatialMaterial = SpatialMaterial.new()
+#	var mesh0:MeshInstance = rb0.get_child(0)
+#	var mat0:SpatialMaterial = mesh0.material_override
+#	mat1.albedo_color = mat0.albedo_color
+#
+#	#  - mesh
+#	var mh:MeshInstance = MeshInstance.new()
+#	mh.mesh = SphereMesh.new()
+#	mh.set_material_override(mat)
+#	#  - collision
+#	var col:CollisionShape = CollisionShape.new()
+#	col.shape = SphereShape.new()
+#	#  - rigidbody
+#	var rb:RigidBody = RigidBody.new()
+#	rb.name = name
+#	rb.set_gravity_scale(0)
+#	rb.set_collision_layer_bit(0,true)
+#	rb.set_collision_mask_bit(0,true)
+#	rb.contacts_reported = 1
+#	rb.contact_monitor = true
+#
+#	rb.add_child(mh)
+#	rb.add_child(col)
+#
+#	return rb
+
+
 func addTaxon(var name) -> void:
 	# Selected node
 	var parent:TreeItem = _treeAgents.get_selected()
@@ -151,7 +183,8 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				#print(cursorPos)
 				# Spawn the new entity
 				var n_entities:Node = get_node("%Environment")
-				var entity:RigidBody  = create_rigid_body_agent("TOTO") #load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
+				var rb:RigidBody = find_node(_selected_name)
+				var entity:RigidBody  = clone_rigid_body_agent(rb) #load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
 				entity.global_transform.origin = cursorPos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
@@ -160,7 +193,6 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				#   - see https://github.com/godotengine/godot-proposals/issues/390
 				entity.set_owner(get_node("%Simulator"))
 				pass
-
 
 
 # Behaviors
