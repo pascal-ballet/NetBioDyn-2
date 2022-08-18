@@ -567,19 +567,25 @@ margin_bottom = 122.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
-margin_right = 144.0
+margin_right = 123.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Paramètres"
 
 [node name="ButtonAddParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
-margin_left = 148.0
-margin_right = 292.0
+margin_left = 127.0
+margin_right = 251.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "+"
+
+[node name="Btn_test" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
+margin_left = 255.0
+margin_right = 292.0
+margin_bottom = 20.0
+text = "test"
 
 [node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 126.0
@@ -1066,5 +1072,6 @@ items = [ "Agent", null, 0, false, false, 0, 0, null, "", false, "Taxon", null, 
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/AgentName" to="." method="_on_AgentName_text_entered"]
 [connection signal="color_changed" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2/ColorAgent" to="." method="_on_ColorAgent_color_changed"]
 [connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5/ButtonAddParam" to="." method="_on_ButtonAddParam_button_down"]
+[connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5/Btn_test" to="." method="_on_Btn_test_button_down"]
 [connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam/Button" to="." method="_on_Button_button_down"]
 [connection signal="index_pressed" from="PopupMenu" to="." method="_on_PopupMenu_index_pressed"]

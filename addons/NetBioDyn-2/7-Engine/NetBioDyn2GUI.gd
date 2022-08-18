@@ -13,7 +13,7 @@ func _ready() -> void:
 	_listAgents = find_node("ListAgents", true, true)
 	
 # **********************************************************
-# Entities
+#                         AGENTS                           *
 # **********************************************************
 func addAgent(var name) -> void:	
 	# Create new Agent in GUI -----------------------------
@@ -57,7 +57,7 @@ func create_rigid_body_agent(var name:String) -> RigidBody:
 
 func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
 	return rb0.duplicate() as RigidBody 	# warning : parameters are not cloned (same ref)
-										# it's ok now, but could be wrong for some param
+										# it's ok now, but could be wrong for some param by ref
 	
 # Add Agent -----------------------------
 func _on_ToolPlusAgent_pressed() -> void:
@@ -65,7 +65,7 @@ func _on_ToolPlusAgent_pressed() -> void:
 	addAgent(name)
 
 
-# Remove entity -----------------------------
+# Remove Agent -----------------------------
 func _on_BtnDelAgent_pressed() -> void:
 	var lst:ItemList = _listAgents
 	var sel:PoolIntArray = lst.get_selected_items()
@@ -109,13 +109,13 @@ func _fill_properties_of_agent(var entity:Node):
 		opt_type.select(0)
 		
 # Properties => Agent -----------------------------
-# Agent Color
+# Agent COLOR
 func _on_ColorAgent_color_changed(color: Color) -> void:
 	var rb:RigidBody = find_node(_selected_name)
 	var msh:MeshInstance = rb.get_child(0)
 	var mat:SpatialMaterial = msh.material_override
 	mat.albedo_color = color
-# Agent Name
+# Agent NAME
 func _on_AgentName_focus_exited() -> void:
 	var line_edit:LineEdit = get_node("%AgentName")
 	var new_name:String = line_edit.text
@@ -138,8 +138,67 @@ func _on_AgentName_focus_exited() -> void:
 func _on_AgentName_text_entered(new_text: String) -> void:
 	_on_AgentName_focus_exited()
 
-		
-# ENVIRONMENT  -----------------------------
+# Agent PARAMETERS
+func _on_ButtonAddParam_button_down() -> void:
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	var hbox_line :	HBoxContainer = get_node("%HBoxLineParam")
+	var new_line: 	HBoxContainer = hbox_line.duplicate()
+	new_line.visible = true
+	vbox_param.add_child(new_line)
+
+func _on_Button_button_down() -> void:
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	for i in vbox_param.get_child_count():
+		var line:HBoxContainer = vbox_param.get_child(i)
+		var btn_del:Button = line.get_child(3)
+		if btn_del.has_focus():
+			vbox_param.remove_child(line)
+			break
+
+func agent_param_to_meta()->void:
+	var rb:RigidBody = find_node(_selected_name)
+	# Clear Meta
+	rb.get_meta_list().empty()
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	# Fill Meta
+	for i in vbox_param.get_child_count()-1:
+		var line:HBoxContainer = vbox_param.get_child(i+1)
+		var param_name :String  	= line.get_child(0).get_text()
+		var param_value			= line.get_child(2).get_text()
+		rb.set_meta(param_name, param_value)
+		#printerr("param => meta")
+		#printerr(param_name)
+		#printerr(param_value)
+
+func agent_meta_to_param()->void:
+	var rb:RigidBody = find_node(_selected_name)
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	# Clear Param VBox
+	for i in vbox_param.get_child_count()-1:
+		var line:HBoxContainer = vbox_param.get_child(1)
+		vbox_param.remove_child(line)
+		line.queue_free()
+	# Fill Param VBox
+	for m in rb.get_meta_list().size():
+		var meta_name :String  	= rb.get_meta_list()[m]
+		var meta_value			= rb.get_meta(meta_name)
+		#printerr("meta => param")
+		#printerr(meta_name)
+		#printerr(meta_value)
+		_on_ButtonAddParam_button_down()
+		var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
+		line.get_child(0).set_text(meta_name)
+		line.get_child(2).set_text(meta_value)
+	
+func _on_Btn_test_button_down() -> void:
+	agent_param_to_meta()
+	agent_meta_to_param()
+
+# ************************************************************
+#                          ENVIRONMENT                       *
+# ************************************************************
+
+# On Mouse Click -----------------------------
 func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
@@ -166,9 +225,14 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				entity.set_owner(get_node("%Simulator"))
 				pass
 
-
-# Behaviors
-# *********
+# Show relevant property TAB ------------------------------
+func _on_Button_pressed() -> void:
+	var tabs:TabContainer = get_node("%TabContainer")
+	tabs.current_tab = Prop.ENV
+	
+# ************************************************************
+#                          Behaviors                         *
+# ************************************************************
 func _on_BtnAddBehav_pressed() -> void:
 	var lst:ItemList = get_node("%ListBehav")
 	lst.add_item("Comportement")
@@ -184,8 +248,9 @@ func _on_ListBehav_item_selected(index: int) -> void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.BEHAVIOR
 		
-# Groups
-# *********
+# ************************************************************
+#                           Groups                           *
+# ************************************************************
 func _on_BtnAddGp_pressed() -> void:
 	var lst:ItemList = get_node("%ListGp")
 	lst.add_item("Groupe")
@@ -196,9 +261,9 @@ func _on_BtnDelGp_pressed() -> void:
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
-
-# Grids
-# *********
+# ************************************************************
+#                              Grids                         *
+# ************************************************************
 func _on_BtnAddGrid_pressed() -> void:
 	var lst:ItemList = get_node("%ListGrids")
 	lst.add_item("Grille")
@@ -214,17 +279,13 @@ func _on_ListGrids_item_selected(index: int) -> void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GRID
 	
-# Env
-# *********
-func _on_Button_pressed() -> void:
-	var tabs:TabContainer = get_node("%TabContainer")
-	tabs.current_tab = Prop.ENV
 
-# Window / App control
-func _on_BtnClose_pressed():
-	get_tree().quit()
 
-# Utilities
+# ************************************************************
+#                           Utilities                        *
+# ************************************************************
+
+# Key name Generator --------------------------
 func key_name_create(var prefix:String) -> String:
 	var simu:Node = get_node("%Simulator")
 	for n in 999999:
@@ -241,23 +302,6 @@ func key_name_exists(var key_name:String) -> bool:
 		else:
 			return true
 
-
-# Agent PARAMETERS
-
-func _on_ButtonAddParam_button_down() -> void:
-	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
-	var hbox_line :	HBoxContainer = get_node("%HBoxLineParam")
-	var new_line: 	HBoxContainer = hbox_line.duplicate()
-	new_line.visible = true
-	vbox_param.add_child(new_line)
-
-
-func _on_Button_button_down() -> void:
-	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
-	for i in vbox_param.get_child_count():
-		var line:HBoxContainer = vbox_param.get_child(i)
-		var btn_del:Button = line.get_child(3)
-		if btn_del.has_focus():
-			vbox_param.remove_child(line)
-			break
-
+# Window / App control -------------------------
+func _on_BtnClose_pressed():
+	get_tree().quit()
