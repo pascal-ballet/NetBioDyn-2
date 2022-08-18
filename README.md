@@ -1,7 +1,7 @@
 NetBioDyn-2
 ==========
 
-NetBioDyn-2 is an asset for Godot 3.5 allowing the simulation of multicellular systems.
+NetBioDyn-2 is an application made in Godot 3.5 allowing the simulation of multicellular systems.
 
 INSTALL
 -------
