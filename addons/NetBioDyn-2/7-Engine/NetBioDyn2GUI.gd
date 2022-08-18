@@ -241,3 +241,23 @@ func key_name_exists(var key_name:String) -> bool:
 		else:
 			return true
 
+
+# Agent PARAMETERS
+
+func _on_ButtonAddParam_button_down() -> void:
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	var hbox_line :	HBoxContainer = get_node("%HBoxLineParam")
+	var new_line: 	HBoxContainer = hbox_line.duplicate()
+	new_line.visible = true
+	vbox_param.add_child(new_line)
+
+
+func _on_Button_button_down() -> void:
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	for i in vbox_param.get_child_count():
+		var line:HBoxContainer = vbox_param.get_child(i)
+		var btn_del:Button = line.get_child(3)
+		if btn_del.has_focus():
+			vbox_param.remove_child(line)
+			break
+

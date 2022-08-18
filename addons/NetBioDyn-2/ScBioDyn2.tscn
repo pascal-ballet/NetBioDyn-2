@@ -555,85 +555,92 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 color = Color( 0.4, 0.498039, 1, 1 )
 
-[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HSeparator" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 94.0
 margin_right = 292.0
-margin_bottom = 313.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4"]
-margin_right = 121.0
-margin_bottom = 219.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "Groupes"
-
-[node name="ButtonAddGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4"]
-margin_left = 125.0
-margin_right = 145.0
-margin_bottom = 20.0
-size_flags_vertical = 0
-text = "+"
-
-[node name="ButtonDelGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4"]
-margin_left = 149.0
-margin_right = 166.0
-margin_bottom = 20.0
-size_flags_vertical = 0
-text = "-"
-
-[node name="ItemList" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4"]
-margin_left = 170.0
-margin_right = 292.0
-margin_bottom = 219.0
-hint_tooltip = "Un agent ou un Taxon peut appartenir à différents Groupes sur lesquels agissent les Comportements."
-size_flags_horizontal = 3
-size_flags_vertical = 3
-items = [ "Groupe 1", null, false, "Gp 2", null, false, "Gp 3", null, false, "Group 4", null, false, "Gp 5", null, false ]
-select_mode = 1
-auto_height = true
-max_columns = 5
+margin_bottom = 98.0
 
 [node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt"]
-margin_top = 317.0
+margin_top = 102.0
 margin_right = 292.0
-margin_bottom = 536.0
+margin_bottom = 122.0
 size_flags_horizontal = 3
-size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
-margin_right = 121.0
-margin_bottom = 219.0
+margin_right = 144.0
+margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Paramètres"
 
 [node name="ButtonAddParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
-margin_left = 125.0
-margin_right = 145.0
+margin_left = 148.0
+margin_right = 292.0
 margin_bottom = 20.0
+size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "+"
 
-[node name="ButtonDelParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
-margin_left = 149.0
-margin_right = 166.0
-margin_bottom = 20.0
-size_flags_vertical = 0
-text = "-"
-
-[node name="ItemList" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
-margin_left = 170.0
+[node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt"]
+margin_top = 126.0
 margin_right = 292.0
-margin_bottom = 219.0
-hint_tooltip = "Les paramètres ajoutent des données aux Agents et Taxons utilisables dans les Comportements."
+margin_bottom = 140.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp7"]
+margin_right = 144.0
+margin_bottom = 14.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-items = [ "Param A = [0,1]", null, false, "Param B = 0.3", null, false, "Param C = Alea(10,100)", null, false, "Param D = 0", null, false, "Param E = 0", null, false ]
-select_mode = 1
-auto_height = true
-max_columns = 5
+text = "Nom"
+
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp7"]
+margin_left = 148.0
+margin_right = 292.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Valeur initiale"
+
+[node name="VBoxAgentParam" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt"]
+unique_name_in_owner = true
+margin_top = 144.0
+margin_right = 292.0
+margin_bottom = 536.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxLineParam" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam"]
+unique_name_in_owner = true
+visible = false
+margin_right = 292.0
+margin_bottom = 24.0
+
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam"]
+margin_right = 127.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "Age"
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam"]
+margin_left = 131.0
+margin_top = 5.0
+margin_right = 139.0
+margin_bottom = 19.0
+text = "="
+
+[node name="LineEdit2" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam"]
+margin_left = 143.0
+margin_right = 271.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "0"
+
+[node name="Button" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam"]
+margin_left = 275.0
+margin_right = 292.0
+margin_bottom = 24.0
+text = "-"
 
 [node name="Comportements" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
 visible = false
@@ -1058,4 +1065,6 @@ items = [ "Agent", null, 0, false, false, 0, 0, null, "", false, "Taxon", null, 
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/AgentName" to="." method="_on_AgentName_focus_exited"]
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/AgentName" to="." method="_on_AgentName_text_entered"]
 [connection signal="color_changed" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2/ColorAgent" to="." method="_on_ColorAgent_color_changed"]
+[connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5/ButtonAddParam" to="." method="_on_ButtonAddParam_button_down"]
+[connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam/Button" to="." method="_on_Button_button_down"]
 [connection signal="index_pressed" from="PopupMenu" to="." method="_on_PopupMenu_index_pressed"]
