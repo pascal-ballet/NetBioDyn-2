@@ -61,7 +61,8 @@ func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
 	
 # Add Agent -----------------------------
 func _on_ToolPlusAgent_pressed() -> void:
-	var name:String = key_name_create("Agent-")
+	var name:String = key_name_create()
+	#_selected_name = name
 	addAgent(name)
 
 
@@ -83,8 +84,8 @@ func _on_ListAgents_item_selected(index: int) -> void:
 		var tabs:TabContainer = get_node("%TabContainer")
 		if entity is RigidBody:
 			tabs.current_tab = Prop.ENTITY
-			_fill_properties_of_agent(entity)
 			_selected_name = entity_name
+			_fill_properties_of_agent(entity)
 		else:
 			tabs = get_node("%TabContainer")	
 			if entity is Node:
@@ -107,6 +108,8 @@ func _fill_properties_of_agent(var entity:Node):
 		# type
 		var opt_type:OptionButton = get_node("%OptionAgentType")
 		opt_type.select(0)
+		# param
+		agent_meta_to_param()
 		
 # Properties => Agent -----------------------------
 # Agent COLOR
@@ -140,9 +143,13 @@ func _on_AgentName_text_entered(new_text: String) -> void:
 
 # Agent PARAMETERS
 func _on_ButtonAddParam_button_down() -> void:
+	# Crete a unique name for the parameter (Meta names are key of dictionnary)
+	var key_param:String  = key_param_create()
+	# Create the line of input boxes
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	var hbox_line :	HBoxContainer = get_node("%HBoxLineParam")
 	var new_line: 	HBoxContainer = hbox_line.duplicate()
+	new_line.get_child(0).set_text(key_param)
 	new_line.visible = true
 	vbox_param.add_child(new_line)
 
@@ -155,23 +162,11 @@ func _on_Button_button_down() -> void:
 			vbox_param.remove_child(line)
 			break
 
-func agent_param_to_meta()->void:
+func agent_meta_to_param() -> void:
+	printerr(str("meta => PARAM for ", _selected_name))
 	var rb:RigidBody = find_node(_selected_name)
-	# Clear Meta
-	rb.get_meta_list().empty()
-	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
-	# Fill Meta
-	for i in vbox_param.get_child_count()-1:
-		var line:HBoxContainer = vbox_param.get_child(i+1)
-		var param_name :String  	= line.get_child(0).get_text()
-		var param_value			= line.get_child(2).get_text()
-		rb.set_meta(param_name, param_value)
-		#printerr("param => meta")
-		#printerr(param_name)
-		#printerr(param_value)
-
-func agent_meta_to_param()->void:
-	var rb:RigidBody = find_node(_selected_name)
+	if rb==null:
+		return
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	# Clear Param VBox
 	for i in vbox_param.get_child_count()-1:
@@ -182,17 +177,35 @@ func agent_meta_to_param()->void:
 	for m in rb.get_meta_list().size():
 		var meta_name :String  	= rb.get_meta_list()[m]
 		var meta_value			= rb.get_meta(meta_name)
-		#printerr("meta => param")
-		#printerr(meta_name)
-		#printerr(meta_value)
+		printerr(str(_selected_name , " : meta => PARAM (", meta_name , "," , meta_value))
 		_on_ButtonAddParam_button_down()
 		var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
 		line.get_child(0).set_text(meta_name)
 		line.get_child(2).set_text(meta_value)
 	
+func agent_param_to_meta() -> void:
+	printerr(str("PARAM => meta for ", _selected_name))
+	var rb:RigidBody = find_node(_selected_name)
+	if rb==null:
+		return
+	# Clear Meta
+	rb.get_meta_list().empty()
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	# Fill Meta
+	for i in vbox_param.get_child_count()-1:
+		var line:HBoxContainer = vbox_param.get_child(i+1)
+		var param_name :String  	= line.get_child(0).get_text()
+		var param_value			= line.get_child(2).get_text()
+		rb.set_meta(param_name, param_value)
+		printerr(str(_selected_name , " : PARAM => meta (" , param_name , "," , param_value))
+		#printerr("param => meta")
+		#printerr(param_name)
+		#printerr(param_value)
+
+
 func _on_Btn_test_button_down() -> void:
 	agent_param_to_meta()
-	agent_meta_to_param()
+	#agent_meta_to_param()
 
 # ************************************************************
 #                          ENVIRONMENT                       *
@@ -307,14 +320,15 @@ func _on_ListGrids_item_selected(index: int) -> void:
 # ************************************************************
 
 # Key name Generator --------------------------
-func key_name_create(var prefix:String) -> String:
+func key_name_create() -> String:
+	var prefix:String = "Agent-"
 	var simu:Node = get_node("%Simulator")
 	for n in 999999:
 		var key_name:String = prefix + String(n)
-		var node:Node = find_node(key_name)
-		if node == null:
+		var exists:bool = key_name_exists(key_name)
+		if exists == false:
 			return key_name
-	return ""
+	return "FULL"
 	
 func key_name_exists(var key_name:String) -> bool:
 		var node:Node = find_node(key_name)
@@ -323,6 +337,47 @@ func key_name_exists(var key_name:String) -> bool:
 		else:
 			return true
 
+func key_param_create() -> String:
+	var prefix:String = "Param-"
+	var vbox:VBoxContainer = get_node("%VBoxAgentParam")
+	for n in 999999:
+		var key_name:String = prefix + String(n)
+		printerr(str("Try to create param : ", key_name))
+		var exists:bool = key_param_exists(key_name)
+		if exists == false:
+			return key_name
+	return "FULL"
+
+func key_param_exists(var key_name:String) -> bool:
+	var vbox:VBoxContainer = get_node("%VBoxAgentParam")
+	var nb_param:float = vbox.get_child_count()
+	printerr(str("func key_param_exists => ", "nb_param=" , nb_param))
+	printerr(str("range=",range(1,nb_param)))
+	for n in range(1,nb_param):
+		printerr(str("	n=",n))
+		var line:HBoxContainer = vbox.get_child(n)
+		var name:String = line.get_child(0).get_text()
+		printerr(str("Verify : ", key_name, " with existing :", name))
+		if key_name == name:
+			return true
+	return false	
+
 # Window / App control -------------------------
 func _on_BtnClose_pressed():
 	get_tree().quit()
+
+
+
+
+
+
+
+func _on_ParamName_focus_exited() -> void:
+	# Verif Name if unique
+	
+	# Save to meta
+	agent_param_to_meta()
+
+func _on_ParamValue_focus_exited() -> void:
+	# Save to meta
+	agent_param_to_meta()
