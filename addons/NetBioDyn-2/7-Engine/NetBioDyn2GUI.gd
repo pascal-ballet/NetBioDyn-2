@@ -168,7 +168,7 @@ func _on_Button_button_down() -> void:
 	agent_param_to_meta()
 	
 func agent_meta_to_param() -> void:
-	printerr(str("meta => PARAM for ", _selected_name))
+	#printerr(str("meta => PARAM for ", _selected_name))
 	var rb:RigidBody = find_node(_selected_name)
 	if rb==null:
 		return
@@ -182,14 +182,14 @@ func agent_meta_to_param() -> void:
 	for m in rb.get_meta_list().size():
 		var meta_name :String  	= rb.get_meta_list()[m]
 		var meta_value			= rb.get_meta(meta_name)
-		printerr(str(_selected_name , " : meta => PARAM (", meta_name , "," , meta_value))
+		#printerr(str(_selected_name , " : meta => PARAM (", meta_name , "," , meta_value))
 		_on_ButtonAddParam_button_down()
 		var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
 		line.get_child(0).set_text(meta_name)
 		line.get_child(2).set_text(meta_value)
 	
 func agent_param_to_meta() -> void:
-	printerr(str("PARAM => meta for ", _selected_name))
+	#printerr(str("PARAM => meta for ", _selected_name))
 	var rb:RigidBody = find_node(_selected_name)
 	if rb==null:
 		return
@@ -202,7 +202,7 @@ func agent_param_to_meta() -> void:
 		var param_name :String  	= line.get_child(0).get_text()
 		var param_value			= line.get_child(2).get_text()
 		rb.set_meta(param_name, param_value)
-		printerr(str(_selected_name , " : PARAM => meta (" , param_name , "," , param_value))
+		#printerr(str(_selected_name , " : PARAM => meta (" , param_name , "," , param_value))
 		#printerr("param => meta")
 		#printerr(param_name)
 		#printerr(param_value)
@@ -347,7 +347,7 @@ func key_param_create() -> String:
 	var vbox:VBoxContainer = get_node("%VBoxAgentParam")
 	for n in 999999:
 		var key_name:String = prefix + String(n)
-		printerr(str("Try to create param : ", key_name))
+		#printerr(str("Try to create param : ", key_name))
 		var exists:int = key_param_exists(key_name)
 		if exists == 0:
 			return key_name
@@ -356,14 +356,14 @@ func key_param_create() -> String:
 func key_param_exists(var key_name:String) -> int:
 	var vbox:VBoxContainer = get_node("%VBoxAgentParam")
 	var nb_param:float = vbox.get_child_count()
-	printerr(str("func key_param_exists => ", "nb_param=" , nb_param))
-	printerr(str("range=",range(1,nb_param)))
+	#printerr(str("func key_param_exists => ", "nb_param=" , nb_param))
+	#printerr(str("range=",range(1,nb_param)))
 	var nb:int = 0
 	for n in range(1,nb_param):
-		printerr(str("	n=",n))
+		#printerr(str("	n=",n))
 		var line:HBoxContainer = vbox.get_child(n)
 		var name:String = line.get_child(0).get_text()
-		printerr(str("Verify : ", key_name, " with existing :", name))
+		#printerr(str("Verify : ", key_name, " with existing :", name))
 		if key_name == name:
 			nb = nb+1
 	return nb	
