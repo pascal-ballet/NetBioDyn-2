@@ -234,9 +234,30 @@ func _on_Button_pressed() -> void:
 #                          Behaviors                         *
 # ************************************************************
 func _on_BtnAddBehav_pressed() -> void:
+	# Create new Agent in GUI --------------------------------
 	var lst:ItemList = get_node("%ListBehav")
 	lst.add_item("Comportement")
 	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
+	
+	# Create new Behavior Type in 3D Scene -------------------	
+	var script:GDScript = GDScript.new()
+	script.source_code = """
+extends Node
+
+func step(agent) -> void:
+	var proba:float = 0.01
+	if rand_range(0,100) < proba:
+		#print("DEAD")
+		agent.queue_free()
+"""
+	script.reload()
+
+	var n:Node = Node.new()
+	n.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
+
+	
+	var node_behaviors:Node = get_node("%Behaviors")
+	node_behaviors.add_child(n)
 
 func _on_BtnDelBehav_pressed() -> void:
 	var lst:ItemList = get_node("%ListBehav")
