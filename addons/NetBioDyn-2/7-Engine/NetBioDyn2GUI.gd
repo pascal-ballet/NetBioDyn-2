@@ -152,6 +152,9 @@ func _on_ButtonAddParam_button_down() -> void:
 	new_line.get_child(0).set_text(key_param)
 	new_line.visible = true
 	vbox_param.add_child(new_line)
+	# Save to meta
+	agent_param_to_meta()
+
 
 func _on_Button_button_down() -> void:
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
@@ -161,7 +164,9 @@ func _on_Button_button_down() -> void:
 		if btn_del.has_focus():
 			vbox_param.remove_child(line)
 			break
-
+	# Save to meta (new_name VALIDATED)
+	agent_param_to_meta()
+	
 func agent_meta_to_param() -> void:
 	printerr(str("meta => PARAM for ", _selected_name))
 	var rb:RigidBody = find_node(_selected_name)
@@ -343,24 +348,25 @@ func key_param_create() -> String:
 	for n in 999999:
 		var key_name:String = prefix + String(n)
 		printerr(str("Try to create param : ", key_name))
-		var exists:bool = key_param_exists(key_name)
-		if exists == false:
+		var exists:int = key_param_exists(key_name)
+		if exists == 0:
 			return key_name
 	return "FULL"
 
-func key_param_exists(var key_name:String) -> bool:
+func key_param_exists(var key_name:String) -> int:
 	var vbox:VBoxContainer = get_node("%VBoxAgentParam")
 	var nb_param:float = vbox.get_child_count()
 	printerr(str("func key_param_exists => ", "nb_param=" , nb_param))
 	printerr(str("range=",range(1,nb_param)))
+	var nb:int = 0
 	for n in range(1,nb_param):
 		printerr(str("	n=",n))
 		var line:HBoxContainer = vbox.get_child(n)
 		var name:String = line.get_child(0).get_text()
 		printerr(str("Verify : ", key_name, " with existing :", name))
 		if key_name == name:
-			return true
-	return false	
+			nb = nb+1
+	return nb	
 
 # Window / App control -------------------------
 func _on_BtnClose_pressed():
@@ -369,15 +375,53 @@ func _on_BtnClose_pressed():
 
 
 
+# ************************************************
+# WORK in PROGRESS...
+# ************************************************
 
+var _selected_param_pos:int = -1
+var _selected_param_name:String = ""
 
+# TODO : 
+
+# get the line number of param having possibly the focus
+func get_param_line_has_focus() -> int :
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	for i in vbox_param.get_child_count():
+		var line:HBoxContainer = vbox_param.get_child(i)
+		var param_edit:LineEdit = line.get_child(0)
+		var value_edit:LineEdit = line.get_child(2)
+		var btn_del:Button = line.get_child(3)
+		if param_edit.has_focus() or value_edit.has_focus() or btn_del.has_focus():
+			return i
+	return -1
 
 func _on_ParamName_focus_exited() -> void:
 	# Verif Name if unique
-	
-	# Save to meta
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	var i:int = _selected_param_pos
+	var line:HBoxContainer = vbox_param.get_child(i)
+	var old_name:String = _selected_param_name
+	var new_name:String = line.get_child(0).get_text()
+	if old_name==new_name: # Name NOT changed
+		return
+	if key_param_exists(new_name) == 2: # Name already EXISTS
+		OS.alert("Ce nom est deja attribue", "Information")
+		line.get_child(0).set_text(old_name)
+		return
+	# Save to meta (new_name VALIDATED)
 	agent_param_to_meta()
 
 func _on_ParamValue_focus_exited() -> void:
 	# Save to meta
 	agent_param_to_meta()
+
+func _on_ParamName_focus_entered() -> void:
+	_selected_param_pos = get_param_line_has_focus()
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	var line:HBoxContainer = vbox_param.get_child(_selected_param_pos)
+	_selected_param_name = line.get_child(0).get_text()
+
+
+func _on_ParamName_text_entered(new_text: String) -> void:
+	_on_ParamName_focus_exited()
