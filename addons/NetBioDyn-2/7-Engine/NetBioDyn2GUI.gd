@@ -247,14 +247,29 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 func _on_Button_pressed() -> void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.ENV
-	
+
 # ************************************************************
 #                          Behaviors                         *
 # ************************************************************
+var _pm:PopupMenu
+
+# Display the Behaviors PopupMenu
 func _on_BtnAddBehav_pressed() -> void:
-	# Create new Agent in GUI --------------------------------
+	_pm = $PopupMenu
+	var btn_add = get_node("%BtnAddBehav")
+	_pm.popup(Rect2(btn_add.get_global_position().x, btn_add.get_global_position().y, _pm.rect_size.x, _pm.rect_size.y))
+
+# Wait for which Behav is selected
+func _on_PopupMenu_index_pressed(index: int) -> void:
+	if index == 0: # Create Reaction
+		addBehavReaction()
+	if index == 1: # Create Langevin Force
+		addBehavLangevinForce()
+
+func addBehavReaction() -> void:	
+	# Create new Behavior in GUI --------------------------------
 	var lst:ItemList = get_node("%ListBehav")
-	lst.add_item("Comportement")
+	lst.add_item("Reaction")
 	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
 	
 	# Create new Behavior Type in 3D Scene -------------------	
@@ -273,9 +288,34 @@ func step(agent) -> void:
 	var n:Node = Node.new()
 	n.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
 
-	
 	var node_behaviors:Node = get_node("%Behaviors")
 	node_behaviors.add_child(n)
+
+func addBehavLangevinForce() -> void:	
+	# Create new Behavior in GUI --------------------------------
+	var lst:ItemList = get_node("%ListBehav")
+	lst.add_item("Force aléatoire")
+	lst.set_item_metadata(lst.get_item_count()-1, "Langevin") # type of the item
+	
+	# Create new Behavior Type in 3D Scene -------------------	
+	var script:GDScript = GDScript.new()
+	script.source_code = """
+extends Node
+
+func step(agent) -> void:
+	var proba:float = 0.01
+	if rand_range(0,100) < proba:
+		#print("DEAD")
+		agent.queue_free()
+"""
+	script.reload()
+
+	var n:Node = Node.new()
+	n.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
+
+	var node_behaviors:Node = get_node("%Behaviors")
+	node_behaviors.add_child(n)
+
 
 func _on_BtnDelBehav_pressed() -> void:
 	var lst:ItemList = get_node("%ListBehav")

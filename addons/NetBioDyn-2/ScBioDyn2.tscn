@@ -132,10 +132,11 @@ margin_right = 165.0
 margin_bottom = 548.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+split_offset = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer"]
 margin_right = 165.0
-margin_bottom = 268.0
+margin_bottom = 318.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -166,7 +167,7 @@ text = "-"
 [node name="ListAgents" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer"]
 margin_top = 24.0
 margin_right = 165.0
-margin_bottom = 268.0
+margin_bottom = 318.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
 size_flags_horizontal = 3
@@ -175,7 +176,7 @@ custom_styles/selected_focus = ExtResource( 2 )
 allow_reselect = true
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer"]
-margin_top = 280.0
+margin_top = 330.0
 margin_right = 165.0
 margin_bottom = 548.0
 size_flags_horizontal = 3
@@ -208,7 +209,7 @@ text = "-"
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 165.0
-margin_bottom = 268.0
+margin_bottom = 218.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
 size_flags_horizontal = 3
@@ -229,10 +230,11 @@ margin_right = 165.0
 margin_bottom = 548.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+split_offset = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/VSplitContainer"]
 margin_right = 165.0
-margin_bottom = 268.0
+margin_bottom = 318.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -248,6 +250,7 @@ size_flags_horizontal = 3
 text = "Comportements"
 
 [node name="BtnAddBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
+unique_name_in_owner = true
 margin_left = 124.0
 margin_right = 144.0
 margin_bottom = 20.0
@@ -263,7 +266,7 @@ text = "-"
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 165.0
-margin_bottom = 268.0
+margin_bottom = 318.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
 size_flags_horizontal = 3
@@ -272,7 +275,7 @@ custom_styles/selected_focus = ExtResource( 2 )
 allow_reselect = true
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/VSplitContainer"]
-margin_top = 280.0
+margin_top = 330.0
 margin_right = 165.0
 margin_bottom = 548.0
 size_flags_horizontal = 3
@@ -305,7 +308,7 @@ text = "-"
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 165.0
-margin_bottom = 268.0
+margin_bottom = 218.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
 size_flags_horizontal = 3
@@ -319,10 +322,11 @@ margin_right = 696.0
 margin_bottom = 548.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+split_offset = 50
 
 [node name="VBoxEnvGraph" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer"]
 margin_right = 342.0
-margin_bottom = 268.0
+margin_bottom = 318.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -356,7 +360,7 @@ selected = 0
 [node name="ViewportContainer" type="ViewportContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph"]
 margin_top = 24.0
 margin_right = 342.0
-margin_bottom = 264.0
+margin_bottom = 314.0
 rect_min_size = Vector2( 100, 0 )
 rect_clip_content = true
 size_flags_horizontal = 3
@@ -364,7 +368,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="Viewport" type="Viewport" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer"]
-size = Vector2( 342, 240 )
+size = Vector2( 342, 290 )
 handle_input_locally = false
 render_target_update_mode = 3
 
@@ -396,29 +400,40 @@ script = SubResource( 2 )
 unique_name_in_owner = true
 
 [node name="ToolbarPaint" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph"]
-margin_top = 268.0
+margin_top = 318.0
 margin_right = 342.0
-margin_bottom = 268.0
+margin_bottom = 318.0
 grow_horizontal = 0
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer"]
-margin_top = 280.0
+margin_top = 330.0
 margin_right = 342.0
 margin_bottom = 548.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxContainer"]
 margin_right = 342.0
-margin_bottom = 14.0
+margin_bottom = 20.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxContainer/HBoxContainer"]
+margin_top = 3.0
+margin_right = 286.0
+margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Courbes"
 
-[node name="PanelGraph" type="Panel" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxContainer"]
-margin_top = 18.0
+[node name="ButtonExportGraph" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxContainer/HBoxContainer"]
+margin_left = 290.0
 margin_right = 342.0
-margin_bottom = 268.0
+margin_bottom = 20.0
+text = "Export"
+
+[node name="PanelGraph" type="Panel" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxContainer"]
+margin_top = 24.0
+margin_right = 342.0
+margin_bottom = 218.0
 rect_min_size = Vector2( 100, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1037,9 +1052,12 @@ text = "Nb agents = 0 | Nb behaviours = 0 | NetBioDyn-2 version 6/2022"
 align = 1
 
 [node name="PopupMenu" type="PopupMenu" parent="."]
-margin_right = 20.0
-margin_bottom = 20.0
-items = [ "Agent", null, 0, false, false, 0, 0, null, "", false, "Taxon", null, 0, false, false, 1, 0, null, "", false ]
+margin_top = 544.0
+margin_right = 117.0
+margin_bottom = 600.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+items = [ "Reaction", null, 0, false, false, 0, 0, null, "", false, "Force Aléatoire", null, 0, false, false, 1, 0, null, "", false ]
 
 [connection signal="pressed" from="Toolbar/BtnClose" to="." method="_on_BtnClose_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnAddAgent" to="." method="_on_ToolPlusAgent_pressed"]
