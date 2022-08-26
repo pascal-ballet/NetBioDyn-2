@@ -353,13 +353,7 @@ func addBehavLangevinForce() -> void:
 	
 	# Create new Behavior Type in 3D Scene -------------------	
 	var script:GDScript = GDScript.new()
-	script.source_code = """
-extends Node
-
-# Force Aleatoire
-func step(agent) -> void:
-	pass
-"""
+	script.source_code = behav_script_default()
 	script.reload()
 
 	var node:Node = Node.new()
@@ -419,16 +413,7 @@ func behavior_GUI_to_META() -> void:
 	
 	# Set Script
 	var script:GDScript = GDScript.new()
-	script.source_code = """
-extends Node
-
-# Reaction
-func step(agent) -> void:
-	var proba:float = """+proba+"""
-	if rand_range(0,100) < proba:
-		#print("DEAD")
-		agent.queue_free()
-"""
+	script.source_code = behav_script_reaction(R1, R2, proba, P1, P2)
 	script.reload()
 	behav.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
 
@@ -558,7 +543,28 @@ func _on_BtnClose_pressed():
 	get_tree().quit()
 
 
+# ************************************************************
+#                     SCRIPTS for Behaviors                  *
+# ************************************************************
 
+func behav_script_default() -> String:
+	return """
+extends Node
+# Default Behavior
+func step(agent) -> void:
+	pass
+"""
+
+func behav_script_reaction(R1:String, R2:String, proba:String, P1:String, P2:String) -> String:
+	return """
+extends Node
+# Reaction
+func step(agent) -> void:
+	var proba:float = """+proba+"""
+	if rand_range(0,100) < proba:
+		#print("DEAD")
+		agent.queue_free()
+"""
 
 # ************************************************
 # WORK in PROGRESS...
