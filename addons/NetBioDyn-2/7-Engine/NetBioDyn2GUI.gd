@@ -310,6 +310,7 @@ func _on_PopupMenu_index_pressed(index: int) -> void:
 	if index == 1: # Create Langevin Force
 		addBehavLangevinForce()
 
+# Add REACTION
 func addBehavReaction() -> void:	
 	# Create new Behavior in GUI --------------------------------
 	var lst:ItemList = get_node("%ListBehav")
@@ -329,12 +330,19 @@ func step(agent) -> void:
 """
 	script.reload()
 
-	var n:Node = Node.new()
-	n.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
-
+	var node:Node = Node.new()
+	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
+	node.set_meta("Name", "Reaction")
+	node.set_meta("R1", "agent/groupe")
+	node.set_meta("R2", "agent/groupe/0")
+	node.set_meta("p", "100")
+	node.set_meta("P1", "agent/R1/R2/0")
+	node.set_meta("P2", "agent/R1/R2/0")
+	
 	var node_behaviors:Node = get_node("%Behaviors")
-	node_behaviors.add_child(n)
+	node_behaviors.add_child(node)
 
+# Add FORCE ALEATOIRE
 func addBehavLangevinForce() -> void:	
 	# Create new Behavior in GUI --------------------------------
 	var lst:ItemList = get_node("%ListBehav")
@@ -354,25 +362,83 @@ func step(agent) -> void:
 """
 	script.reload()
 
-	var n:Node = Node.new()
-	n.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
-
+	var node:Node = Node.new()
+	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
+	node.set_meta("Name", "Force aléatoire")
+	
 	var node_behaviors:Node = get_node("%Behaviors")
-	node_behaviors.add_child(n)
-
-# GUI PARAM => META
+	node_behaviors.add_child(node)
 
 
+# Remove behavior
 func _on_BtnDelBehav_pressed() -> void:
 	var lst:ItemList = get_node("%ListBehav")
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
 
+# Select behavior : META => GUI
 func _on_ListBehav_item_selected(index: int) -> void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.BEHAVIOR
-		
+	# Update GUI Behavior
+	var behav:Node			= get_selected_behavior()
+	# Set behavior Name
+	get_node("%ParamBehavName").set_text(behav.get_meta("Name"))
+	get_node("%ParamBehavR1").set_text(behav.get_meta("R1"))
+	get_node("%ParamBehavR2").set_text(behav.get_meta("R2"))
+	get_node("%ParamBehavProba").set_text(behav.get_meta("p"))
+	get_node("%ParamBehavP1").set_text(behav.get_meta("P1"))
+	get_node("%ParamBehavP2").set_text(behav.get_meta("P2"))
+	
+# Update behavior : GUI => META
+func behavior_GUI_to_META() -> void:
+	var behav:Node			= get_selected_behavior()
+
+	# Set the Name in the GUI List
+	var lst:ItemList = get_node("%ListBehav")
+	var sel:PoolIntArray = lst.get_selected_items()
+	if sel.size() == 0:
+		return
+	var pos:int =sel[0]
+	lst.set_item_text(pos, get_node("%ParamBehavName").get_text())
+	
+	# Update all behavior META
+	behav.set_meta("Name", get_node("%ParamBehavName").get_text())
+	behav.set_meta("R1", get_node("%ParamBehavR1").get_text())
+	behav.set_meta("R2", get_node("%ParamBehavR2").get_text())
+	behav.set_meta("p", get_node("%ParamBehavProba").get_text())
+	behav.set_meta("P1", get_node("%ParamBehavP1").get_text())
+	behav.set_meta("P2", get_node("%ParamBehavP2").get_text())
+	#print_debug(param_name)
+	#print_debug(param_value)
+	#print_debug(behav)
+
+func _on_ParamBehavName_text_entered(new_text: String) -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavName_focus_exited() -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavR1_text_entered(new_text: String) -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavR1_focus_exited() -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavR2_text_entered(new_text: String) -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavR2_focus_exited() -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavProba_text_entered(new_text: String) -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavProba_focus_exited() -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavP1_text_entered(new_text: String) -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavP1_focus_exited() -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavP2_text_entered(new_text: String) -> void:
+	behavior_GUI_to_META()
+func _on_ParamBehavP2_focus_exited() -> void:
+	behavior_GUI_to_META()
+
 # ************************************************************
 #                           Groups                           *
 # ************************************************************
@@ -476,15 +542,4 @@ func _on_BtnClose_pressed():
 # WORK in PROGRESS...
 # ************************************************
 
-# behav
-func _on_ParamBehavName_text_entered(new_text: String) -> void:
-	_on_ParamBehavName_focus_exited()
 
-func _on_ParamBehavName_focus_exited() -> void:
-	var behav:Node			= get_selected_behavior()
-	var param_name :String  	= "Name"
-	var param_value			= get_node("%ParamBehavName").get_text()
-	behav.set_meta(param_name, param_value)
-	#print_debug(param_name)
-	#print_debug(param_value)
-	#print_debug(behav)
