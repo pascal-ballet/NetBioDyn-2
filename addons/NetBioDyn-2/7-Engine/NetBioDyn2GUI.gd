@@ -414,6 +414,7 @@ func behavior_GUI_to_META() -> void:
 	# Set Script
 	var script:GDScript = GDScript.new()
 	script.source_code = behav_script_reaction(R1, R2, proba, P1, P2)
+	print_debug(script.source_code)
 	script.reload()
 	behav.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
 
@@ -542,11 +543,11 @@ func get_selected_behavior() -> Node:
 func _on_BtnClose_pressed():
 	get_tree().quit()
 
-
 # ************************************************************
 #                     SCRIPTS for Behaviors                  *
 # ************************************************************
 
+# Script DEFAULT
 func behav_script_default() -> String:
 	return """
 extends Node
@@ -555,6 +556,7 @@ func step(agent) -> void:
 	pass
 """
 
+# Script REACTION
 func behav_script_reaction(R1:String, R2:String, proba:String, P1:String, P2:String) -> String:
 	return """
 extends Node
@@ -562,8 +564,10 @@ extends Node
 func step(agent) -> void:
 	var proba:float = """+proba+"""
 	if rand_range(0,100) < proba:
-		#print("DEAD")
-		agent.queue_free()
+		#if agent.is_queued_for_deletion() == false && (agent.name == '"""+R1+"""' || agent.is_in_group('"""+R1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe
+		if agent.is_queued_for_deletion() == false && (agent.name == "aa" || agent.is_in_group("aa")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe
+			#print("DEAD")
+			agent.queue_free()
 """
 
 # ************************************************
