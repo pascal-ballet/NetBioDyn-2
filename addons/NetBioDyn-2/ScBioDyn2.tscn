@@ -455,7 +455,6 @@ tabs_visible = false
 use_hidden_tabs_for_min_size = true
 
 [node name="Vide" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -661,6 +660,7 @@ margin_bottom = 24.0
 text = "-"
 
 [node name="Comportements" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0

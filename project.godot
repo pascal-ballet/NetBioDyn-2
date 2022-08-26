@@ -36,7 +36,7 @@ window/vsync/use_vsync=false
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/NetBioDyn-2/plugin.cfg", "res://addons/goutte.camera.trackball/plugin.cfg", "res://addons/metadata_inspector/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/goutte.camera.trackball/plugin.cfg", "res://addons/metadata_inspector/plugin.cfg" )
 
 [gui]
 

@@ -317,21 +317,10 @@ func addBehavReaction() -> void:
 	lst.add_item("Reaction")
 	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
 	
-	# Create new Behavior Type in 3D Scene -------------------	
-	var script:GDScript = GDScript.new()
-	script.source_code = """
-extends Node
-
-func step(agent) -> void:
-	var proba:float = 0.01
-	if rand_range(0,100) < proba:
-		#print("DEAD")
-		agent.queue_free()
-"""
-	script.reload()
-
+	# Create default Behavior Type in 3D Scene -------------------	
+	
+	# Set META
 	var node:Node = Node.new()
-	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
 	node.set_meta("Name", "Reaction")
 	node.set_meta("R1", "agent/groupe")
 	node.set_meta("R2", "agent/groupe/0")
@@ -339,6 +328,19 @@ func step(agent) -> void:
 	node.set_meta("P1", "agent/R1/R2/0")
 	node.set_meta("P2", "agent/R1/R2/0")
 	
+	# Set default Script
+	var script:GDScript = GDScript.new()
+	script.source_code = """
+extends Node
+
+# Reaction
+func step(agent) -> void:
+	pass
+"""
+	script.reload()
+	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
+
+	# Add Behavior to Simulator
 	var node_behaviors:Node = get_node("%Behaviors")
 	node_behaviors.add_child(node)
 
@@ -354,11 +356,9 @@ func addBehavLangevinForce() -> void:
 	script.source_code = """
 extends Node
 
+# Force Aleatoire
 func step(agent) -> void:
-	var proba:float = 0.01
-	if rand_range(0,100) < proba:
-		#print("DEAD")
-		agent.queue_free()
+	pass
 """
 	script.reload()
 
@@ -403,13 +403,35 @@ func behavior_GUI_to_META() -> void:
 	var pos:int =sel[0]
 	lst.set_item_text(pos, get_node("%ParamBehavName").get_text())
 	
-	# Update all behavior META
-	behav.set_meta("Name", get_node("%ParamBehavName").get_text())
-	behav.set_meta("R1", get_node("%ParamBehavR1").get_text())
-	behav.set_meta("R2", get_node("%ParamBehavR2").get_text())
-	behav.set_meta("p", get_node("%ParamBehavProba").get_text())
-	behav.set_meta("P1", get_node("%ParamBehavP1").get_text())
-	behav.set_meta("P2", get_node("%ParamBehavP2").get_text())
+	# Update behavior GUI => META
+	var name:String = get_node("%ParamBehavName").get_text()
+	var R1:String = get_node("%ParamBehavR1").get_text()
+	var R2:String = get_node("%ParamBehavR2").get_text()
+	var proba:String = get_node("%ParamBehavProba").get_text()
+	var P1:String = get_node("%ParamBehavP1").get_text()
+	var P2:String = get_node("%ParamBehavP2").get_text()
+	behav.set_meta("Name", name)
+	behav.set_meta("R1", R1)
+	behav.set_meta("R2", R2)
+	behav.set_meta("p", proba)
+	behav.set_meta("P1", P1)
+	behav.set_meta("P2", P2)
+	
+	# Set Script
+	var script:GDScript = GDScript.new()
+	script.source_code = """
+extends Node
+
+# Reaction
+func step(agent) -> void:
+	var proba:float = """+proba+"""
+	if rand_range(0,100) < proba:
+		#print("DEAD")
+		agent.queue_free()
+"""
+	script.reload()
+	behav.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
+
 	#print_debug(param_name)
 	#print_debug(param_value)
 	#print_debug(behav)
