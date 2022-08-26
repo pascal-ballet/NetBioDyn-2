@@ -455,6 +455,7 @@ tabs_visible = false
 use_hidden_tabs_for_min_size = true
 
 [node name="Vide" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -480,7 +481,6 @@ text = "Aucun objets sélectionné."
 valign = 1
 
 [node name="Agent" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -584,25 +584,19 @@ margin_bottom = 122.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
-margin_right = 114.0
+margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Paramètres"
 
 [node name="ButtonAddParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
-margin_left = 118.0
-margin_right = 232.0
+margin_left = 148.0
+margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "+"
-
-[node name="Btn_test" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
-margin_left = 236.0
-margin_right = 292.0
-margin_bottom = 20.0
-text = "Valider"
 
 [node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 126.0
@@ -666,6 +660,7 @@ margin_bottom = 24.0
 text = "-"
 
 [node name="Comportements" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -701,7 +696,8 @@ size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp1"]
+[node name="ParamBehavName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp1"]
+unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
@@ -720,7 +716,7 @@ align = 1
 [node name="VBoxReaction" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport"]
 margin_top = 98.0
 margin_right = 292.0
-margin_bottom = 226.0
+margin_bottom = 234.0
 
 [node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction"]
 margin_right = 292.0
@@ -734,7 +730,7 @@ size_flags_horizontal = 3
 text = "Réactif R1"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp4"]
+[node name="ParamBehavR1" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp4"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
@@ -754,7 +750,7 @@ size_flags_horizontal = 3
 text = "Réactif R2"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp5"]
+[node name="ParamBehavR2" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp5"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
@@ -764,33 +760,27 @@ text = "agent / groupe"
 [node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction"]
 margin_top = 56.0
 margin_right = 292.0
-margin_bottom = 72.0
+margin_bottom = 80.0
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp2"]
-margin_top = 1.0
+margin_top = 5.0
 margin_right = 144.0
-margin_bottom = 15.0
+margin_bottom = 19.0
 size_flags_horizontal = 3
-text = "Probabilite (p)"
+text = "Probabilite p %"
 valign = 1
 
-[node name="HSlider" type="HSlider" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp2"]
+[node name="ParamBehavProba" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp2"]
 margin_left = 148.0
 margin_right = 292.0
-margin_bottom = 16.0
+margin_bottom = 24.0
 size_flags_horizontal = 3
-min_value = 0.001
-max_value = 1.0
-step = 0.001
-value = 0.5
-exp_edit = true
-tick_count = 10
-ticks_on_borders = true
+text = "100"
 
 [node name="HBoxProp6" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction"]
-margin_top = 76.0
+margin_top = 84.0
 margin_right = 292.0
-margin_bottom = 100.0
+margin_bottom = 108.0
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp6"]
 margin_top = 5.0
@@ -800,7 +790,7 @@ size_flags_horizontal = 3
 text = "Produit P1"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp6"]
+[node name="ParamBehavP1" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp6"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
@@ -808,9 +798,9 @@ size_flags_horizontal = 3
 text = "agent / R1 / R2 / 0"
 
 [node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction"]
-margin_top = 104.0
+margin_top = 112.0
 margin_right = 292.0
-margin_bottom = 128.0
+margin_bottom = 136.0
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp7"]
 margin_top = 5.0
@@ -820,7 +810,7 @@ size_flags_horizontal = 3
 text = "Produit P2"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp7"]
+[node name="ParamBehavP2" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/VBoxReaction/HBoxProp7"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
@@ -1077,10 +1067,11 @@ items = [ "Reaction", null, 0, false, false, 0, 0, null, "", false, "Force Aléa
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/AgentName" to="." method="_on_AgentName_text_entered"]
 [connection signal="color_changed" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2/ColorAgent" to="." method="_on_ColorAgent_color_changed"]
 [connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5/ButtonAddParam" to="." method="_on_ButtonAddParam_button_down"]
-[connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5/Btn_test" to="." method="_on_Btn_test_button_down"]
 [connection signal="focus_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam/ParamName" to="." method="_on_ParamName_focus_entered"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam/ParamName" to="." method="_on_ParamName_focus_exited"]
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam/ParamName" to="." method="_on_ParamName_text_entered"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam/ParamValue" to="." method="_on_ParamValue_focus_exited"]
 [connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Agent/VBoxPropsAgt/VBoxAgentParam/HBoxLineParam/Button" to="." method="_on_Button_button_down"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp1/ParamBehavName" to="." method="_on_ParamBehavName_focus_exited"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Comportements/VBoxPropsComport/HBoxProp1/ParamBehavName" to="." method="_on_ParamBehavName_text_entered"]
 [connection signal="index_pressed" from="PopupMenu" to="." method="_on_PopupMenu_index_pressed"]

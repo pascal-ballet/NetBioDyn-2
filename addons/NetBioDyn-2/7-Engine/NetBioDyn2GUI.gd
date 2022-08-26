@@ -33,10 +33,11 @@ func addAgent(var name) -> void:
 func create_rigid_body_agent(var name:String) -> RigidBody:
 	#  - material
 	var mat:SpatialMaterial = SpatialMaterial.new()
-	mat.albedo_color = Color(1.0, 0.0, 0.0, 1.0)
+	mat.albedo_color = Color(randf(),randf(),randf(), 1.0)
 	#  - mesh
 	var mh:MeshInstance = MeshInstance.new()
 	mh.mesh = SphereMesh.new()
+	mh.scale = Vector3(1.3, 1.3, 1.3)
 	mh.set_material_override(mat)
 	#  - collision
 	var col:CollisionShape = CollisionShape.new()
@@ -49,6 +50,7 @@ func create_rigid_body_agent(var name:String) -> RigidBody:
 	rb.set_collision_mask_bit(0,true)
 	rb.contacts_reported = 1
 	rb.contact_monitor = true
+	rb.set_linear_damp(5.0)
 	
 	rb.add_child(mh)
 	rb.add_child(col)
@@ -141,7 +143,7 @@ func _on_AgentName_focus_exited() -> void:
 func _on_AgentName_text_entered(new_text: String) -> void:
 	_on_AgentName_focus_exited()
 
-# Agent PARAMETERS
+# Agent PARAMETERS **************************************
 func _on_ButtonAddParam_button_down() -> void:
 	# Crete a unique name for the parameter (Meta names are key of dictionnary)
 	var key_param:String  = key_param_create()
@@ -167,6 +169,7 @@ func _on_Button_button_down() -> void:
 	# Save to meta (new_name VALIDATED)
 	agent_param_to_meta()
 	
+# META => GUI PARAM
 func agent_meta_to_param() -> void:
 	#printerr(str("meta => PARAM for ", _selected_name))
 	var rb:RigidBody = find_node(_selected_name)
@@ -187,7 +190,8 @@ func agent_meta_to_param() -> void:
 		var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
 		line.get_child(0).set_text(meta_name)
 		line.get_child(2).set_text(meta_value)
-	
+
+# GUI PARAM => META
 func agent_param_to_meta() -> void:
 	#printerr(str("PARAM => meta for ", _selected_name))
 	var rb:RigidBody = find_node(_selected_name)
@@ -207,10 +211,50 @@ func agent_param_to_meta() -> void:
 		#printerr(param_name)
 		#printerr(param_value)
 
+# get the line number of agent param having possibly the focus
+var _selected_param_pos:int = -1
+var _selected_param_name:String = ""
 
-func _on_Btn_test_button_down() -> void:
+func get_param_line_has_focus() -> int :
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	for i in vbox_param.get_child_count():
+		var line:HBoxContainer = vbox_param.get_child(i)
+		var param_edit:LineEdit = line.get_child(0)
+		var value_edit:LineEdit = line.get_child(2)
+		var btn_del:Button = line.get_child(3)
+		if param_edit.has_focus() or value_edit.has_focus() or btn_del.has_focus():
+			return i
+	return -1
+
+func _on_ParamName_focus_exited() -> void:
+	# Verif Name if unique
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	var i:int = _selected_param_pos
+	var line:HBoxContainer = vbox_param.get_child(i)
+	var old_name:String = _selected_param_name
+	var new_name:String = line.get_child(0).get_text()
+	if old_name==new_name: # Name NOT changed
+		return
+	if key_param_exists(new_name) == 2: # Name already EXISTS
+		OS.alert("Ce nom est deja attribue", "Information")
+		line.get_child(0).set_text(old_name)
+		return
+	# Save to meta (new_name VALIDATED)
 	agent_param_to_meta()
-	#agent_meta_to_param()
+
+# agent param
+func _on_ParamValue_focus_exited() -> void:
+	# Save to meta
+	agent_param_to_meta()
+
+func _on_ParamName_focus_entered() -> void:
+	_selected_param_pos = get_param_line_has_focus()
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	var line:HBoxContainer = vbox_param.get_child(_selected_param_pos)
+	_selected_param_name = line.get_child(0).get_text()
+
+func _on_ParamName_text_entered(new_text: String) -> void:
+	_on_ParamName_focus_exited()
 
 # ************************************************************
 #                          ENVIRONMENT                       *
@@ -316,6 +360,8 @@ func step(agent) -> void:
 	var node_behaviors:Node = get_node("%Behaviors")
 	node_behaviors.add_child(n)
 
+# GUI PARAM => META
+
 
 func _on_BtnDelBehav_pressed() -> void:
 	var lst:ItemList = get_node("%ListBehav")
@@ -408,6 +454,17 @@ func key_param_exists(var key_name:String) -> int:
 			nb = nb+1
 	return nb	
 
+func get_selected_behavior() -> Node:
+	var lst:ItemList = get_node("%ListBehav")
+	var sel:PoolIntArray = lst.get_selected_items()
+	if sel.size() == 0:
+		return null
+	
+	var pos:int =sel[0]
+	
+	var node:Node = get_node("%Behaviors").get_child(pos)
+	return node
+
 # Window / App control -------------------------
 func _on_BtnClose_pressed():
 	get_tree().quit()
@@ -419,49 +476,15 @@ func _on_BtnClose_pressed():
 # WORK in PROGRESS...
 # ************************************************
 
-var _selected_param_pos:int = -1
-var _selected_param_name:String = ""
+# behav
+func _on_ParamBehavName_text_entered(new_text: String) -> void:
+	_on_ParamBehavName_focus_exited()
 
-# TODO : 
-
-# get the line number of param having possibly the focus
-func get_param_line_has_focus() -> int :
-	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
-	for i in vbox_param.get_child_count():
-		var line:HBoxContainer = vbox_param.get_child(i)
-		var param_edit:LineEdit = line.get_child(0)
-		var value_edit:LineEdit = line.get_child(2)
-		var btn_del:Button = line.get_child(3)
-		if param_edit.has_focus() or value_edit.has_focus() or btn_del.has_focus():
-			return i
-	return -1
-
-func _on_ParamName_focus_exited() -> void:
-	# Verif Name if unique
-	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
-	var i:int = _selected_param_pos
-	var line:HBoxContainer = vbox_param.get_child(i)
-	var old_name:String = _selected_param_name
-	var new_name:String = line.get_child(0).get_text()
-	if old_name==new_name: # Name NOT changed
-		return
-	if key_param_exists(new_name) == 2: # Name already EXISTS
-		OS.alert("Ce nom est deja attribue", "Information")
-		line.get_child(0).set_text(old_name)
-		return
-	# Save to meta (new_name VALIDATED)
-	agent_param_to_meta()
-
-func _on_ParamValue_focus_exited() -> void:
-	# Save to meta
-	agent_param_to_meta()
-
-func _on_ParamName_focus_entered() -> void:
-	_selected_param_pos = get_param_line_has_focus()
-	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
-	var line:HBoxContainer = vbox_param.get_child(_selected_param_pos)
-	_selected_param_name = line.get_child(0).get_text()
-
-
-func _on_ParamName_text_entered(new_text: String) -> void:
-	_on_ParamName_focus_exited()
+func _on_ParamBehavName_focus_exited() -> void:
+	var behav:Node			= get_selected_behavior()
+	var param_name :String  	= "Name"
+	var param_value			= get_node("%ParamBehavName").get_text()
+	behav.set_meta(param_name, param_value)
+	#print_debug(param_name)
+	#print_debug(param_value)
+	#print_debug(behav)
