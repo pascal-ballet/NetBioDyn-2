@@ -22,6 +22,7 @@ func addAgent(var name) -> void:
 	lst.set_item_metadata(lst.get_item_count()-1, "Agent") # type of the item
 	
 	# Create new Agent Type in 3D Scene -----------------------------
+	print_debug("addAgent")
 	var rb:RigidBody = create_rigid_body_agent(name)
 	rb.visible = false
 	var node_entities:Node = get_node("%Entities")
@@ -58,7 +59,8 @@ func create_rigid_body_agent(var name:String) -> RigidBody:
 	return rb
 
 func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
-	return rb0.duplicate() as RigidBody 	# warning : parameters are not cloned (same ref)
+	var rb:RigidBody = rb0.duplicate()
+	return rb 	# warning : parameters are not cloned (same ref)
 										# it's ok now, but could be wrong for some param by ref
 	
 # Add Agent -----------------------------
@@ -98,14 +100,14 @@ func get_entity_from_GUI(var name:String) -> Node:
 	return node_entities.find_node(name) as Node
 
 # Agent => Properties ----------------------------
-func _fill_properties_of_agent(var entity:Node):
-	if entity is RigidBody:
+func _fill_properties_of_agent(var agt_type:Node):
+	if agt_type is RigidBody:
 		# name
 		var box_name:LineEdit = get_node("%AgentName")
-		box_name.text = entity.name
+		box_name.text = agt_type.name
 		# color
 		var box_color:ColorPickerButton = get_node("%ColorAgent")
-		var mesh:MeshInstance = entity.get_child(0)
+		var mesh:MeshInstance = agt_type.get_child(0)
 		box_color.color = mesh.material_override.albedo_color
 		# type
 		var opt_type:OptionButton = get_node("%OptionAgentType")
@@ -280,12 +282,12 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				entity.visible = true
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
+				entity.set_meta(name, rb.name)
 				entity.global_transform.origin = cursorPos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
 				# to be saved as scene, the owner is the simulation "root" node
 				#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
 				#   - see https://github.com/godotengine/godot-proposals/issues/390
 				entity.set_owner(get_node("%Simulator"))
-				pass
 
 # Show relevant property TAB ------------------------------
 func _on_Button_pressed() -> void:
@@ -563,9 +565,11 @@ extends Node
 # Reaction
 func step(agent) -> void:
 	var proba:float = """+proba+"""
-	if rand_range(0,100) < proba:
-		#if agent.is_queued_for_deletion() == false && (agent.name == '"""+R1+"""' || agent.is_in_group('"""+R1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe
-		if agent.is_queued_for_deletion() == false && (agent.name == "aa" || agent.is_in_group("aa")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe
+	var alea:float = rand_range(0,100)
+	print_debug(str("alea=", alea, ", proba=", proba))
+	if alea < proba:
+		#if agent.is_queued_for_deletion() == false && (agent.get_meta("name") == '"""+R1+"""' || agent.is_in_group('"""+R1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe
+		if  (agent.get_meta("name") == "aa" || agent.is_in_group("aa")  ) : # R1 n'est pas déjà détruit et il appartient au bon groupe
 			#print("DEAD")
 			agent.queue_free()
 """
