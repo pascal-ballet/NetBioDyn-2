@@ -575,24 +575,33 @@ func step(agent) -> void:
 
 
 # ************************************************
-# SIMULATOR CONTROL
+# SIMULATOR CONTROLS
 # ************************************************
-var simu_play:bool = false
-var simu_pause:bool = false
-var simu_step:bool = false
+var _sim_play: bool  = false
+var _sim_pause:bool  = false
+var _sim_step: bool  = false
 
 func _on_BtnPlay_pressed() -> void:
 	# TODO : Save initial state
 	# ...
-	simu_play = true
+	NetBioDyn2gui._sim_play = true
+	NetBioDyn2gui._sim_pause = false
+	NetBioDyn2gui._sim_step = false
 	
 func _on_BtnStep_pressed() -> void:
-	simu_step = true
+	NetBioDyn2gui._sim_play = true
+	NetBioDyn2gui._sim_pause = true
+	NetBioDyn2gui._sim_step = true
 	
 func _on_BtnPause_pressed() -> void:
-	simu_pause = !simu_pause
-	
+	if NetBioDyn2gui._sim_pause == true:
+		NetBioDyn2gui._sim_pause = false
+	else:
+		NetBioDyn2gui._sim_pause = true
+		
 func _on_BtnStop_pressed() -> void:
-	simu_play = false
+	NetBioDyn2gui._sim_play = false
+	NetBioDyn2gui._sim_pause = false
+	NetBioDyn2gui._sim_step = false
 	# TODO : Reload initial state
 	# ...

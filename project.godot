@@ -30,6 +30,10 @@ config/name="NetBioDyn-2"
 run/main_scene="res://scene.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+NetBioDyn2gui="*res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd"
+
 [display]
 
 window/vsync/use_vsync=false

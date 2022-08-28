@@ -6,38 +6,11 @@
 [ext_resource path="res://addons/NetBioDyn-2/8-Images/BtnPlay.png" type="Texture" id=4]
 [ext_resource path="res://addons/NetBioDyn-2/8-Images/BtnPause.png" type="Texture" id=5]
 [ext_resource path="res://addons/NetBioDyn-2/8-Images/BtnStop.png" type="Texture" id=6]
+[ext_resource path="res://addons/NetBioDyn-2/7-Engine/Scheduler.gd" type="Script" id=7]
 
 [sub_resource type="Environment" id=1]
 background_mode = 1
 background_color = Color( 1, 1, 1, 1 )
-
-[sub_resource type="GDScript" id=2]
-script/source = "extends Node
-
-
-var node_env		:Node
-var node_agents	:Node
-var node_behavs	:Node
-var node_status	:Label
-var step:int = 0
-
-func _ready():
-	node_agents 	= get_node(\"%Environment\")
-	node_behavs 	= get_node(\"%Behaviors\")
-	node_status 	= get_node(\"%LabelStatusbar\")
-		
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	if step % 1000 == 0:	
-		var nb_agents:int = node_agents.get_child_count()
-		var nb_behavs:int = node_behavs.get_child_count()
-		node_status.text = str(\"step=\", step, \" | Nb agents=\", nb_agents, \" | Nb behaviors=\", nb_behavs)
-		
-	for behav in get_children():
-		for entity in node_agents.get_children(): #ou bien for agt in get_all_from_group(\"Virus\"):
-			behav.step(entity) #on applique le comportement behav sur l'agent agt
-	step = step + 1
-"
 
 [node name="VBoxNetBioDyn" type="VBoxContainer"]
 anchor_right = 1.0
@@ -423,7 +396,7 @@ unique_name_in_owner = true
 
 [node name="Behaviors" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 unique_name_in_owner = true
-script = SubResource( 2 )
+script = ExtResource( 7 )
 
 [node name="Groups" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 
@@ -1081,7 +1054,7 @@ unique_name_in_owner = true
 margin_right = 827.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
-text = "Nb agents = 0 | Nb behaviours = 0 "
+text = "Step = 0 | Nb agents = 0 | Nb behaviours = 0 "
 align = 1
 
 [node name="LabelVersion" type="Label" parent="HBoxContainer"]
