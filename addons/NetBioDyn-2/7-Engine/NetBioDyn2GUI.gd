@@ -474,7 +474,37 @@ func _on_ListGrids_item_selected(index: int) -> void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GRID
 	
+# ************************************************
+# SIMULATOR CONTROLS
+# ************************************************
+var _sim_play: bool  = false
+var _sim_pause:bool  = false
+var _sim_step: bool  = false
 
+func _on_BtnPlay_pressed() -> void:
+	# TODO : Save initial state
+	# ...
+	NetBioDyn2gui._sim_play = true
+	NetBioDyn2gui._sim_pause = false
+	NetBioDyn2gui._sim_step = false
+	
+func _on_BtnStep_pressed() -> void:
+	NetBioDyn2gui._sim_play = true
+	NetBioDyn2gui._sim_pause = true
+	NetBioDyn2gui._sim_step = true
+	
+func _on_BtnPause_pressed() -> void:
+	if NetBioDyn2gui._sim_pause == true:
+		NetBioDyn2gui._sim_pause = false
+	else:
+		NetBioDyn2gui._sim_pause = true
+		
+func _on_BtnStop_pressed() -> void:
+	NetBioDyn2gui._sim_play = false
+	NetBioDyn2gui._sim_pause = false
+	NetBioDyn2gui._sim_step = false
+	# TODO : Reload initial state
+	# ...
 
 # ************************************************************
 #                           Utilities                        *
@@ -557,11 +587,18 @@ func behav_script_reaction(R1:String, R2:String, proba:String, P1:String, P2:Str
 	return """
 extends Node
 # Reaction
+func test_col(var agent:RigidBody) -> void:
+	var collision = agent.get_colliding_bodies()
+	if collision.size() > 0:
+		print_debug("!")
+
 func step(agent) -> void:
 	var proba:float = """+proba+"""
 	var alea:float = rand_range(0,100)
 	#print_debug(str("alea=", alea, ", proba=", proba))
+	test_col(agent)
 	if alea < proba:
+		#print_debug(test(agent))
 		#if agent.is_queued_for_deletion() == false && (agent.get_meta("name") == '"""+R1+"""' || agent.is_in_group('"""+R1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe
 		if  (agent.get_meta("name") == "aa" || agent.is_in_group("aa")  ) : # R1 n'est pas déjà détruit et il appartient au bon groupe
 			#print("DEAD")
@@ -572,36 +609,9 @@ func step(agent) -> void:
 # WORK in PROGRESS...
 # ************************************************
 
-
-
-# ************************************************
-# SIMULATOR CONTROLS
-# ************************************************
-var _sim_play: bool  = false
-var _sim_pause:bool  = false
-var _sim_step: bool  = false
-
-func _on_BtnPlay_pressed() -> void:
-	# TODO : Save initial state
-	# ...
-	NetBioDyn2gui._sim_play = true
-	NetBioDyn2gui._sim_pause = false
-	NetBioDyn2gui._sim_step = false
-	
-func _on_BtnStep_pressed() -> void:
-	NetBioDyn2gui._sim_play = true
-	NetBioDyn2gui._sim_pause = true
-	NetBioDyn2gui._sim_step = true
-	
-func _on_BtnPause_pressed() -> void:
-	if NetBioDyn2gui._sim_pause == true:
-		NetBioDyn2gui._sim_pause = false
+func test(var agent:RigidBody) -> String:
+	var collision = agent.get_colliding_bodies()
+	if collision.size() > 0:
+		return "!"
 	else:
-		NetBioDyn2gui._sim_pause = true
-		
-func _on_BtnStop_pressed() -> void:
-	NetBioDyn2gui._sim_play = false
-	NetBioDyn2gui._sim_pause = false
-	NetBioDyn2gui._sim_step = false
-	# TODO : Reload initial state
-	# ...
+		return ""

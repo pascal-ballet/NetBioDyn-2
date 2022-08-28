@@ -31,4 +31,10 @@ func _process(delta):
 	for behav in get_children():
 		for entity in node_agents.get_children(): #ou bien for agt in get_all_from_group("Virus"):
 			behav.step(entity) #on applique le comportement behav sur l'agent agt
+
 	step = step + 1
+
+# ************************************************
+# WORK in PROGRESS...
+# ************************************************
+
