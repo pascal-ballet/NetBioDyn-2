@@ -282,7 +282,7 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				entity.visible = true
 				entity.set_gravity_scale(0)
 				n_entities.add_child(entity)
-				entity.set_meta(name, rb.name)
+				entity.set_meta("name", rb.name)
 				entity.global_transform.origin = cursorPos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
 				# to be saved as scene, the owner is the simulation "root" node
 				#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
@@ -332,13 +332,7 @@ func addBehavReaction() -> void:
 	
 	# Set default Script
 	var script:GDScript = GDScript.new()
-	script.source_code = """
-extends Node
-
-# Reaction
-func step(agent) -> void:
-	pass
-"""
+	script.source_code = behav_script_default()
 	script.reload()
 	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
 
@@ -566,7 +560,7 @@ extends Node
 func step(agent) -> void:
 	var proba:float = """+proba+"""
 	var alea:float = rand_range(0,100)
-	print_debug(str("alea=", alea, ", proba=", proba))
+	#print_debug(str("alea=", alea, ", proba=", proba))
 	if alea < proba:
 		#if agent.is_queued_for_deletion() == false && (agent.get_meta("name") == '"""+R1+"""' || agent.is_in_group('"""+R1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe
 		if  (agent.get_meta("name") == "aa" || agent.is_in_group("aa")  ) : # R1 n'est pas déjà détruit et il appartient au bon groupe
@@ -579,3 +573,26 @@ func step(agent) -> void:
 # ************************************************
 
 
+
+# ************************************************
+# SIMULATOR CONTROL
+# ************************************************
+var simu_play:bool = false
+var simu_pause:bool = false
+var simu_step:bool = false
+
+func _on_BtnPlay_pressed() -> void:
+	# TODO : Save initial state
+	# ...
+	simu_play = true
+	
+func _on_BtnStep_pressed() -> void:
+	simu_step = true
+	
+func _on_BtnPause_pressed() -> void:
+	simu_pause = !simu_pause
+	
+func _on_BtnStop_pressed() -> void:
+	simu_play = false
+	# TODO : Reload initial state
+	# ...
