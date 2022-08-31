@@ -275,19 +275,23 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				var to = camera.project_ray_normal(event.position) * 100
 				var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
 				#print(cursorPos)
-				# Spawn the new entity
-				var n_entities:Node = get_node("%Environment")
-				var rb:RigidBody = find_node(_selected_name)
-				var entity:RigidBody  = clone_rigid_body_agent(rb) #load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
-				entity.visible = true
-				entity.set_gravity_scale(0)
-				n_entities.add_child(entity)
-				entity.set_meta("name", rb.name)
-				entity.global_transform.origin = cursorPos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
-				# to be saved as scene, the owner is the simulation "root" node
-				#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
-				#   - see https://github.com/godotengine/godot-proposals/issues/390
-				entity.set_owner(get_node("%Simulator"))
+				spawn_agent(_selected_name, cursorPos)
+
+func spawn_agent(var name:String, var pos:Vector3) -> void:
+	# Spawn the new entity
+	var n_agents:Node = get_node("%Environment")
+	var rb:RigidBody = find_node(name)
+	var agent:RigidBody  = clone_rigid_body_agent(rb) #load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
+	agent.visible = true
+	agent.set_gravity_scale(0)
+	n_agents.add_child(agent)
+	agent.set_meta("name", rb.name)
+	agent.global_transform.origin = pos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
+	# to be saved as scene, the owner is the simulation "root" node
+	#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
+	#   - see https://github.com/godotengine/godot-proposals/issues/390
+	agent.set_owner(get_node("%Simulator"))
+
 
 # Show relevant property TAB ------------------------------
 func _on_Button_pressed() -> void:
@@ -587,31 +591,95 @@ func behav_script_reaction(R1:String, R2:String, proba:String, P1:String, P2:Str
 	return """
 extends Node
 # Reaction
-func test_col(var agent:RigidBody) -> void:
-	var collision = agent.get_colliding_bodies()
-	if collision.size() > 0:
-		print_debug("!")
-
 func step(agent) -> void:
 	var proba:float = """+proba+"""
 	var alea:float = rand_range(0,100)
 	#print_debug(str("alea=", alea, ", proba=", proba))
-	test_col(agent)
+	
 	if alea < proba:
-		#print_debug(test(agent))
-		#if agent.is_queued_for_deletion() == false && (agent.get_meta("name") == '"""+R1+"""' || agent.is_in_group('"""+R1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe
-		if  (agent.get_meta("name") == "aa" || agent.is_in_group("aa")  ) : # R1 n'est pas déjà détruit et il appartient au bon groupe
-			#print("DEAD")
-			agent.queue_free()
+		var collision = agent.get_colliding_bodies()
+		if collision.size() > 0:
+			#print_debug(test(agent))
+			#if agent.is_queued_for_deletion() == false && (agent.get_meta("name") == '"""+R1+"""' || agent.is_in_group('"""+R1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe
+			if  (agent.get_meta("name") == "aa" || agent.is_in_group("aa")  ) : # R1 n'est pas déjà détruit et il appartient au bon groupe
+				#print("DEAD")
+				agent.queue_free()
 """
 
 # ************************************************
 # WORK in PROGRESS...
 # ************************************************
+var MAX_AGENTS:int = 50
 
-func test(var agent:RigidBody) -> String:
-	var collision = agent.get_colliding_bodies()
-	if collision.size() > 0:
-		return "!"
-	else:
-		return ""
+func test_reaction(agent,                    r1:String, r2:String, p:String, p1:String, p2:String) -> void:
+	var proba:float = float(p)
+	var alea:float = rand_range(0,100)
+	#print_debug(str("alea=", alea, ", proba=", proba))
+	if alea < proba:
+		var R1 = agent
+		var collision = agent.get_colliding_bodies()
+		if collision.size() > 0 && agent.is_queued_for_deletion() == false && (agent.get_meta("name") == '"""+R1+"""' || agent.is_in_group('"""+R1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print ("nb=", nb_agents)
+			#print("R1 is in gp : ", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if r2 == "0": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if p1 != "0" && p1 != "R1" && p1 != "R2":
+					var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = "0" donc ok pas de R2 qui compte
+					P1 = spawn_agent(p1, Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
+					P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P1)
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut "0" aussi)
+				if p1 == "0" || p1 == "R2":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if p2 != "0" && p2 != "R1" && p2 != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = spawn_agent(p2, Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if p2 == "R1" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print("R1 is colliding")
+				var R2 = bodies[0]
+				if R2.is_queued_for_deletion() == false && R2.is_in_group(r2): # R2 n'est pas détruit et appartient au bon groupe
+					# R1 CHANGE en p1
+					if p1 != "0" && p1 != "R1" && p1 != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						var P1 = spawn_agent(p1, Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R1 est ENLEVE
+					if p1 == "0": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if p1 == "R2": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if p2 != "0" && p2 != "R1" && p2 != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						var P2 = spawn_agent(p2, Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# R2 est ENLEVE
+					if p2 == "0": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if p2 == "R1": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+
