@@ -1,4 +1,13 @@
-# This class is the Controler in the MVC
+# **********************************************************
+# NetBioDyn 2
+# Pascal BALLET
+# pascal.ballet@univ-brest.fr
+# University of Brest
+# MIT Licence
+# **********************************************************
+
+# MVC
+# This class is the Controler
 # The View is scene called ScBioDyn2.tscn
 # The Model is the 3D scene
 
@@ -37,9 +46,9 @@ func _process(delta):
 	# PLAY ONE step
 	if _step % 1 == 0:	
 		updateStatus()
-	for behav in get_children():
-		for agent in _node_agents.get_children(): #ou bien for agt in get_all_from_group("Virus"):
-			behav.step(agent) #on applique le comportement behav sur l'agent agt
+	for behav in _node_behavs.get_children():
+		for agent in _node_agents.get_children(): # ou bien for agt in get_all_from_group("Virus"):
+			behav.action(agent) # on applique le comportement behav sur l'agent agt
 
 	_step = _step + 1
 
@@ -374,6 +383,7 @@ func addBehavReaction() -> void:
 	# Set default Script
 	var script:GDScript = GDScript.new()
 	script.source_code = behav_script_reaction("aa", "0", "0.1", "0", "0")
+	print_debug(script.source_code)
 	script.reload()
 	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
 
@@ -616,54 +626,57 @@ func _on_BtnClose_pressed():
 #                     SCRIPTS for Behaviors                  *
 # ************************************************************
 
+func in_quote(var s:String)->String:
+	return "\""+s+"\""
+
 # Script DEFAULT
 func behav_script_default() -> String:
 	return """
 extends Node
 # Default Behavior
-func step(agent) -> void:
+func action(agent) -> void:
 	pass
 """
 
 # Script REACTION
-func behav_script_reaction(R1:String, R2:String, proba:String, P1:String, P2:String) -> String:
+func behav_script_reaction(r1:String, r2:String, p:String, p1:String, p2:String) -> String:
 	return """
 extends Node
 
 # Reaction
 var MAX_AGENTS:int = 50
 
-func test_reaction(agent,                    r1:String, r2:String, p:String, p1:String, p2:String) -> void:
-	var proba:float = float(p)
+func action(agent) -> void:
+	var proba:float = float("""+p+""")
 	var alea:float = rand_range(0,100)
 	#print_debug(str("alea=", alea, ", proba=", proba))
 	if alea < proba:
 		var R1 = agent
 		var collision = agent.get_colliding_bodies()
-		if collision.size() > 0 && agent.is_queued_for_deletion() == false && (agent.get_meta("name") == '"""+R1+"""' || agent.is_in_group('"""+R1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+		if collision.size() > 0 && agent.is_queued_for_deletion() == false && (agent.get_meta("name") == '"""+r1+"""' || agent.is_in_group('"""+r1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
 			#var R1:Spatial 		= collision[0]
 			var nb_agents:int 	= R1.get_parent().get_child_count()
 			#print ("nb=", nb_agents)
 			#print("R1 is in gp : ", inputs[2])
 			# Cas avec R2 == 0 ########################################################################################
-			if r2 == "0": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+			if """+in_quote(r2)+""" == "0": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
 				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
-				if p1 != "0" && p1 != "R1" && p1 != "R2":
+				if """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2":
 					var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = "0" donc ok pas de R2 qui compte
-					P1 = NetBioDyn2gui.spawn_agent(p1, Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
+					P1 = NetBioDyn2gui.spawn_agent("""+in_quote(p1)+""", Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
 					P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 					R1.get_parent().add_child(P1)
 					R1.queue_free()
 				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut "0" aussi)
-				if p1 == "0" || p1 == "R2":
+				if """+in_quote(p1)+""" == "0" || """+in_quote(p1)+""" == "R2":
 					R1.queue_free()
 				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
-				if p2 != "0" && p2 != "R1" && p2 != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
-					var P2 = NetBioDyn2gui.spawn_agent(p2, Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
+				if """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = NetBioDyn2gui.spawn_agent("""+in_quote(p2)+""", Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 					R1.get_parent().add_child(P2)
 				# si P2 MIME R1 il APPARAIT du meme type que R1
-				if p2 == "R1" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+				if """+in_quote(p2)+""" == "R1" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
 					var P2 = R1.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 					R1.get_parent().add_child(P2)
@@ -673,33 +686,33 @@ func test_reaction(agent,                    r1:String, r2:String, p:String, p1:
 			if bodies.size() > 0:
 				#print("R1 is colliding")
 				var R2 = bodies[0]
-				if R2.is_queued_for_deletion() == false && R2.is_in_group(r2): # R2 n'est pas détruit et appartient au bon groupe
+				if R2.is_queued_for_deletion() == false && R2.is_in_group("""+in_quote(r2)+"""): # R2 n'est pas détruit et appartient au bon groupe
 					# R1 CHANGE en p1
-					if p1 != "0" && p1 != "R1" && p1 != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
-						var P1 = NetBioDyn2gui.spawn_agent(p1, Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
+					if """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						var P1 = NetBioDyn2gui.spawn_agent("""+in_quote(p1)+""", Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
 						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 						R1.get_parent().add_child(P1)
 						R1.queue_free()
 					# R1 est ENLEVE
-					if p1 == "0": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+					if """+in_quote(p1)+""" == "0": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
 						R1.queue_free()
 					# R1/P1 MIME R2
-					if p1 == "R2": # si R1 devient P1 mais du meme type que R2
+					if """+in_quote(p1)+""" == "R2": # si R1 devient P1 mais du meme type que R2
 						var P1 = R2.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
 						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 						R1.get_parent().add_child(P1)
 						R1.queue_free()
 					# R2 CHANGE en p2
-					if p2 != "0" && p2 != "R1" && p2 != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
-						var P2 = NetBioDyn2gui.spawn_agent(p2, Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
+					if """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						var P2 = NetBioDyn2gui.spawn_agent("""+in_quote(p2)+""", Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
 						R1.get_parent().add_child(P2)
 						R2.queue_free()
 					# R2 est ENLEVE
-					if p2 == "0": # si R2 est enlevé tout simplement
+					if """+in_quote(p2)+""" == "0": # si R2 est enlevé tout simplement
 						R2.queue_free()
 					# R1/P1 MIME R2
-					if p2 == "R1": # si R2 devient P2 mais du meme type que R1
+					if """+in_quote(p2)+""" == "R1": # si R2 devient P2 mais du meme type que R1
 						var P2 = R1.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
 						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
 						R1.get_parent().add_child(P2)
@@ -783,4 +796,6 @@ func test_reaction(agent,                    r1:String, r2:String, p:String, p1:
 						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
 						R1.get_parent().add_child(P2)
 						R2.queue_free()
+
+# Reaction
 
