@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd" type="Script" id=1]
 [ext_resource path="res://bg_focus.tres" type="StyleBox" id=2]
@@ -6,7 +6,6 @@
 [ext_resource path="res://addons/NetBioDyn-2/8-Images/BtnPlay.png" type="Texture" id=4]
 [ext_resource path="res://addons/NetBioDyn-2/8-Images/BtnPause.png" type="Texture" id=5]
 [ext_resource path="res://addons/NetBioDyn-2/8-Images/BtnStop.png" type="Texture" id=6]
-[ext_resource path="res://addons/NetBioDyn-2/7-Engine/Scheduler.gd" type="Script" id=7]
 
 [sub_resource type="Environment" id=1]
 background_mode = 1
@@ -396,7 +395,6 @@ unique_name_in_owner = true
 
 [node name="Behaviors" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 unique_name_in_owner = true
-script = ExtResource( 7 )
 
 [node name="Groups" type="Node" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 
