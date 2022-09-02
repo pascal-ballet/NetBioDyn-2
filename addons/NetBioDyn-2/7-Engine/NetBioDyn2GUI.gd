@@ -186,10 +186,10 @@ func _on_AgentName_focus_exited() -> void:
 		# Agent prototype
 		var rb:RigidBody = find_node(_selected_name) # change in ENV
 		rb.name = new_name
-		# Agent instances		
+		# Agent instances
 		for agt in _node_env.get_children():
-			if agt.name == _selected_name:
-				agt.name = new_name
+			if agt.get_meta("Name") == _selected_name:
+				agt.set_meta("Name", new_name)
 		_selected_name = new_name
 	else: # the new name EXISTS => cannot be changed
 		OS.alert("Ce nom est déjà attribué", "Information")
