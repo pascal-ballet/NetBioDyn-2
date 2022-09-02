@@ -484,7 +484,6 @@ text = "Aucun objets sélectionné."
 valign = 1
 
 [node name="Agent" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -627,7 +626,7 @@ text = "Valeur initiale"
 unique_name_in_owner = true
 margin_top = 144.0
 margin_right = 292.0
-margin_bottom = 536.0
+margin_bottom = 526.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -664,6 +663,7 @@ margin_bottom = 24.0
 text = "-"
 
 [node name="Behavior_Reaction" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0

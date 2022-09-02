@@ -13,21 +13,23 @@
 
 extends Node
 
-var _listAgents:ItemList
+# Param Tabs N°
 enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION,BEHAVIOR_RANDOM_FORCE, GRID, ENV }
 
-var _node_agents	:Node
-var _node_behavs	:Node
-var _node_status	:Label
+# **********************************************************
+#                        KEY NODES                         *
+# **********************************************************
+# 2D
+onready var _listAgents:ItemList 	= find_node("ListAgents")
+# 3D
+onready var _node_env	:Node 	= find_node("Environment")
+onready var _node_behavs	:Node 	= find_node("Behaviors")
+onready var _node_status	:Label 	= find_node("LabelStatusbar")
 var _step:int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# Tree of entities
-	_listAgents = find_node("ListAgents", true, true)
-	_node_agents 	= get_node("%Environment")
-	_node_behavs 	= get_node("%Behaviors")
-	_node_status 	= get_node("%LabelStatusbar")
+	pass
 
 # **********************************************************
 #                        SCHEDULER                         *
@@ -47,13 +49,13 @@ func _process(delta):
 	if _step % 1 == 0:	
 		updateStatus()
 	for behav in _node_behavs.get_children():
-		for agent in _node_agents.get_children(): # ou bien for agt in get_all_from_group("Virus"):
+		for agent in _node_env.get_children(): # ou bien for agt in get_all_from_group("Virus"):
 			behav.action(self, agent) # on applique le comportement behav sur l'agent agt
 
 	_step = _step + 1
 
 func updateStatus()->void:
-	var nb_agents:int = _node_agents.get_child_count()
+	var nb_agents:int = _node_env.get_child_count()
 	var nb_behavs:int = _node_behavs.get_child_count()
 	_node_status.text = str("step=", _step, " | Nb agents=", nb_agents, " | Nb behaviors=", nb_behavs)
 
@@ -181,8 +183,13 @@ func _on_AgentName_focus_exited() -> void:
 		var pos = sel[0] # pos of agent in list
 		_listAgents.set_item_text(pos, new_name) # set new name
 		# 3D ENV	
+		# Agent prototype
 		var rb:RigidBody = find_node(_selected_name) # change in ENV
 		rb.name = new_name
+		# Agent instances		
+		for agt in _node_env.get_children():
+			if agt.name == _selected_name:
+				agt.name = new_name
 		_selected_name = new_name
 	else: # the new name EXISTS => cannot be changed
 		OS.alert("Ce nom est déjà attribué", "Information")
@@ -340,7 +347,7 @@ func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	# to be saved as scene, the owner is the simulation "root" node
 	#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
 	#   - see https://github.com/godotengine/godot-proposals/issues/390
-	agent.set_owner(get_node("%Simulator"))
+	#agent.set_owner(get_node("%Simulator"))
 
 
 # Show relevant property TAB ------------------------------
