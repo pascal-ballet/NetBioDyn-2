@@ -433,7 +433,6 @@ func _on_ListBehav_item_selected(index: int) -> void:
 	var behav:Node			= get_selected_behavior()
 	# Find the Behavior Type
 	if behav.get_meta("Name") == "Reaction":
-		# 
 		var tabs:TabContainer = get_node("%TabContainer")
 		tabs.current_tab = Prop.BEHAVIOR_REACTION
 		# Update GUI Behavior
@@ -445,6 +444,15 @@ func _on_ListBehav_item_selected(index: int) -> void:
 		get_node("%ParamBehavP1").set_text(behav.get_meta("P1"))
 		get_node("%ParamBehavP2").set_text(behav.get_meta("P2"))
 
+	if behav.get_meta("Name") == "Random Force":
+		var tabs:TabContainer = get_node("%TabContainer")
+		tabs.current_tab = Prop.BEHAVIOR_RANDOM_FORCE
+		# Update GUI Behavior
+		# Reaction: Set behavior Name
+		get_node("%BehavRndFName").set_text(behav.get_meta("Name"))
+		get_node("%BehavRndFDir").set_text(behav.get_meta("Dir"))
+		get_node("%BehavRndFAngle").set_text(behav.get_meta("Angle"))
+		get_node("%BehavRndFIntensity").set_text(behav.get_meta("Intensity"))
 	
 # Update behavior : GUI => META
 func behavior_GUI_to_META() -> void:
