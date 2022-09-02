@@ -862,7 +862,8 @@ size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="ParamBehavName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1"]
+[node name="BehavRndFName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1"]
+unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
@@ -886,7 +887,8 @@ size_flags_horizontal = 3
 text = "Direction"
 valign = 1
 
-[node name="ParamBehavR1" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4"]
+[node name="BehavRndFDir" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4"]
+unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
@@ -906,7 +908,8 @@ size_flags_horizontal = 3
 text = "Angle ouverture"
 valign = 1
 
-[node name="ParamBehavR2" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5"]
+[node name="BehavRndFAngle" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5"]
+unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
@@ -926,7 +929,7 @@ size_flags_horizontal = 3
 text = "Intensité"
 valign = 1
 
-[node name="ParamBehavProba" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2"]
+[node name="BehavRndFIntensity" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
@@ -1216,12 +1219,12 @@ items = [ "Reaction", null, 0, false, false, 0, 0, null, "", false, "Force Aléa
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp6/ParamBehavP1" to="." method="_on_ParamBehavP1_text_entered"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp7/ParamBehavP2" to="." method="_on_ParamBehavP2_focus_exited"]
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp7/ParamBehavP2" to="." method="_on_ParamBehavP2_text_entered"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/ParamBehavName" to="." method="_on_ParamBehavName_focus_exited"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/ParamBehavName" to="." method="_on_ParamBehavName_text_entered"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/ParamBehavR1" to="." method="_on_ParamBehavR1_focus_exited"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/ParamBehavR1" to="." method="_on_ParamBehavR1_text_entered"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5/ParamBehavR2" to="." method="_on_ParamBehavR2_focus_exited"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5/ParamBehavR2" to="." method="_on_ParamBehavR2_text_entered"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2/ParamBehavProba" to="." method="_on_ParamBehavProba_focus_exited"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2/ParamBehavProba" to="." method="_on_ParamBehavProba_text_entered"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/BehavRndFName" to="." method="_on_ParamBehavName_focus_exited"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/BehavRndFName" to="." method="_on_ParamBehavName_text_entered"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/BehavRndFDir" to="." method="_on_ParamBehavR1_focus_exited"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/BehavRndFDir" to="." method="_on_ParamBehavR1_text_entered"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5/BehavRndFAngle" to="." method="_on_ParamBehavR2_focus_exited"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5/BehavRndFAngle" to="." method="_on_ParamBehavR2_text_entered"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2/BehavRndFIntensity" to="." method="_on_ParamBehavProba_focus_exited"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2/BehavRndFIntensity" to="." method="_on_ParamBehavProba_text_entered"]
 [connection signal="index_pressed" from="PopupMenu" to="." method="_on_PopupMenu_index_pressed"]
