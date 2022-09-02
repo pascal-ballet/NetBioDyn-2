@@ -116,7 +116,6 @@ func _on_ToolPlusAgent_pressed() -> void:
 	#_selected_name = name
 	addAgent(name)
 
-
 # Remove Agent -----------------------------
 func _on_BtnDelAgent_pressed() -> void:
 	var lst:ItemList = _listAgents
@@ -409,23 +408,25 @@ func addBehavRandomForce() -> void:
 	lst.set_item_metadata(lst.get_item_count()-1, "Random Force") # type of the item
 	
 	# Create default Behavior Type in 3D Scene -------------------	
+	var agents:String = "Agent-1"
 	var dir:String = "0"
 	var angle:String = "360"
 	var intensity:String = "1"
 	
 		# Set META
 	var node:Node = Node.new()
-	node.set_meta("Name", "Random force")
+	node.set_meta("Name", "Random Force")
+	node.set_meta("Agents", agents)
 	node.set_meta("Dir", dir)
 	node.set_meta("Angle", angle)
 	node.set_meta("Intensity", intensity)
 	
 	# Set default Script
 	var script:GDScript = GDScript.new()
-	script.source_code = behav_script_random_force("Agent-1", dir, angle, intensity)
+	script.source_code = behav_script_random_force(agents, dir, angle, intensity)
 	print_debug(script.source_code)
 	script.reload()
-	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
+	node.set_script(script)
 
 	# Add Behavior to Simulator
 	var node_behaviors:Node = get_node("%Behaviors")
@@ -440,9 +441,10 @@ func _on_BtnDelBehav_pressed() -> void:
 
 # Select behavior : META => GUI
 func _on_ListBehav_item_selected(index: int) -> void:
-	var behav:Node			= get_selected_behavior()
+	var behav:Node = get_selected_behavior()
+	var type = behav.get_meta("Name") 
 	# Find the Behavior Type
-	if behav.get_meta("Name") == "Reaction":
+	if type == "Reaction":
 		var tabs:TabContainer = get_node("%TabContainer")
 		tabs.current_tab = Prop.BEHAVIOR_REACTION
 		# Update GUI Behavior
@@ -454,12 +456,13 @@ func _on_ListBehav_item_selected(index: int) -> void:
 		get_node("%ParamBehavP1").set_text(behav.get_meta("P1"))
 		get_node("%ParamBehavP2").set_text(behav.get_meta("P2"))
 
-	if behav.get_meta("Name") == "Random Force":
+	if type == "Random Force":
 		var tabs:TabContainer = get_node("%TabContainer")
 		tabs.current_tab = Prop.BEHAVIOR_RANDOM_FORCE
 		# Update GUI Behavior
-		# Reaction: Set behavior Name
+		# Random Force: Set behavior Name
 		get_node("%BehavRndFName").set_text(behav.get_meta("Name"))
+		get_node("%BehavRndFAgents").set_text(behav.get_meta("Agents"))
 		get_node("%BehavRndFDir").set_text(behav.get_meta("Dir"))
 		get_node("%BehavRndFAngle").set_text(behav.get_meta("Angle"))
 		get_node("%BehavRndFIntensity").set_text(behav.get_meta("Intensity"))
@@ -472,8 +475,9 @@ func behavior_GUI_to_META() -> void:
 		return
 
 	var behav:Node = get_selected_behavior()
+	var type:String = behav.get_meta("Name")
 	# Find the Behavior Type
-	if behav.get_meta("Name") == "Reaction":
+	if type == "Reaction":
 		# Set the Name in the GUI List
 		var pos:int =sel[0]
 		lst.set_item_text(pos, get_node("%ParamBehavName").get_text())
@@ -497,29 +501,31 @@ func behavior_GUI_to_META() -> void:
 		script.source_code = behav_script_reaction(R1, R2, proba, P1, P2)
 		print_debug(script.source_code)
 		script.reload()
-		behav.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
+		behav.set_script(script)
 
-	if behav.get_meta("Name") == "Random force":
+	if type == "Random Force":
 		# Set the Name in the GUI List
 		var pos:int =sel[0]
 		lst.set_item_text(pos, get_node("%ParamBehavName").get_text())
 		
 		# Update behavior GUI => META
-		var name:String = get_node("%BehavRndFName").get_text()
-		var dir:String = get_node("%BehavRndFDir").get_text()
-		var angle:String = get_node("%BehavRndFAngle").get_text()
+		var name:String 		= get_node("%BehavRndFName").get_text()
+		var agents:String 	= get_node("%BehavRndFAgents").get_text()
+		var dir:String 		= get_node("%BehavRndFDir").get_text()
+		var angle:String 	= get_node("%BehavRndFAngle").get_text()
 		var intensity:String = get_node("%BehavRndFIntensity").get_text()
 		behav.set_meta("Name", name)
+		behav.set_meta("Agents", agents)
 		behav.set_meta("Dir", dir)
 		behav.set_meta("Angle", angle)
 		behav.set_meta("Intensity", intensity)
 		
 		# Set Script
 		var script:GDScript = GDScript.new()
-		script.source_code = behav_script_reaction(R1, R2, proba, P1, P2)
+		script.source_code = behav_script_random_force(agents, dir, angle, intensity)
 		print_debug(script.source_code)
 		script.reload()
-		behav.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
+		behav.set_script(script)
 
 	#print_debug(param_name)
 	#print_debug(param_value)
@@ -695,14 +701,14 @@ func action(tree, agent) -> void:
 """
 
 # Script RANDOM FORCE
-func behav_script_random_force(agent:String, dir:float, angle:float, intensity:float) -> String:
+func behav_script_random_force(agents:String, dir:String, angle:String, intensity:String) -> String:
 	return """
 extends Node
 # Default Behavior
 func action(tree, agent) -> void:
-	if agent.get_meta("name") == """+in_quote(agent)+""" || agent.is_in_group("""+in_quote(agent)+"""):
-		var angle:float = randf() * """+intensity+""" 6.28318530718 / 360.0 - """ +intensity/2.0+ """
-		agent.apply_impulse(Vector3(0,0,0), Vector3("""+String(F)+"""*cos(angle),0,"""+String(F)+"""*sin(angle)))
+	if agent.get_meta("name") == """+in_quote(agents)+""" || agent.is_in_group("""+in_quote(agents)+"""):
+		var angle:float = randf() * """+angle+""" * 6.28318530718 / 360.0 - """ +angle+ """/2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3("""+String(intensity)+"""*cos(angle),0,"""+String(intensity)+"""*sin(angle)))
 """
 
 
