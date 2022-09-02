@@ -370,19 +370,24 @@ func addBehavReaction() -> void:
 	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
 	
 	# Create default Behavior Type in 3D Scene -------------------	
+	var r1:String = "Agent-0"
+	var r2:String = "0"
+	var p:String = "0.1"
+	var p1:String = "0"
+	var p2:String = "0"
 	
-	# Set META
+		# Set META
 	var node:Node = Node.new()
 	node.set_meta("Name", "Reaction")
-	node.set_meta("R1", "agent/groupe")
-	node.set_meta("R2", "agent/groupe/0")
-	node.set_meta("p", "100")
-	node.set_meta("P1", "agent/R1/R2/0")
-	node.set_meta("P2", "agent/R1/R2/0")
+	node.set_meta("R1", r1)
+	node.set_meta("R2", r2)
+	node.set_meta("p", p)
+	node.set_meta("P1", p1)
+	node.set_meta("P2", p2)
 	
 	# Set default Script
 	var script:GDScript = GDScript.new()
-	script.source_code = behav_script_reaction("aa", "0", "0.1", "0", "0")
+	script.source_code = behav_script_reaction(r1, r2, p, p1, p2)
 	print_debug(script.source_code)
 	script.reload()
 	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
@@ -646,14 +651,13 @@ extends Node
 # Reaction
 var MAX_AGENTS:int = 50
 
-func action(agent) -> void:
-	var proba:float = float("""+p+""")
+func action(R1) -> void:
+	var proba:float = """+p+"""
 	var alea:float = rand_range(0,100)
 	#print_debug(str("alea=", alea, ", proba=", proba))
 	if alea < proba:
-		var R1 = agent
-		var collision = agent.get_colliding_bodies()
-		if collision.size() > 0 && agent.is_queued_for_deletion() == false && (agent.get_meta("name") == '"""+r1+"""' || agent.is_in_group('"""+r1+"""')   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+		#print (str("proba ok:",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta("name") == """+in_quote(r1)+""" || R1.is_in_group("""+in_quote(r1)+""")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
 			#var R1:Spatial 		= collision[0]
 			var nb_agents:int 	= R1.get_parent().get_child_count()
 			#print ("nb=", nb_agents)
@@ -684,9 +688,10 @@ func action(agent) -> void:
 			# Cas avec un 2nd réactif ########################################################################################
 			var bodies = R1.get_colliding_bodies()
 			if bodies.size() > 0:
+				print (str("collision size:",bodies.size() ))
 				#print("R1 is colliding")
 				var R2 = bodies[0]
-				if R2.is_queued_for_deletion() == false && R2.is_in_group("""+in_quote(r2)+"""): # R2 n'est pas détruit et appartient au bon groupe
+				if R2.is_queued_for_deletion() == false && (R2.get_meta("name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")): # R2 n'est pas détruit et appartient au bon groupe
 					# R1 CHANGE en p1
 					if """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
 						var P1 = NetBioDyn2gui.spawn_agent("""+in_quote(p1)+""", Vector3(0,0,0) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
