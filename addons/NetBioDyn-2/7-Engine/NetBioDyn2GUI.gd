@@ -185,7 +185,7 @@ func _on_AgentName_focus_exited() -> void:
 		rb.name = new_name
 		_selected_name = new_name
 	else: # the new name EXISTS => cannot be changed
-		OS.alert("Ce nom est deja attribue", "Information")
+		OS.alert("Ce nom est déjà attribué", "Information")
 		line_edit.text = _selected_name
 		
 func _on_AgentName_text_entered(new_text: String) -> void:
@@ -335,7 +335,7 @@ func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	agent.visible = true
 	agent.set_gravity_scale(0)
 	n_agents.add_child(agent)
-	agent.set_meta("name", rb.name)
+	agent.set_meta("Name", rb.name)
 	agent.global_transform.origin = pos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
 	# to be saved as scene, the owner is the simulation "root" node
 	#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
@@ -382,7 +382,8 @@ func addBehavReaction() -> void:
 	
 		# Set META
 	var node:Node = Node.new()
-	node.set_meta("Name", "Reaction")
+	node.set_meta("Type", "Reaction")
+	node.set_meta("Name", "au choix")
 	node.set_meta("R1", r1)
 	node.set_meta("R2", r2)
 	node.set_meta("p", p)
@@ -415,7 +416,8 @@ func addBehavRandomForce() -> void:
 	
 		# Set META
 	var node:Node = Node.new()
-	node.set_meta("Name", "Random Force")
+	node.set_meta("Type", "Random Force")
+	node.set_meta("Name", "Au choix")
 	node.set_meta("Agents", agents)
 	node.set_meta("Dir", dir)
 	node.set_meta("Angle", angle)
@@ -442,7 +444,7 @@ func _on_BtnDelBehav_pressed() -> void:
 # Select behavior : META => GUI
 func _on_ListBehav_item_selected(index: int) -> void:
 	var behav:Node = get_selected_behavior()
-	var type = behav.get_meta("Name") 
+	var type = behav.get_meta("Type")
 	# Find the Behavior Type
 	if type == "Reaction":
 		var tabs:TabContainer = get_node("%TabContainer")
@@ -475,7 +477,7 @@ func behavior_GUI_to_META() -> void:
 		return
 
 	var behav:Node = get_selected_behavior()
-	var type:String = behav.get_meta("Name")
+	var type:String = behav.get_meta("Type")
 	# Find the Behavior Type
 	if type == "Reaction":
 		# Set the Name in the GUI List
@@ -506,7 +508,7 @@ func behavior_GUI_to_META() -> void:
 	if type == "Random Force":
 		# Set the Name in the GUI List
 		var pos:int =sel[0]
-		lst.set_item_text(pos, get_node("%ParamBehavName").get_text())
+		lst.set_item_text(pos, get_node("%BehavRndFName").get_text())
 		
 		# Update behavior GUI => META
 		var name:String 		= get_node("%BehavRndFName").get_text()
@@ -531,29 +533,10 @@ func behavior_GUI_to_META() -> void:
 	#print_debug(param_value)
 	#print_debug(behav)
 
-func _on_ParamBehavName_text_entered(new_text: String) -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavName_focus_exited() -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavR1_text_entered(new_text: String) -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavR1_focus_exited() -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavR2_text_entered(new_text: String) -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavR2_focus_exited() -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavProba_text_entered(new_text: String) -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavProba_focus_exited() -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavP1_text_entered(new_text: String) -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavP1_focus_exited() -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavP2_text_entered(new_text: String) -> void:
-	behavior_GUI_to_META()
-func _on_ParamBehavP2_focus_exited() -> void:
+# ************************************************************
+#                          Signals                           *
+# ************************************************************
+func GUI_param_updated(new_text: String="")->void:
 	behavior_GUI_to_META()
 
 # ************************************************************
@@ -706,7 +689,7 @@ func behav_script_random_force(agents:String, dir:String, angle:String, intensit
 extends Node
 # Default Behavior
 func action(tree, agent) -> void:
-	if agent.get_meta("name") == """+in_quote(agents)+""" || agent.is_in_group("""+in_quote(agents)+"""):
+	if agent.get_meta("Name") == """+in_quote(agents)+""" || agent.is_in_group("""+in_quote(agents)+"""):
 		var angle:float = randf() * """+angle+""" * 6.28318530718 / 360.0 - """ +angle+ """/2.0
 		agent.apply_impulse(Vector3(0,0,0), Vector3("""+String(intensity)+"""*cos(angle),0,"""+String(intensity)+"""*sin(angle)))
 """
@@ -726,7 +709,7 @@ func action(tree, R1) -> void:
 	#print_debug(str("alea=", alea, ", proba=", proba))
 	if alea < proba:
 		#print (str("proba ok:",proba))
-		if R1.is_queued_for_deletion() == false && (R1.get_meta("name") == """+in_quote(r1)+""" || R1.is_in_group("""+in_quote(r1)+""")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+		if R1.is_queued_for_deletion() == false && (R1.get_meta("Name") == """+in_quote(r1)+""" || R1.is_in_group("""+in_quote(r1)+""")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
 			#var R1:Spatial 		= collision[0]
 			var nb_agents:int 	= R1.get_parent().get_child_count()
 			#print ("nb=", nb_agents)
@@ -757,7 +740,7 @@ func action(tree, R1) -> void:
 				print (str("collision size:",bodies.size() ))
 				#print("R1 is colliding")
 				var R2 = bodies[0]
-				if R2.is_queued_for_deletion() == false && (R2.get_meta("name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")): # R2 n'est pas détruit et appartient au bon groupe
+				if R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")): # R2 n'est pas détruit et appartient au bon groupe
 					# R1 CHANGE en p1
 					if """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
 						NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p1)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
