@@ -364,8 +364,8 @@ func _on_BtnAddBehav_pressed() -> void:
 func _on_PopupMenu_index_pressed(index: int) -> void:
 	if index == 0: # Create Reaction
 		addBehavReaction()
-	if index == 1: # Create Langevin Force
-		addBehavLangevinForce()
+	if index == 1: # Create Random Force
+		addBehavRandomForce()
 
 # Add REACTION
 func addBehavReaction() -> void:	
@@ -376,10 +376,10 @@ func addBehavReaction() -> void:
 	
 	# Create default Behavior Type in 3D Scene -------------------	
 	var r1:String = "Agent-1"
-	var r2:String = "Agent-2"
-	var p:String = "100"
-	var p1:String = "Agent-3"
-	var p2:String = "Agent-3"
+	var r2:String = "0"
+	var p:String = "0.1"
+	var p1:String = "Agent-1"
+	var p2:String = "Agent-1"
 	
 		# Set META
 	var node:Node = Node.new()
@@ -402,24 +402,23 @@ func addBehavReaction() -> void:
 	node_behaviors.add_child(node)
 
 # Add FORCE ALEATOIRE
-func addBehavLangevinForce() -> void:	
+func addBehavRandomForce() -> void:	
 	# Create new Behavior in GUI --------------------------------
 	var lst:ItemList = get_node("%ListBehav")
 	lst.add_item("Force aléatoire")
-	lst.set_item_metadata(lst.get_item_count()-1, "Langevin") # type of the item
+	lst.set_item_metadata(lst.get_item_count()-1, "Random Force") # type of the item
 	
 	# Create new Behavior Type in 3D Scene -------------------	
 	var script:GDScript = GDScript.new()
-	script.source_code = behav_script_default()
+	script.source_code = behav_script_random_force("Agent-1", 1)
 	script.reload()
 
 	var node:Node = Node.new()
 	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
-	node.set_meta("Name", "Force aléatoire")
+	node.set_meta("Name", "Random Force")
 	
 	var node_behaviors:Node = get_node("%Behaviors")
 	node_behaviors.add_child(node)
-
 
 # Remove behavior
 func _on_BtnDelBehav_pressed() -> void:
@@ -647,6 +646,18 @@ extends Node
 func action(tree, agent) -> void:
 	pass
 """
+
+# Script RANDOM FORCE
+func behav_script_random_force(agent:String, F:float) -> String:
+	return """
+extends Node
+# Default Behavior
+func action(tree, agent) -> void:
+	if agent.get_meta("name") == """+in_quote(agent)+""" || agent.is_in_group("""+in_quote(agent)+"""):
+		var angle:float = randf()*6.28318530718
+		agent.apply_impulse(Vector3(0,0,0), Vector3("""+String(F)+"""*cos(angle),0,"""+String(F)+"""*sin(angle)))
+"""
+
 
 # Script REACTION
 func behav_script_reaction(r1:String, r2:String, p:String, p1:String, p2:String) -> String:
