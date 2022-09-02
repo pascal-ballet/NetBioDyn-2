@@ -14,7 +14,7 @@
 extends Node
 
 var _listAgents:ItemList
-enum Prop {EMPTY, ENTITY, BEHAVIOR, GRID, ENV }
+enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION,BEHAVIOR_RANDOM_FORCE, GRID, ENV }
 
 var _node_agents	:Node
 var _node_behavs	:Node
@@ -429,17 +429,22 @@ func _on_BtnDelBehav_pressed() -> void:
 
 # Select behavior : META => GUI
 func _on_ListBehav_item_selected(index: int) -> void:
-	var tabs:TabContainer = get_node("%TabContainer")
-	tabs.current_tab = Prop.BEHAVIOR
-	# Update GUI Behavior
+		
 	var behav:Node			= get_selected_behavior()
-	# Set behavior Name
-	get_node("%ParamBehavName").set_text(behav.get_meta("Name"))
-	get_node("%ParamBehavR1").set_text(behav.get_meta("R1"))
-	get_node("%ParamBehavR2").set_text(behav.get_meta("R2"))
-	get_node("%ParamBehavProba").set_text(behav.get_meta("p"))
-	get_node("%ParamBehavP1").set_text(behav.get_meta("P1"))
-	get_node("%ParamBehavP2").set_text(behav.get_meta("P2"))
+	# Find the Behavior Type
+	if behav.get_meta("Name") == "Reaction":
+		# 
+		var tabs:TabContainer = get_node("%TabContainer")
+		tabs.current_tab = Prop.BEHAVIOR_REACTION
+		# Update GUI Behavior
+		# Reaction: Set behavior Name
+		get_node("%ParamBehavName").set_text(behav.get_meta("Name"))
+		get_node("%ParamBehavR1").set_text(behav.get_meta("R1"))
+		get_node("%ParamBehavR2").set_text(behav.get_meta("R2"))
+		get_node("%ParamBehavProba").set_text(behav.get_meta("p"))
+		get_node("%ParamBehavP1").set_text(behav.get_meta("P1"))
+		get_node("%ParamBehavP2").set_text(behav.get_meta("P2"))
+
 	
 # Update behavior : GUI => META
 func behavior_GUI_to_META() -> void:
