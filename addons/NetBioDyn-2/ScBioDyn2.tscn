@@ -827,6 +827,7 @@ size_flags_horizontal = 3
 text = "agent / R1 / R2 / 0"
 
 [node name="Behavior_Random_Force" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
