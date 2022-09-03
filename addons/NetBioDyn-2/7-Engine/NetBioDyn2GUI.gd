@@ -692,13 +692,15 @@ func action(tree, agent) -> void:
 
 # Script RANDOM FORCE
 func behav_script_random_force(agents:String, dir:String, angle:String, intensity:String) -> String:
+	angle = String(float(angle) * 6.28318530718 / 360.0) # deg to rad
+	dir = String(float(dir) * 6.28318530718 / 360.0)	# deg to rad
 	return """
 extends Node
 # Default Behavior
 func action(tree, agent) -> void:
 	if agent.get_meta("Name") == """+in_quote(agents)+""" || agent.is_in_group("""+in_quote(agents)+"""):
-		var angle:float = randf() * """+angle+""" * 6.28318530718 / 360.0 - """ +angle+ """/2.0
-		agent.apply_impulse(Vector3(0,0,0), Vector3("""+String(intensity)+"""*cos(angle),0,"""+String(intensity)+"""*sin(angle)))
+		var alpha:float = randf() * """+angle+""" - """ +angle+ """ /2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3("""+intensity+"""*cos(alpha+"""+dir+"""),0,"""+intensity+"""*sin(alpha+"""+dir+""")))
 """
 
 
