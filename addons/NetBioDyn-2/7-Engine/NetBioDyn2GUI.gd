@@ -160,8 +160,10 @@ func _fill_properties_of_agent(var agt_type:Node):
 		# type
 		var opt_type:OptionButton = get_node("%OptionAgentType")
 		opt_type.select(0)
+		# groups
+		agent_group_to_GUI_group()
 		# param
-		agent_meta_to_param()
+		agent_meta_to_param() # TODO rename into agent_meta_to_GUI_param
 		
 # Properties => Agent -----------------------------
 # Agent COLOR
@@ -198,6 +200,69 @@ func _on_AgentName_focus_exited() -> void:
 func _on_AgentName_text_entered(new_text: String) -> void:
 	_on_AgentName_focus_exited()
 
+# Agent GROUPS **************************************
+func _on_ButtonAddGroup() -> void:
+	# Crete a unique name for the parameter (Meta names are key of dictionnary)
+	# Create the line of input boxes
+	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
+	var hbox_line :	HBoxContainer = get_node("%HBoxLineGroup")
+	var new_line: 	HBoxContainer = hbox_line.duplicate()
+	new_line.visible = true
+	vbox_group.add_child(new_line)
+	# Save to groups
+	agent_GUI_groups_to_groups()
+
+# GUI GROUPS => GROUPS
+func agent_GUI_groups_to_groups() -> void:
+	#printerr(str("PARAM => meta for ", _selected_name))
+	var rb:RigidBody = find_node(_selected_name)
+	if rb==null:
+		return
+	# Clear Group
+	rb.get_groups().empty()
+	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
+	# Fill Group
+	for i in vbox_group.get_child_count()-1:
+		var line:HBoxContainer = vbox_group.get_child(i+1)
+		var group_name :String  	= line.get_child(1).get_text()
+		rb.add_to_group(group_name)
+		#printerr(str(_selected_name , " : PARAM => meta (" , param_name , "," , param_value))
+		#printerr("param => meta")
+		#printerr(param_name)
+		#printerr(param_value)
+
+# GROUP => GUI GROUP
+func agent_group_to_GUI_group() -> void:
+	#printerr(str("meta => PARAM for ", _selected_name))
+	var rb:RigidBody = find_node(_selected_name)
+	if rb==null:
+		return
+	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
+	# Clear Group VBox
+	for i in vbox_group.get_child_count()-1:
+		var line:HBoxContainer = vbox_group.get_child(1)
+		vbox_group.remove_child(line)
+		line.queue_free()
+	# Fill Group VBox
+	for m in rb.get_groups().size():
+		var group_name :String  	= rb.get_groups()[m]
+		#printerr(str(_selected_name , " : meta => PARAM (", meta_name , "," , meta_value))
+		_on_ButtonAddGroup()
+		var line:HBoxContainer = vbox_group.get_child(vbox_group.get_child_count()-1)
+		line.get_child(1).set_text(group_name)
+
+# Remove group
+func _on_button_del_group_of_agent() -> void:
+	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
+	for i in vbox_group.get_child_count():
+		var line:HBoxContainer = vbox_group.get_child(i)
+		var btn_del:Button = line.get_child(2)
+		if btn_del.has_focus():
+			vbox_group.remove_child(line)
+			break
+	# Save to meta (new_name VALIDATED)
+	agent_GUI_groups_to_groups()
+
 # Agent PARAMETERS **************************************
 func _on_ButtonAddParam_button_down() -> void:
 	# Crete a unique name for the parameter (Meta names are key of dictionnary)
@@ -212,7 +277,7 @@ func _on_ButtonAddParam_button_down() -> void:
 	# Save to meta
 	agent_param_to_meta()
 
-
+# Remove param (TODO : change function name to : _on_button_del_param_of_agent)
 func _on_Button_button_down() -> void:
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	for i in vbox_param.get_child_count():
