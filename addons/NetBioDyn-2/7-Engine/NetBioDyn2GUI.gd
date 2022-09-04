@@ -196,7 +196,15 @@ func _on_AgentName_focus_exited() -> void:
 	else: # the new name EXISTS => cannot be changed
 		OS.alert("Ce nom est déjà attribué", "Information")
 		line_edit.text = _selected_name
-		
+
+func update_agent_instances(var name:String)->void:
+	# Agent instances
+	for agt in _node_env.get_children():
+		if agt.get_meta("Name") == name:
+			# update color (TODO)
+			# update groups (TODO)
+			pass
+
 func _on_AgentName_text_entered(new_text: String) -> void:
 	_on_AgentName_focus_exited()
 
@@ -220,7 +228,8 @@ func agent_GUI_groups_to_groups(new_group: String="") -> void:
 		return
 	# Clear Group
 	var lst_gp = rb.get_groups()
-	lst_gp.empty()
+	for gp in lst_gp:
+		rb.remove_from_group(gp)
 	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
 	# Fill Group
 	for i in vbox_group.get_child_count()-1:
