@@ -63,6 +63,7 @@ func _process(delta):
 			behav.action(self, agent) # on applique le comportement behav sur l'agent agt
 
 	# Environment constraints
+	# Torus
 	for agent in _node_env.get_children():
 		if agent.global_transform.origin.x < _env_min_x:
 			agent.global_transform.origin.x = _env_max_x
