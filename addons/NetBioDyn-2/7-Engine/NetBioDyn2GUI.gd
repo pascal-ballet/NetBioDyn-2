@@ -19,13 +19,21 @@ enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION,BEHAVIOR_RANDOM_FORCE, GRID, ENV }
 # **********************************************************
 #                        KEY NODES                         *
 # **********************************************************
-# 2D
+# 2D important nodes
 onready var _listAgents:ItemList 	= find_node("ListAgents")
-# 3D
+# 3D simulator nodes
 onready var _node_env	:Node 	= find_node("Environment")
 onready var _node_behavs	:Node 	= find_node("Behaviors")
 onready var _node_status	:Label 	= find_node("LabelStatusbar")
+# Simulator time steps
 var _step:int = 0
+# Env sizes
+var _env_min_x:float = -20
+var _env_min_y:float =  0
+var _env_min_z:float = -20
+var _env_max_x:float =  20
+var _env_max_y:float =  0
+var _env_max_z:float =  20
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -48,16 +56,46 @@ func _process(delta):
 	# PLAY ONE step
 	if _step % 1 == 0:	
 		updateStatus()
+		
+	# Play Behaviors
 	for behav in _node_behavs.get_children():
-		for agent in _node_env.get_children(): # ou bien for agt in get_all_from_group("Virus"):
+		for agent in _node_env.get_children():
 			behav.action(self, agent) # on applique le comportement behav sur l'agent agt
 
+	# Environment constraints
+	for agent in _node_env.get_children():
+		if agent.global_transform.origin.x < _env_min_x:
+			agent.global_transform.origin.x = _env_max_x
+		if agent.global_transform.origin.y < _env_min_y:
+			agent.global_transform.origin.y = _env_max_y
+		if agent.global_transform.origin.z < _env_min_z:
+			agent.global_transform.origin.z = _env_max_z
+		if agent.global_transform.origin.x > _env_max_x:
+			agent.global_transform.origin.x = _env_min_x
+		if agent.global_transform.origin.y > _env_max_y:
+			agent.global_transform.origin.y = _env_min_y
+		if agent.global_transform.origin.z > _env_max_z:
+			agent.global_transform.origin.z = _env_min_z
+			
+	# Next simulation step
 	_step = _step + 1
 
 func updateStatus()->void:
 	var nb_agents:int = _node_env.get_child_count()
 	var nb_behavs:int = _node_behavs.get_child_count()
 	_node_status.text = str("step=", _step, " | Nb agents=", nb_agents, " | Nb behaviors=", nb_behavs)
+
+
+
+
+
+
+
+
+
+
+
+
 
 # **********************************************************
 #                         AGENTS                           *
@@ -69,7 +107,7 @@ func addAgent(var name) -> void:
 	lst.set_item_metadata(lst.get_item_count()-1, "Agent") # type of the item
 	
 	# Create new Agent Type in 3D Scene -----------------------------
-	print_debug("addAgent")
+	#print_debug("addAgent")
 	var rb:RigidBody = create_rigid_body_agent(name)
 	rb.visible = false
 	var node_entities:Node = get_node("%Entities")
@@ -106,9 +144,9 @@ func create_rigid_body_agent(var name:String) -> RigidBody:
 	return rb
 
 func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
-	print_debug(str(" TRY TO clone_rigid_body_agent " ))
+	#print_debug(str(" TRY TO clone_rigid_body_agent " ))
 	var rb:RigidBody = rb0.duplicate()
-	print_debug(str(" SUCCESS " ))
+	#print_debug(str(" SUCCESS " ))
 	return rb 	# warning : parameters are not cloned (same ref)
 										# it's ok now, but could be wrong for some param by ref
 	
@@ -167,11 +205,19 @@ func _fill_properties_of_agent(var agt_type:Node):
 		
 # Properties => Agent -----------------------------
 # Agent COLOR
-func _on_ColorAgent_color_changed(color: Color) -> void:
-	var rb:RigidBody = find_node(_selected_name)
+func change_agent_color(rb:RigidBody, color:Color)->void:
+	if rb==null:
+		return
 	var msh:MeshInstance = rb.get_child(0)
 	var mat:SpatialMaterial = msh.material_override
 	mat.albedo_color = color
+	
+func _on_ColorAgent_color_changed(color: Color) -> void:
+	var rb:RigidBody = find_node(_selected_name)
+	if(rb != null):
+		change_agent_color(rb, color)
+	update_agent_instances(rb)
+
 # Agent NAME
 func _on_AgentName_focus_exited() -> void:
 	var line_edit:LineEdit = get_node("%AgentName")
@@ -197,13 +243,45 @@ func _on_AgentName_focus_exited() -> void:
 		OS.alert("Ce nom est déjà attribué", "Information")
 		line_edit.text = _selected_name
 
-func update_agent_instances(var name:String)->void:
+func update_agent_axes_lock():
+	var rb:RigidBody = find_node(_selected_name)
+	if rb == null:
+		return
+	var lockX:bool = get_node("%CheckX").is_pressed()
+	var lockY:bool = get_node("%CheckY").is_pressed()
+	var lockZ:bool = get_node("%CheckZ").is_pressed()
+	rb.axis_lock_linear_x = lockX
+	rb.axis_lock_linear_y = lockY
+	rb.axis_lock_linear_z = lockZ
+	update_agent_instances(rb)
+
+func update_agent_instances(var rb:RigidBody)->void:
 	# Agent instances
 	for agt in _node_env.get_children():
-		if agt.get_meta("Name") == name:
-			# update color (TODO)
-			# update groups (TODO)
-			pass
+		if agt.get_meta("Name") == _selected_name:
+			# update color (already made because color is a ref)
+			#var msh:MeshInstance = rb.get_child(0)
+			#var mat:SpatialMaterial = msh.material_override
+			#var color:Color = mat.albedo_color
+			#change_agent_color(agt, color)
+			
+			# update lock x,y,z
+			agt.axis_lock_linear_x = rb.axis_lock_linear_x
+			agt.axis_lock_linear_y = rb.axis_lock_linear_y
+			agt.axis_lock_linear_z = rb.axis_lock_linear_z
+			
+			# update groups **********************
+			# Clear Group of agt
+			var lst_gp_agt = agt.get_groups()
+			for gp in lst_gp_agt:
+				agt.remove_from_group(gp)
+			# Put groups of rb to agt
+			var lst_gp_rb = rb.get_groups()
+			for gp in lst_gp_rb:
+				agt.add_to_group(gp)
+
+			# update Param ************************
+			#(TODO + if ref => make param copies when instancing)
 
 func _on_AgentName_text_entered(new_text: String) -> void:
 	_on_AgentName_focus_exited()
@@ -236,10 +314,7 @@ func agent_GUI_groups_to_groups(new_group: String="") -> void:
 		var line:HBoxContainer = vbox_group.get_child(i+1)
 		var group_name :String  	= line.get_child(1).get_text()
 		rb.add_to_group(group_name)
-		#printerr(str(_selected_name , " : PARAM => meta (" , param_name , "," , param_value))
-		#printerr("param => meta")
-		#printerr(param_name)
-		#printerr(param_value)
+	update_agent_instances(rb)
 
 # GROUP => GUI GROUP
 func agent_group_to_GUI_group() -> void:
@@ -336,10 +411,8 @@ func agent_param_to_meta() -> void:
 		var param_name :String  	= line.get_child(0).get_text()
 		var param_value			= line.get_child(2).get_text()
 		rb.set_meta(param_name, param_value)
-		#printerr(str(_selected_name , " : PARAM => meta (" , param_name , "," , param_value))
-		#printerr("param => meta")
-		#printerr(param_name)
-		#printerr(param_value)
+
+	update_agent_instances(rb)
 
 # get the line number of agent param having possibly the focus
 var _selected_param_pos:int = -1
@@ -386,34 +459,79 @@ func _on_ParamName_focus_entered() -> void:
 func _on_ParamName_text_entered(new_text: String) -> void:
 	_on_ParamName_focus_exited()
 
+
+
+
+
+
+
+
+
+
+
 # ************************************************************
 #                          ENVIRONMENT                       *
 # ************************************************************
 
+var _prev_cursor_agent_pos = Vector3(_env_min_x - 1000 , 0 , _env_min_z - 1000)
+
+var _mouse_btn_down:bool = false
+
 # On Mouse Click -----------------------------
 func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
+		
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
-				if _selected_name == "":
-					return
-				# Position of the mouse click
-				var camera = get_node("%Camera")
-				var from = camera.project_ray_origin(event.position)
-				var to = camera.project_ray_normal(event.position) * 100
-				var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
-				#print(cursorPos)
-				spawn_agent(self, _selected_name, cursorPos)
+				_mouse_btn_down = true
+			else:
+				_mouse_btn_down = false
+				
+	if _mouse_btn_down == true:
+		if _selected_name == "":
+			return
+		# Position of the mouse click
+		var camera = get_node("%Camera")
+		var from = camera.project_ray_origin(event.position)
+		var to = camera.project_ray_normal(event.position) * 100
+		var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
+		#print(cursorPos)
+		
+		
+		var space_state = camera.get_world().direct_space_state
+		var selection:Dictionary = space_state.intersect_ray(from, cursorPos)
+		print(from)
+		print(cursorPos)
+		print(selection)
+		
+		if selection.size() > 0:
+			return
+		spawn_agent(self, _selected_name, cursorPos)
+		#print(get_object_under_mouse())
+				
 
+# cast a ray from camera at mouse position, and get the object colliding with the ray
+func get_object_under_mouse():
+	var ray_length:float = 100
+	var camera = get_node("%Camera")
+	var mouse_pos = get_viewport().get_mouse_position()
+	var ray_from = camera.project_ray_origin(mouse_pos)
+	var ray_to = ray_from + camera.project_ray_normal(mouse_pos) * ray_length
+	print(ray_from)
+	print(ray_to)
+	var space_state = camera.get_world().direct_space_state
+	var selection = space_state.intersect_ray(ray_from, ray_to)
+	return selection
+		
 func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	# Spawn the new entity
-	print_debug(str("in spawn_agent : name=", name ) )
+	#print_debug(str("in spawn_agent : name=", name ) )
 	var n_agents:Node = tree.get_node("%Environment")
-	print_debug(str("in spawn_agent : n_agents=", n_agents ) )
+	#print_debug(str("in spawn_agent : n_agents=", n_agents ) )
 	var rb:RigidBody = tree.find_node(name)
-	print_debug(str("in spawn_agent : rb=", rb ) )
+	#print_debug(str("in spawn_agent : rb=", rb ) )
 	var agent:RigidBody  = clone_rigid_body_agent(rb) #load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
-	print_debug(str("in spawn_agent : CLONED agent=", agent ) )
+	#print_debug(str("in spawn_agent : CLONED agent=", agent ) )
 	agent.visible = true
 	agent.set_gravity_scale(0)
 	n_agents.add_child(agent)
