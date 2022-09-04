@@ -210,16 +210,17 @@ func _on_ButtonAddGroup() -> void:
 	new_line.visible = true
 	vbox_group.add_child(new_line)
 	# Save to groups
-	agent_GUI_groups_to_groups()
+	#agent_GUI_groups_to_groups()
 
 # GUI GROUPS => GROUPS
-func agent_GUI_groups_to_groups() -> void:
+func agent_GUI_groups_to_groups(new_group: String="") -> void:
 	#printerr(str("PARAM => meta for ", _selected_name))
 	var rb:RigidBody = find_node(_selected_name)
 	if rb==null:
 		return
 	# Clear Group
-	rb.get_groups().empty()
+	var lst_gp = rb.get_groups()
+	lst_gp.empty()
 	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
 	# Fill Group
 	for i in vbox_group.get_child_count()-1:
