@@ -231,17 +231,18 @@ func _on_AgentName_focus_exited() -> void:
 			return
 		var pos = sel[0] # pos of agent in list
 		_listAgents.set_item_text(pos, new_name) # set new name
-		# 3D ENV	
+		# 3D ENV : Instances	
 		# Agent prototype
 		var rb:RigidBody = find_node(_selected_name) # change in ENV
 		rb.name = new_name
+		rb.set_meta("Name", new_name)
 		# Agent instances
 		for agt in _node_env.get_children():
 			if agt.get_meta("Name") == _selected_name:
 				agt.set_meta("Name", new_name)
 		_selected_name = new_name
 	else: # the new name EXISTS => cannot be changed
-		OS.alert("Ce nom est déjà attribué", "Information")
+		#OS.alert("Ce nom est déjà attribué", "Information")
 		line_edit.text = _selected_name
 
 func update_agent_axes_lock():
@@ -254,7 +255,20 @@ func update_agent_axes_lock():
 	rb.axis_lock_linear_x = lockX
 	rb.axis_lock_linear_y = lockY
 	rb.axis_lock_linear_z = lockZ
+	update_agent_layer_mask(rb)
 	update_agent_instances(rb)
+
+func update_agent_layer_mask(agt:RigidBody)->void:
+	if agt.axis_lock_linear_x && agt.axis_lock_linear_z: # Fixed agent => is in layer 1. Only interact with mobile agents (layer 0)
+		agt.set_collision_layer_bit(0,false)
+		agt.set_collision_layer_bit(1,true)
+		agt.set_collision_mask_bit(0,true)
+		agt.set_collision_mask_bit(1,false)
+	else: # Mobile agent => is in layer 0. Interact with other mobiles (0) AND fixed (1)
+		agt.set_collision_layer_bit(0,true)
+		agt.set_collision_layer_bit(1,false)
+		agt.set_collision_mask_bit(0,true)
+		agt.set_collision_mask_bit(1,true)
 
 func update_agent_instances(var rb:RigidBody)->void:
 	# Agent instances
@@ -270,7 +284,7 @@ func update_agent_instances(var rb:RigidBody)->void:
 			agt.axis_lock_linear_x = rb.axis_lock_linear_x
 			agt.axis_lock_linear_y = rb.axis_lock_linear_y
 			agt.axis_lock_linear_z = rb.axis_lock_linear_z
-			
+			update_agent_layer_mask(agt)
 			# update groups **********************
 			# Clear Group of agt
 			var lst_gp_agt = agt.get_groups()
@@ -405,6 +419,7 @@ func agent_param_to_meta() -> void:
 		return
 	# Clear Meta
 	rb.get_meta_list().empty()
+	rb.set_meta("Name", rb.name)
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	# Fill Meta
 	for i in vbox_param.get_child_count()-1:
@@ -940,10 +955,14 @@ func action(tree, R1) -> void:
 			# Cas avec un 2nd réactif ########################################################################################
 			var bodies = R1.get_colliding_bodies()
 			if bodies.size() > 0:
-				print (str("collision size:",bodies.size() ))
-				#print("R1 is colliding")
+				print(str("collision size:",bodies.size() ))
+				print("R1 is colliding")
 				var R2 = bodies[0]
+				print( str( "List R1 : ", R1.get_meta_list()    ) )
+				print( str( "List R2 : ", R2.get_meta_list()    ) )
+				print( str("R2.get_meta(Name) : ",  R2.get_meta("Name")   ) )
 				if R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")): # R2 n'est pas détruit et appartient au bon groupe
+					print( "R2=>P2" )
 					# R1 CHANGE en p1
 					if """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
 						NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p1)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
