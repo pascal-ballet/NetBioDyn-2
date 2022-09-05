@@ -916,14 +916,13 @@ func action(tree, agent) -> void:
 		agent.apply_impulse(Vector3(0,0,0), Vector3("""+intensity+"""*cos(alpha+"""+dir+"""),0,"""+intensity+"""*sin(alpha+"""+dir+""")))
 """
 
-
 # Script REACTION
 func behav_script_reaction(r1:String, r2:String, p:String, p1:String, p2:String) -> String:
 	return """
 extends Node
 
 # Reaction
-var MAX_AGENTS:int = 500
+var MAX_AGENTS:int = 1500
 
 func action(tree, R1) -> void:
 	var proba:float = """+p+"""
@@ -965,7 +964,7 @@ func action(tree, R1) -> void:
 				print( str( "List R1 : ", R1.get_meta_list()    ) )
 				print( str( "List R2 : ", R2.get_meta_list()    ) )
 				print( str("R2.get_meta(Name) : ",  R2.get_meta("Name")   ) )
-				if R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")): # R2 n'est pas détruit et appartient au bon groupe
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")): # R2 n'est pas détruit et appartient au bon groupe
 					print( "R2=>P2" )
 					# R1 CHANGE en p1
 					if """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
@@ -993,6 +992,7 @@ func action(tree, R1) -> void:
 						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
 						R1.get_parent().add_child(P2)
 						R2.queue_free()
+						return
 
 """
 
