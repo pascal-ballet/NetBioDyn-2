@@ -198,6 +198,10 @@ func _fill_properties_of_agent(var agt_type:Node):
 		# type
 		var opt_type:OptionButton = get_node("%OptionAgentType")
 		opt_type.select(0)
+		# Lock axis
+		get_node("%CheckX").pressed = agt_type.axis_lock_linear_x
+		get_node("%CheckY").pressed = agt_type.axis_lock_linear_y
+		get_node("%CheckZ").pressed = agt_type.axis_lock_linear_z
 		# groups
 		agent_group_to_GUI_group()
 		# param
