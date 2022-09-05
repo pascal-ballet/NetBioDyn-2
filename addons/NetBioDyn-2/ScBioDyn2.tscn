@@ -26,15 +26,15 @@ size_flags_horizontal = 3
 alignment = 1
 
 [node name="Marge" type="ToolButton" parent="Toolbar"]
-margin_right = 426.0
+margin_right = 397.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 disabled = true
 flat = false
 
 [node name="BtnPlay" type="ToolButton" parent="Toolbar"]
-margin_left = 430.0
-margin_right = 462.0
+margin_left = 401.0
+margin_right = 433.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 4 )
@@ -43,8 +43,8 @@ icon_align = 1
 expand_icon = true
 
 [node name="BtnStep" type="ToolButton" parent="Toolbar"]
-margin_left = 466.0
-margin_right = 498.0
+margin_left = 437.0
+margin_right = 469.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 3 )
@@ -52,8 +52,8 @@ flat = false
 expand_icon = true
 
 [node name="BtnPause" type="ToolButton" parent="Toolbar"]
-margin_left = 502.0
-margin_right = 534.0
+margin_left = 473.0
+margin_right = 505.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 5 )
@@ -61,8 +61,8 @@ flat = false
 expand_icon = true
 
 [node name="BtnStop" type="ToolButton" parent="Toolbar"]
-margin_left = 538.0
-margin_right = 570.0
+margin_left = 509.0
+margin_right = 541.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 6 )
@@ -70,12 +70,21 @@ flat = false
 expand_icon = true
 
 [node name="Marge2" type="ToolButton" parent="Toolbar"]
-margin_left = 574.0
-margin_right = 1000.0
+margin_left = 545.0
+margin_right = 943.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 disabled = true
 flat = false
+
+[node name="BtnDebug" type="ToolButton" parent="Toolbar"]
+margin_left = 947.0
+margin_right = 1000.0
+margin_bottom = 32.0
+grow_horizontal = 0
+text = "Debug"
+flat = false
+align = 2
 
 [node name="BtnClose" type="ToolButton" parent="Toolbar"]
 margin_left = 1004.0
@@ -383,10 +392,11 @@ unique_name_in_owner = true
 
 [node name="Camera" type="Camera" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 unique_name_in_owner = true
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -40, 0 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -100, 0 )
 environment = SubResource( 1 )
 projection = 1
-size = 50.0
+size = 80.0
+far = 200.0
 
 [node name="DirectionalLight" type="DirectionalLight" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer/Viewport/Simulator"]
 transform = Transform( 1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, 0, 12, 0 )
@@ -1311,6 +1321,7 @@ items = [ "Reaction", null, 0, false, false, 0, 0, null, "", false, "Force Aléa
 [connection signal="pressed" from="Toolbar/BtnStep" to="." method="_on_BtnStep_pressed"]
 [connection signal="pressed" from="Toolbar/BtnPause" to="." method="_on_BtnPause_pressed"]
 [connection signal="pressed" from="Toolbar/BtnStop" to="." method="_on_BtnStop_pressed"]
+[connection signal="pressed" from="Toolbar/BtnDebug" to="." method="_on_BtnDebug_pressed"]
 [connection signal="pressed" from="Toolbar/BtnClose" to="." method="_on_BtnClose_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnAddAgent" to="." method="_on_ToolPlusAgent_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnDelAgent" to="." method="_on_BtnDelAgent_pressed"]

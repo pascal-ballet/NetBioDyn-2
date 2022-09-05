@@ -28,12 +28,12 @@ onready var _node_status	:Label 	= find_node("LabelStatusbar")
 # Simulator time steps
 var _step:int = 0
 # Env sizes
-var _env_min_x:float = -20
+var _env_min_x:float = -40
 var _env_min_y:float =  0
-var _env_min_z:float = -20
-var _env_max_x:float =  20
+var _env_min_z:float = -40
+var _env_max_x:float =  40
 var _env_max_y:float =  0
-var _env_max_z:float =  20
+var _env_max_z:float =  40
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -61,6 +61,7 @@ func _process(delta):
 	for behav in _node_behavs.get_children():
 		for agent in _node_env.get_children():
 			behav.action(self, agent) # on applique le comportement behav sur l'agent agt
+			#print("test")
 
 	# Environment constraints
 	# Torus
@@ -133,12 +134,10 @@ func create_rigid_body_agent(var name:String) -> RigidBody:
 	var rb:RigidBody = RigidBody.new()
 	rb.name = name
 	rb.set_gravity_scale(0)
-	rb.set_collision_layer_bit(0,true)
-	rb.set_collision_mask_bit(0,true)
 	rb.contacts_reported = 1
 	rb.contact_monitor = true
 	rb.set_linear_damp(5.0)
-	
+	rb.translate(Vector3(-999,0,0))
 	rb.add_child(mh)
 	rb.add_child(col)
 	
@@ -655,6 +654,7 @@ func _on_BtnDelBehav_pressed() -> void:
 	var lst:ItemList = get_node("%ListBehav")
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
+		get_selected_behavior().queue_free()
 		lst.remove_item(sel[0])
 
 # Select behavior : META => GUI
@@ -995,4 +995,10 @@ func action(tree, R1) -> void:
 # ************************************************
 # WORK in PROGRESS...
 # ************************************************
+
+
+
+func _on_BtnDebug_pressed():
+	self.set_script(load(  "res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd"  ))
+
 
