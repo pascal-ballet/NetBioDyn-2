@@ -21,10 +21,15 @@ enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION,BEHAVIOR_RANDOM_FORCE, GRID, ENV }
 # **********************************************************
 # 2D important nodes
 onready var _listAgents:ItemList 	= find_node("ListAgents")
-# 3D simulator nodes
-onready var _node_env	:Node 	= find_node("Environment")
-onready var _node_behavs	:Node 	= find_node("Behaviors")
+onready var _listBehavs:ItemList 	= find_node("ListBehav")
 onready var _node_status	:Label 	= find_node("LabelStatusbar")
+# 3D simulator nodes
+onready var _node_camera	:Node 	= find_node("Camera")
+onready var _node_simu		:Node 	= find_node("Simulator")
+onready var _node_entities	:Node 	= find_node("Entities")
+onready var _node_behavs	:Node 	= find_node("Behaviors")
+onready var _node_env		:Node 	= find_node("Environment")
+
 # Simulator time steps
 var _step:int = 0
 # Env sizes
@@ -112,11 +117,10 @@ func addAgent(var name) -> void:
 	#print_debug("addAgent")
 	var rb:RigidBody = create_rigid_body_agent(name)
 	rb.visible = false
-	var node_entities:Node = get_node("%Entities")
 
 	#  - add the Agent to the scene
-	node_entities.add_child(rb)
-	rb.set_owner(get_node("%Simulator"))
+	_node_entities.add_child(rb)
+	#rb.set_owner(get_node(_node_simu)
 	
 func create_rigid_body_agent(var name:String) -> RigidBody:
 	#  - material
@@ -182,8 +186,7 @@ func _on_ListAgents_item_selected(index: int) -> void:
 				tabs.current_tab = Prop.EMPTY
 			
 func get_entity_from_GUI(var name:String) -> Node:
-	var node_entities:Node = get_node("%Entities")
-	return node_entities.find_node(name) as Node
+	return _node_entities.find_node(name) as Node
 
 # Agent => Properties ----------------------------
 func _fill_properties_of_agent(var agt_type:Node):
@@ -510,14 +513,14 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 		if _selected_name == "":
 			return
 		# Position of the mouse click
-		var camera = get_node("%Camera")
-		var from = camera.project_ray_origin(event.position)
-		var to = camera.project_ray_normal(event.position) * 100
+		#var camera = get_node("%Camera")
+		var from = _node_camera.project_ray_origin(event.position)
+		var to = _node_camera.project_ray_normal(event.position) * 100
 		var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
 		#print(cursorPos)
 		
 		
-		var space_state = camera.get_world().direct_space_state
+		var space_state = _node_camera.get_world().direct_space_state
 		var selection:Dictionary = space_state.intersect_ray(from, cursorPos)
 		print(from)
 		print(cursorPos)
@@ -650,12 +653,12 @@ func addBehavRandomForce() -> void:
 	node.set_script(script)
 
 	# Add Behavior to Simulator
-	var node_behaviors:Node = get_node("%Behaviors")
-	node_behaviors.add_child(node)
+	#var node_behaviors:Node = get_node("%Behaviors")
+	_node_behavs.add_child(node)
 
 # Remove behavior
 func _on_BtnDelBehav_pressed() -> void:
-	var lst:ItemList = get_node("%ListBehav")
+	var lst:ItemList = _listBehavs # get_node("%ListBehav")
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		get_selected_behavior().queue_free()
@@ -873,14 +876,13 @@ func key_param_exists(var key_name:String) -> int:
 	return nb	
 
 func get_selected_behavior() -> Node:
-	var lst:ItemList = get_node("%ListBehav")
-	var sel:PoolIntArray = lst.get_selected_items()
+	var sel:PoolIntArray = _listBehavs.get_selected_items()
 	if sel.size() == 0:
 		return null
 	
 	var pos:int =sel[0]
 	
-	var node:Node = get_node("%Behaviors").get_child(pos)
+	var node:Node = _node_behavs.get_child(pos) #get_node("%Behaviors").get_child(pos)
 	return node
 
 # Window / App control -------------------------
@@ -1016,28 +1018,47 @@ func _on_BtnDebug_pressed():
 func _on_BtnLoad_pressed():
 	var viewport:Viewport = get_node("%Viewport")
 	# Remove the current simu
-	var simu_node = get_node("%Simulator")
-	viewport.remove_child(simu_node)
-	simu_node.call_deferred("free")
+	viewport.remove_child(_node_simu)
+	_node_simu.call_deferred("free")
 
 	# Add the next level
 	var next_simu_res = load("res://Simulations/Simu.tscn")
 	var next_simu_node 	= next_simu_res.instance()
 	viewport.add_child(next_simu_node)
 	
-	# re-init tree variables
-	_node_env 		= next_simu_node.get_node("Environment")
+	# re-init 3D node variables
+	_node_camera	= next_simu_node.get_node("Camera")
+	_node_simu 		= next_simu_node.get_node("Simulator")
+	_node_entities 	= next_simu_node.get_node("Entities")
 	_node_behavs 	= next_simu_node.get_node("Behaviors")
+	_node_env 		= next_simu_node.get_node("Environment")
+
+	# Empty the 2D GUI
+	_listAgents.clear()
+	_listBehavs.clear()
+	
+	# Fill the 2D GUI with agents, behaviors, groups and grids
+	for agt in _node_entities.get_children():
+		_listAgents.add_item(agt.name)
+	for agt in _node_behavs.get_children():
+		_listBehavs.add_item(agt.get_meta("Name"))
+	
 
 func _on_BtnSave_pressed():
 	# Duplicate the node (prevents an error)
-	var simu = get_node("%Simulator").duplicate()
+	var simu = _node_simu.duplicate() #get_node("%Simulator").duplicate()
 
 	# Setting it as owner of children
-	for child in simu.get_children():
-		child.set_owner(simu)
+	set_owner_recursive(simu, simu)
+	#for child in simu.get_children():
+	#	child.set_owner(simu)
 
 	# Continue to save
 	var save_build  = PackedScene.new()
 	save_build.pack(simu)
 	ResourceSaver.save("res://Simulations/Simu.tscn", save_build)
+
+func set_owner_recursive(root:Node, node:Node)->void:
+	for child in node.get_children():
+		child.set_owner(root)
+		set_owner_recursive(root, child)
