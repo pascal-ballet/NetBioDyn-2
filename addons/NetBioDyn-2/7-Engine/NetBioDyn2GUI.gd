@@ -109,9 +109,8 @@ func updateStatus()->void:
 # **********************************************************
 func addAgent(var name) -> void:	
 	# Create new Agent in GUI -----------------------------
-	var lst:ItemList = _listAgents
-	lst.add_item(name)
-	lst.set_item_metadata(lst.get_item_count()-1, "Agent") # type of the item
+	_listAgents.add_item(name)
+	_listAgents.set_item_metadata(_listAgents.get_item_count()-1, "Agent") # type of the item
 	
 	# Create new Agent Type in 3D Scene -----------------------------
 	#print_debug("addAgent")
@@ -174,7 +173,7 @@ func _on_ListAgents_item_selected(index: int) -> void:
 	if sel.size() > 0:
 		#_listAgents.remove_item(sel[0])
 		var entity_name:String = _listAgents.get_item_text(sel[0])
-		var entity:Node = get_entity_from_GUI(entity_name)
+		var entity:Node = get_entity(entity_name)
 		var tabs:TabContainer = get_node("%TabContainer")
 		if entity is RigidBody:
 			tabs.current_tab = Prop.ENTITY
@@ -185,8 +184,13 @@ func _on_ListAgents_item_selected(index: int) -> void:
 			if entity is Node:
 				tabs.current_tab = Prop.EMPTY
 			
-func get_entity_from_GUI(var name:String) -> Node:
-	return _node_entities.find_node(name) as Node
+func get_entity(var name:String) -> Node:
+	var i:int = 0
+	for e in _node_entities.get_children():
+		if e.name == name:
+			return _node_entities.get_child(i)
+		i = i + 1
+	return null
 
 # Agent => Properties ----------------------------
 func _fill_properties_of_agent(var agt_type:Node):
@@ -220,7 +224,7 @@ func change_agent_color(rb:RigidBody, color:Color)->void:
 	mat.albedo_color = color
 	
 func _on_ColorAgent_color_changed(color: Color) -> void:
-	var rb:RigidBody = find_node(_selected_name)
+	var rb:RigidBody = get_entity(_selected_name)
 	if(rb != null):
 		change_agent_color(rb, color)
 	update_agent_instances(rb)
@@ -231,15 +235,15 @@ func _on_AgentName_focus_exited() -> void:
 	var new_name:String = line_edit.text
 	if new_name == _selected_name:
 		return
-	if key_name_exists(new_name) == false: # The new name doesn't exists => can be applied
+	if get_entity(new_name) == null: # The new name doesn't exists => can be applied
 		var sel:PoolIntArray = _listAgents.get_selected_items()
 		if sel.size() == 0:
 			return
 		var pos = sel[0] # pos of agent in list
 		_listAgents.set_item_text(pos, new_name) # set new name
-		# 3D ENV : Instances	
+		# 3D ENV	
 		# Agent prototype
-		var rb:RigidBody = find_node(_selected_name) # change in ENV
+		var rb:RigidBody = get_entity(_selected_name) # change in ENV
 		rb.name = new_name
 		rb.set_meta("Name", new_name)
 		# Agent instances
@@ -252,7 +256,7 @@ func _on_AgentName_focus_exited() -> void:
 		line_edit.text = _selected_name
 
 func update_agent_axes_lock():
-	var rb:RigidBody = find_node(_selected_name)
+	var rb:RigidBody = get_entity(_selected_name)
 	if rb == null:
 		return
 	var lockX:bool = get_node("%CheckX").is_pressed()
@@ -322,7 +326,7 @@ func _on_ButtonAddGroup() -> void:
 # GUI GROUPS => GROUPS
 func agent_GUI_groups_to_groups(new_group: String="") -> void:
 	#printerr(str("PARAM => meta for ", _selected_name))
-	var rb:RigidBody = find_node(_selected_name)
+	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
 		return
 	# Clear Group
@@ -340,7 +344,7 @@ func agent_GUI_groups_to_groups(new_group: String="") -> void:
 # GROUP => GUI GROUP
 func agent_group_to_GUI_group() -> void:
 	#printerr(str("meta => PARAM for ", _selected_name))
-	var rb:RigidBody = find_node(_selected_name)
+	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
 		return
 	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
@@ -398,7 +402,7 @@ func _on_Button_button_down() -> void:
 # META => GUI PARAM
 func agent_meta_to_param() -> void:
 	#printerr(str("meta => PARAM for ", _selected_name))
-	var rb:RigidBody = find_node(_selected_name)
+	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
 		return
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
@@ -420,7 +424,7 @@ func agent_meta_to_param() -> void:
 # GUI PARAM => META
 func agent_param_to_meta() -> void:
 	#printerr(str("PARAM => meta for ", _selected_name))
-	var rb:RigidBody = find_node(_selected_name)
+	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
 		return
 	# Clear Meta
@@ -496,8 +500,12 @@ func _on_ParamName_text_entered(new_text: String) -> void:
 # ************************************************************
 
 var _prev_cursor_agent_pos = Vector3(_env_min_x - 1000 , 0 , _env_min_z - 1000)
-
 var _mouse_btn_down:bool = false
+
+# Show relevant property TAB ------------------------------
+func _on_Button_pressed() -> void:
+	var tabs:TabContainer = get_node("%TabContainer")
+	tabs.current_tab = Prop.ENV
 
 # On Mouse Click -----------------------------
 func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
@@ -513,10 +521,9 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 		if _selected_name == "":
 			return
 		# Position of the mouse click
-		#var camera = get_node("%Camera")
-		var from = _node_camera.project_ray_origin(event.position)
-		var to = _node_camera.project_ray_normal(event.position) * 100
-		var cursorPos = Plane(Vector3.UP, 0).intersects_ray(from, to)
+		var from 		= _node_camera.project_ray_origin(event.position)
+		var to 			= _node_camera.project_ray_normal(event.position) * 100
+		var cursorPos 	= Plane(Vector3.UP, 0).intersects_ray(from, to)
 		#print(cursorPos)
 		
 		
@@ -535,22 +542,21 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 # cast a ray from camera at mouse position, and get the object colliding with the ray
 func get_object_under_mouse():
 	var ray_length:float = 100
-	var camera = get_node("%Camera")
 	var mouse_pos = get_viewport().get_mouse_position()
-	var ray_from = camera.project_ray_origin(mouse_pos)
-	var ray_to = ray_from + camera.project_ray_normal(mouse_pos) * ray_length
+	var ray_from = _node_camera.project_ray_origin(mouse_pos)
+	var ray_to = ray_from + _node_camera.project_ray_normal(mouse_pos) * ray_length
 	print(ray_from)
 	print(ray_to)
-	var space_state = camera.get_world().direct_space_state
+	var space_state = _node_camera.get_world().direct_space_state
 	var selection = space_state.intersect_ray(ray_from, ray_to)
 	return selection
 		
 func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	# Spawn the new entity
 	#print_debug(str("in spawn_agent : name=", name ) )
-	var n_agents:Node = tree.get_node("%Environment")
+	var n_agents:Node = _node_env #tree.get_node("%Environment")
 	#print_debug(str("in spawn_agent : n_agents=", n_agents ) )
-	var rb:RigidBody = tree.find_node(name)
+	var rb:RigidBody = get_entity(name)
 	#print_debug(str("in spawn_agent : rb=", rb ) )
 	var agent:RigidBody  = clone_rigid_body_agent(rb) #load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
 	#print_debug(str("in spawn_agent : CLONED agent=", agent ) )
@@ -565,10 +571,18 @@ func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	#agent.set_owner(get_node("%Simulator"))
 
 
-# Show relevant property TAB ------------------------------
-func _on_Button_pressed() -> void:
-	var tabs:TabContainer = get_node("%TabContainer")
-	tabs.current_tab = Prop.ENV
+
+
+
+
+
+
+
+
+
+
+
+
 
 # ************************************************************
 #                          Behaviors                         *
@@ -591,9 +605,8 @@ func _on_PopupMenu_index_pressed(index: int) -> void:
 # Add REACTION
 func addBehavReaction() -> void:	
 	# Create new Behavior in GUI --------------------------------
-	var lst:ItemList = get_node("%ListBehav")
-	lst.add_item("Reaction")
-	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
+	_listBehavs.add_item("Reaction")
+	_listBehavs.set_item_metadata(_listBehavs.get_item_count()-1, "Reaction") # type of the item
 	
 	# Create default Behavior Type in 3D Scene -------------------	
 	var r1:String = "Agent-1"
@@ -620,15 +633,13 @@ func addBehavReaction() -> void:
 	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
 
 	# Add Behavior to Simulator
-	var node_behaviors:Node = get_node("%Behaviors")
-	node_behaviors.add_child(node)
+	_node_behavs.add_child(node)
 
 # Add FORCE ALEATOIRE
 func addBehavRandomForce() -> void:	
 	# Create new Behavior in GUI --------------------------------
-	var lst:ItemList = get_node("%ListBehav")
-	lst.add_item("Force Aléatoire")
-	lst.set_item_metadata(lst.get_item_count()-1, "Random Force") # type of the item
+	_listBehavs.add_item("Force Aléatoire")
+	_listBehavs.set_item_metadata(_listBehavs.get_item_count()-1, "Random Force") # type of the item
 	
 	# Create default Behavior Type in 3D Scene -------------------	
 	var agents:String = "Agent-1"
@@ -653,12 +664,11 @@ func addBehavRandomForce() -> void:
 	node.set_script(script)
 
 	# Add Behavior to Simulator
-	#var node_behaviors:Node = get_node("%Behaviors")
 	_node_behavs.add_child(node)
 
 # Remove behavior
 func _on_BtnDelBehav_pressed() -> void:
-	var lst:ItemList = _listBehavs # get_node("%ListBehav")
+	var lst:ItemList = _listBehavs
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		get_selected_behavior().queue_free()
@@ -694,8 +704,7 @@ func _on_ListBehav_item_selected(index: int) -> void:
 	
 # Update behavior : GUI => META
 func behavior_GUI_to_META() -> void:
-	var lst:ItemList = get_node("%ListBehav")
-	var sel:PoolIntArray = lst.get_selected_items()
+	var sel:PoolIntArray = _listBehavs.get_selected_items()
 	if sel.size() == 0:
 		return
 
@@ -705,7 +714,7 @@ func behavior_GUI_to_META() -> void:
 	if type == "Reaction":
 		# Set the Name in the GUI List
 		var pos:int =sel[0]
-		lst.set_item_text(pos, get_node("%ParamBehavName").get_text())
+		_listBehavs.set_item_text(pos, get_node("%ParamBehavName").get_text())
 		
 		# Update behavior GUI => META
 		var name:String = get_node("%ParamBehavName").get_text()
@@ -731,7 +740,7 @@ func behavior_GUI_to_META() -> void:
 	if type == "Random Force":
 		# Set the Name in the GUI List
 		var pos:int =sel[0]
-		lst.set_item_text(pos, get_node("%BehavRndFName").get_text())
+		_listBehavs.set_item_text(pos, get_node("%BehavRndFName").get_text())
 		
 		# Update behavior GUI => META
 		var name:String 		= get_node("%BehavRndFName").get_text()
@@ -756,11 +765,26 @@ func behavior_GUI_to_META() -> void:
 	#print_debug(param_value)
 	#print_debug(behav)
 
+
+
+
+
+
+
+
 # ************************************************************
 #                          Signals                           *
 # ************************************************************
 func GUI_param_updated(new_text: String="")->void:
 	behavior_GUI_to_META()
+
+
+
+
+
+
+
+
 
 # ************************************************************
 #                           Groups                           *
@@ -775,6 +799,15 @@ func _on_BtnDelGp_pressed() -> void:
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
 		lst.remove_item(sel[0])
+		
+		
+		
+		
+		
+		
+		
+		
+		
 # ************************************************************
 #                              Grids                         *
 # ************************************************************
@@ -792,6 +825,15 @@ func _on_BtnDelGrid_pressed() -> void:
 func _on_ListGrids_item_selected(index: int) -> void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GRID
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 # ************************************************
 # SIMULATOR CONTROLS
@@ -827,6 +869,15 @@ func _on_BtnStop_pressed() -> void:
 	# ...
 	updateStatus()
 
+
+
+
+
+
+
+
+
+
 # ************************************************************
 #                           Utilities                        *
 # ************************************************************
@@ -834,20 +885,18 @@ func _on_BtnStop_pressed() -> void:
 # Key name Generator --------------------------
 func key_name_create() -> String:
 	var prefix:String = "Agent-"
-	var simu:Node = get_node("%Simulator")
 	for n in range(1,999999):
 		var key_name:String = prefix + String(n)
-		var exists:bool = key_name_exists(key_name)
+		var exists:bool = get_direct_node(_node_entities, key_name)
 		if exists == false:
 			return key_name
 	return "FULL"
 	
-func key_name_exists(var key_name:String) -> bool:
-		var node:Node = find_node(key_name)
-		if node == null:
-			return false
-		else:
+func get_direct_node(var root:Node, var key_name:String) -> bool:
+	for nd in root.get_children():
+		if nd.name == key_name:
 			return true
+	return false
 
 func key_param_create() -> String:
 	var prefix:String = "Param-"
@@ -882,7 +931,7 @@ func get_selected_behavior() -> Node:
 	
 	var pos:int =sel[0]
 	
-	var node:Node = _node_behavs.get_child(pos) #get_node("%Behaviors").get_child(pos)
+	var node:Node = _node_behavs.get_child(pos)
 	return node
 
 # Window / App control -------------------------
@@ -1028,7 +1077,7 @@ func _on_BtnLoad_pressed():
 	
 	# re-init 3D node variables
 	_node_camera	= next_simu_node.get_node("Camera")
-	_node_simu 		= next_simu_node.get_node("Simulator")
+	_node_simu 		= next_simu_node
 	_node_entities 	= next_simu_node.get_node("Entities")
 	_node_behavs 	= next_simu_node.get_node("Behaviors")
 	_node_env 		= next_simu_node.get_node("Environment")
@@ -1046,7 +1095,7 @@ func _on_BtnLoad_pressed():
 
 func _on_BtnSave_pressed():
 	# Duplicate the node (prevents an error)
-	var simu = _node_simu.duplicate() #get_node("%Simulator").duplicate()
+	var simu = _node_simu.duplicate()
 
 	# Setting it as owner of children
 	set_owner_recursive(simu, simu)
