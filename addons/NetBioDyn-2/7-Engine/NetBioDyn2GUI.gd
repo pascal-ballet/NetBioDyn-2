@@ -1065,14 +1065,31 @@ func _on_BtnDebug_pressed():
 
 
 func _on_BtnLoad_pressed():
+	# Select the file to Load
+	var dialog = FileDialog.new()
+	dialog.mode = FileDialog.MODE_OPEN_ANY
+	dialog.add_filter("*.tscn")
+	dialog.access = FileDialog.ACCESS_FILESYSTEM
+	add_child(dialog)
+	dialog.popup_centered_ratio()
+	var filename = yield(dialog, "file_selected")
+	
+	# Load the simulation
 	var viewport:Viewport = get_node("%Viewport")
 	# Remove the current simu
 	viewport.remove_child(_node_simu)
 	_node_simu.call_deferred("free")
 
 	# Add the next level
-	var next_simu_res = load("res://Simulations/Simu.tscn")
-	var next_simu_node 	= next_simu_res.instance()
+	var next_simu_res = load(filename) #load("res://Simulations/Simu.tscn")
+	if next_simu_res == null:
+		print(str("Impossible to read file: ", filename))
+		return
+	var next_simu_node = next_simu_res.instance()
+	
+	# TO DO : verify the tree structure before loading it (Nodes Simulator, then Entities, Behaviors ,etc)
+	
+	# The structure is ok => attach it to the Viewport
 	viewport.add_child(next_simu_node)
 	
 	# re-init 3D node variables

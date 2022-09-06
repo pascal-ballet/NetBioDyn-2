@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=10 format=2]
 
 [sub_resource type="Environment" id=1]
 background_mode = 1
@@ -18,14 +18,7 @@ albedo_color = Color( 0.978975, 0.256011, 0.734578, 1 )
 
 [sub_resource type="SphereShape" id=7]
 
-[sub_resource type="SpatialMaterial" id=8]
-albedo_color = Color( 0.353845, 0.315224, 0.92217, 1 )
-
-[sub_resource type="SphereMesh" id=9]
-
-[sub_resource type="SphereShape" id=10]
-
-[sub_resource type="GDScript" id=11]
+[sub_resource type="GDScript" id=8]
 script/source = "
 extends Node
 # Default Behavior
@@ -35,11 +28,19 @@ func action(tree, agent) -> void:
 		agent.apply_impulse(Vector3(0,0,0), Vector3(1*cos(alpha+0),0,1*sin(alpha+0)))
 "
 
+[sub_resource type="GDScript" id=9]
+script/source = "
+extends Node
+# Default Behavior
+func action(tree, agent) -> void:
+	if agent.get_meta(\"Name\") == \"Agent-2\" || agent.is_in_group(\"Agent-2\"):
+		var alpha:float = randf() * 6.283185 - 6.283185 /2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3(.2*cos(alpha+0),0,.2*sin(alpha+0)))
+"
+
 [node name="Simulator" type="Spatial"]
-unique_name_in_owner = true
 
 [node name="Camera" type="Camera" parent="."]
-unique_name_in_owner = true
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -100, 0 )
 environment = SubResource( 1 )
 projection = 1
@@ -51,10 +52,9 @@ far = 200.0
 transform = Transform( 1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, 0, 12, 0 )
 
 [node name="Entities" type="Node" parent="."]
-unique_name_in_owner = true
 
 [node name="Agent-1" type="RigidBody" parent="Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -996.956, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -997.976, 0, 0 )
 visible = false
 gravity_scale = 0.0
 contacts_reported = 1
@@ -71,7 +71,7 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-2" type="RigidBody" parent="Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1001.04, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1000.02, 0, 0 )
 visible = false
 gravity_scale = 0.0
 contacts_reported = 1
@@ -79,36 +79,18 @@ contact_monitor = true
 sleeping = true
 linear_damp = 5.0
 
-[node name="81" type="MeshInstance" parent="Entities/Agent-2"]
+[node name="83" type="MeshInstance" parent="Entities/Agent-2"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Entities/Agent-2"]
+[node name="84" type="CollisionShape" parent="Entities/Agent-2"]
 shape = SubResource( 7 )
 
-[node name="Agent-3" type="RigidBody" parent="Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -999, 0, 0 )
-visible = false
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-sleeping = true
-linear_damp = 5.0
-
-[node name="83" type="MeshInstance" parent="Entities/Agent-3"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Entities/Agent-3"]
-shape = SubResource( 10 )
-
 [node name="Behaviors" type="Node" parent="."]
-unique_name_in_owner = true
 
 [node name="85" type="Node" parent="Behaviors"]
-script = SubResource( 11 )
+script = SubResource( 8 )
 __meta__ = {
 "Agents": "Agent-1",
 "Angle": "360",
@@ -118,21 +100,31 @@ __meta__ = {
 "Type": "Random Force"
 }
 
+[node name="138" type="Node" parent="Behaviors"]
+script = SubResource( 9 )
+__meta__ = {
+"Agents": "Agent-2",
+"Angle": "360",
+"Dir": "0",
+"Intensity": ".2",
+"Name": "Au choix",
+"Type": "Random Force"
+}
+
 [node name="Groups" type="Node" parent="."]
 
 [node name="Grids" type="Node" parent="."]
 
 [node name="Environment" type="Node" parent="."]
-unique_name_in_owner = true
 
 [node name="Agent-1" type="RigidBody" parent="Environment"]
-transform = Transform( -0.61545, 0, 0.788176, 0, 1, 0, -0.788176, 0, -0.61545, -24.5686, 0, 15.3387 )
+transform = Transform( 0.447468, 0, 0.8943, 0, 1, 0, -0.8943, 0, 0.447468, -27.4391, 0, 29.8203 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 1.10253e-07, 0, 9.18275e-08 )
+linear_velocity = Vector3( -0.000254004, 0, 0.000216889 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -1.03924, 0 )
+angular_velocity = Vector3( 0, 0.408638, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -146,13 +138,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-186" type="RigidBody" parent="Environment"]
-transform = Transform( -0.859119, 0, -0.511776, 0, 1, 0, 0.511776, 0, -0.859119, -27.2691, 0, 14.3659 )
+transform = Transform( 0.999999, 0, -0.00143225, 0, 1, 0, 0.00143225, 0, 0.999999, 13.6265, 0, 22.607 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 1.29293e-07, 0, 2.13157e-07 )
+linear_velocity = Vector3( -0.000621378, 0, 0.000319866 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.835512, 0 )
+angular_velocity = Vector3( 0, 0.176795, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -166,13 +158,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-187" type="RigidBody" parent="Environment"]
-transform = Transform( -0.251135, 0, -0.967952, 0, 1, 0, 0.967952, 0, -0.251135, -30.8639, 0, 14.7712 )
+transform = Transform( 0.999974, 0, 0.00718523, 0, 1, 0, -0.00718523, 0, 0.999974, -40.4029, 0, 34.7921 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -1.28187e-07, 0, 2.778e-07 )
+linear_velocity = Vector3( -0.00011293, 0, -6.26626e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 2.4823, 0 )
+angular_velocity = Vector3( 0, 0.408619, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -186,13 +178,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-188" type="RigidBody" parent="Environment"]
-transform = Transform( -0.236613, 0, -0.971604, 0, 1, 0, 0.971604, 0, -0.236613, -34.6815, 0, 9.44202 )
+transform = Transform( 0.268336, 0, -0.963325, 0, 1, 0, 0.963325, 0, 0.268336, 22.6339, 0, 8.05817 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -1.95393e-07, 0, -1.68402e-08 )
+linear_velocity = Vector3( -9.70732e-05, 0, -0.000420158 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -3.79108, 0 )
+angular_velocity = Vector3( 0, 0.176788, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -206,13 +198,12 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-189" type="RigidBody" parent="Environment"]
-transform = Transform( -0.170299, 0, 0.985392, 0, 1, 0, -0.985392, 0, -0.170299, -30.7221, 0, 11.4931 )
+transform = Transform( -0.0630277, 0, 0.998012, 0, 1, 0, -0.998012, 0, -0.0630277, -38.7783, 0, -0.530413 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 5.2455e-08, 0, 1.97341e-07 )
+linear_velocity = Vector3( -0.000443595, 0, 0.000310996 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -4.27503, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -226,13 +217,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-190" type="RigidBody" parent="Environment"]
-transform = Transform( -0.183166, 0, 0.983082, 0, 1, 0, -0.983082, 0, -0.183166, -26.8165, 0, 7.2341 )
+transform = Transform( 0.999748, 0, -0.0224548, 0, 1, 0, 0.0224548, 0, 0.999748, -28.5662, 0, 15.1927 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 3.00759e-07, 0, 2.07525e-07 )
+linear_velocity = Vector3( -0.000194312, 0, -5.05167e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.228402, 0 )
+angular_velocity = Vector3( 0, 3.09816, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -246,13 +237,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-191" type="RigidBody" parent="Environment"]
-transform = Transform( -0.128233, 0, -0.991744, 0, 1, 0, 0.991744, 0, -0.128233, -37.5236, 0, 4.88232 )
+transform = Transform( 0.998944, 0, -0.0459546, 0, 1, 0, 0.0459546, 0, 0.998944, -30.8866, 0, -6.33544 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -4.02564e-08, 0, -2.06063e-07 )
+linear_velocity = Vector3( -0.000526233, 0, 9.83506e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 1.36071, 0 )
+angular_velocity = Vector3( 0, 2.35905, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -266,13 +257,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-192" type="RigidBody" parent="Environment"]
-transform = Transform( -0.909569, 0, -0.415552, 0, 1, 0, 0.415552, 0, -0.909569, -39.6516, 0, 2.60736 )
+transform = Transform( 0.997486, 0, 0.0708659, 0, 1, 0, -0.0708659, 0, 0.997486, -31.6969, 0, 21.4236 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -2.93422e-07, 0, 4.53416e-08 )
+linear_velocity = Vector3( -0.000418471, 0, -0.000189984 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 1.73722, 0 )
+angular_velocity = Vector3( 0, -0.550066, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -286,13 +277,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-193" type="RigidBody" parent="Environment"]
-transform = Transform( 0.842159, 0, 0.539229, 0, 1, 0, -0.539229, 0, 0.842159, -33.0004, 0, -0.230543 )
+transform = Transform( 0.893531, 0, -0.449002, 0, 1, 0, 0.449002, 0, 0.893531, -34.2299, 0, 5.84425 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -9.43357e-08, 0, -3.21561e-08 )
+linear_velocity = Vector3( 0.000337293, 0, -0.000399759 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -4.46131, 0 )
+angular_velocity = Vector3( 0, 1.09036, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -306,13 +297,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-194" type="RigidBody" parent="Environment"]
-transform = Transform( 0.78607, 0, -0.618138, 0, 1, 0, 0.618138, 0, 0.78607, -34.5856, 0, -3.91518 )
+transform = Transform( -0.780539, 0, -0.625107, 0, 1, 0, 0.625107, 0, -0.780539, -19.1482, 0, -3.66006 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -5.32199e-08, 0, 4.28075e-09 )
+linear_velocity = Vector3( 0.000412334, 0, 0.000258565 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.218362, 0 )
+angular_velocity = Vector3( 0, -1.82628, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -326,13 +317,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-195" type="RigidBody" parent="Environment"]
-transform = Transform( 0.932656, 0, -0.360766, 0, 1, 0, 0.360766, 0, 0.932656, -33.3315, 0, -12.0662 )
+transform = Transform( 0.771137, 0, 0.636669, 0, 1, 0, -0.636669, 0, 0.771137, 36.2938, 0, -4.34989 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -4.93357e-08, 0, -4.49564e-07 )
+linear_velocity = Vector3( 3.92061e-05, 0, 0.000220188 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.199372, 0 )
+angular_velocity = Vector3( 0, 0.459599, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -346,13 +337,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-196" type="RigidBody" parent="Environment"]
-transform = Transform( -0.967227, 0, 0.253913, 0, 1, 0, -0.253913, 0, -0.967227, -30.6375, 0, 2.01077 )
+transform = Transform( 0.983318, 0, -0.181896, 0, 1, 0, 0.181896, 0, 0.983318, -35.5176, 0, -8.53851 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -3.89052e-08, 0, 2.77805e-07 )
+linear_velocity = Vector3( -0.000214522, 0, -0.000233812 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -2.19606, 0 )
+angular_velocity = Vector3( 0, -3.15336, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -366,13 +357,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-197" type="RigidBody" parent="Environment"]
-transform = Transform( 0.949125, 0, -0.3149, 0, 1, 0, 0.3149, 0, 0.949125, -30.3153, 0, -3.69293 )
+transform = Transform( 0.00263417, 0, -0.999997, 0, 1, 0, 0.999997, 0, 0.00263417, -35.7114, 0, -10.6134 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 2.36914e-08, 0, -1.3327e-07 )
+linear_velocity = Vector3( -4.63682e-05, 0, -0.000298225 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 2.76103, 0 )
+angular_velocity = Vector3( 0, -1.42854, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -386,13 +377,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-198" type="RigidBody" parent="Environment"]
-transform = Transform( 0.917289, 0, -0.398222, 0, 1, 0, 0.398222, 0, 0.917289, -27.0242, 0, -4.5095 )
+transform = Transform( 0.617495, 0, -0.786575, 0, 1, 0, 0.786575, 0, 0.617495, -37.001, 0, -21.5612 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 6.60398e-09, 0, -1.33191e-07 )
+linear_velocity = Vector3( 0.000145584, 0, 2.80693e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.362782, 0 )
+angular_velocity = Vector3( 0, 3.63753, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -406,13 +397,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-199" type="RigidBody" parent="Environment"]
-transform = Transform( 0.970349, 0, 0.241708, 0, 1, 0, -0.241708, 0, 0.970349, -23.509, 0, -6.82808 )
+transform = Transform( -0.738532, 0, -0.674219, 0, 1, 0, 0.674219, 0, -0.738532, -30.3861, 0, -0.699149 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -1.13234e-07, 0, -2.85e-07 )
+linear_velocity = Vector3( -0.000254586, 0, -0.000135321 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -1.53783, 0 )
+angular_velocity = Vector3( 0, 1.03016, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -426,13 +417,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1100" type="RigidBody" parent="Environment"]
-transform = Transform( -0.924864, 0, 0.380297, 0, 1, 0, -0.380297, 0, -0.924864, -26.9982, 0, -1.89365 )
+transform = Transform( 0.454746, 0, 0.890621, 0, 1, 0, -0.890621, 0, 0.454746, -22.9563, 0, 1.02124 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -2.87099e-07, 0, 6.80978e-08 )
+linear_velocity = Vector3( -0.000649214, 0, -0.000386081 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.520484, 0 )
+angular_velocity = Vector3( 0, -0.642779, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -446,13 +437,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1101" type="RigidBody" parent="Environment"]
-transform = Transform( -0.633703, 0, -0.773576, 0, 1, 0, 0.773576, 0, -0.633703, -21.9385, 0, -8.42985 )
+transform = Transform( -0.991827, 0, -0.12759, 0, 1, 0, 0.12759, 0, -0.991827, -22.7843, 0, 5.73804 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -1.58336e-07, 0, -4.34278e-07 )
+linear_velocity = Vector3( -3.33428e-05, 0, -0.000111296 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 3.93212, 0 )
+angular_velocity = Vector3( 0, -0.600501, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -466,13 +457,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1102" type="RigidBody" parent="Environment"]
-transform = Transform( 0.284441, 0, -0.958694, 0, 1, 0, 0.958694, 0, 0.284441, -20.0064, 0, -7.26443 )
+transform = Transform( 0.449151, 0, 0.893456, 0, 1, 0, -0.893456, 0, 0.449151, -19.2375, 0, -15.0654 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 1.25701e-08, 0, -5.23483e-07 )
+linear_velocity = Vector3( 0.000300858, 0, -2.51736e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.133296, 0 )
+angular_velocity = Vector3( 0, 0.0218486, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -486,13 +477,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1103" type="RigidBody" parent="Environment"]
-transform = Transform( -0.921434, 0, -0.388535, 0, 1, 0, 0.388535, 0, -0.921434, -15.9021, 0, 0.636518 )
+transform = Transform( -0.836062, 0, -0.548635, 0, 1, 0, 0.548635, 0, -0.836062, 41.4218, 0, -24.1863 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 2.49352e-07, 0, -7.26059e-08 )
+linear_velocity = Vector3( 0.000410753, 0, -0.000236994 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 3.37753, 0 )
+angular_velocity = Vector3( 0, 4.10012, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -506,13 +497,12 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1104" type="RigidBody" parent="Environment"]
-transform = Transform( -0.826536, 0, 0.562884, 0, 1, 0, -0.562884, 0, -0.826536, -19.2166, 0, -2.94869 )
+transform = Transform( -0.762004, 0, 0.647572, 0, 1, 0, -0.647572, 0, -0.762004, -18.2463, 0, -33.4829 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -2.70242e-07, 0, -2.90515e-07 )
+linear_velocity = Vector3( 8.64817e-05, 0, 3.34437e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 3.959, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -526,13 +516,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1105" type="RigidBody" parent="Environment"]
-transform = Transform( -0.688707, 0, 0.725039, 0, 1, 0, -0.725039, 0, -0.688707, -16.9304, 0, 4.72475 )
+transform = Transform( -0.983607, 0, 0.180325, 0, 1, 0, -0.180325, 0, -0.983607, -15.2003, 0, -17.531 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 7.47033e-09, 0, 1.90768e-07 )
+linear_velocity = Vector3( 5.06689e-05, 0, -1.24227e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -3.25055, 0 )
+angular_velocity = Vector3( 0, 0.062416, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -546,13 +536,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1106" type="RigidBody" parent="Environment"]
-transform = Transform( -0.691843, 0, 0.722048, 0, 1, 0, -0.722048, 0, -0.691843, -10.5491, 0, 4.44094 )
+transform = Transform( -0.758702, 0, 0.651438, 0, 1, 0, -0.651438, 0, -0.758702, 12.9227, 0, 15.2841 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 2.5886e-07, 0, -3.23148e-08 )
+linear_velocity = Vector3( -0.000198319, 0, -1.26653e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.733381, 0 )
+angular_velocity = Vector3( 0, -0.281688, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -566,13 +556,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1107" type="RigidBody" parent="Environment"]
-transform = Transform( 0.567872, 0, 0.823117, 0, 1, 0, -0.823117, 0, 0.567872, -17.8713, 0, 10.3003 )
+transform = Transform( 0.904195, 0, 0.42712, 0, 1, 0, -0.42712, 0, 0.904195, -23.246, 0, -12.5425 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -4.75599e-08, 0, 3.25654e-07 )
+linear_velocity = Vector3( -0.000246554, 0, -0.000175467 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -1.76659, 0 )
+angular_velocity = Vector3( 0, 0.616235, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -586,13 +576,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1108" type="RigidBody" parent="Environment"]
-transform = Transform( 0.834892, 0, 0.550414, 0, 1, 0, -0.550414, 0, 0.834892, -15.0378, 0, 5.51398 )
+transform = Transform( -0.950982, 0, 0.309247, 0, 1, 0, -0.309247, 0, -0.950982, -10.894, 0, 12.1566 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 4.11251e-08, 0, 1.87884e-07 )
+linear_velocity = Vector3( 0.000132167, 0, 0.000395983 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 3.42978, 0 )
+angular_velocity = Vector3( 0, 0.568229, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -606,13 +596,12 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1109" type="RigidBody" parent="Environment"]
-transform = Transform( -0.443204, 0, 0.896421, 0, 1, 0, -0.896421, 0, -0.443204, -17.4974, 0, 14.0356 )
+transform = Transform( 0.917509, 0, -0.397714, 0, 1, 0, 0.397714, 0, 0.917509, -16.3776, 0, 15.0829 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -1.74449e-07, 0, 4.57567e-07 )
+linear_velocity = Vector3( 0.000270468, 0, -0.000432344 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 1.57498, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -626,13 +615,12 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1110" type="RigidBody" parent="Environment"]
-transform = Transform( 0.93605, 0, -0.351867, 0, 1, 0, 0.351867, 0, 0.93605, -16.8312, 0, 12.1259 )
+transform = Transform( -0.934964, 0, -0.354743, 0, 1, 0, 0.354743, 0, -0.934964, 0.307841, 0, 23.9958 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -1.54952e-07, 0, 4.52479e-07 )
+linear_velocity = Vector3( -0.000354589, 0, -1.03235e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -1.79804, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -646,13 +634,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1111" type="RigidBody" parent="Environment"]
-transform = Transform( -0.908452, 0, -0.417989, 0, 1, 0, 0.417989, 0, -0.908452, -20.0465, 0, 9.61371 )
+transform = Transform( -0.809593, 0, -0.586992, 0, 1, 0, 0.586992, 0, -0.809593, -8.37695, 0, 9.94981 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -1.35237e-07, 0, -1.06803e-07 )
+linear_velocity = Vector3( -0.00010913, 0, -0.000304884 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -2.30618, 0 )
+angular_velocity = Vector3( 0, 0.191136, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -666,13 +654,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1112" type="RigidBody" parent="Environment"]
-transform = Transform( 0.999944, 0, -0.0106077, 0, 1, 0, 0.0106077, 0, 0.999944, -21.3801, 0, 7.59685 )
+transform = Transform( -0.175871, 0, -0.984413, 0, 1, 0, 0.984413, 0, -0.175871, -7.67974, 0, 2.20321 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -7.3975e-08, 0, -2.16901e-07 )
+linear_velocity = Vector3( 0.000170849, 0, 0.000152131 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 1.08878, 0 )
+angular_velocity = Vector3( 0, 0.202388, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -686,13 +674,13 @@ mesh = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="Agent-1113" type="RigidBody" parent="Environment"]
-transform = Transform( -0.776497, 0, -0.630121, 0, 1, 0, 0.630121, 0, -0.776497, -25.3217, 0, 11.2398 )
+transform = Transform( -0.220247, 0, 0.975444, 0, 1, 0, -0.975444, 0, -0.220247, -0.236364, 0, 5.48255 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -2.34953e-07, 0, 6.26471e-08 )
+linear_velocity = Vector3( -0.000156387, 0, 0.000329609 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 3.09296, 0 )
+angular_velocity = Vector3( 0, 1.9017, 0 )
 __meta__ = {
 "Name": "Agent-1"
 }
@@ -705,722 +693,501 @@ mesh = SubResource( 3 )
 [node name="80" type="CollisionShape" parent="Environment/Agent-1113"]
 shape = SubResource( 4 )
 
+[node name="Agent-1114" type="RigidBody" parent="Environment"]
+transform = Transform( -0.18495, 0, -0.982748, 0, 1, 0, 0.982748, 0, -0.18495, -18.8513, 0, -0.628095 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( 0.000170229, 0, 6.52021e-05 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, -2.49262, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1114"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1114"]
+shape = SubResource( 4 )
+
+[node name="Agent-1115" type="RigidBody" parent="Environment"]
+transform = Transform( 0.915152, 0, -0.403109, 0, 1, 0, 0.403109, 0, 0.915152, 2.86662, 0, -1.10715 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( -0.000438365, 0, -0.000252536 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, -0.162205, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1115"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1115"]
+shape = SubResource( 4 )
+
+[node name="Agent-1116" type="RigidBody" parent="Environment"]
+transform = Transform( -0.0210925, 0, -0.999778, 0, 1, 0, 0.999778, 0, -0.0210925, -10.4604, 0, -10.5929 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( -0.00019291, 0, 0.000239285 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, 1.20546, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1116"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1116"]
+shape = SubResource( 4 )
+
+[node name="Agent-1117" type="RigidBody" parent="Environment"]
+transform = Transform( 0.0244982, 0, 0.9997, 0, 1, 0, -0.9997, 0, 0.0244982, -15.4284, 0, -15.405 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( 0.000500373, 0, 0.000223738 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, -0.619874, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1117"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1117"]
+shape = SubResource( 4 )
+
+[node name="Agent-1118" type="RigidBody" parent="Environment"]
+transform = Transform( -0.797834, 0, -0.602877, 0, 1, 0, 0.602877, 0, -0.797834, -15.6286, 0, 7.02334 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( 8.34286e-06, 0, 0.000361495 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, 0.623319, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1118"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1118"]
+shape = SubResource( 4 )
+
+[node name="Agent-1119" type="RigidBody" parent="Environment"]
+transform = Transform( -0.726933, 0, 0.686708, 0, 1, 0, -0.686708, 0, -0.726933, -3.5179, 0, -27.1322 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( 0.000572387, 0, 0.000201121 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, -0.640682, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1119"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1119"]
+shape = SubResource( 4 )
+
+[node name="Agent-1120" type="RigidBody" parent="Environment"]
+transform = Transform( -0.993983, 0, -0.109537, 0, 1, 0, 0.109537, 0, -0.993983, -17.4794, 0, 2.51464 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( 7.24586e-05, 0, 0.000474616 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, 4.5826, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1120"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1120"]
+shape = SubResource( 4 )
+
+[node name="Agent-1121" type="RigidBody" parent="Environment"]
+transform = Transform( -0.178738, 0, -0.983897, 0, 1, 0, 0.983897, 0, -0.178738, 13.2549, 0, -17.6262 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( 0.000138863, 0, -0.000167187 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, -0.248958, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1121"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1121"]
+shape = SubResource( 4 )
+
+[node name="Agent-1122" type="RigidBody" parent="Environment"]
+transform = Transform( -0.713568, 0, 0.700586, 0, 1, 0, -0.700586, 0, -0.713568, -6.45321, 0, -13.6955 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( 2.92941e-05, 0, 6.42105e-05 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, 1.47017, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1122"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1122"]
+shape = SubResource( 4 )
+
+[node name="Agent-1123" type="RigidBody" parent="Environment"]
+transform = Transform( 0.197814, 0, 0.98024, 0, 1, 0, -0.98024, 0, 0.197814, 0.139941, 0, -30.7009 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( -0.000224263, 0, 0.000313543 )
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1123"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1123"]
+shape = SubResource( 4 )
+
+[node name="Agent-1124" type="RigidBody" parent="Environment"]
+transform = Transform( 0.99765, 0, -0.06851, 0, 1, 0, 0.06851, 0, 0.99765, -17.4442, 0, -2.12134 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+linear_velocity = Vector3( 0.000160011, 0, -1.19268e-05 )
+linear_damp = 5.0
+angular_velocity = Vector3( 0, 2.99204, 0 )
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Agent-1124"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Agent-1124"]
+shape = SubResource( 4 )
+
 [node name="Agent-2" type="RigidBody" parent="Environment"]
-transform = Transform( 0.340555, 0, 0.940225, 0, 1, 0, -0.940225, 0, 0.340555, 18.15, 0, 0.687558 )
+transform = Transform( 0.415389, 0, -0.909644, 0, 1, 0, 0.909644, 0, 0.415389, -28.9524, 0, 12.3457 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 5.70711e-17, 0, -5.74794e-18 )
+linear_velocity = Vector3( -1.41631e-05, 0, 2.75326e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.118299, 0 )
+angular_velocity = Vector3( 0, 1.54708, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2"]
-shape = SubResource( 7 )
-
-[node name="Agent-2114" type="RigidBody" parent="Environment"]
-transform = Transform( 0.625542, 0, 0.780191, 0, 1, 0, -0.780191, 0, 0.625542, 16.1965, 0, 1.16364 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( 5.70226e-17, 0, 3.03432e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.0859145, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2114"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2114"]
-shape = SubResource( 7 )
-
-[node name="Agent-2115" type="RigidBody" parent="Environment"]
-transform = Transform( -0.124874, 0, 0.992173, 0, 1, 0, -0.992173, 0, -0.124874, 14.2054, 0, 0.854739 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( 3.76278e-17, 0, 7.24741e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.166452, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2115"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2115"]
-shape = SubResource( 7 )
-
-[node name="Agent-2116" type="RigidBody" parent="Environment"]
-transform = Transform( -0.952286, 0, -0.305207, 0, 1, 0, 0.305207, 0, -0.952286, 12.4766, 0, -0.179634 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( 3.62603e-17, 0, 4.99911e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.277335, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2116"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2116"]
-shape = SubResource( 7 )
-
-[node name="Agent-2117" type="RigidBody" parent="Environment"]
-transform = Transform( -0.952823, 0, -0.303525, 0, 1, 0, 0.303525, 0, -0.952823, 11.0066, 0, -1.56738 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( 1.45189e-17, 0, 4.56782e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.33901, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2117"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2117"]
-shape = SubResource( 7 )
-
-[node name="Agent-2118" type="RigidBody" parent="Environment"]
-transform = Transform( -0.273675, 0, -0.961822, 0, 1, 0, 0.961822, 0, -0.273675, 9.29102, 0, -2.63481 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -1.78134e-17, 0, 6.14421e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.182689, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2118"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2118"]
-shape = SubResource( 7 )
-
-[node name="Agent-2119" type="RigidBody" parent="Environment"]
-transform = Transform( 0.462509, 0, 0.886615, 0, 1, 0, -0.886615, 0, 0.462509, 8.45731, 0, -4.47957 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -1.40787e-17, 0, 3.63449e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.110775, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2119"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2119"]
-shape = SubResource( 7 )
-
-[node name="Agent-2120" type="RigidBody" parent="Environment"]
-transform = Transform( 0.720576, 0, -0.693376, 0, 1, 0, 0.693376, 0, 0.720576, 7.09799, 0, -5.98851 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -3.76095e-17, 0, 1.9843e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.0789474, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2120"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2120"]
-shape = SubResource( 7 )
-
-[node name="Agent-2121" type="RigidBody" parent="Environment"]
-transform = Transform( 0.871194, 0, -0.49094, 0, 1, 0, 0.49094, 0, 0.871194, 5.33487, 0, -7.13328 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -6.45427e-17, 0, -3.71942e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.0497161, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2121"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2121"]
-shape = SubResource( 7 )
-
-[node name="Agent-2122" type="RigidBody" parent="Environment"]
-transform = Transform( 0.999809, 0, -0.0195331, 0, 1, 0, 0.0195331, 0, 0.999809, 7.19584, 0, -8.02103 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -1.95575e-17, 0, -1.19068e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.0010624, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2122"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2122"]
-shape = SubResource( 7 )
-
-[node name="Agent-2123" type="RigidBody" parent="Environment"]
-transform = Transform( 0.802146, 0, 0.597128, 0, 1, 0, -0.597128, 0, 0.802146, 6.18886, 0, -9.79686 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -5.13922e-17, 0, -3.72617e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.0597821, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2123"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2123"]
-shape = SubResource( 7 )
-
-[node name="Agent-2124" type="RigidBody" parent="Environment"]
-transform = Transform( 0.782963, 0, -0.622069, 0, 1, 0, 0.622069, 0, 0.782963, 5.2689, 0, -11.6547 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -9.81015e-17, 0, -7.5203e-17 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.0634514, 0 )
-__meta__ = {
-"Name": "Agent-2"
-}
-
-[node name="81" type="MeshInstance" parent="Environment/Agent-2124"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 5 )
-mesh = SubResource( 6 )
-
-[node name="82" type="CollisionShape" parent="Environment/Agent-2124"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2"]
 shape = SubResource( 7 )
 
 [node name="Agent-2125" type="RigidBody" parent="Environment"]
-transform = Transform( 0.582468, 0, 0.812853, 0, 1, 0, -0.812853, 0, 0.582468, 7.30415, 0, -11.4967 )
+transform = Transform( 0.80738, 0, -0.590032, 0, 1, 0, 0.590032, 0, 0.80738, -30.6642, 0, 8.5886 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -5.76727e-17, 0, -7.86156e-17 )
+linear_velocity = Vector3( -1.13582e-05, 0, -7.30286e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.0985091, 0 )
+angular_velocity = Vector3( 0, 1.33064, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2125"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2125"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2125"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2125"]
 shape = SubResource( 7 )
 
 [node name="Agent-2126" type="RigidBody" parent="Environment"]
-transform = Transform( 0.389685, 0, -0.920948, 0, 1, 0, 0.920948, 0, 0.389685, 8.79531, 0, -12.8823 )
+transform = Transform( 0.98607, 0, -0.166331, 0, 1, 0, 0.166331, 0, 0.98607, -28.1545, 0, 7.94756 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -3.1459e-17, 0, -1.01578e-16 )
+linear_velocity = Vector3( 2.66172e-05, 0, -4.40387e-06 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.115587, 0 )
+angular_velocity = Vector3( 0, 0.570288, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2126"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2126"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2126"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2126"]
 shape = SubResource( 7 )
 
 [node name="Agent-2127" type="RigidBody" parent="Environment"]
-transform = Transform( -0.575826, 0, -0.817572, 0, 1, 0, 0.817572, 0, -0.575826, 10.5087, 0, -11.7767 )
+transform = Transform( -0.972298, 0, 0.233744, 0, 1, 0, -0.233744, 0, -0.972298, -29.7044, 0, 5.18446 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -3.74665e-17, 0, -1.64946e-17 )
+linear_velocity = Vector3( -2.38863e-06, 0, -5.62818e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.216744, 0 )
+angular_velocity = Vector3( 0, -1.08329, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2127"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2127"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2127"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2127"]
 shape = SubResource( 7 )
 
 [node name="Agent-2128" type="RigidBody" parent="Environment"]
-transform = Transform( -0.898068, 0, -0.439857, 0, 1, 0, 0.439857, 0, -0.898068, 12.5469, 0, -11.8346 )
+transform = Transform( -0.329968, 0, 0.943992, 0, 1, 0, -0.943992, 0, -0.329968, -28.4018, 0, 2.96583 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 3.4131e-18, 0, -4.8891e-17 )
+linear_velocity = Vector3( 3.09881e-05, 0, -4.90914e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.35862, 0 )
+angular_velocity = Vector3( 0, -0.723246, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2128"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2128"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2128"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2128"]
 shape = SubResource( 7 )
 
 [node name="Agent-2129" type="RigidBody" parent="Environment"]
-transform = Transform( 0.167245, 0, 0.985915, 0, 1, 0, -0.985915, 0, 0.167245, 14.3042, 0, -10.8272 )
+transform = Transform( 0.412097, 0, 0.91114, 0, 1, 0, -0.91114, 0, 0.412097, -25.7181, 0, 6.75764 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 1.31409e-17, 0, -6.80971e-18 )
+linear_velocity = Vector3( 7.94855e-05, 0, 5.08413e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.487012, 0 )
+angular_velocity = Vector3( 0, -0.313929, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2129"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2129"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2129"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2129"]
 shape = SubResource( 7 )
 
 [node name="Agent-2130" type="RigidBody" parent="Environment"]
-transform = Transform( -0.72163, 0, -0.692279, 0, 1, 0, 0.692279, 0, -0.72163, 16.0261, 0, -9.74107 )
+transform = Transform( 0.275648, 0, -0.961259, 0, 1, 0, 0.961259, 0, 0.275648, -26.9252, 0, 1.13218 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 3.44108e-17, 0, 3.73304e-17 )
+linear_velocity = Vector3( 2.6402e-07, 0, -0.000146281 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.390783, 0 )
+angular_velocity = Vector3( 0, 0.350666, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2130"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2130"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2130"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2130"]
 shape = SubResource( 7 )
 
 [node name="Agent-2131" type="RigidBody" parent="Environment"]
-transform = Transform( -0.0640026, 0, -0.99795, 0, 1, 0, 0.99795, 0, -0.0640026, 18.0536, 0, -9.72005 )
+transform = Transform( 0.451328, 0, -0.892358, 0, 1, 0, 0.892358, 0, 0.451328, -25.0546, 0, 9.30031 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 7.31627e-17, 0, -4.17586e-17 )
+linear_velocity = Vector3( 6.3731e-05, 0, -2.5644e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.164739, 0 )
+angular_velocity = Vector3( 0, -0.218693, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2131"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2131"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2131"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2131"]
 shape = SubResource( 7 )
 
 [node name="Agent-2132" type="RigidBody" parent="Environment"]
-transform = Transform( 0.209525, 0, -0.977803, 0, 1, 0, 0.977803, 0, 0.209525, 18.496, 0, -7.73018 )
+transform = Transform( 0.949404, 0, 0.314059, 0, 1, 0, -0.314059, 0, 0.949404, -25.8097, 0, 12.3547 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -8.37163e-19, 0, 2.86357e-17 )
+linear_velocity = Vector3( 4.98055e-05, 0, 2.26808e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.134754, 0 )
+angular_velocity = Vector3( 0, 0.0753276, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2132"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2132"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2132"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2132"]
 shape = SubResource( 7 )
 
 [node name="Agent-2133" type="RigidBody" parent="Environment"]
-transform = Transform( -0.816526, 0, 0.577308, 0, 1, 0, -0.577308, 0, -0.816526, 20.5199, 0, -7.40318 )
+transform = Transform( 0.438428, 0, -0.898767, 0, 1, 0, 0.898767, 0, 0.438428, -27.0014, 0, 10.6827 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 7.18777e-17, 0, 5.47034e-18 )
+linear_velocity = Vector3( 8.31595e-05, 0, 4.77212e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.253412, 0 )
+angular_velocity = Vector3( 0, -0.91647, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2133"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2133"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2133"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2133"]
 shape = SubResource( 7 )
 
 [node name="Agent-2134" type="RigidBody" parent="Environment"]
-transform = Transform( -0.837974, 0, 0.545711, 0, 1, 0, -0.545711, 0, -0.837974, 20.3767, 0, -5.35572 )
+transform = Transform( 0.832205, 0, 0.554468, 0, 1, 0, -0.554468, 0, 0.832205, -32.4691, 0, 10.4805 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 3.20252e-17, 0, 7.39075e-17 )
+linear_velocity = Vector3( -2.31615e-05, 0, 2.03251e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.373969, 0 )
+angular_velocity = Vector3( 0, -0.327282, 0 )
 __meta__ = {
 "Name": "Agent-2"
 }
 
-[node name="81" type="MeshInstance" parent="Environment/Agent-2134"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2134"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 
-[node name="82" type="CollisionShape" parent="Environment/Agent-2134"]
+[node name="84" type="CollisionShape" parent="Environment/Agent-2134"]
 shape = SubResource( 7 )
 
-[node name="Agent-3" type="RigidBody" parent="Environment"]
-transform = Transform( 0.886695, 0, 0.462356, 0, 1, 0, -0.462356, 0, 0.886695, 38.036, 0, 17.7673 )
+[node name="Agent-2135" type="RigidBody" parent="Environment"]
+transform = Transform( 0.309406, 0, -0.95093, 0, 1, 0, 0.95093, 0, 0.309406, -31.8474, 0, 5.49789 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 2.15293e-13, 0, -1.25151e-13 )
+linear_velocity = Vector3( -1.20642e-05, 0, -8.69361e-05 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.0716908, 0 )
+angular_velocity = Vector3( 0, -0.206213, 0 )
 __meta__ = {
-"Name": "Agent-3"
+"Name": "Agent-2"
 }
 
-[node name="83" type="MeshInstance" parent="Environment/Agent-3"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2135"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
 
-[node name="84" type="CollisionShape" parent="Environment/Agent-3"]
-shape = SubResource( 10 )
+[node name="84" type="CollisionShape" parent="Environment/Agent-2135"]
+shape = SubResource( 7 )
 
-[node name="Agent-3135" type="RigidBody" parent="Environment"]
-transform = Transform( -0.300643, 0, 0.953737, 0, 1, 0, -0.953737, 0, -0.300643, 36.6696, 0, 19.3445 )
+[node name="Agent-2136" type="RigidBody" parent="Environment"]
+transform = Transform( 0.822111, 0, -0.569327, 0, 1, 0, 0.569327, 0, 0.822111, -24.6422, 0, 4.78403 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( 1.70333e-13, 0, 1.13254e-12 )
+linear_velocity = Vector3( 7.94051e-05, 0, -2.05433e-06 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.280837, 0 )
+angular_velocity = Vector3( 0, -0.0498791, 0 )
 __meta__ = {
-"Name": "Agent-3"
+"Name": "Agent-2"
 }
 
-[node name="83" type="MeshInstance" parent="Environment/Agent-3135"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2136"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
 
-[node name="84" type="CollisionShape" parent="Environment/Agent-3135"]
-shape = SubResource( 10 )
+[node name="84" type="CollisionShape" parent="Environment/Agent-2136"]
+shape = SubResource( 7 )
 
-[node name="Agent-3136" type="RigidBody" parent="Environment"]
-transform = Transform( -0.115512, 0, -0.993306, 0, 1, 0, 0.993306, 0, -0.115512, 35.5526, 0, 17.6598 )
+[node name="Agent-2137" type="RigidBody" parent="Environment"]
+transform = Transform( -0.612376, 0, 0.790567, 0, 1, 0, -0.790567, 0, -0.612376, -24.0224, 0, 11.4456 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector3( -1.2301e-13, 0, 8.58467e-13 )
+linear_velocity = Vector3( 4.47176e-05, 0, 5.61178e-06 )
 linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.252871, 0 )
+angular_velocity = Vector3( 0, -0.212825, 0 )
 __meta__ = {
-"Name": "Agent-3"
+"Name": "Agent-2"
 }
 
-[node name="83" type="MeshInstance" parent="Environment/Agent-3136"]
+[node name="83" type="MeshInstance" parent="Environment/Agent-2137"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
 
-[node name="84" type="CollisionShape" parent="Environment/Agent-3136"]
-shape = SubResource( 10 )
-
-[node name="Agent-3137" type="RigidBody" parent="Environment"]
-transform = Transform( 0.888762, 0, 0.45837, 0, 1, 0, -0.45837, 0, 0.888762, 35.8985, 0, 15.6651 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( 5.58346e-13, 0, 5.0798e-13 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.0721387, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3137"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3137"]
-shape = SubResource( 10 )
-
-[node name="Agent-3138" type="RigidBody" parent="Environment"]
-transform = Transform( 0.140715, 0, 0.99005, 0, 1, 0, -0.99005, 0, 0.140715, 34.6833, 0, 14.032 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -5.88144e-13, 0, 5.4642e-13 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.214555, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3138"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3138"]
-shape = SubResource( 10 )
-
-[node name="Agent-3139" type="RigidBody" parent="Environment"]
-transform = Transform( 0.75265, 0, -0.658421, 0, 1, 0, 0.658421, 0, 0.75265, 34.7363, 0, 11.9829 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -9.02714e-13, 0, -3.86366e-13 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.107243, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3139"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3139"]
-shape = SubResource( 10 )
-
-[node name="Agent-3140" type="RigidBody" parent="Environment"]
-transform = Transform( 0.878198, 0, 0.478297, 0, 1, 0, -0.478297, 0, 0.878198, 35.0493, 0, 9.97192 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -7.50959e-13, 0, -1.04164e-12 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.0769593, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3140"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3140"]
-shape = SubResource( 10 )
-
-[node name="Agent-3141" type="RigidBody" parent="Environment"]
-transform = Transform( 0.701909, 0, -0.712267, 0, 1, 0, 0.712267, 0, 0.701909, 36.5228, 0, 8.57142 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -2.21975e-15, 0, -1.4898e-12 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.117871, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3141"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3141"]
-shape = SubResource( 10 )
-
-[node name="Agent-3142" type="RigidBody" parent="Environment"]
-transform = Transform( 0.125908, 0, -0.992042, 0, 1, 0, 0.992042, 0, 0.125908, 38.5795, 0, 8.45811 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( 1.39053e-12, 0, -1.79473e-12 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.220166, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3142"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3142"]
-shape = SubResource( 10 )
-
-[node name="Agent-3143" type="RigidBody" parent="Environment"]
-transform = Transform( 0.920543, 0, -0.390641, 0, 1, 0, 0.390641, 0, 0.920543, 38.0495, 0, 10.4249 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -7.7297e-13, 0, -9.53421e-13 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.0633129, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3143"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3143"]
-shape = SubResource( 10 )
-
-[node name="Agent-3144" type="RigidBody" parent="Environment"]
-transform = Transform( 0.69357, 0, 0.720389, 0, 1, 0, -0.720389, 0, 0.69357, 39.6577, 0, 11.7027 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( 1.16758e-12, 0, -7.2631e-13 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.122736, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3144"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3144"]
-shape = SubResource( 10 )
-
-[node name="Agent-3145" type="RigidBody" parent="Environment"]
-transform = Transform( 0.691795, 0, 0.722094, 0, 1, 0, -0.722094, 0, 0.691795, 37.6603, 0, 12.4242 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -6.38508e-13, 0, 4.60983e-13 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, 0.125586, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3145"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3145"]
-shape = SubResource( 10 )
-
-[node name="Agent-3146" type="RigidBody" parent="Environment"]
-transform = Transform( 0.79417, 0, -0.607696, 0, 1, 0, 0.607696, 0, 0.79417, 39.2517, 0, 13.6948 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( 1.06374e-12, 0, 7.38911e-13 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.0984915, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3146"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3146"]
-shape = SubResource( 10 )
-
-[node name="Agent-3147" type="RigidBody" parent="Environment"]
-transform = Transform( 0.985706, 0, -0.168474, 0, 1, 0, 0.168474, 0, 0.985706, 38.348, 0, 15.5344 )
-gravity_scale = 0.0
-contacts_reported = 1
-contact_monitor = true
-linear_velocity = Vector3( -7.87299e-13, 0, 2.27212e-12 )
-linear_damp = 5.0
-angular_velocity = Vector3( 0, -0.0284476, 0 )
-__meta__ = {
-"Name": "Agent-3"
-}
-
-[node name="83" type="MeshInstance" parent="Environment/Agent-3147"]
-transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
-material_override = SubResource( 8 )
-mesh = SubResource( 9 )
-
-[node name="84" type="CollisionShape" parent="Environment/Agent-3147"]
-shape = SubResource( 10 )
+[node name="84" type="CollisionShape" parent="Environment/Agent-2137"]
+shape = SubResource( 7 )
