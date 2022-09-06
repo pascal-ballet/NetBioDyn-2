@@ -26,15 +26,15 @@ size_flags_horizontal = 3
 alignment = 1
 
 [node name="Marge" type="ToolButton" parent="Toolbar"]
-margin_right = 397.0
+margin_right = 352.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 disabled = true
 flat = false
 
 [node name="BtnPlay" type="ToolButton" parent="Toolbar"]
-margin_left = 401.0
-margin_right = 433.0
+margin_left = 356.0
+margin_right = 388.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 4 )
@@ -43,8 +43,8 @@ icon_align = 1
 expand_icon = true
 
 [node name="BtnStep" type="ToolButton" parent="Toolbar"]
-margin_left = 437.0
-margin_right = 469.0
+margin_left = 392.0
+margin_right = 424.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 3 )
@@ -52,8 +52,8 @@ flat = false
 expand_icon = true
 
 [node name="BtnPause" type="ToolButton" parent="Toolbar"]
-margin_left = 473.0
-margin_right = 505.0
+margin_left = 428.0
+margin_right = 460.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 5 )
@@ -61,8 +61,8 @@ flat = false
 expand_icon = true
 
 [node name="BtnStop" type="ToolButton" parent="Toolbar"]
-margin_left = 509.0
-margin_right = 541.0
+margin_left = 464.0
+margin_right = 496.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 6 )
@@ -70,12 +70,30 @@ flat = false
 expand_icon = true
 
 [node name="Marge2" type="ToolButton" parent="Toolbar"]
-margin_left = 545.0
-margin_right = 943.0
+margin_left = 500.0
+margin_right = 852.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 disabled = true
 flat = false
+
+[node name="BtnLoad" type="ToolButton" parent="Toolbar"]
+margin_left = 856.0
+margin_right = 898.0
+margin_bottom = 32.0
+grow_horizontal = 0
+text = "Load"
+flat = false
+align = 2
+
+[node name="BtnSave" type="ToolButton" parent="Toolbar"]
+margin_left = 902.0
+margin_right = 943.0
+margin_bottom = 32.0
+grow_horizontal = 0
+text = "Save"
+flat = false
+align = 2
 
 [node name="BtnDebug" type="ToolButton" parent="Toolbar"]
 margin_left = 947.0
@@ -383,6 +401,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="Viewport" type="Viewport" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer"]
+unique_name_in_owner = true
 size = Vector2( 342, 285 )
 handle_input_locally = false
 render_target_update_mode = 3
@@ -1321,6 +1340,8 @@ items = [ "Reaction", null, 0, false, false, 0, 0, null, "", false, "Force Aléa
 [connection signal="pressed" from="Toolbar/BtnStep" to="." method="_on_BtnStep_pressed"]
 [connection signal="pressed" from="Toolbar/BtnPause" to="." method="_on_BtnPause_pressed"]
 [connection signal="pressed" from="Toolbar/BtnStop" to="." method="_on_BtnStop_pressed"]
+[connection signal="pressed" from="Toolbar/BtnLoad" to="." method="_on_BtnLoad_pressed"]
+[connection signal="pressed" from="Toolbar/BtnSave" to="." method="_on_BtnSave_pressed"]
 [connection signal="pressed" from="Toolbar/BtnDebug" to="." method="_on_BtnDebug_pressed"]
 [connection signal="pressed" from="Toolbar/BtnClose" to="." method="_on_BtnClose_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnAddAgent" to="." method="_on_ToolPlusAgent_pressed"]

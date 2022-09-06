@@ -947,10 +947,10 @@ func action(tree, R1) -> void:
 				if R1.is_queued_for_deletion() == false && """+in_quote(p1)+""" == "0" || """+in_quote(p1)+""" == "R2":
 					R1.queue_free()
 				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
-				if R1.is_queued_for_deletion() == false && """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+				if """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
 					NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p2)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 				# si P2 MIME R1 il APPARAIT du meme type que R1
-				if R1.is_queued_for_deletion() == false && """+in_quote(p2)+""" == "R1" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+				if """+in_quote(p2)+""" == "R1" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
 					var P2 = R1.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 					R1.get_parent().add_child(P2)
@@ -1011,3 +1011,33 @@ func _on_BtnDebug_pressed():
 	
 
 
+
+
+func _on_BtnLoad_pressed():
+	var viewport:Viewport = get_node("%Viewport")
+	# Remove the current simu
+	var simu_node = get_node("%Simulator")
+	viewport.remove_child(simu_node)
+	simu_node.call_deferred("free")
+
+	# Add the next level
+	var next_simu_res = load("res://Simulations/Simu.tscn")
+	var next_simu_node 	= next_simu_res.instance()
+	viewport.add_child(next_simu_node)
+	
+	# re-init tree variables
+	_node_env 		= next_simu_node.get_node("Environment")
+	_node_behavs 	= next_simu_node.get_node("Behaviors")
+
+func _on_BtnSave_pressed():
+	# Duplicate the node (prevents an error)
+	var simu = get_node("%Simulator").duplicate()
+
+	# Setting it as owner of children
+	for child in simu.get_children():
+		child.set_owner(simu)
+
+	# Continue to save
+	var save_build  = PackedScene.new()
+	save_build.pack(simu)
+	ResourceSaver.save("res://Simulations/Simu.tscn", save_build)
