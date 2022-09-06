@@ -941,13 +941,13 @@ func action(tree, R1) -> void:
 					NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p1)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
 					R1.queue_free()
 				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut "0" aussi)
-				if """+in_quote(p1)+""" == "0" || """+in_quote(p1)+""" == "R2":
+				if R1.is_queued_for_deletion() == false && """+in_quote(p1)+""" == "0" || """+in_quote(p1)+""" == "R2":
 					R1.queue_free()
 				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
-				if """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+				if R1.is_queued_for_deletion() == false && """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
 					NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p2)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 				# si P2 MIME R1 il APPARAIT du meme type que R1
-				if """+in_quote(p2)+""" == "R1" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+				if R1.is_queued_for_deletion() == false && """+in_quote(p2)+""" == "R1" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
 					var P2 = R1.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 					R1.get_parent().add_child(P2)
@@ -964,27 +964,27 @@ func action(tree, R1) -> void:
 				if R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")): # R2 n'est pas détruit et appartient au bon groupe
 					print( "R2=>P2" )
 					# R1 CHANGE en p1
-					if """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+					if R1.is_queued_for_deletion() == false && """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
 						NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p1)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
 						R1.queue_free()
 					# R1 est ENLEVE
-					if """+in_quote(p1)+""" == "0": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+					if R1.is_queued_for_deletion() == false && """+in_quote(p1)+""" == "0": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
 						R1.queue_free()
 					# R1/P1 MIME R2
-					if """+in_quote(p1)+""" == "R2": # si R1 devient P1 mais du meme type que R2
+					if R1.is_queued_for_deletion() == false && """+in_quote(p1)+""" == "R2": # si R1 devient P1 mais du meme type que R2
 						var P1 = R2.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
 						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 						R1.get_parent().add_child(P1)
 						R1.queue_free()
 					# R2 CHANGE en p2
-					if """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					if R2.is_queued_for_deletion() == false && """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
 						NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p2)+""", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 						R2.queue_free()
 					# R2 est ENLEVE
-					if """+in_quote(p2)+""" == "0": # si R2 est enlevé tout simplement
+					if R2.is_queued_for_deletion() == false && """+in_quote(p2)+""" == "0": # si R2 est enlevé tout simplement
 						R2.queue_free()
 					# R1/P1 MIME R2
-					if """+in_quote(p2)+""" == "R1": # si R2 devient P2 mais du meme type que R1
+					if R2.is_queued_for_deletion() == false && """+in_quote(p2)+""" == "R1": # si R2 devient P2 mais du meme type que R1
 						var P2 = R1.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
 						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
 						R1.get_parent().add_child(P2)
@@ -999,6 +999,11 @@ func action(tree, R1) -> void:
 
 
 func _on_BtnDebug_pressed():
-	self.set_script(load(  "res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd"  ))
+	#self.set_script(load(  "res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd"  ))
+	var node:Node = _node_env.get_child(0)
+	print(node.is_queued_for_deletion())
+	node.queue_free()
+	print(node.is_queued_for_deletion())
+	
 
 
