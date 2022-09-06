@@ -40,6 +40,8 @@ var _env_min_z:float = -40
 var _env_max_x:float =  40
 var _env_max_y:float =  0
 var _env_max_z:float =  40
+# instances size
+var MAX_AGENTS:int = 5000
 
 # Called when the node enters the scene tree for the first time.
 func my_init() -> void:
@@ -546,9 +548,9 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 		
 		var space_state = _node_camera.get_world().direct_space_state
 		var selection:Dictionary = space_state.intersect_ray(from, cursorPos)
-		print(from)
-		print(cursorPos)
-		print(selection)
+		#print(from)
+		#print(cursorPos)
+		#print(selection)
 		
 		if selection.size() > 0:
 			return
@@ -562,8 +564,8 @@ func get_object_under_mouse():
 	var mouse_pos = get_viewport().get_mouse_position()
 	var ray_from = _node_camera.project_ray_origin(mouse_pos)
 	var ray_to = ray_from + _node_camera.project_ray_normal(mouse_pos) * ray_length
-	print(ray_from)
-	print(ray_to)
+	#print(ray_from)
+	#print(ray_to)
 	var space_state = _node_camera.get_world().direct_space_state
 	var selection = space_state.intersect_ray(ray_from, ray_to)
 	return selection
@@ -994,8 +996,6 @@ func behav_script_reaction(r1:String, r2:String, p:String, p1:String, p2:String)
 extends Node
 
 # Reaction
-var MAX_AGENTS:int = 1500
-
 func action(tree, R1) -> void:
 	var proba:float = """+p+"""
 	var alea:float = rand_range(0,100)
@@ -1011,18 +1011,18 @@ func action(tree, R1) -> void:
 			if """+in_quote(r2)+""" == "0": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
 				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
 				if """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2":
-					var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = "0" donc ok pas de R2 qui compte
-					print_debug("spawn P1...")
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = "0" donc ok pas de R2 qui compte
+					#print_debug("spawn P1...")
 					NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p1)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
 					R1.queue_free()
 				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut "0" aussi)
 				if R1.is_queued_for_deletion() == false && """+in_quote(p1)+""" == "0" || """+in_quote(p1)+""" == "R2":
 					R1.queue_free()
 				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
-				if """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+				if """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
 					NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p2)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 				# si P2 MIME R1 il APPARAIT du meme type que R1
-				if """+in_quote(p2)+""" == "R1" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+				if """+in_quote(p2)+""" == "R1" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
 					var P2 = R1.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 					R1.get_parent().add_child(P2)
@@ -1030,14 +1030,14 @@ func action(tree, R1) -> void:
 			# Cas avec un 2nd réactif ########################################################################################
 			var bodies = R1.get_colliding_bodies()
 			if bodies.size() > 0:
-				print(str("collision size:",bodies.size() ))
-				print("R1 is colliding")
+				#print(str("collision size:",bodies.size() ))
+				#print("R1 is colliding")
 				var R2 = bodies[0]
-				print( str( "List R1 : ", R1.get_meta_list()    ) )
-				print( str( "List R2 : ", R2.get_meta_list()    ) )
-				print( str("R2.get_meta(Name) : ",  R2.get_meta("Name")   ) )
+				#print( str( "List R1 : ", R1.get_meta_list()    ) )
+				#print( str( "List R2 : ", R2.get_meta_list()    ) )
+				#print( str("R2.get_meta(Name) : ",  R2.get_meta("Name")   ) )
 				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")): # R2 n'est pas détruit et appartient au bon groupe
-					print( "R2=>P2" )
+					#print( "R2=>P2" )
 					# R1 CHANGE en p1
 					if R1.is_queued_for_deletion() == false && """+in_quote(p1)+""" != "0" && """+in_quote(p1)+""" != "R1" && """+in_quote(p1)+""" != "R2": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
 						NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p1)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p1,".tscn")).instance()
@@ -1052,7 +1052,7 @@ func action(tree, R1) -> void:
 						R1.get_parent().add_child(P1)
 						R1.queue_free()
 					# R2 CHANGE en p2
-					if R2.is_queued_for_deletion() == false && """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					if R2.is_queued_for_deletion() == false && """+in_quote(p2)+""" != "0" && """+in_quote(p2)+""" != "R1" && """+in_quote(p2)+""" != "R2" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
 						NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p2)+""", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 						R2.queue_free()
 					# R2 est ENLEVE
