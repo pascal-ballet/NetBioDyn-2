@@ -20,15 +20,16 @@ enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION,BEHAVIOR_RANDOM_FORCE, GRID, ENV }
 #                        KEY NODES                         *
 # **********************************************************
 # 2D important nodes
-onready var _listAgents:ItemList 	= find_node("ListAgents")
-onready var _listBehavs:ItemList 	= find_node("ListBehav")
-onready var _node_status	:Label 	= find_node("LabelStatusbar")
+var _listAgents:ItemList
+var _listBehavs:ItemList
+var _node_status	:Label
 # 3D simulator nodes
-onready var _node_camera	:Node 	= find_node("Camera")
-onready var _node_simu		:Node 	= find_node("Simulator")
-onready var _node_entities	:Node 	= find_node("Entities")
-onready var _node_behavs	:Node 	= find_node("Behaviors")
-onready var _node_env		:Node 	= find_node("Environment")
+var _node_viewport	:Node
+var _node_simu		:Node
+var _node_camera	:Node
+var _node_entities	:Node
+var _node_behavs	:Node
+var _node_env		:Node
 
 # Simulator time steps
 var _step:int = 0
@@ -41,8 +42,22 @@ var _env_max_y:float =  0
 var _env_max_z:float =  40
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass
+func my_init() -> void:
+	# 2D important nodes
+	_listAgents 		= find_node("ListAgents")
+	_listBehavs 		= find_node("ListBehav")
+	_node_status	 	= find_node("LabelStatusbar")
+	# 3D simulator nodes
+	var tree:SceneTree	= get_tree()
+	var scene:Node		= tree.get_current_scene()
+	_node_simu	 		= scene.find_node("Simulator") #get_node_recursive(get_tree().get_current_scene(), "Simulator") #get_node("/root/VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer")
+	if _node_simu == null:
+		return
+	_node_viewport		= _node_simu.get_parent()
+	_node_camera	 	= get_node_direct(_node_simu, "Camera")
+	_node_entities 		= get_node_direct(_node_simu, "Entities")
+	_node_behavs	 	= get_node_direct(_node_simu, "Behaviors")
+	_node_env	 		= get_node_direct(_node_simu, "Environment")
 
 # **********************************************************
 #                        SCHEDULER                         *
@@ -50,6 +65,8 @@ func _ready() -> void:
 func _process(delta):
 	# MANAGE Simulator Control (PLAY / STEP / PAUSE / STOP)
 	if _sim_play == false:
+		if _node_simu == null:
+			my_init()
 		return
 		
 	if _sim_play == true && _sim_pause == true && _sim_play_once == false:
@@ -553,22 +570,16 @@ func get_object_under_mouse():
 		
 func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	# Spawn the new entity
-	#print_debug(str("in spawn_agent : name=", name ) )
-	var n_agents:Node = _node_env #tree.get_node("%Environment")
-	#print_debug(str("in spawn_agent : n_agents=", n_agents ) )
-	var rb:RigidBody = get_entity(name)
-	#print_debug(str("in spawn_agent : rb=", rb ) )
-	var agent:RigidBody  = clone_rigid_body_agent(rb) #load("res://addons/NetBioDyn-2/3-Agents/Agent-Blue.tscn").instance()
-	#print_debug(str("in spawn_agent : CLONED agent=", agent ) )
+	var n_agents:Node 	= tree._node_env #tree.get_node("%Environment")
+	var rb:RigidBody 	= tree.get_entity(name)
+	var agent:RigidBody = tree.clone_rigid_body_agent(rb)
+	# Set instance parameters
 	agent.visible = true
 	agent.set_gravity_scale(0)
-	n_agents.add_child(agent)
 	agent.set_meta("Name", rb.name)
-	agent.global_transform.origin = pos  #Vector3(event.position.x-50,0,event.position.y-10)/10 #Vector3(get_parent().get_mouse_position().x,0,get_parent().get_mouse_position().y)/10
-	# to be saved as scene, the owner is the simulation "root" node
-	#   - see https://godotengine.org/qa/903/how-to-save-a-scene-at-run-time
-	#   - see https://github.com/godotengine/godot-proposals/issues/390
-	#agent.set_owner(get_node("%Simulator"))
+	# Attach the instance to env
+	n_agents.add_child(agent)
+	agent.global_transform.origin = pos
 
 
 
@@ -887,16 +898,26 @@ func key_name_create() -> String:
 	var prefix:String = "Agent-"
 	for n in range(1,999999):
 		var key_name:String = prefix + String(n)
-		var exists:bool = get_direct_node(_node_entities, key_name)
-		if exists == false:
+		var exists:Node = get_node_direct(_node_entities, key_name)
+		if exists == null:
 			return key_name
 	return "FULL"
 	
-func get_direct_node(var root:Node, var key_name:String) -> bool:
+func get_node_direct(var root:Node, var key_name:String) -> Node:
 	for nd in root.get_children():
 		if nd.name == key_name:
-			return true
-	return false
+			return nd
+	return null
+
+func get_node_recursive(var node:Node, var name:String) -> Node:
+	var node_name:String = node.name
+	if node_name == name:
+		return node
+	else:
+		for nd in node.get_children():
+			get_node_recursive(nd , name)
+	return null
+	
 
 func key_param_create() -> String:
 	var prefix:String = "Param-"
@@ -1063,7 +1084,9 @@ func _on_BtnDebug_pressed():
 
 
 
-
+# ************************************************************
+#                   Load and Save Simulation                 *
+# ************************************************************
 func _on_BtnLoad_pressed():
 	# Select the file to Load
 	var dialog = FileDialog.new()
@@ -1075,9 +1098,8 @@ func _on_BtnLoad_pressed():
 	var filename = yield(dialog, "file_selected")
 	
 	# Load the simulation
-	var viewport:Viewport = get_node("%Viewport")
 	# Remove the current simu
-	viewport.remove_child(_node_simu)
+	_node_viewport.remove_child(_node_simu)
 	_node_simu.call_deferred("free")
 
 	# Add the next level
@@ -1090,7 +1112,7 @@ func _on_BtnLoad_pressed():
 	# TO DO : verify the tree structure before loading it (Nodes Simulator, then Entities, Behaviors ,etc)
 	
 	# The structure is ok => attach it to the Viewport
-	viewport.add_child(next_simu_node)
+	_node_viewport.add_child(next_simu_node)
 	
 	# re-init 3D node variables
 	_node_camera	= next_simu_node.get_node("Camera")
@@ -1111,18 +1133,25 @@ func _on_BtnLoad_pressed():
 	
 
 func _on_BtnSave_pressed():
+	# Select the file to Save
+	var dialog = FileDialog.new()
+	dialog.mode = FileDialog.MODE_SAVE_FILE
+	dialog.add_filter("*.tscn")
+	dialog.access = FileDialog.ACCESS_FILESYSTEM
+	add_child(dialog)
+	dialog.popup_centered_ratio()
+	var filename = yield(dialog, "file_selected")
+	
 	# Duplicate the node (prevents an error)
 	var simu = _node_simu.duplicate()
 
 	# Setting it as owner of children
 	set_owner_recursive(simu, simu)
-	#for child in simu.get_children():
-	#	child.set_owner(simu)
 
 	# Continue to save
 	var save_build  = PackedScene.new()
 	save_build.pack(simu)
-	ResourceSaver.save("res://Simulations/Simu.tscn", save_build)
+	ResourceSaver.save(filename, save_build)
 
 func set_owner_recursive(root:Node, node:Node)->void:
 	for child in node.get_children():
