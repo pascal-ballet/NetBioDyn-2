@@ -423,6 +423,7 @@ func _on_button_del_group_of_agent() -> void:
 # **********************************************************
 
 func _on_ButtonAddParam_button_down() -> void:
+	print(str("Add Param"))
 	# Crete a unique name for the parameter (Meta names are key of dictionnary)
 	var key_param:String  = key_param_create()
 	# Create the line of input boxes
@@ -449,6 +450,7 @@ func _on_Button_button_down() -> void:
 	
 # META => GUI PARAM
 func agent_meta_to_param() -> void:
+	print(str("META=>Param"))
 	#printerr(str("meta => PARAM for ", _selected_name))
 	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
@@ -475,7 +477,7 @@ func agent_meta_to_param() -> void:
 
 # GUI PARAM => META
 func agent_param_to_meta() -> void:
-	#printerr(str("PARAM => meta for ", _selected_name))
+	printerr(str("PARAM => meta for ", _selected_name))
 	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
 		return
@@ -514,6 +516,7 @@ func get_param_line_has_focus() -> int :
 	return -1
 
 func _on_ParamName_focus_exited() -> void:
+	print(str("Param Focus Lost"))
 	# Verif Name if unique
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	var i:int = _selected_param_pos
