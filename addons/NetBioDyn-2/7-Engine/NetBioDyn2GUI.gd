@@ -198,6 +198,7 @@ func _on_ListAgents_item_selected(index: int) -> void:
 		if entity is RigidBody:
 			tabs.current_tab = Prop.ENTITY
 			_selected_name = entity_name
+			print(str("Select:",_selected_name))
 			_fill_properties_of_agent(entity)
 		else:
 			tabs = get_node("%TabContainer")	
@@ -465,7 +466,7 @@ func agent_meta_to_param() -> void:
 	for m in nb_param:
 		var meta_name :String  	= lst[m]# rb.get_meta_list()[m]
 		var meta_value			= rb.get_meta(meta_name)
-		print(str(_selected_name , " : meta => PARAM ", meta_name , " = " , meta_value))
+		print(str(_selected_name , " : META=>PARAM ", meta_name , " = " , meta_value))
 		if meta_name != "Name":
 			_on_ButtonAddParam_button_down()
 			var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
@@ -480,6 +481,7 @@ func agent_param_to_meta() -> void:
 		return
 	# Clear Meta
 	for meta_name in rb.get_meta_list():
+		print(str("remove:",meta_name,"=",get_meta(meta_name)))
 		rb.remove_meta(meta_name)
 	print(str("a) nb meta=",rb.get_meta_list().size()))
 		
@@ -490,6 +492,7 @@ func agent_param_to_meta() -> void:
 		var line:HBoxContainer = vbox_param.get_child(i)
 		var param_name :String  = line.get_child(0).get_text()
 		var param_value			= line.get_child(2).get_text()
+		print(str(_selected_name , " GUI=>META: ", param_name , " = " , param_value))
 		rb.set_meta(param_name, param_value)
 	print(str("b) nb meta=",rb.get_meta_list().size()))
 
