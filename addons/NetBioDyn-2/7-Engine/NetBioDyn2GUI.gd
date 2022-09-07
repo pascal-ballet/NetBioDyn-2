@@ -124,8 +124,9 @@ func updateStatus()->void:
 
 
 # **********************************************************
-#                         AGENTS                           *
+#               AGENTS : simple Properties                 *
 # **********************************************************
+
 func addAgent(var name) -> void:	
 	# Create new Agent in GUI -----------------------------
 	_listAgents.add_item(name)
@@ -169,8 +170,8 @@ func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
 	#print_debug(str(" TRY TO clone_rigid_body_agent " ))
 	var rb:RigidBody = rb0.duplicate()
 	#print_debug(str(" SUCCESS " ))
-	return rb 	# warning : parameters are not cloned (same ref)
-										# it's ok now, but could be wrong for some param by ref
+	return rb 	# warning : are parameters not cloned ? (but ref only ?)
+				# it's ok now, but could be wrong for some param by ref
 	
 # Add Agent -----------------------------
 func _on_ToolPlusAgent_pressed() -> void:
@@ -322,7 +323,7 @@ func update_agent_instances(var rb:RigidBody)->void:
 			# Put groups of rb to agt
 			var lst_gp_rb = rb.get_groups()
 			for gp in lst_gp_rb:
-				agt.add_to_group(gp)
+				agt.add_to_group(gp, true)
 
 			# update Param ************************
 			#(TODO + if ref => make param copies when instancing)
@@ -330,7 +331,22 @@ func update_agent_instances(var rb:RigidBody)->void:
 func _on_AgentName_text_entered(new_text: String) -> void:
 	_on_AgentName_focus_exited()
 
-# Agent GROUPS **************************************
+
+
+
+#█████   ██████  ████████ ███████             ██████  ██████  
+#██   ██ ██          ██    ██          ██     ██       ██   ██ 
+#███████ ██   ███    ██    ███████            ██   ███ ██████  
+#██   ██ ██    ██    ██         ██     ██     ██    ██ ██      
+#██   ██  ██████     ██    ███████             ██████  ██
+
+
+
+
+# **********************************************************
+#                     AGENTS : Groups                      *
+# **********************************************************
+# Thanks to: http://patorjk.com/software/taag/#p=display&f=ANSI%20Regular&t=AGTS%20%3A%20GP
 func _on_ButtonAddGroup() -> void:
 	# Crete a unique name for the parameter (Meta names are key of dictionnary)
 	# Create the line of input boxes
@@ -344,20 +360,19 @@ func _on_ButtonAddGroup() -> void:
 
 # GUI GROUPS => GROUPS
 func agent_GUI_groups_to_groups(new_group: String="") -> void:
-	#printerr(str("PARAM => meta for ", _selected_name))
 	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
 		return
-	# Clear Group
+	# Remove from all Groups
 	var lst_gp = rb.get_groups()
 	for gp in lst_gp:
 		rb.remove_from_group(gp)
 	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
-	# Fill Group
-	for i in vbox_group.get_child_count()-1:
-		var line:HBoxContainer = vbox_group.get_child(i+1)
+	# Re-Fill Groups
+	for i in vbox_group.get_child_count():
+		var line:HBoxContainer = vbox_group.get_child(i)
 		var group_name :String  	= line.get_child(1).get_text()
-		rb.add_to_group(group_name)
+		rb.add_to_group(group_name,true)
 	update_agent_instances(rb)
 
 # GROUP => GUI GROUP
@@ -367,18 +382,17 @@ func agent_group_to_GUI_group() -> void:
 	if rb==null:
 		return
 	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
-	# Clear Group VBox
+	# Clear Group VBox (Contains all the Lines where Groups are displayed)
 	for i in vbox_group.get_child_count()-1:
 		var line:HBoxContainer = vbox_group.get_child(1)
 		vbox_group.remove_child(line)
 		line.queue_free()
-	# Fill Group VBox
-	for m in rb.get_groups().size():
-		var group_name :String  	= rb.get_groups()[m]
-		#printerr(str(_selected_name , " : meta => PARAM (", meta_name , "," , meta_value))
-		_on_ButtonAddGroup()
+	# Re-Fill Group VBox with all the Lines displaying Groups
+	for gp in rb.get_groups():
+		#var group_name :String = rb.get_groups()[m]
+		_on_ButtonAddGroup() # Add the Line widgets
 		var line:HBoxContainer = vbox_group.get_child(vbox_group.get_child_count()-1)
-		line.get_child(1).set_text(group_name)
+		line.get_child(1).set_text(gp) #group_name) # Display the group name in the LineEdit widget
 
 # Remove group
 func _on_button_del_group_of_agent() -> void:
@@ -389,10 +403,24 @@ func _on_button_del_group_of_agent() -> void:
 		if btn_del.has_focus():
 			vbox_group.remove_child(line)
 			break
-	# Save to meta (new_name VALIDATED)
+	# Save to groups (remove all groups then re-fill them (except the deleted one))
 	agent_GUI_groups_to_groups()
 
-# Agent PARAMETERS **************************************
+
+
+
+
+
+
+
+
+
+
+
+# **********************************************************
+#             AGENTS : Parameters (METADATA)               *
+# **********************************************************
+
 func _on_ButtonAddParam_button_down() -> void:
 	# Crete a unique name for the parameter (Meta names are key of dictionnary)
 	var key_param:String  = key_param_create()
@@ -435,10 +463,11 @@ func agent_meta_to_param() -> void:
 		var meta_name :String  	= rb.get_meta_list()[m]
 		var meta_value			= rb.get_meta(meta_name)
 		#printerr(str(_selected_name , " : meta => PARAM (", meta_name , "," , meta_value))
-		_on_ButtonAddParam_button_down()
-		var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
-		line.get_child(0).set_text(meta_name)
-		line.get_child(2).set_text(meta_value)
+		if meta_name != "Name":
+			_on_ButtonAddParam_button_down()
+			var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
+			line.get_child(0).set_text(meta_name)
+			line.get_child(2).set_text(meta_value)
 
 # GUI PARAM => META
 func agent_param_to_meta() -> void:
@@ -600,6 +629,7 @@ func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 # ************************************************************
 #                          Behaviors                         *
 # ************************************************************
+
 var _pm:PopupMenu
 
 # Display the Behaviors PopupMenu
@@ -622,16 +652,16 @@ func addBehavReaction() -> void:
 	_listBehavs.set_item_metadata(_listBehavs.get_item_count()-1, "Reaction") # type of the item
 	
 	# Create default Behavior Type in 3D Scene -------------------	
-	var r1:String = "Agent-1"
-	var r2:String = "0"
-	var p:String = "0.1"
-	var p1:String = "Agent-1"
-	var p2:String = "Agent-1"
+	var r1:String = "Agent / Groupe / 0"
+	var r2:String = "Agent / Groupe / 0"
+	var p:String = "100"
+	var p1:String = "Agent / R1 / R2 / 0"
+	var p2:String = "Agent / R1 / R2 / 0"
 	
 		# Set META
 	var node:Node = Node.new()
 	node.set_meta("Type", "Reaction")
-	node.set_meta("Name", "au choix")
+	node.set_meta("Name", "Réaction")
 	node.set_meta("R1", r1)
 	node.set_meta("R2", r2)
 	node.set_meta("p", p)
@@ -788,6 +818,7 @@ func behavior_GUI_to_META() -> void:
 # ************************************************************
 #                          Signals                           *
 # ************************************************************
+
 func GUI_param_updated(new_text: String="")->void:
 	behavior_GUI_to_META()
 
@@ -802,6 +833,7 @@ func GUI_param_updated(new_text: String="")->void:
 # ************************************************************
 #                           Groups                           *
 # ************************************************************
+
 func _on_BtnAddGp_pressed() -> void:
 	var lst:ItemList = get_node("%ListGp")
 	lst.add_item("Groupe")
@@ -824,6 +856,7 @@ func _on_BtnDelGp_pressed() -> void:
 # ************************************************************
 #                              Grids                         *
 # ************************************************************
+
 func _on_BtnAddGrid_pressed() -> void:
 	var lst:ItemList = get_node("%ListGrids")
 	lst.add_item("Grille")
@@ -851,6 +884,7 @@ func _on_ListGrids_item_selected(index: int) -> void:
 # ************************************************
 # SIMULATOR CONTROLS
 # ************************************************
+
 var _sim_play: bool  = false
 var _sim_pause:bool  = false
 var _sim_play_once: bool  = false
@@ -961,6 +995,16 @@ func get_selected_behavior() -> Node:
 func _on_BtnClose_pressed():
 	get_tree().quit()
 
+
+
+
+
+
+
+
+
+
+
 # ************************************************************
 #                     SCRIPTS for Behaviors                  *
 # ************************************************************
@@ -981,13 +1025,16 @@ func action(tree, agent) -> void:
 func behav_script_random_force(agents:String, dir:String, angle:String, intensity:String) -> String:
 	angle = String(float(angle) * 6.28318530718 / 360.0) # deg to rad
 	dir = String(float(dir) * 6.28318530718 / 360.0)	# deg to rad
+	var intens = randf() * float(intensity) # The intensity is in [0, intensity]
+	print(intens)
+	intensity = String(intens)
 	return """
 extends Node
 # Default Behavior
 func action(tree, agent) -> void:
 	if agent.get_meta("Name") == """+in_quote(agents)+""" || agent.is_in_group("""+in_quote(agents)+"""):
 		var alpha:float = randf() * """+angle+""" - """ +angle+ """ /2.0
-		agent.apply_impulse(Vector3(0,0,0), Vector3("""+intensity+"""*cos(alpha+"""+dir+"""),0,"""+intensity+"""*sin(alpha+"""+dir+""")))
+		agent.apply_impulse(Vector3(0,0,0), Vector3("""+intensity+""" * cos(alpha+"""+dir+"""),0, """+intensity+"""*sin(alpha+"""+dir+""")))
 """
 
 # Script REACTION
@@ -1068,25 +1115,19 @@ func action(tree, R1) -> void:
 
 """
 
-# ************************************************
-# WORK in PROGRESS...
-# ************************************************
 
 
 
-func _on_BtnDebug_pressed():
-	#self.set_script(load(  "res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd"  ))
-	var node:Node = _node_env.get_child(0)
-	print(node.is_queued_for_deletion())
-	node.queue_free()
-	print(node.is_queued_for_deletion())
-	
+
+
 
 
 
 # ************************************************************
 #                   Load and Save Simulation                 *
 # ************************************************************
+
+# Load *******************************************************
 func _on_BtnLoad_pressed():
 	# Select the file to Load
 	var dialog = FileDialog.new()
@@ -1132,6 +1173,7 @@ func _on_BtnLoad_pressed():
 		_listBehavs.add_item(agt.get_meta("Name"))
 	
 
+# Save *****************************************************
 func _on_BtnSave_pressed():
 	# Select the file to Save
 	var dialog = FileDialog.new()
@@ -1143,10 +1185,19 @@ func _on_BtnSave_pressed():
 	var filename = yield(dialog, "file_selected")
 	
 	# Duplicate the node (prevents an error)
-	var simu = _node_simu.duplicate()
+	var simu = _node_simu.duplicate(15) #.duplicate_and_reown()
 
-	# Setting it as owner of children
+	# Setting simu node as owner of all its
+	# children for saving reasons
 	set_owner_recursive(simu, simu)
+
+	# Debug : verify the goups before saving
+	var rb:RigidBody = get_entity(_selected_name)
+	var lst_gp = rb.get_groups()
+	print(str("For agent :", rb.name))
+	print(str("Nb groups = ", lst_gp.size()))
+	for gp in lst_gp:
+		print(gp)
 
 	# Continue to save
 	var save_build  = PackedScene.new()
@@ -1157,3 +1208,24 @@ func set_owner_recursive(root:Node, node:Node)->void:
 	for child in node.get_children():
 		child.set_owner(root)
 		set_owner_recursive(root, child)
+
+
+
+
+
+
+
+
+
+# ************************************************
+# WORK in PROGRESS...
+# ************************************************
+
+func _on_BtnDebug_pressed():
+	#self.set_script(load(  "res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd"  ))
+	var node:Node = _node_env.get_child(0)
+	print(node.is_queued_for_deletion())
+	node.queue_free()
+	print(node.is_queued_for_deletion())
+	
+

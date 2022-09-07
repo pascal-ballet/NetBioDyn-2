@@ -1,0 +1,3462 @@
+[gd_scene load_steps=18 format=2]
+
+[sub_resource type="Environment" id=1]
+background_mode = 1
+background_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0.735984, 0.621225, 0.962688, 1 )
+
+[sub_resource type="SphereMesh" id=3]
+
+[sub_resource type="SphereShape" id=4]
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_color = Color( 0.980392, 0.94902, 0.254902, 1 )
+
+[sub_resource type="SphereMesh" id=6]
+
+[sub_resource type="SphereShape" id=7]
+
+[sub_resource type="SpatialMaterial" id=8]
+albedo_color = Color( 0.353845, 0.315224, 0.92217, 1 )
+
+[sub_resource type="SphereMesh" id=9]
+
+[sub_resource type="SphereShape" id=10]
+
+[sub_resource type="SpatialMaterial" id=11]
+albedo_color = Color( 0.815686, 0.564706, 0.0784314, 1 )
+
+[sub_resource type="SphereMesh" id=12]
+
+[sub_resource type="SphereShape" id=13]
+
+[sub_resource type="GDScript" id=14]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 100
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Fourmis\" || R1.is_in_group(\"Fourmis\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"Larve\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"F+L\" != \"0\" && \"F+L\" != \"R1\" && \"F+L\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"F+L\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"F+L\" == \"0\" || \"F+L\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"0\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"Larve\" || R2.is_in_group(\"Larve\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"F+L\" != \"0\" && \"F+L\" != \"R1\" && \"F+L\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"F+L\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"F+L\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"F+L\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"0\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"0\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+						return
+
+"
+
+[sub_resource type="GDScript" id=15]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 100
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"F+L\" || R1.is_in_group(\"F+L\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"Larve\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"Fourmis\" != \"0\" && \"Fourmis\" != \"R1\" && \"Fourmis\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"Fourmis\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"Fourmis\" == \"0\" || \"Fourmis\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"2 Larves\" != \"0\" && \"2 Larves\" != \"R1\" && \"2 Larves\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"2 Larves\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"2 Larves\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"Larve\" || R2.is_in_group(\"Larve\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"Fourmis\" != \"0\" && \"Fourmis\" != \"R1\" && \"Fourmis\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"Fourmis\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"Fourmis\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"Fourmis\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"2 Larves\" != \"0\" && \"2 Larves\" != \"R1\" && \"2 Larves\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"2 Larves\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"2 Larves\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"2 Larves\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+						return
+
+"
+
+[sub_resource type="GDScript" id=18]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 0.1
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"2 Larves\" || R1.is_in_group(\"2 Larves\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"0\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"Larve\" != \"0\" && \"Larve\" != \"R1\" && \"Larve\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"Larve\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"Larve\" == \"0\" || \"Larve\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"Larve\" != \"0\" && \"Larve\" != \"R1\" && \"Larve\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"Larve\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"Larve\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"0\" || R2.is_in_group(\"0\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"Larve\" != \"0\" && \"Larve\" != \"R1\" && \"Larve\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"Larve\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"Larve\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"Larve\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"Larve\" != \"0\" && \"Larve\" != \"R1\" && \"Larve\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"Larve\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"Larve\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"Larve\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+						return
+
+"
+
+[sub_resource type="GDScript" id=17]
+script/source = "
+extends Node
+# Default Behavior
+func action(tree, agent) -> void:
+	if agent.get_meta(\"Name\") == \"Bouge\" || agent.is_in_group(\"Bouge\"):
+		var alpha:float = randf() * 6.283185 - 6.283185 /2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3(1*cos(alpha+0),0,1*sin(alpha+0)))
+"
+
+[node name="Simulator" type="Spatial"]
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -100, 0 )
+environment = SubResource( 1 )
+projection = 1
+current = true
+size = 80.0
+far = 200.0
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, 0, 12, 0 )
+
+[node name="Entities" type="Node" parent="."]
+
+[node name="Fourmis" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -995.936, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Entities/Fourmis"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Entities/Fourmis"]
+shape = SubResource( 4 )
+
+[node name="Larve" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1002.06, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Entities/Larve"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Entities/Larve"]
+shape = SubResource( 7 )
+
+[node name="F+L" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -997.976, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Entities/F+L"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Entities/F+L"]
+shape = SubResource( 10 )
+
+[node name="2 Larves" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1000.02, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Entities/2 Larves"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Entities/2 Larves"]
+shape = SubResource( 13 )
+
+[node name="Behaviors" type="Node" parent="."]
+
+[node name="224" type="Node" parent="Behaviors"]
+script = SubResource( 14 )
+__meta__ = {
+"Name": "Prendre",
+"P1": "F+L",
+"P2": "0",
+"R1": "Fourmis",
+"R2": "Larve",
+"Type": "Reaction",
+"p": "100"
+}
+
+[node name="225" type="Node" parent="Behaviors"]
+script = SubResource( 15 )
+__meta__ = {
+"Name": "Poser",
+"P1": "Fourmis",
+"P2": "2 Larves",
+"R1": "F+L",
+"R2": "Larve",
+"Type": "Reaction",
+"p": "100"
+}
+
+[node name="234" type="Node" parent="Behaviors"]
+script = SubResource( 18 )
+__meta__ = {
+"Name": "2 Larves",
+"P1": "Larve",
+"P2": "Larve",
+"R1": "2 Larves",
+"R2": "0",
+"Type": "Reaction",
+"p": "0.1"
+}
+
+[node name="235" type="Node" parent="Behaviors"]
+script = SubResource( 17 )
+__meta__ = {
+"Agents": "Bouge",
+"Angle": "360",
+"Dir": "0",
+"Intensity": "1",
+"Name": "Mvt Fourmis",
+"Type": "Random Force"
+}
+
+[node name="Groups" type="Node" parent="."]
+
+[node name="Grids" type="Node" parent="."]
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="Fourmis797" type="RigidBody" parent="Environment"]
+transform = Transform( 0.997141, 0, -0.0755583, 0, 1, 0, 0.0755583, 0, 0.997141, 16.499, 0, 31.2209 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis797"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis797"]
+shape = SubResource( 4 )
+
+[node name="Larve906" type="RigidBody" parent="Environment"]
+transform = Transform( 0.236653, 0, -0.971594, 0, 1, 0, 0.971594, 0, 0.236653, 39.85, 0, 21.1962 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve906"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve906"]
+shape = SubResource( 7 )
+
+[node name="F+L915" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999709, 0, 0.0241409, 0, 1, 0, -0.0241409, 0, 0.999709, -2.45752, 0, 27.5407 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L915"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L915"]
+shape = SubResource( 10 )
+
+[node name="Larve1048" type="RigidBody" parent="Environment"]
+transform = Transform( 0.189303, 0, -0.981919, 0, 1, 0, 0.981919, 0, 0.189303, 39.8236, 0, 30.0953 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1048"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1048"]
+shape = SubResource( 7 )
+
+[node name="F+L1336" type="RigidBody" parent="Environment"]
+transform = Transform( -0.297571, 0, -0.9547, 0, 1, 0, 0.9547, 0, -0.297571, -18.8383, 0, 0.94218 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1336"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1336"]
+shape = SubResource( 10 )
+
+[node name="Larve1347" type="RigidBody" parent="Environment"]
+transform = Transform( -0.862783, 0, 0.505574, 0, 1, 0, -0.505574, 0, -0.862783, -22.5522, 0, 6.89884 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1347"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1347"]
+shape = SubResource( 7 )
+
+[node name="Fourmis1397" type="RigidBody" parent="Environment"]
+transform = Transform( 0.996601, 0, -0.082385, 0, 1, 0, 0.082385, 0, 0.996601, -31.6614, 0, 23.231 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1397"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1397"]
+shape = SubResource( 4 )
+
+[node name="Larve1426" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1103, 0, -9.01136 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1426"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1426"]
+shape = SubResource( 7 )
+
+[node name="F+L1478" type="RigidBody" parent="Environment"]
+transform = Transform( -0.533355, 0, -0.845891, 0, 1, 0, 0.845891, 0, -0.533355, 14.0227, 0, 14.3249 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1478"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1478"]
+shape = SubResource( 10 )
+
+[node name="Fourmis1501" type="RigidBody" parent="Environment"]
+transform = Transform( -0.406701, 0, 0.913561, 0, 1, 0, -0.913561, 0, -0.406701, 27.3003, 0, -29.4911 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1501"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1501"]
+shape = SubResource( 4 )
+
+[node name="Larve1525" type="RigidBody" parent="Environment"]
+transform = Transform( 0.873348, 0, 0.487096, 0, 1, 0, -0.487096, 0, 0.873348, 37.8782, 0, -1.60804 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1525"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1525"]
+shape = SubResource( 7 )
+
+[node name="Larve1529" type="RigidBody" parent="Environment"]
+transform = Transform( 0.951563, 0, -0.307453, 0, 1, 0, 0.307453, 0, 0.951563, 34.9968, 0, 0.544032 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1529"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1529"]
+shape = SubResource( 7 )
+
+[node name="Fourmis1530" type="RigidBody" parent="Environment"]
+transform = Transform( 0.253244, 0, 0.967403, 0, 1, 0, -0.967403, 0, 0.253244, -35.5983, 0, -23.6119 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1530"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1530"]
+shape = SubResource( 4 )
+
+[node name="Fourmis1541" type="RigidBody" parent="Environment"]
+transform = Transform( 0.079311, 0, -0.99685, 0, 1, 0, 0.99685, 0, 0.079311, -25.9951, 0, -2.16257 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1541"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1541"]
+shape = SubResource( 4 )
+
+[node name="Fourmis1556" type="RigidBody" parent="Environment"]
+transform = Transform( 0.0416445, 0, 0.999133, 0, 1, 0, -0.999133, 0, 0.0416445, -9.92444, 0, 28.7296 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1556"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1556"]
+shape = SubResource( 4 )
+
+[node name="Larve1601" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 17.1655 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1601"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1601"]
+shape = SubResource( 7 )
+
+[node name="Larve1609" type="RigidBody" parent="Environment"]
+transform = Transform( -0.965816, 0, -0.259227, 0, 1, 0, 0.259227, 0, -0.965816, 29.7334, 0, 0.236386 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1609"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1609"]
+shape = SubResource( 7 )
+
+[node name="Larve1610" type="RigidBody" parent="Environment"]
+transform = Transform( 0.57966, 0, 0.814859, 0, 1, 0, -0.814859, 0, 0.57966, 27.7537, 0, -0.280239 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1610"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1610"]
+shape = SubResource( 7 )
+
+[node name="F+L1616" type="RigidBody" parent="Environment"]
+transform = Transform( 0.332215, 0, -0.943204, 0, 1, 0, 0.943204, 0, 0.332215, -23.7123, 0, -16.0682 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1616"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1616"]
+shape = SubResource( 10 )
+
+[node name="Fourmis1638" type="RigidBody" parent="Environment"]
+transform = Transform( -0.823418, 0, -0.567436, 0, 1, 0, 0.567436, 0, -0.823418, 25.8225, 0, -20.9463 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1638"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1638"]
+shape = SubResource( 4 )
+
+[node name="Larve1649" type="RigidBody" parent="Environment"]
+transform = Transform( 0.900698, 0, 0.434446, 0, 1, 0, -0.434446, 0, 0.900698, -18.1797, 0, -27.6451 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1649"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1649"]
+shape = SubResource( 7 )
+
+[node name="Larve1650" type="RigidBody" parent="Environment"]
+transform = Transform( 0.968735, 0, 0.248098, 0, 1, 0, -0.248098, 0, 0.968735, -23.1652, 0, -27.7767 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1650"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1650"]
+shape = SubResource( 7 )
+
+[node name="Larve1658" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 19.3989 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1658"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1658"]
+shape = SubResource( 7 )
+
+[node name="Larve1659" type="RigidBody" parent="Environment"]
+transform = Transform( 0.537842, 0, -0.843046, 0, 1, 0, 0.843046, 0, 0.537842, 39.5468, 0, 19.1852 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1659"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1659"]
+shape = SubResource( 7 )
+
+[node name="Fourmis1668" type="RigidBody" parent="Environment"]
+transform = Transform( 0.137976, 0, -0.990436, 0, 1, 0, 0.990436, 0, 0.137976, -34.437, 0, 35.6117 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1668"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1668"]
+shape = SubResource( 4 )
+
+[node name="Larve1674" type="RigidBody" parent="Environment"]
+transform = Transform( 0.683843, 0, -0.729629, 0, 1, 0, 0.729629, 0, 0.683843, -21.3622, 0, 8.6105 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1674"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1674"]
+shape = SubResource( 7 )
+
+[node name="Larve1681" type="RigidBody" parent="Environment"]
+transform = Transform( 0.971873, 0, -0.235507, 0, 1, 0, 0.235507, 0, 0.971873, -37.8871, 0, 20.9216 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1681"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1681"]
+shape = SubResource( 7 )
+
+[node name="Larve1689" type="RigidBody" parent="Environment"]
+transform = Transform( 0.46057, 0, 0.887623, 0, 1, 0, -0.887623, 0, 0.46057, -39.9766, 0, -0.795576 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1689"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1689"]
+shape = SubResource( 7 )
+
+[node name="Larve1690" type="RigidBody" parent="Environment"]
+transform = Transform( -0.96669, 0, -0.255949, 0, 1, 0, 0.255949, 0, -0.96669, 39.6601, 0, -0.682659 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1690"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1690"]
+shape = SubResource( 7 )
+
+[node name="Larve1692" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 7.78832e-07, 0, 1, 0, -7.78832e-07, 0, 1, 35.498, 0, 19.7301 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1692"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1692"]
+shape = SubResource( 7 )
+
+[node name="F+L1703" type="RigidBody" parent="Environment"]
+transform = Transform( -0.790561, 0, 0.612384, 0, 1, 0, -0.612384, 0, -0.790561, 15.0389, 0, -27.585 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1703"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1703"]
+shape = SubResource( 10 )
+
+[node name="F+L1706" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 36.1791, 0, 15.2138 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1706"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1706"]
+shape = SubResource( 10 )
+
+[node name="Fourmis1710" type="RigidBody" parent="Environment"]
+transform = Transform( 0.079056, 0, 0.99687, 0, 1, 0, -0.99687, 0, 0.079056, -15.7373, 0, 24.0459 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1710"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1710"]
+shape = SubResource( 4 )
+
+[node name="Larve1723" type="RigidBody" parent="Environment"]
+transform = Transform( -0.0520594, 0, 0.998644, 0, 1, 0, -0.998644, 0, -0.0520594, 34.6095, 0, 16.669 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1723"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1723"]
+shape = SubResource( 7 )
+
+[node name="Larve1728" type="RigidBody" parent="Environment"]
+transform = Transform( -0.526353, 0, -0.850266, 0, 1, 0, 0.850266, 0, -0.526353, 7.81771, 0, -5.57623 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1728"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1728"]
+shape = SubResource( 7 )
+
+[node name="F+L1730" type="RigidBody" parent="Environment"]
+transform = Transform( -0.495799, 0, -0.868437, 0, 1, 0, 0.868437, 0, -0.495799, -26.379, 0, 11.8343 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1730"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1730"]
+shape = SubResource( 10 )
+
+[node name="Larve1750" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 1.34966 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1750"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1750"]
+shape = SubResource( 7 )
+
+[node name="Larve1751" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 39.297, 0, 1.34966 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1751"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1751"]
+shape = SubResource( 7 )
+
+[node name="Larve1752" type="RigidBody" parent="Environment"]
+transform = Transform( 0.372527, 0, -0.928021, 0, 1, 0, 0.928021, 0, 0.372527, -24.271, 0, 8.6691 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1752"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1752"]
+shape = SubResource( 7 )
+
+[node name="Larve1766" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0.000589783, 0, 1, 0, -0.000589783, 0, 1, -40, 0, -8.48836 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1766"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1766"]
+shape = SubResource( 7 )
+
+[node name="Larve1767" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0.000176675, 0, 1, 0, -0.000176675, 0, 1, 39.3221, 0, -7.08389 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1767"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1767"]
+shape = SubResource( 7 )
+
+[node name="F+L1776" type="RigidBody" parent="Environment"]
+transform = Transform( -0.84937, 0, -0.527797, 0, 1, 0, 0.527797, 0, -0.84937, -8.59442, 0, 34.0091 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1776"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1776"]
+shape = SubResource( 10 )
+
+[node name="Larve1781" type="RigidBody" parent="Environment"]
+transform = Transform( 0.00163442, 0, -0.999999, 0, 1, 0, 0.999999, 0, 0.00163442, -8.74176, 0, -9.07663 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1781"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1781"]
+shape = SubResource( 7 )
+
+[node name="Larve1782" type="RigidBody" parent="Environment"]
+transform = Transform( 0.961886, 0, 0.273452, 0, 1, 0, -0.273452, 0, 0.961886, -10.9673, 0, -10.1051 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1782"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1782"]
+shape = SubResource( 7 )
+
+[node name="Fourmis1783" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 3.56309e-10, 0, 1, 0, -3.56309e-10, 0, 1, 26.4682, 0, -37.7299 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1783"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1783"]
+shape = SubResource( 4 )
+
+[node name="F+L1785" type="RigidBody" parent="Environment"]
+transform = Transform( -0.073904, 0, 0.997265, 0, 1, 0, -0.997265, 0, -0.073904, -31.1694, 0, -29.6067 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1785"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1785"]
+shape = SubResource( 10 )
+
+[node name="Larve1788" type="RigidBody" parent="Environment"]
+transform = Transform( 0.98212, 0, -0.188258, 0, 1, 0, 0.188258, 0, 0.98212, 7.90394, 0, -8.47432 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1788"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1788"]
+shape = SubResource( 7 )
+
+[node name="Larve1789" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999971, 0, -0.00767262, 0, 1, 0, 0.00767262, 0, 0.999971, 5.87386, 0, -8.74977 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1789"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1789"]
+shape = SubResource( 7 )
+
+[node name="F+L1794" type="RigidBody" parent="Environment"]
+transform = Transform( 0.848296, 0, 0.529523, 0, 1, 0, -0.529523, 0, 0.848296, -10.6316, 0, -35.0873 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1794"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1794"]
+shape = SubResource( 10 )
+
+[node name="F+L1803" type="RigidBody" parent="Environment"]
+transform = Transform( -0.448887, 0, -0.893588, 0, 1, 0, 0.893588, 0, -0.448887, 30.6908, 0, -4.18519 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1803"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1803"]
+shape = SubResource( 10 )
+
+[node name="Larve1819" type="RigidBody" parent="Environment"]
+transform = Transform( -0.555615, 0, 0.83144, 0, 1, 0, -0.83144, 0, -0.555615, 38.7182, 0, 23.5888 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1819"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1819"]
+shape = SubResource( 7 )
+
+[node name="Larve1820" type="RigidBody" parent="Environment"]
+transform = Transform( 0.67871, 0, 0.734407, 0, 1, 0, -0.734407, 0, 0.67871, 37.0533, 0, 22.4014 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1820"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1820"]
+shape = SubResource( 7 )
+
+[node name="Larve" type="RigidBody" parent="Environment"]
+transform = Transform( -0.825494, 0, -0.564411, 0, 1, 0, 0.564411, 0, -0.825494, -9.70197, 0, -13.0522 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve"]
+shape = SubResource( 7 )
+
+[node name="Fourmis1830" type="RigidBody" parent="Environment"]
+transform = Transform( -0.900835, 0, -0.434161, 0, 1, 0, 0.434161, 0, -0.900835, -21.2104, 0, -7.31158 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1830"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1830"]
+shape = SubResource( 4 )
+
+[node name="Larve1832" type="RigidBody" parent="Environment"]
+transform = Transform( -0.598588, 0, -0.801057, 0, 1, 0, 0.801057, 0, -0.598588, -25.1456, 0, -32.8207 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1832"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1832"]
+shape = SubResource( 7 )
+
+[node name="Larve1835" type="RigidBody" parent="Environment"]
+transform = Transform( 0.262799, 0, -0.964851, 0, 1, 0, 0.964851, 0, 0.262799, 25.0102, 0, 17.836 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1835"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1835"]
+shape = SubResource( 7 )
+
+[node name="Fourmis1839" type="RigidBody" parent="Environment"]
+transform = Transform( 0.25946, 0, 0.965754, 0, 1, 0, -0.965754, 0, 0.25946, -36.619, 0, -12.4743 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1839"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1839"]
+shape = SubResource( 4 )
+
+[node name="Larve1843" type="RigidBody" parent="Environment"]
+transform = Transform( -0.53141, 0, -0.847115, 0, 1, 0, 0.847115, 0, -0.53141, -5.88924, 0, 17.2365 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1843"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1843"]
+shape = SubResource( 7 )
+
+[node name="F+L1846" type="RigidBody" parent="Environment"]
+transform = Transform( 0.271545, 0, 0.962426, 0, 1, 0, -0.962426, 0, 0.271545, 22.4418, 0, -11.2387 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1846"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1846"]
+shape = SubResource( 10 )
+
+[node name="Fourmis1847" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, -0.000904495, 0, 1, 0, 0.000904495, 0, 1, 31.0199, 0, 38.7378 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1847"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1847"]
+shape = SubResource( 4 )
+
+[node name="Fourmis1860" type="RigidBody" parent="Environment"]
+transform = Transform( -0.99302, 0, 0.117944, 0, 1, 0, -0.117944, 0, -0.99302, 13.2515, 0, -39.5541 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1860"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1860"]
+shape = SubResource( 4 )
+
+[node name="Larve1867" type="RigidBody" parent="Environment"]
+transform = Transform( -0.118564, 0, 0.992946, 0, 1, 0, -0.992946, 0, -0.118564, 40, 0, 23.2398 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1867"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1867"]
+shape = SubResource( 7 )
+
+[node name="Larve1871" type="RigidBody" parent="Environment"]
+transform = Transform( -0.919409, 0, 0.393303, 0, 1, 0, -0.393303, 0, -0.919409, -11.626, 0, -14.3339 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1871"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1871"]
+shape = SubResource( 7 )
+
+[node name="Larve1872" type="RigidBody" parent="Environment"]
+transform = Transform( -0.00229394, 0, -0.999997, 0, 1, 0, 0.999997, 0, -0.00229394, -13.2966, 0, -13.1105 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1872"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1872"]
+shape = SubResource( 7 )
+
+[node name="Larve1873" type="RigidBody" parent="Environment"]
+transform = Transform( 0.987655, 0, -0.156646, 0, 1, 0, 0.156646, 0, 0.987655, -40, 0, -14.3711 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1873"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1873"]
+shape = SubResource( 7 )
+
+[node name="Larve1883" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999931, 0, -0.0117304, 0, 1, 0, 0.0117304, 0, 0.999931, -3.70755, 0, -16.1995 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1883"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1883"]
+shape = SubResource( 7 )
+
+[node name="Larve1884" type="RigidBody" parent="Environment"]
+transform = Transform( 0.969929, 0, 0.243389, 0, 1, 0, -0.243389, 0, 0.969929, 3.39228, 0, -33.243 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1884"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1884"]
+shape = SubResource( 7 )
+
+[node name="F+L1886" type="RigidBody" parent="Environment"]
+transform = Transform( -0.995363, 0, 0.096188, 0, 1, 0, -0.096188, 0, -0.995363, -3.1878, 0, 17.1386 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1886"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1886"]
+shape = SubResource( 10 )
+
+[node name="Larve1890" type="RigidBody" parent="Environment"]
+transform = Transform( 0.979254, 0, -0.202636, 0, 1, 0, 0.202636, 0, 0.979254, -18.7509, 0, -22.7046 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1890"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1890"]
+shape = SubResource( 7 )
+
+[node name="Larve1894" type="RigidBody" parent="Environment"]
+transform = Transform( -0.852612, 0, 0.522545, 0, 1, 0, -0.522545, 0, -0.852612, -9.40993, 0, 15.5886 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1894"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1894"]
+shape = SubResource( 7 )
+
+[node name="Fourmis1897" type="RigidBody" parent="Environment"]
+transform = Transform( -0.317006, 0, 0.948424, 0, 1, 0, -0.948424, 0, -0.317006, -34.4907, 0, -26.5821 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1897"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1897"]
+shape = SubResource( 4 )
+
+[node name="Larve1904" type="RigidBody" parent="Environment"]
+transform = Transform( 0.801752, 0, -0.597656, 0, 1, 0, 0.597656, 0, 0.801752, 22.2946, 0, 17.1336 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1904"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1904"]
+shape = SubResource( 7 )
+
+[node name="Larve1905" type="RigidBody" parent="Environment"]
+transform = Transform( 0.899328, 0, 0.437274, 0, 1, 0, -0.437274, 0, 0.899328, 20.4968, 0, 16.2562 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1905"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1905"]
+shape = SubResource( 7 )
+
+[node name="F+L1913" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -33.4879, 0, 12.922 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1913"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1913"]
+shape = SubResource( 10 )
+
+[node name="Larve1915" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 1.16825e-07, 0, 1, 0, -1.16825e-07, 0, 1, 33.5692, 0, 19.1817 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1915"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1915"]
+shape = SubResource( 7 )
+
+[node name="F+L1918" type="RigidBody" parent="Environment"]
+transform = Transform( 0.413887, 0, 0.910328, 0, 1, 0, -0.910328, 0, 0.413887, 4.53251, 0, -36.705 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1918"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1918"]
+shape = SubResource( 10 )
+
+[node name="Larve1922" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.96616, 0, -32.6945 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1922"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1922"]
+shape = SubResource( 7 )
+
+[node name="Larve1925" type="RigidBody" parent="Environment"]
+transform = Transform( -0.996249, 0, 0.086531, 0, 1, 0, -0.086531, 0, -0.996249, -20.1905, 0, -24.1329 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1925"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1925"]
+shape = SubResource( 7 )
+
+[node name="Fourmis1930" type="RigidBody" parent="Environment"]
+transform = Transform( -0.314047, 0, -0.949407, 0, 1, 0, 0.949407, 0, -0.314047, -15.7647, 0, -18.446 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1930"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1930"]
+shape = SubResource( 4 )
+
+[node name="Fourmis1932" type="RigidBody" parent="Environment"]
+transform = Transform( 0.994092, 0, -0.10854, 0, 1, 0, 0.10854, 0, 0.994092, 12.4536, 0, -20.1045 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1932"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1932"]
+shape = SubResource( 4 )
+
+[node name="Fourmis1934" type="RigidBody" parent="Environment"]
+transform = Transform( 0.954897, 0, -0.296937, 0, 1, 0, 0.296937, 0, 0.954897, -11.383, 0, 34.0079 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1934"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1934"]
+shape = SubResource( 4 )
+
+[node name="F+L1937" type="RigidBody" parent="Environment"]
+transform = Transform( 0.832788, 0, -0.553592, 0, 1, 0, 0.553592, 0, 0.832788, 5.9253, 0, -30.0361 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1937"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1937"]
+shape = SubResource( 10 )
+
+[node name="Larve1939" type="RigidBody" parent="Environment"]
+transform = Transform( 0.051751, 0, -0.99866, 0, 1, 0, 0.99866, 0, 0.051751, -16.7284, 0, -22.7919 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1939"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1939"]
+shape = SubResource( 7 )
+
+[node name="Larve1941" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, -10.7688 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1941"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1941"]
+shape = SubResource( 7 )
+
+[node name="Larve1942" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 39.0281, 0, -10.7688 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1942"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1942"]
+shape = SubResource( 7 )
+
+[node name="Larve1944" type="RigidBody" parent="Environment"]
+transform = Transform( -0.746794, 0, 0.665055, 0, 1, 0, -0.665055, 0, -0.746794, 12.7004, 0, -25.5499 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1944"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1944"]
+shape = SubResource( 7 )
+
+[node name="F+L1948" type="RigidBody" parent="Environment"]
+transform = Transform( -0.999558, 0, -0.0297332, 0, 1, 0, 0.0297332, 0, -0.999558, -25.9629, 0, -16.0035 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1948"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1948"]
+shape = SubResource( 10 )
+
+[node name="Larve1951" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, -2.5403e-07, 0, 1, 0, 2.5403e-07, 0, 1, 38.8524, 0, -13.9291 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1951"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1951"]
+shape = SubResource( 7 )
+
+[node name="Larve1952" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, -4.72459e-09, 0, 1, 0, 4.72459e-09, 0, 1, 36.8068, 0, -14.0414 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1952"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1952"]
+shape = SubResource( 7 )
+
+[node name="Larve1970" type="RigidBody" parent="Environment"]
+transform = Transform( 0.682515, 0, 0.730871, 0, 1, 0, -0.730871, 0, 0.682515, -38.2456, 0, 23.1911 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1970"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1970"]
+shape = SubResource( 7 )
+
+[node name="Larve165" type="RigidBody" parent="Environment"]
+transform = Transform( -0.101452, 0, 0.994841, 0, 1, 0, -0.994841, 0, -0.101452, 18.5668, 0, -25.7402 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve165"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve165"]
+shape = SubResource( 7 )
+
+[node name="Larve169" type="RigidBody" parent="Environment"]
+transform = Transform( 0.533502, 0, -0.845799, 0, 1, 0, 0.845799, 0, 0.533502, 16.332, 0, -24.3001 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve169"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve169"]
+shape = SubResource( 7 )
+
+[node name="Larve173" type="RigidBody" parent="Environment"]
+transform = Transform( 0.993911, 0, -0.110183, 0, 1, 0, 0.110183, 0, 0.993911, 19.7784, 0, 18.675 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve173"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve173"]
+shape = SubResource( 7 )
+
+[node name="Larve176" type="RigidBody" parent="Environment"]
+transform = Transform( 0.994061, 0, 0.108822, 0, 1, 0, -0.108822, 0, 0.994061, -12.1481, 0, -22.1667 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve176"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve176"]
+shape = SubResource( 7 )
+
+[node name="Fourmis212" type="RigidBody" parent="Environment"]
+transform = Transform( 0.991266, 0, -0.131875, 0, 1, 0, 0.131875, 0, 0.991266, -25.563, 0, 15.6555 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis212"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis212"]
+shape = SubResource( 4 )
+
+[node name="Larve214" type="RigidBody" parent="Environment"]
+transform = Transform( 0.844824, 0, -0.535045, 0, 1, 0, 0.535045, 0, 0.844824, -13.8376, 0, -20.8198 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve214"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve214"]
+shape = SubResource( 7 )
+
+[node name="Larve215" type="RigidBody" parent="Environment"]
+transform = Transform( 0.814249, 0, -0.580516, 0, 1, 0, 0.580516, 0, 0.814249, -15.8916, 0, -20.9185 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve215"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve215"]
+shape = SubResource( 7 )
+
+[node name="F+L219" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.3113, 0, 23.3075 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L219"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L219"]
+shape = SubResource( 10 )
+
+[node name="@2 Larves@347" type="RigidBody" parent="Environment"]
+transform = Transform( 0.397746, 0, -0.917496, 0, 1, 0, 0.917496, 0, 0.397746, -28.1066, 0, -34.672 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/@2 Larves@347"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/@2 Larves@347"]
+shape = SubResource( 13 )
+
+[node name="F+L222" type="RigidBody" parent="Environment"]
+transform = Transform( -0.292875, 0, -0.956151, 0, 1, 0, 0.956151, 0, -0.292875, -25.6027, 0, -26.7322 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L222"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L222"]
+shape = SubResource( 10 )
+
+[node name="Larve223" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.0762, 0, 25.2161 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve223"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve223"]
+shape = SubResource( 7 )
+
+[node name="2 Larves226" type="RigidBody" parent="Environment"]
+transform = Transform( 0.40536, 0, 0.914157, 0, 1, 0, -0.914157, 0, 0.40536, -19.8916, 0, -28.7474 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/2 Larves226"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/2 Larves226"]
+shape = SubResource( 13 )
+
+[node name="Larve229" type="RigidBody" parent="Environment"]
+transform = Transform( 0.990052, 0, 0.140704, 0, 1, 0, -0.140704, 0, 0.990052, -23.4603, 0, 8.7029 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve229"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve229"]
+shape = SubResource( 7 )
+
+[node name="Larve230" type="RigidBody" parent="Environment"]
+transform = Transform( 0.978925, 0, -0.20422, 0, 1, 0, 0.20422, 0, 0.978925, -25.4602, 0, 8.25943 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve230"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve230"]
+shape = SubResource( 7 )
+
+[node name="@Larve@348" type="RigidBody" parent="Environment"]
+transform = Transform( 0.994078, 0, 0.108668, 0, 1, 0, -0.108668, 0, 0.994078, 20.9838, 0, 6.76941 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/@Larve@348"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/@Larve@348"]
+shape = SubResource( 7 )
+
+[node name="Larve233" type="RigidBody" parent="Environment"]
+transform = Transform( 0.994078, 0, 0.108668, 0, 1, 0, -0.108668, 0, 0.994078, 16.891, 0, 6.76065 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve233"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve233"]
+shape = SubResource( 7 )
+
+[node name="Larve237" type="RigidBody" parent="Environment"]
+transform = Transform( 0.252311, 0, -0.967646, 0, 1, 0, 0.967646, 0, 0.252311, -11.5215, 0, -12.1424 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve237"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve237"]
+shape = SubResource( 7 )
+
+[node name="Larve239" type="RigidBody" parent="Environment"]
+transform = Transform( 0.629573, 0, 0.776942, 0, 1, 0, -0.776942, 0, 0.629573, 14.7518, 0, -25.5641 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve239"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve239"]
+shape = SubResource( 7 )
+
+[node name="Larve241" type="RigidBody" parent="Environment"]
+transform = Transform( 0.898154, 0, -0.439681, 0, 1, 0, 0.439681, 0, 0.898154, 7.39782, 0, -32.5679 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve241"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve241"]
+shape = SubResource( 7 )
+
+[node name="Fourmis243" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 1.72427e-09, 0, 1, 0, -1.72427e-09, 0, 1, 0.629193, 0, -11.5808 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis243"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis243"]
+shape = SubResource( 4 )
+
+[node name="Larve245" type="RigidBody" parent="Environment"]
+transform = Transform( 0.988417, 0, 0.15176, 0, 1, 0, -0.15176, 0, 0.988417, 26.1443, 0, 17.8867 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve245"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve245"]
+shape = SubResource( 7 )
+
+[node name="Larve246" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999996, 0, -0.00282038, 0, 1, 0, 0.00282038, 0, 0.999996, 24.1018, 0, 18.046 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve246"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve246"]
+shape = SubResource( 7 )
+
+[node name="F+L247" type="RigidBody" parent="Environment"]
+transform = Transform( -0.867712, 0, -0.497068, 0, 1, 0, 0.497068, 0, -0.867712, -19.474, 0, -26.0526 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L247"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L247"]
+shape = SubResource( 10 )
+
+[node name="Fourmis249" type="RigidBody" parent="Environment"]
+transform = Transform( 0.769982, 0, 0.638065, 0, 1, 0, -0.638065, 0, 0.769982, 6.15777, 0, -27.4844 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis249"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis249"]
+shape = SubResource( 4 )
+
+[node name="F+L251" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.10019, 0, -25.6026 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L251"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L251"]
+shape = SubResource( 10 )
+
+[node name="F+L252" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14.4258, 0, 30.0863 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L252"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L252"]
+shape = SubResource( 10 )
+
+[node name="Larve253" type="RigidBody" parent="Environment"]
+transform = Transform( 0.421134, 0, -0.906998, 0, 1, 0, 0.906998, 0, 0.421134, -6.57159, 0, -10.8418 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve253"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve253"]
+shape = SubResource( 7 )
+
+[node name="Larve254" type="RigidBody" parent="Environment"]
+transform = Transform( 0.954152, 0, -0.299322, 0, 1, 0, 0.299322, 0, 0.954152, -9.17641, 0, -11.0665 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve254"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve254"]
+shape = SubResource( 7 )
+
+[node name="F+L255" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 24.3625, 0, 23.8435 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L255"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L255"]
+shape = SubResource( 10 )
+
+[node name="@Fourmis@349" type="RigidBody" parent="Environment"]
+transform = Transform( -0.539643, 0, -0.841894, 0, 1, 0, 0.841894, 0, -0.539643, -29.2171, 0, -32.8253 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/@Fourmis@349"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/@Fourmis@349"]
+shape = SubResource( 4 )
+
+[node name="2 Larves256" type="RigidBody" parent="Environment"]
+transform = Transform( 0.989438, 0, -0.144955, 0, 1, 0, 0.144955, 0, 0.989438, -23.5343, 0, -34.041 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/2 Larves256"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/2 Larves256"]
+shape = SubResource( 13 )
+
+[node name="Larve257" type="RigidBody" parent="Environment"]
+transform = Transform( 0.995951, 0, 0.0898948, 0, 1, 0, -0.0898948, 0, 0.995951, 5.8537, 0, -33.8935 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve257"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve257"]
+shape = SubResource( 7 )
+
+[node name="Larve258" type="RigidBody" parent="Environment"]
+transform = Transform( 0.984731, 0, 0.174082, 0, 1, 0, -0.174082, 0, 0.984731, 3.85222, 0, -33.4563 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve258"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve258"]
+shape = SubResource( 7 )
+
+[node name="Larve259" type="RigidBody" parent="Environment"]
+transform = Transform( 0.904541, 0, 0.426388, 0, 1, 0, -0.426388, 0, 0.904541, -21.8381, 0, -29.3414 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve259"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve259"]
+shape = SubResource( 7 )
+
+[node name="Larve260" type="RigidBody" parent="Environment"]
+transform = Transform( 0.215488, 0, -0.976507, 0, 1, 0, 0.976507, 0, 0.215488, -24.9976, 0, -28.6996 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve260"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve260"]
+shape = SubResource( 7 )
+
+[node name="Fourmis" type="RigidBody" parent="Environment"]
+transform = Transform( 0.520441, 0, -0.853898, 0, 1, 0, 0.853898, 0, 0.520441, -27.9125, 0, -28.4983 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis"]
+shape = SubResource( 4 )
+
+[node name="Fourmis1971" type="RigidBody" parent="Environment"]
+transform = Transform( 0.386238, 0, 0.922399, 0, 1, 0, -0.922399, 0, 0.386238, -38.9153, 0, 35.1929 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1971"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1971"]
+shape = SubResource( 4 )
+
+[node name="Larve1973" type="RigidBody" parent="Environment"]
+transform = Transform( -0.95832, 0, 0.285697, 0, 1, 0, -0.285697, 0, -0.95832, -21.3032, 0, -26.9436 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1973"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1973"]
+shape = SubResource( 7 )
+
+[node name="Larve1974" type="RigidBody" parent="Environment"]
+transform = Transform( -0.57801, 0, -0.81603, 0, 1, 0, 0.81603, 0, -0.57801, -23.2272, 0, -25.7312 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1974"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1974"]
+shape = SubResource( 7 )
+
+[node name="Larve1975" type="RigidBody" parent="Environment"]
+transform = Transform( 0.97186, 0, -0.23556, 0, 1, 0, 0.23556, 0, 0.97186, -25.1308, 0, -30.7753 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1975"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1975"]
+shape = SubResource( 7 )
+
+[node name="Larve1976" type="RigidBody" parent="Environment"]
+transform = Transform( 0.330864, 0, -0.943678, 0, 1, 0, 0.943678, 0, 0.330864, -27.1525, 0, -30.6581 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1976"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1976"]
+shape = SubResource( 7 )
+
+[node name="F+L1982" type="RigidBody" parent="Environment"]
+transform = Transform( 0.936236, 0, -0.351372, 0, 1, 0, 0.351372, 0, 0.936236, -30.2969, 0, -25.3332 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1982"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1982"]
+shape = SubResource( 10 )
+
+[node name="Fourmis1983" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.013, 0, 28.5584 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1983"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1983"]
+shape = SubResource( 4 )
+
+[node name="2 Larves1984" type="RigidBody" parent="Environment"]
+transform = Transform( -0.770642, 0, 0.637269, 0, 1, 0, -0.637269, 0, -0.770642, 20.8724, 0, 18.7746 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/2 Larves1984"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/2 Larves1984"]
+shape = SubResource( 13 )
+
+[node name="2 Larves1987" type="RigidBody" parent="Environment"]
+transform = Transform( 0.852214, 0, 0.523193, 0, 1, 0, -0.523193, 0, 0.852214, -27.1737, 0, -32.8003 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/2 Larves1987"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/2 Larves1987"]
+shape = SubResource( 13 )
+
+[node name="Larve1988" type="RigidBody" parent="Environment"]
+transform = Transform( 0.911844, 0, -0.410537, 0, 1, 0, 0.410537, 0, 0.911844, -11.4652, 0, 15.3983 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve1988"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve1988"]
+shape = SubResource( 7 )
+
+[node name="F+L1990" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.3808, 0, 6.9493 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1990"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1990"]
+shape = SubResource( 10 )
+
+[node name="F+L1994" type="RigidBody" parent="Environment"]
+transform = Transform( 0.682655, 0, 0.73074, 0, 1, 0, -0.73074, 0, 0.682655, -29.5129, 0, -30.8086 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L1994"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L1994"]
+shape = SubResource( 10 )
+
+[node name="Fourmis1995" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 9.61304e-11, 0, 1, 0, -9.61304e-11, 0, 1, 5.97824, 0, -18.2518 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1995"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1995"]
+shape = SubResource( 4 )
+
+[node name="Fourmis1996" type="RigidBody" parent="Environment"]
+transform = Transform( 0.994108, 0, -0.108392, 0, 1, 0, 0.108392, 0, 0.994108, 24.9205, 0, 2.32781 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1996"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1996"]
+shape = SubResource( 4 )
+
+[node name="2 Larves1997" type="RigidBody" parent="Environment"]
+transform = Transform( 0.998908, 0, 0.0467179, 0, 1, 0, -0.0467179, 0, 0.998908, 18.9374, 0, 6.76503 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/2 Larves1997"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/2 Larves1997"]
+shape = SubResource( 13 )
+
+[node name="Fourmis1998" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 1.43829e-09, 0, 1, 0, -1.43829e-09, 0, 1, 26.0482, 0, -24.6238 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis1998"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis1998"]
+shape = SubResource( 4 )
+
+[node name="2 Larves1999" type="RigidBody" parent="Environment"]
+transform = Transform( 0.0188552, 0, -0.999822, 0, 1, 0, 0.999822, 0, 0.0188552, 16.6258, 0, -26.3236 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/2 Larves1999"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/2 Larves1999"]
+shape = SubResource( 13 )
+
+[node name="Larve2001" type="RigidBody" parent="Environment"]
+transform = Transform( 0.99964, 0, 0.0268247, 0, 1, 0, -0.0268247, 0, 0.99964, 0.376553, 0, -16.129 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve2001"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve2001"]
+shape = SubResource( 7 )
+
+[node name="Larve2002" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999886, 0, 0.0151017, 0, 1, 0, -0.0151017, 0, 0.999886, -1.67149, 0, -16.0754 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve2002"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve2002"]
+shape = SubResource( 7 )
+
+[node name="Larve2003" type="RigidBody" parent="Environment"]
+transform = Transform( 0.602587, 0, -0.798053, 0, 1, 0, 0.798053, 0, 0.602587, -34.2865, 0, 22.6543 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve2003"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve2003"]
+shape = SubResource( 7 )
+
+[node name="Larve2004" type="RigidBody" parent="Environment"]
+transform = Transform( 0.892793, 0, 0.450468, 0, 1, 0, -0.450468, 0, 0.892793, -36.4102, 0, 22.2761 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve2004"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve2004"]
+shape = SubResource( 7 )
+
+[node name="Larve2005" type="RigidBody" parent="Environment"]
+transform = Transform( 0.607212, 0, 0.79454, 0, 1, 0, -0.79454, 0, 0.607212, -38.0534, 0, 25.1863 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve2005"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve2005"]
+shape = SubResource( 7 )
+
+[node name="Larve2006" type="RigidBody" parent="Environment"]
+transform = Transform( 0.942131, 0, -0.335245, 0, 1, 0, 0.335245, 0, 0.942131, 39.9965, 0, 25.2933 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Larve"
+}
+
+[node name="81" type="MeshInstance" parent="Environment/Larve2006"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="82" type="CollisionShape" parent="Environment/Larve2006"]
+shape = SubResource( 7 )
+
+[node name="F+L2010" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 26.3298, 0, 14.1708 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L2010"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L2010"]
+shape = SubResource( 10 )
+
+[node name="Fourmis2011" type="RigidBody" parent="Environment"]
+transform = Transform( -0.0485405, 0, -0.998821, 0, 1, 0, 0.998821, 0, -0.0485405, -4.84117, 0, -11.8788 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis2011"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis2011"]
+shape = SubResource( 4 )
+
+[node name="2 Larves" type="RigidBody" parent="Environment"]
+transform = Transform( -0.546354, 0, 0.837554, 0, 1, 0, -0.837554, 0, -0.546354, -7.73281, 0, -12.5369 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/2 Larves"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/2 Larves"]
+shape = SubResource( 13 )
+
+[node name="F+L" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.23628, 0, 20.0296 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "F+L"
+}
+
+[node name="216" type="MeshInstance" parent="Environment/F+L"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="217" type="CollisionShape" parent="Environment/F+L"]
+shape = SubResource( 10 )
+
+[node name="Fourmis2012" type="RigidBody" parent="Environment"]
+transform = Transform( -0.474743, 0, -0.880124, 0, 1, 0, 0.880124, 0, -0.474743, -15.5676, 0, -24.458 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis2012"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis2012"]
+shape = SubResource( 4 )
+
+[node name="2 Larves2013" type="RigidBody" parent="Environment"]
+transform = Transform( -0.161906, 0, 0.986806, 0, 1, 0, -0.986806, 0, -0.161906, -14.3806, 0, -22.7973 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/2 Larves2013"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/2 Larves2013"]
+shape = SubResource( 13 )
+
+[node name="Fourmis2014" type="RigidBody" parent="Environment"]
+transform = Transform( 0.958547, 0, 0.284934, 0, 1, 0, -0.284934, 0, 0.958547, 6.0737, 0, 29.0789 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Fourmis"
+}
+
+[node name="79" type="MeshInstance" parent="Environment/Fourmis2014"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="80" type="CollisionShape" parent="Environment/Fourmis2014"]
+shape = SubResource( 4 )
+
+[node name="2 Larves2015" type="RigidBody" parent="Environment"]
+transform = Transform( 0.964265, 0, -0.264939, 0, 1, 0, 0.264939, 0, 0.964265, 15.0518, 0, 25.2161 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "2 Larves"
+}
+
+[node name="230" type="MeshInstance" parent="Environment/2 Larves2015"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="231" type="CollisionShape" parent="Environment/2 Larves2015"]
+shape = SubResource( 13 )
