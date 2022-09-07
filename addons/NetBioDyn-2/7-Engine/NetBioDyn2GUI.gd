@@ -459,10 +459,13 @@ func agent_meta_to_param() -> void:
 		vbox_param.remove_child(line)
 		line.queue_free()
 	# Fill Param VBox
-	for m in rb.get_meta_list().size():
-		var meta_name :String  	= rb.get_meta_list()[m]
+	var lst:PoolStringArray = rb.get_meta_list()
+	var nb_param:int = lst.size()
+	print(str("lst = ", lst))
+	for m in nb_param:
+		var meta_name :String  	= lst[m]# rb.get_meta_list()[m]
 		var meta_value			= rb.get_meta(meta_name)
-		#printerr(str(_selected_name , " : meta => PARAM (", meta_name , "," , meta_value))
+		print(str(_selected_name , " : meta => PARAM ", meta_name , " = " , meta_value))
 		if meta_name != "Name":
 			_on_ButtonAddParam_button_down()
 			var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
@@ -478,17 +481,17 @@ func agent_param_to_meta() -> void:
 	# Clear Meta
 	for meta_name in rb.get_meta_list():
 		rb.remove_meta(meta_name)
-	#print(str("a) nb meta=",rb.get_meta_list().size()))
+	print(str("a) nb meta=",rb.get_meta_list().size()))
 		
 	rb.set_meta("Name", rb.name)
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	# Fill Meta
-	for i in vbox_param.get_child_count():
+	for i in vbox_param.get_child_count()-1:
 		var line:HBoxContainer = vbox_param.get_child(i)
 		var param_name :String  = line.get_child(0).get_text()
 		var param_value			= line.get_child(2).get_text()
 		rb.set_meta(param_name, param_value)
-	#print(str("b) nb meta=",rb.get_meta_list().size()))
+	print(str("b) nb meta=",rb.get_meta_list().size()))
 
 	update_agent_instances(rb)
 
