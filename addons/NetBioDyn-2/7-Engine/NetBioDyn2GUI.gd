@@ -547,6 +547,7 @@ func _on_ParamName_text_entered(new_text: String) -> void:
 #                          ENVIRONMENT                       *
 # ************************************************************
 
+enum _draw {POINT, SPRAY, LINE, ERASER, CLEAR }
 var _prev_cursor_agent_pos = Vector3(_env_min_x - 1000 , 0 , _env_min_z - 1000)
 var _mouse_btn_down:bool = false
 
@@ -564,40 +565,60 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				_mouse_btn_down = true
 			else:
 				_mouse_btn_down = false
-				
+	
+	# The use clic in the Env	
 	if _mouse_btn_down == true:
-		if _selected_name == "":
+		# Spawn a new Agent
+		if get_node("%CmbEnvDraw").selected == _draw.POINT:
+			if _selected_name == "":
+				return
+			# Is the Env clear to put a new agent?
+			var selection:Dictionary = get_object_under_mouse(event.position)
+			if selection.size() > 0:
+				return # Not clear => impossible to spawn an agent
+			# Position of the mouse click in 3D Env
+			var cursorPos:Vector3 = get_env_coordinate_from_mouse_position(event.position)
+			# Spawn a new agent at the cursor position
+			spawn_agent(self, _selected_name, cursorPos)
+			updateStatus()
 			return
-		# Position of the mouse click
-		var from 		= _node_camera.project_ray_origin(event.position)
-		var to 			= _node_camera.project_ray_normal(event.position) * 100
-		var cursorPos 	= Plane(Vector3.UP, 0).intersects_ray(from, to)
-		#print(cursorPos)
-		
-		
-		var space_state = _node_camera.get_world().direct_space_state
-		var selection:Dictionary = space_state.intersect_ray(from, cursorPos)
-		#print(from)
-		#print(cursorPos)
-		#print(selection)
-		
-		if selection.size() > 0:
-			return
-		spawn_agent(self, _selected_name, cursorPos)
-		#print(get_object_under_mouse())
-				
+		# Delete an Agent Instance
+		if get_node("%CmbEnvDraw").selected == _draw.ERASER:
+			# Find the selected agent instance
+			var selection:Dictionary = get_object_under_mouse(event.position)
+			if selection.size() == 0:
+				return # No agent instance to delete
+			else:
+				var vals:Array = selection.values()
+				vals[3].queue_free()
+				updateStatus()
+				return		
+			
+	
+# Get the 3D pos in Env of the mouse cursor			
+func get_env_coordinate_from_mouse_position(mouse_pos:Vector2) -> Vector3:
+	var from 		= _node_camera.project_ray_origin(mouse_pos)
+	var to 			= _node_camera.project_ray_normal(mouse_pos) * 100
+	var cursorPos 	= Plane(Vector3.UP, 0).intersects_ray(from, to)
+	return cursorPos
 
 # cast a ray from camera at mouse position, and get the object colliding with the ray
-func get_object_under_mouse():
-	var ray_length:float = 100
-	var mouse_pos = get_viewport().get_mouse_position()
-	var ray_from = _node_camera.project_ray_origin(mouse_pos)
-	var ray_to = ray_from + _node_camera.project_ray_normal(mouse_pos) * ray_length
-	#print(ray_from)
-	#print(ray_to)
+func get_object_under_mouse(mouse_pos:Vector2) -> Dictionary:
+	var from 		= _node_camera.project_ray_origin(mouse_pos)
+	var cursorPos 	= get_env_coordinate_from_mouse_position(mouse_pos)	
 	var space_state = _node_camera.get_world().direct_space_state
-	var selection = space_state.intersect_ray(ray_from, ray_to)
+	var selection:Dictionary = space_state.intersect_ray(from, cursorPos)
 	return selection
+	
+#	var ray_length:float = 100
+#	var mouse_pos = get_viewport().get_mouse_position()
+#	var ray_from = _node_camera.project_ray_origin(mouse_pos)
+#	var ray_to = ray_from + _node_camera.project_ray_normal(mouse_pos) * ray_length
+#	#print(ray_from)
+#	#print(ray_to)
+#	var space_state = _node_camera.get_world().direct_space_state
+#	var selection = space_state.intersect_ray(ray_from, ray_to)
+#	return selection
 		
 func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	# Spawn the new entity
@@ -612,6 +633,9 @@ func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	n_agents.add_child(agent)
 	agent.global_transform.origin = pos
 
+func _on_ButtonClearEnv_pressed() -> void:
+	for rb in _node_env.get_children():
+		rb.queue_free()
 
 
 
@@ -1220,12 +1244,6 @@ func set_owner_recursive(root:Node, node:Node)->void:
 # ************************************************
 # WORK in PROGRESS...
 # ************************************************
-
 func _on_BtnDebug_pressed():
-	#self.set_script(load(  "res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd"  ))
-	var node:Node = _node_env.get_child(0)
-	print(node.is_queued_for_deletion())
-	node.queue_free()
-	print(node.is_queued_for_deletion())
-	
+	pass
 
