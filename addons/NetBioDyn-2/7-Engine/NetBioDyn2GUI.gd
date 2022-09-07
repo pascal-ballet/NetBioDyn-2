@@ -383,8 +383,8 @@ func agent_group_to_GUI_group() -> void:
 		return
 	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
 	# Clear Group VBox (Contains all the Lines where Groups are displayed)
-	for i in vbox_group.get_child_count()-1:
-		var line:HBoxContainer = vbox_group.get_child(1)
+	for i in vbox_group.get_child_count():
+		var line:HBoxContainer = vbox_group.get_child(0)
 		vbox_group.remove_child(line)
 		line.queue_free()
 	# Re-Fill Group VBox with all the Lines displaying Groups
@@ -454,8 +454,8 @@ func agent_meta_to_param() -> void:
 		return
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	# Clear Param VBox
-	for i in vbox_param.get_child_count()-1:
-		var line:HBoxContainer = vbox_param.get_child(1)
+	for i in vbox_param.get_child_count():
+		var line:HBoxContainer = vbox_param.get_child(0)
 		vbox_param.remove_child(line)
 		line.queue_free()
 	# Fill Param VBox
@@ -476,15 +476,19 @@ func agent_param_to_meta() -> void:
 	if rb==null:
 		return
 	# Clear Meta
-	rb.get_meta_list().empty()
+	for meta_name in rb.get_meta_list():
+		rb.remove_meta(meta_name)
+	#print(str("a) nb meta=",rb.get_meta_list().size()))
+		
 	rb.set_meta("Name", rb.name)
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	# Fill Meta
-	for i in vbox_param.get_child_count()-1:
-		var line:HBoxContainer = vbox_param.get_child(i+1)
-		var param_name :String  	= line.get_child(0).get_text()
+	for i in vbox_param.get_child_count():
+		var line:HBoxContainer = vbox_param.get_child(i)
+		var param_name :String  = line.get_child(0).get_text()
 		var param_value			= line.get_child(2).get_text()
 		rb.set_meta(param_name, param_value)
+	#print(str("b) nb meta=",rb.get_meta_list().size()))
 
 	update_agent_instances(rb)
 
@@ -513,7 +517,7 @@ func _on_ParamName_focus_exited() -> void:
 	if old_name==new_name: # Name NOT changed
 		return
 	if key_param_exists(new_name) == 2: # Name already EXISTS
-		OS.alert("Ce nom est deja attribue", "Information")
+		OS.alert("Ce nom est déjà attribué", "Information")
 		line.get_child(0).set_text(old_name)
 		return
 	# Save to meta (new_name VALIDATED)
@@ -996,7 +1000,7 @@ func key_param_exists(var key_name:String) -> int:
 	#printerr(str("func key_param_exists => ", "nb_param=" , nb_param))
 	#printerr(str("range=",range(1,nb_param)))
 	var nb:int = 0
-	for n in range(1,nb_param):
+	for n in range(0,nb_param):
 		#printerr(str("	n=",n))
 		var line:HBoxContainer = vbox.get_child(n)
 		var name:String = line.get_child(0).get_text()
