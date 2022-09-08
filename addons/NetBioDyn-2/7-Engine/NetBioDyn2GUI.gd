@@ -982,7 +982,8 @@ var _sim_play_once: bool  = false
 
 func _on_BtnPlay_pressed() -> void:
 	# TODO : Save initial state
-	# ...
+	if _sim_play == false:
+		save_initial_state()
 	_sim_play = true
 	_sim_pause = false
 	_sim_play_once = false
@@ -999,14 +1000,50 @@ func _on_BtnPause_pressed() -> void:
 		_sim_pause = true
 		
 func _on_BtnStop_pressed() -> void:
+	# TODO : Reload initial state
+	if _sim_play == true:
+		load_initial_state()
 	_sim_play = false
 	_sim_pause = false
 	_sim_play_once = false
 	_step = 0
-	# TODO : Reload initial state
-	# ...
 	updateStatus()
 
+var _node_simu_init:Spatial
+# Save initial state when playing
+func save_initial_state() -> void:
+	# Duplicate the node (prevents an error)
+	_node_simu_init = _node_simu.duplicate(15)
+
+	# Setting simu node as owner of all its
+	# children for saving reasons
+	#set_owner_recursive(_node_simu_init, _node_simu_init)
+
+# Load initial state when stopping
+func load_initial_state() -> void:
+	# Load the simulation
+	# Remove the current simu
+	_node_viewport.remove_child(_node_simu)
+	_node_simu.call_deferred("free")
+
+	# Add the next level
+	#var next_simu_res = load(filename) #load("res://Simulations/Simu.tscn")
+	#if next_simu_res == null:
+	#	print(str("Impossible to read file: ", filename))
+	#	return
+	#var next_simu_node = next_simu_res.instance()
+	
+	# TO DO : verify the tree structure before loading it (Nodes Simulator, then Entities, Behaviors ,etc)
+	
+	# The structure is ok => attach it to the Viewport
+	_node_viewport.add_child(_node_simu_init)
+	
+	# re-init 3D node variables
+	_node_camera	= _node_simu_init.get_node("Camera")
+	_node_simu 		= _node_simu_init
+	_node_entities 	= _node_simu_init.get_node("Entities")
+	_node_behavs 	= _node_simu_init.get_node("Behaviors")
+	_node_env 		= _node_simu_init.get_node("Environment")
 
 
 
@@ -1307,8 +1344,6 @@ func set_owner_recursive(root:Node, node:Node)->void:
 # ************************************************
 
 #placer des listes déroulantes pour les agents / groupe dans les comportements
-#
-#quand delete Agent => elliminer toutes ses instances
 #
 #quand Play => dupliquer etat initial (scene) => branch init
 #quand Stop => eliminer branche simu courante => remplacer par banche init
