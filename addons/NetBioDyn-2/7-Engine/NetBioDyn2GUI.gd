@@ -191,6 +191,14 @@ func _on_BtnDelAgent_pressed() -> void:
 	var lst:ItemList = _listAgents
 	var sel:PoolIntArray = lst.get_selected_items()
 	if sel.size() > 0:
+		var agent_name:String = _listAgents.get_item_text(sel[0])
+		# Remove all Instances
+		for i in _node_env.get_children():
+			if i.get_meta("Name") == agent_name:
+				i.queue_free()
+		# Remove Agent in Entities node
+		get_entity(agent_name).queue_free()
+		# Remove Agent in 2D List
 		lst.remove_item(sel[0])
 
 # List of entities -----------------------------
@@ -652,8 +660,7 @@ func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
 				var vals:Array = selection.values()
 				vals[3].queue_free()
 				updateStatus()
-				return		
-			
+				return			
 	
 # Get the 3D pos in Env of the mouse cursor			
 func get_env_coordinate_from_mouse_position(mouse_pos:Vector2) -> Vector3:
@@ -1298,10 +1305,8 @@ func set_owner_recursive(root:Node, node:Node)->void:
 # ************************************************
 #                       TODO                     *
 # ************************************************
-#enlever param d’agent « Name » dans l’affichage
+
 #placer des listes déroulantes pour les agents / groupe dans les comportements
-#bouton vider env
-#bouton/liste « gomme » à faire marcher
 #
 #quand delete Agent => elliminer toutes ses instances
 #
