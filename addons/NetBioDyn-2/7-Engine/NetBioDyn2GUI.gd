@@ -115,10 +115,11 @@ func updateStatus()->void:
 
 
 
-
-
-
-
+# █████   ██████  ████████ ███████            ██████  ██████   ██████  ██████  
+#██   ██ ██          ██    ██          ██     ██   ██ ██   ██ ██    ██ ██   ██ 
+#███████ ██   ███    ██    ███████            ██████  ██████  ██    ██ ██████  
+#██   ██ ██    ██    ██         ██     ██     ██      ██   ██ ██    ██ ██      
+#██   ██  ██████     ██    ███████            ██      ██   ██  ██████  ██      
 
 
 
@@ -127,7 +128,7 @@ func updateStatus()->void:
 #               AGENTS : simple Properties                 *
 # **********************************************************
 
-func addAgent(var name) -> void:	
+func addAgent(var name:String) -> void:	
 	# Create new Agent in GUI -----------------------------
 	_listAgents.add_item(name)
 	_listAgents.set_item_metadata(_listAgents.get_item_count()-1, "Agent") # type of the item
@@ -139,7 +140,11 @@ func addAgent(var name) -> void:
 
 	#  - add the Agent to the scene
 	_node_entities.add_child(rb)
+	print(str("name=", name))
+	rb.set_meta("Name", name)
 	#rb.set_owner(get_node(_node_simu)
+	print(str("**** Exit : AddAgent"))
+	_debug_display_all_meta()
 	
 func create_rigid_body_agent(var name:String) -> RigidBody:
 	#  - material
@@ -198,7 +203,7 @@ func _on_ListAgents_item_selected(index: int) -> void:
 		if entity is RigidBody:
 			tabs.current_tab = Prop.ENTITY
 			_selected_name = entity_name
-			print(str("Select:",_selected_name))
+			print(str("\nSelect:",_selected_name))
 			_fill_properties_of_agent(entity)
 		else:
 			tabs = get_node("%TabContainer")	
@@ -410,10 +415,12 @@ func _on_button_del_group_of_agent() -> void:
 
 
 
-
-
-
-
+# █████   ██████  ████████ ███████            ███    ███ ███████ ████████  █████  
+#██   ██ ██          ██    ██          ██     ████  ████ ██         ██    ██   ██ 
+#███████ ██   ███    ██    ███████            ██ ████ ██ █████      ██    ███████ 
+#██   ██ ██    ██    ██         ██     ██     ██  ██  ██ ██         ██    ██   ██ 
+#██   ██  ██████     ██    ███████            ██      ██ ███████    ██    ██   ██ 
+																				
 
 
 
@@ -423,7 +430,7 @@ func _on_button_del_group_of_agent() -> void:
 # **********************************************************
 
 func _on_ButtonAddParam_button_down() -> void:
-	print(str("Add Param"))
+	print(str("Add GUI Param"))
 	# Crete a unique name for the parameter (Meta names are key of dictionnary)
 	var key_param:String  = key_param_create()
 	# Create the line of input boxes
@@ -450,7 +457,9 @@ func _on_Button_button_down() -> void:
 	
 # META => GUI PARAM
 func agent_meta_to_param() -> void:
-	print(str("META=>Param"))
+	print(str("** Enter : META=>GUI"))
+	_debug_display_all_meta()
+
 	#printerr(str("meta => PARAM for ", _selected_name))
 	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
@@ -468,16 +477,21 @@ func agent_meta_to_param() -> void:
 	for m in nb_param:
 		var meta_name :String  	= lst[m]# rb.get_meta_list()[m]
 		var meta_value			= rb.get_meta(meta_name)
-		print(str(_selected_name , " : META=>PARAM ", meta_name , " = " , meta_value))
+		print(str("  - ", _selected_name , " : META=>GUI ", meta_name , " = " , meta_value))
 		if meta_name != "Name":
 			_on_ButtonAddParam_button_down()
 			var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
 			line.get_child(0).set_text(meta_name)
 			line.get_child(2).set_text(meta_value)
+	printerr(str("***    Exit : META=>GUI" ))
+	_debug_display_all_meta()
+
 
 # GUI PARAM => META
 func agent_param_to_meta() -> void:
-	printerr(str("PARAM => meta for ", _selected_name))
+	printerr(str("*** Enter : GUI => META for ", _selected_name))
+	_debug_display_all_meta()
+	
 	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
 		return
@@ -485,6 +499,8 @@ func agent_param_to_meta() -> void:
 	for meta_name in rb.get_meta_list():
 		print(str("remove:",meta_name,"=",get_meta(meta_name)))
 		rb.remove_meta(meta_name)
+		
+	#######################
 	print(str("a) nb meta=",rb.get_meta_list().size()))
 		
 	rb.set_meta("Name", rb.name)
@@ -497,8 +513,12 @@ func agent_param_to_meta() -> void:
 		print(str(_selected_name , " GUI=>META: ", param_name , " = " , param_value))
 		rb.set_meta(param_name, param_value)
 	print(str("b) nb meta=",rb.get_meta_list().size()))
-
+	#######################
+	printerr(str("***       : Before update instances" ))
+	_debug_display_all_meta()
 	update_agent_instances(rb)
+	printerr(str("***       : After update instances" ))
+	_debug_display_all_meta()
 
 # get the line number of agent param having possibly the focus
 var _selected_param_pos:int = -1
@@ -516,10 +536,11 @@ func get_param_line_has_focus() -> int :
 	return -1
 
 func _on_ParamName_focus_exited() -> void:
-	print(str("Param Focus Lost"))
+	print(str("** Enter : Param Focus Lost"))
 	# Verif Name if unique
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	var i:int = _selected_param_pos
+	print(str("   _selected_param_pos = ", i))
 	var line:HBoxContainer = vbox_param.get_child(i)
 	var old_name:String = _selected_param_name
 	var new_name:String = line.get_child(0).get_text()
@@ -547,9 +568,17 @@ func _on_ParamName_text_entered(new_text: String) -> void:
 	_on_ParamName_focus_exited()
 
 
+func _debug_display_meta(rb:RigidBody) -> void:
+	printerr(str("*** Enter : DISPLAY META for : ", rb.name))
+	if rb==null:
+		return
+	# Display Meta
+	for meta_name in rb.get_meta_list():
+		print(str("    Meta : ",meta_name," = ",get_meta(meta_name)))
 
-
-
+func _debug_display_all_meta() -> void:
+	for rb in _node_entities.get_children():
+		_debug_display_meta(rb)
 
 
 
@@ -1248,6 +1277,19 @@ func set_owner_recursive(root:Node, node:Node)->void:
 
 
 
+# ************************************************
+#                       TODO                     *
+# ************************************************
+#enlever param d’agent « Name » dans l’affichage
+#placer des listes déroulantes pour les agents / groupe dans les comportements
+#bouton vider env
+#bouton/liste « gomme » à faire marcher
+#
+#quand delete Agent => elliminer toutes ses instances
+#
+#quand Play => dupliquer etat initial (scene) => branch init
+#quand Stop => eliminer branche simu courante => remplacer par banche init
+#
 
 
 
