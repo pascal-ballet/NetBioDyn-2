@@ -953,6 +953,7 @@ func GUI_param_updated(new_text: String="")->void:
 
 var text_unique:bool = true
 var _line_edit_with_pb:LineEdit = null
+var _latest_modified_group_line = null
 var _good_gp_name:String = ""
 
 func _on_BtnAddGp_pressed() -> void:
@@ -977,13 +978,26 @@ func _on_ButtonDelGp_pressed() -> void:
 		get_node_direct(_node_groups, gp.text).queue_free()
 		gp.get_parent().queue_free()
 
-# TODO : V V V continue from here to manage _node_groups in Simulator V V V
+# Update name of Groups
 func update_groups(s:String = "") -> void:
-	# Update with doublon
-	if text_unique == false:
+	# Update if doublon in 2D List
+	if text_unique == false: # The name has a problem => changedd to the latest non-doublon name
 		_line_edit_with_pb.text = _good_gp_name
 		text_unique == false
-		#OS.alert(str("Ce nom de groupe existe déjà.", " Changé en : ", _good_gp_name),"Information")
+
+	# Update the name of Group Nodes in Simulator
+	var pos = get_index_of_group_line(_good_gp_name) # Get the index in the 2D List
+	_node_groups.get_child(pos).name = _good_gp_name
+
+func get_index_of_group_line(name:String) -> int:
+	var vb:VBoxContainer = get_node("%VBoxGp")
+	var i:int = 0
+	var pos:int = -1
+	for line in vb.get_children():
+		if line.get_child(0).text == _good_gp_name:
+			pos = i
+		i = i + 1
+	return pos
 
 func key_group_count(var key_name:String) -> int:
 	var vbox:VBoxContainer = get_node("%VBoxGp")
@@ -997,13 +1011,30 @@ func key_group_count(var key_name:String) -> int:
 	return nb
 
 func _on_GroupValue_changed(var new_text:String) -> void :
+	var current_gp:Node = get_selected_group()
 	var doublons:int = key_group_count(new_text)
 	if doublons >= 2:
 		text_unique = false
-		_line_edit_with_pb = get_selected_group()
+		_line_edit_with_pb = current_gp
 	else:
 		text_unique = true
 		_good_gp_name = new_text
+	_latest_modified_group_line = current_gp
+
+# Groups of Simulator => Groups in 2D List
+# Should be only used in Load of a simulation file
+func set_group_from_simulator_to_GUI() -> void:
+	var vbox:VBoxContainer = get_node("%VBoxGp")
+	# Clear the 2D List of Groups
+	for line in vbox.get_children():
+		line.queue_free()
+	# Re Fill the 2D List of Groups from the Simulator
+	for gp in _node_groups.get_children():
+		var vb:VBoxContainer = get_node("%VBoxGp")
+		var node_line_gp:Node = get_node("%HBoxLineGp").duplicate(15)
+		node_line_gp.visible = true
+		vb.add_child(node_line_gp)
+		node_line_gp.get_child(0).text = gp.name
 
 
 
@@ -1014,6 +1045,7 @@ func _on_GroupValue_changed(var new_text:String) -> void :
 #██   ███ ██████  ██ ██   ██ ███████ 
 #██    ██ ██   ██ ██ ██   ██      ██ 
 # ██████  ██   ██ ██ ██████  ███████
+
 
 
 
@@ -1392,7 +1424,7 @@ func _on_BtnLoad_pressed():
 		_listAgents.add_item(agt.name)
 	for agt in _node_behavs.get_children():
 		_listBehavs.add_item(agt.get_meta("Name"))
-	
+	set_group_from_simulator_to_GUI()
 
 # Save *****************************************************
 func _on_BtnSave_pressed():
