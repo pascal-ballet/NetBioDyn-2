@@ -432,7 +432,7 @@ func _on_button_del_group_of_agent() -> void:
 # **********************************************************
 
 func _on_ButtonAddParam_button_down() -> void:
-	print(str("Add GUI Param"))
+	print(str("\nAdd GUI Param"))
 	# Crete a unique name for the parameter (Meta names are key of dictionnary)
 	var key_param:String  = key_param_create()
 	# Create the line of input boxes
@@ -443,7 +443,17 @@ func _on_ButtonAddParam_button_down() -> void:
 	new_line.visible = true
 	vbox_param.add_child(new_line)
 	# Save to meta
-	agent_param_to_meta()
+	agent_GUI_to_META()
+	_debug_display_all_meta()
+	print(str("Exit Add GUI Param\n"))
+
+func add_param_line() -> void:
+	# Create the line of input boxes
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	var hbox_line :	HBoxContainer = get_node("%HBoxLineParam")
+	var new_line: 	HBoxContainer = hbox_line.duplicate()
+	new_line.visible = true
+	vbox_param.add_child(new_line)
 
 # Remove param (TODO : change function name to : _on_button_del_param_of_agent)
 func _on_Button_button_down() -> void:
@@ -455,11 +465,11 @@ func _on_Button_button_down() -> void:
 			vbox_param.remove_child(line)
 			break
 	# Save to meta (new_name VALIDATED)
-	agent_param_to_meta()
+	agent_GUI_to_META()
 	
 # META => GUI PARAM
 func agent_META_to_GUI() -> void:
-	print(str("** Enter : META=>GUI"))
+	printerr(str("** Enter : META=>GUI"))
 	_debug_display_all_meta()
 
 	#printerr(str("meta => PARAM for ", _selected_name))
@@ -468,11 +478,15 @@ func agent_META_to_GUI() -> void:
 		return
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	# Clear Param VBox
+	print(str("CLEAR PARAM VBOX"))
+	_debug_display_all_meta()
 	for i in vbox_param.get_child_count():
 		var line:HBoxContainer = vbox_param.get_child(0)
 		vbox_param.remove_child(line)
 		line.queue_free()
 	# Fill Param VBox
+	print(str("FILL PARAM VBOX"))
+	_debug_display_all_meta()
 	var lst:PoolStringArray = rb.get_meta_list()
 	var nb_param:int = lst.size()
 	print(str("lst = ", lst))
@@ -481,16 +495,17 @@ func agent_META_to_GUI() -> void:
 		var meta_value			= rb.get_meta(meta_name)
 		print(str("  - ", _selected_name , " : META=>GUI ", meta_name , " = " , meta_value))
 		if meta_name != "Name":
-			_on_ButtonAddParam_button_down()
-			var line:HBoxContainer = vbox_param.get_child(vbox_param.get_child_count()-1)
+			add_param_line()
+			var nb_children:int 	= vbox_param.get_child_count()
+			var line:HBoxContainer 	= vbox_param.get_child(nb_children-1)
 			line.get_child(0).set_text(meta_name)
 			line.get_child(2).set_text(meta_value)
 	printerr(str("***    Exit : META=>GUI" ))
 	_debug_display_all_meta()
 
 
-# GUI PARAM => META
-func agent_param_to_meta() -> void:
+# GUI => META
+func agent_GUI_to_META() -> void:
 	printerr(str("*** Enter : GUI => META for ", _selected_name))
 	_debug_display_all_meta()
 	
@@ -513,6 +528,7 @@ func agent_param_to_meta() -> void:
 		var param_name :String  = line.get_child(0).get_text()
 		var param_value			= line.get_child(2).get_text()
 		print(str(_selected_name , " GUI=>META: ", param_name , " = " , param_value))
+		print(str(">>>>>> add meta:",param_name,"=",param_value))
 		rb.set_meta(param_name, param_value)
 	print(str("b) nb meta=",rb.get_meta_list().size()))
 	#######################
@@ -553,12 +569,12 @@ func _on_ParamName_focus_exited() -> void:
 		line.get_child(0).set_text(old_name)
 		return
 	# Save to meta (new_name VALIDATED)
-	agent_param_to_meta()
+	agent_GUI_to_META()
 
 # agent param
 func _on_ParamValue_focus_exited() -> void:
 	# Save to meta
-	agent_param_to_meta()
+	agent_GUI_to_META()
 
 func _on_ParamName_focus_entered() -> void:
 	_selected_param_pos = get_param_line_has_focus()
