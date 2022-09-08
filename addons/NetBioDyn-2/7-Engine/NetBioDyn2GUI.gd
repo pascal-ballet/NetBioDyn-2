@@ -30,6 +30,7 @@ var _node_camera	:Node
 var _node_entities	:Node
 var _node_behavs	:Node
 var _node_env		:Node
+var _node_groups	:Node
 
 # Simulator time steps
 var _step:int = 0
@@ -60,7 +61,7 @@ func my_init() -> void:
 	_node_entities 		= get_node_direct(_node_simu, "Entities")
 	_node_behavs	 	= get_node_direct(_node_simu, "Behaviors")
 	_node_env	 		= get_node_direct(_node_simu, "Environment")
-
+	_node_groups		= get_node_direct(_node_simu, "Groups")
 
 
 
@@ -955,10 +956,13 @@ var _line_edit_with_pb:LineEdit = null
 var _good_gp_name:String = ""
 
 func _on_BtnAddGp_pressed() -> void:
+	#Add in 2D List
 	var vb:VBoxContainer = get_node("%VBoxGp")
 	var node_line_gp:Node = get_node("%HBoxLineGp").duplicate(15)
 	node_line_gp.visible = true
 	vb.add_child(node_line_gp)
+	# Add in 3D Simulator
+	_node_groups.add_child(Node.new())
 
 func get_selected_group() -> LineEdit:
 	var vb:VBoxContainer = get_node("%VBoxGp")
@@ -970,8 +974,10 @@ func get_selected_group() -> LineEdit:
 func _on_ButtonDelGp_pressed() -> void:
 	var gp:Node = get_selected_group()
 	if gp != null:
+		get_node_direct(_node_groups, gp.text).queue_free()
 		gp.get_parent().queue_free()
 
+# TODO : V V V continue from here to manage _node_groups in Simulator V V V
 func update_groups(s:String = "") -> void:
 	# Update with doublon
 	if text_unique == false:
@@ -1116,7 +1122,7 @@ func load_initial_state() -> void:
 	_node_entities 	= _node_simu_init.get_node("Entities")
 	_node_behavs 	= _node_simu_init.get_node("Behaviors")
 	_node_env 		= _node_simu_init.get_node("Environment")
-
+	_node_groups	= _node_simu_init.get_node("Groups")
 
 
 
@@ -1375,6 +1381,7 @@ func _on_BtnLoad_pressed():
 	_node_entities 	= next_simu_node.get_node("Entities")
 	_node_behavs 	= next_simu_node.get_node("Behaviors")
 	_node_env 		= next_simu_node.get_node("Environment")
+	_node_groups	= next_simu_node.get_node("Groups")
 
 	# Empty the 2D GUI
 	_listAgents.clear()
