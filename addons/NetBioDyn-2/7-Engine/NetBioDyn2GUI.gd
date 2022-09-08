@@ -14,7 +14,7 @@
 extends Node
 
 # Param Tabs N°
-enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION,BEHAVIOR_RANDOM_FORCE, GRID, ENV }
+enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION, BEHAVIOR_RANDOM_FORCE, GRID, ENV, GROUP }
 
 # **********************************************************
 #                        KEY NODES                         *
@@ -62,6 +62,8 @@ func my_init() -> void:
 	_node_behavs	 	= get_node_direct(_node_simu, "Behaviors")
 	_node_env	 		= get_node_direct(_node_simu, "Environment")
 	_node_groups		= get_node_direct(_node_simu, "Groups")
+
+	#get_viewport().connect("gui_focus_changed", self, "set_popup_btn")
 
 
 
@@ -857,7 +859,10 @@ func _on_ListBehav_item_selected(index: int) -> void:
 		get_node("%BehavRndFDir").set_text(behav.get_meta("Dir"))
 		get_node("%BehavRndFAngle").set_text(behav.get_meta("Angle"))
 		get_node("%BehavRndFIntensity").set_text(behav.get_meta("Intensity"))
-	
+
+func GUI_param_updated(new_text: String="")->void:
+	behavior_GUI_to_META()
+
 # Update behavior : GUI => META
 func behavior_GUI_to_META() -> void:
 	var sel:PoolIntArray = _listBehavs.get_selected_items()
@@ -921,19 +926,6 @@ func behavior_GUI_to_META() -> void:
 	#print_debug(param_value)
 	#print_debug(behav)
 
-
-
-
-
-
-
-
-# ************************************************************
-#                          Signals                           *
-# ************************************************************
-# TODO : a placer dans un autre endroit (verifier son utilité avant !)
-func GUI_param_updated(new_text: String="")->void:
-	behavior_GUI_to_META()
 
 
 
@@ -1037,6 +1029,73 @@ func set_group_from_simulator_to_GUI() -> void:
 		node_line_gp.get_child(0).text = gp.name
 
 
+
+
+
+
+
+
+# ************************************************************
+#                          Popup Menu                        *
+# ************************************************************
+
+var _popup_btn = null
+
+#func set_popup_btn() -> void: #ctrl:Control)->void:
+#	var tree:SceneTree	= get_tree()
+#	var scene:Node		= tree.get_current_scene()
+#	var space_state = scene.get_world().get_direct_space_state()
+#	var query = Physics2DShapeQueryParameters.new()
+#	var shape = RectangleShape2D.new()
+#	shape.set_extents(Vector2(1,1))
+#	query.set_shape(shape)
+#	var hits = space_state.intersect_shape(query)
+#	if hits.size() != 0:
+#		print("There is something here!")
+#	#_popup_btn = ctrl
+
+
+func open_popup_agents() -> void:
+	var tree:SceneTree	= get_tree()
+	var scene:Node		= tree.get_current_scene()
+	var position = scene.get_global_mouse_position()
+
+	_popup_btn = get_button_at_position(get_node("%TabContainer"), position)
+
+	var pp = PopupMenu.new()
+	pp.add_item("Test")
+	pp.add_separator()
+
+	var x = position.x
+	var y = position.y
+	scene.add_child(pp)
+	pp.popup(Rect2(x, y, 100, 100))
+
+	# Connect the id pressed signal to the function which will handle the option logic
+	pp.connect("id_pressed", self, "_item_selected")
+
+func _item_selected(id: int):
+	match id:
+		0:
+			print(_popup_btn.name)
+			_popup_btn.get_parent().get_child(0).text = "AZERT"
+
+func get_button_at_position(root:Node, pos:Vector2) -> Node:
+	print(str("Looking at : ", root.name))
+	if root is Button:
+		print(str("Found btn : ", root.name))
+		var btn:Button = root
+		if pos.x >= btn.rect_global_position.x && pos.x <= btn.rect_global_position.x + btn.rect_size.x:
+			if pos.y >= btn.rect_global_position.y && pos.y <= btn.rect_global_position.y + btn.rect_size.y:
+				print(str("Winner is : ", btn.name, " <<<<<<<<<<<<<<<<<<<<<"))
+				return btn
+				
+	for n in root.get_children():
+		if n.visible == true:
+			return get_button_at_position(n, pos)
+			
+	print(str("NO WINNER ..................... "))
+	return null
 
 
 
@@ -1498,3 +1557,6 @@ func _on_BtnDebug_pressed():
 			print(str("    Meta : ",meta_name," = ",c.get_meta(meta_name)))
 
 
+func group_line_edit_on_focus()->void:
+	var tabs:TabContainer = get_node("%TabContainer")
+	tabs.current_tab = Prop.GROUP
