@@ -482,7 +482,6 @@ tabs_visible = false
 use_hidden_tabs_for_min_size = true
 
 [node name="Empty" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -508,6 +507,7 @@ text = "Aucun objets sélectionné."
 valign = 1
 
 [node name="Agent" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -1439,8 +1439,9 @@ text = "-"
 [connection signal="focus_exited" from="HBoxLineGroup/GroupValue" to="." method="agent_GUI_groups_to_groups"]
 [connection signal="text_entered" from="HBoxLineGroup/GroupValue" to="." method="agent_GUI_groups_to_groups"]
 [connection signal="pressed" from="HBoxLineGroup/ButtonDelGroup" to="." method="_on_button_del_group_of_agent"]
-[connection signal="focus_exited" from="HBoxLineGp/GroupValue" to="." method="agent_GUI_groups_to_groups"]
-[connection signal="text_entered" from="HBoxLineGp/GroupValue" to="." method="agent_GUI_groups_to_groups"]
+[connection signal="focus_exited" from="HBoxLineGp/GroupValue" to="." method="update_groups"]
+[connection signal="text_changed" from="HBoxLineGp/GroupValue" to="." method="_on_GroupValue_changed"]
+[connection signal="text_entered" from="HBoxLineGp/GroupValue" to="." method="update_groups"]
 [connection signal="pressed" from="HBoxLineGp/ButtonDelGp" to="." method="_on_ButtonDelGp_pressed"]
 [connection signal="focus_entered" from="HBoxLineParam/ParamName" to="." method="_on_ParamName_focus_entered"]
 [connection signal="focus_exited" from="HBoxLineParam/ParamName" to="." method="_on_ParamName_focus_exited"]
