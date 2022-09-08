@@ -131,8 +131,8 @@ func updateStatus()->void:
 func addAgent(var name:String) -> void:	
 	# Create new Agent in GUI -----------------------------
 	_listAgents.add_item(name)
-	_listAgents.set_item_metadata(_listAgents.get_item_count()-1, "Agent") # type of the item
-	
+	var i:int = _listAgents.get_item_count()-1
+	_listAgents.set_item_metadata(i, "Agent") # type of the item
 	# Create new Agent Type in 3D Scene -----------------------------
 	#print_debug("addAgent")
 	var rb:RigidBody = create_rigid_body_agent(name)
@@ -145,6 +145,8 @@ func addAgent(var name:String) -> void:
 	#rb.set_owner(get_node(_node_simu)
 	print(str("**** Exit : AddAgent"))
 	_debug_display_all_meta()
+	_listAgents.select(_listAgents.get_item_count()-1)
+	_on_ListAgents_item_selected(i)
 	
 func create_rigid_body_agent(var name:String) -> RigidBody:
 	#  - material
@@ -238,7 +240,7 @@ func _fill_properties_of_agent(var agt_type:Node):
 		# groups
 		agent_group_to_GUI_group()
 		# param
-		agent_meta_to_param() # TODO rename into agent_meta_to_GUI_param
+		agent_META_to_GUI() # TODO rename into agent_meta_to_GUI_param
 		
 # Properties => Agent -----------------------------
 # Agent COLOR
@@ -456,7 +458,7 @@ func _on_Button_button_down() -> void:
 	agent_param_to_meta()
 	
 # META => GUI PARAM
-func agent_meta_to_param() -> void:
+func agent_META_to_GUI() -> void:
 	print(str("** Enter : META=>GUI"))
 	_debug_display_all_meta()
 
@@ -497,7 +499,7 @@ func agent_param_to_meta() -> void:
 		return
 	# Clear Meta
 	for meta_name in rb.get_meta_list():
-		print(str("remove:",meta_name,"=",get_meta(meta_name)))
+		print(str("remove:",meta_name,"=",rb.get_meta(meta_name)))
 		rb.remove_meta(meta_name)
 		
 	#######################
@@ -506,7 +508,7 @@ func agent_param_to_meta() -> void:
 	rb.set_meta("Name", rb.name)
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	# Fill Meta
-	for i in vbox_param.get_child_count()-1:
+	for i in vbox_param.get_child_count():
 		var line:HBoxContainer = vbox_param.get_child(i)
 		var param_name :String  = line.get_child(0).get_text()
 		var param_value			= line.get_child(2).get_text()
@@ -574,7 +576,7 @@ func _debug_display_meta(rb:RigidBody) -> void:
 		return
 	# Display Meta
 	for meta_name in rb.get_meta_list():
-		print(str("    Meta : ",meta_name," = ",get_meta(meta_name)))
+		print(str("    Meta : ",meta_name," = ",rb.get_meta(meta_name)))
 
 func _debug_display_all_meta() -> void:
 	for rb in _node_entities.get_children():
@@ -1300,5 +1302,13 @@ func set_owner_recursive(root:Node, node:Node)->void:
 # WORK in PROGRESS...
 # ************************************************
 func _on_BtnDebug_pressed():
-	pass
+	var rb:RigidBody = _node_entities.get_children()[0]
+	var name:String = _selected_name
 
+	print(str("Name=", name))
+	rb.set_meta("Name", name)
+	print(str("Name=", rb.get_meta("Name")))
+
+	for c in _node_entities.get_children():
+		for meta_name in c.get_meta_list():
+			print(str("    Meta : ",meta_name," = ",c.get_meta(meta_name)))
