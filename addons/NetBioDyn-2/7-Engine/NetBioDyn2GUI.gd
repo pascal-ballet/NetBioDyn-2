@@ -926,17 +926,18 @@ func GUI_param_updated(new_text: String="")->void:
 # ************************************************************
 
 func _on_BtnAddGp_pressed() -> void:
-	var lst:ItemList = get_node("%ListGp")
-	lst.add_item("Groupe")
-	lst.set_item_metadata(lst.get_item_count()-1, "Reaction") # type of the item
+	var vb:VBoxContainer = get_node("%VBoxGp")
+	var node_line_gp:Node = get_node("%HBoxLineGp").duplicate(15)
+	node_line_gp.visible = true
+	vb.add_child(node_line_gp)
 
-func _on_BtnDelGp_pressed() -> void:
-	var lst:ItemList = get_node("%ListGp")
-	var sel:PoolIntArray = lst.get_selected_items()
-	if sel.size() > 0:
-		lst.remove_item(sel[0])
-		
-		
+
+func _on_ButtonDelGp_pressed() -> void:
+	var vb:VBoxContainer = get_node("%VBoxGp")
+	for i in vb.get_children():
+		if i.get_child(1).has_focus() == true:
+			i.queue_free()
+			return
 		
 		
 		
@@ -1344,15 +1345,6 @@ func set_owner_recursive(root:Node, node:Node)->void:
 # ************************************************
 
 #placer des listes déroulantes pour les agents / groupe dans les comportements
-#
-#quand Play => dupliquer etat initial (scene) => branch init
-#quand Stop => eliminer branche simu courante => remplacer par banche init
-#
-
-
-
-
-
 
 # ************************************************
 # WORK in PROGRESS...
@@ -1368,3 +1360,5 @@ func _on_BtnDebug_pressed():
 	for c in _node_entities.get_children():
 		for meta_name in c.get_meta_list():
 			print(str("    Meta : ",meta_name," = ",c.get_meta(meta_name)))
+
+

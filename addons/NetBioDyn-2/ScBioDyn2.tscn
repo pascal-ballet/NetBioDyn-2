@@ -223,37 +223,25 @@ size_flags_horizontal = 3
 
 [node name="LabelGp" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav"]
 margin_top = 3.0
-margin_right = 120.0
+margin_right = 141.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Groupes"
 
 [node name="BtnAddGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav"]
-margin_left = 124.0
-margin_right = 144.0
+margin_left = 145.0
+margin_right = 165.0
 margin_bottom = 20.0
 text = "+"
 
-[node name="BtnDelGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav"]
-margin_left = 148.0
-margin_right = 165.0
-margin_bottom = 20.0
-text = "-"
-
-[node name="ListGp" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2"]
+[node name="VBoxGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 165.0
 margin_bottom = 213.0
 rect_min_size = Vector2( 50, 0 )
-rect_clip_content = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
-select_mode = 1
-allow_reselect = true
-allow_rmb_select = true
-auto_height = true
-same_column_width = true
 
 [node name="VBoxAgentsBehav" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer"]
 margin_left = 177.0
@@ -1344,6 +1332,24 @@ margin_right = 1024.0
 margin_bottom = 24.0
 text = "-"
 
+[node name="HBoxLineGp" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+margin_top = 576.0
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="GroupValue" type="LineEdit" parent="HBoxLineGp"]
+margin_left = 20.0
+margin_right = 1003.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="ButtonDelGp" type="Button" parent="HBoxLineGp"]
+margin_right = 12.0
+margin_bottom = 20.0
+text = "-"
+
 [node name="HBoxLineParam" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
 visible = false
@@ -1390,7 +1396,6 @@ text = "-"
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnDelAgent" to="." method="_on_BtnDelAgent_pressed"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/ListAgents" to="." method="_on_ListAgents_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav/BtnAddGp" to="." method="_on_BtnAddGp_pressed"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav/BtnDelGp" to="." method="_on_BtnDelGp_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav/BtnAddBehav" to="." method="_on_BtnAddBehav_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav/BtnDelBehav" to="." method="_on_BtnDelBehav_pressed"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/ListBehav" to="." method="_on_ListBehav_item_selected"]
@@ -1434,6 +1439,9 @@ text = "-"
 [connection signal="focus_exited" from="HBoxLineGroup/GroupValue" to="." method="agent_GUI_groups_to_groups"]
 [connection signal="text_entered" from="HBoxLineGroup/GroupValue" to="." method="agent_GUI_groups_to_groups"]
 [connection signal="pressed" from="HBoxLineGroup/ButtonDelGroup" to="." method="_on_button_del_group_of_agent"]
+[connection signal="focus_exited" from="HBoxLineGp/GroupValue" to="." method="agent_GUI_groups_to_groups"]
+[connection signal="text_entered" from="HBoxLineGp/GroupValue" to="." method="agent_GUI_groups_to_groups"]
+[connection signal="pressed" from="HBoxLineGp/ButtonDelGp" to="." method="_on_ButtonDelGp_pressed"]
 [connection signal="focus_entered" from="HBoxLineParam/ParamName" to="." method="_on_ParamName_focus_entered"]
 [connection signal="focus_exited" from="HBoxLineParam/ParamName" to="." method="_on_ParamName_focus_exited"]
 [connection signal="text_entered" from="HBoxLineParam/ParamName" to="." method="_on_ParamName_text_entered"]
