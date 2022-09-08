@@ -925,56 +925,26 @@ func GUI_param_updated(new_text: String="")->void:
 #                           Groups                           *
 # ************************************************************
 
-var text_unique:bool = true
-var _line_edit_with_pb:LineEdit = null
-var _good_gp_name:String = ""
-
 func _on_BtnAddGp_pressed() -> void:
 	var vb:VBoxContainer = get_node("%VBoxGp")
 	var node_line_gp:Node = get_node("%HBoxLineGp").duplicate(15)
 	node_line_gp.visible = true
 	vb.add_child(node_line_gp)
 
-func get_selected_group() -> LineEdit:
-	var vb:VBoxContainer = get_node("%VBoxGp")
-	for i in vb.get_children():
-		if i.get_child(0).has_focus() == true || i.get_child(1).has_focus() == true :
-			return i.get_child(0)
-	return null
 
 func _on_ButtonDelGp_pressed() -> void:
-	var gp:Node = get_selected_group()
-	if gp != null:
-		gp.get_parent().queue_free()
-
-func update_groups(s:String = "") -> void:
-	# Update with doublon
-	if text_unique == false:
-		_line_edit_with_pb.text = _good_gp_name
-		text_unique == false
-		#OS.alert(str("Ce nom de groupe existe déjà.", " Changé en : ", _good_gp_name),"Information")
-
-func key_group_count(var key_name:String) -> int:
-	var vbox:VBoxContainer = get_node("%VBoxGp")
-	var nb_keys:float = vbox.get_child_count()
-	var nb:int = 0
-	for n in range(0,nb_keys):
-		var line:HBoxContainer = vbox.get_child(n)
-		var name:String = line.get_child(0).get_text()
-		if key_name == name:
-			nb = nb+1
-	return nb
-
-func _on_GroupValue_changed(var new_text:String) -> void :
-	var doublons:int = key_group_count(new_text)
-	if doublons >= 2:
-		text_unique = false
-		_line_edit_with_pb = get_selected_group()
-	else:
-		text_unique = true
-		_good_gp_name = new_text
-
-
+	var vb:VBoxContainer = get_node("%VBoxGp")
+	for i in vb.get_children():
+		if i.get_child(1).has_focus() == true:
+			i.queue_free()
+			return
+		
+		
+		
+		
+		
+		
+		
 # ************************************************************
 #                              Grids                         *
 # ************************************************************
@@ -1138,7 +1108,7 @@ func key_param_exists(var key_name:String) -> int:
 		#printerr(str("Verify : ", key_name, " with existing :", name))
 		if key_name == name:
 			nb = nb+1
-	return nb
+	return nb	
 
 func get_selected_behavior() -> Node:
 	var sel:PoolIntArray = _listBehavs.get_selected_items()
@@ -1377,7 +1347,7 @@ func set_owner_recursive(root:Node, node:Node)->void:
 #placer des listes déroulantes pour les agents / groupe dans les comportements
 
 # ************************************************
-# WORK in PROGRESS...
+# WORK in PROGRESS ...
 # ************************************************
 func _on_BtnDebug_pressed():
 	var rb:RigidBody = _node_entities.get_children()[0]
