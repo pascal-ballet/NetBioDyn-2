@@ -42,7 +42,7 @@ var _env_max_x:float =  40
 var _env_max_y:float =  0
 var _env_max_z:float =  40
 # instances size
-var MAX_AGENTS:int = 5000
+var MAX_AGENTS:int = 2000
 
 # Called when the node enters the scene tree for the first time.
 func my_init() -> void:
@@ -845,16 +845,16 @@ func _on_ListBehav_item_selected(index: int) -> void:
 		get_node("%ParamBehavName").set_text(behav.get_meta("Name"))
 		get_node("%ParamBehavProba").set_text(behav.get_meta("p"))
 		# Populate OptionButtons with agents & groups & R1 & R2 & 0
-		populate_option_btn_with_agents(get_node("%ParamBehavR1"), behav.get_meta("R1"), true)
-		populate_option_btn_with_agents(get_node("%ParamBehavR2"), behav.get_meta("R2"), true)
-		populate_option_btn_with_agents(get_node("%ParamBehavP1"), behav.get_meta("P1"), true)
-		get_node("%ParamBehavP1").add_item("R1")
-		get_node("%ParamBehavP1").add_item("R2")
-		get_node("%ParamBehavP1").add_item("0")
-		populate_option_btn_with_agents(get_node("%ParamBehavP2"), behav.get_meta("P2"), true)
-		get_node("%ParamBehavP2").add_item("R1")
-		get_node("%ParamBehavP2").add_item("R2")
-		get_node("%ParamBehavP2").add_item("0")
+		populate_option_btn_with_agents(get_node("%ParamBehavR1"), behav.get_meta("R1"), true, false, false)
+		populate_option_btn_with_agents(get_node("%ParamBehavR2"), behav.get_meta("R2"), true, true, false)
+		populate_option_btn_with_agents(get_node("%ParamBehavP1"), behav.get_meta("P1"), true, true, true)
+#		get_node("%ParamBehavP1").add_item("R1")
+#		get_node("%ParamBehavP1").add_item("R2")
+#		get_node("%ParamBehavP1").add_item("0")
+		populate_option_btn_with_agents(get_node("%ParamBehavP2"), behav.get_meta("P2"), true, true, true)
+#		get_node("%ParamBehavP2").add_item("R1")
+#		get_node("%ParamBehavP2").add_item("R2")
+#		get_node("%ParamBehavP2").add_item("0")
 
 	if type == "Random Force":
 		var tabs:TabContainer = get_node("%TabContainer")
@@ -865,7 +865,7 @@ func _on_ListBehav_item_selected(index: int) -> void:
 		get_node("%BehavRndFAngle").set_text(behav.get_meta("Angle"))
 		get_node("%BehavRndFIntensity").set_text(behav.get_meta("Intensity"))
 		# Populate OptionButton with agents & groups
-		populate_option_btn_with_agents(get_node("%BehavRndFAgents"), behav.get_meta("Agents"), true)
+		populate_option_btn_with_agents(get_node("%BehavRndFAgents"), behav.get_meta("Agents"), true, false, false)
 
 
 func GUI_param_updated(new_index:int = 0)->void:
@@ -1237,7 +1237,7 @@ func get_selected_behavior() -> Node:
 	return node
 
 # Population Option Button
-func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add_groups:bool) -> void:
+func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add_groups:bool, add_zero:bool, add_reactives:bool) -> void:
 		# Remove all items
 		opt.clear()
 		# Add Agents and eventually Groups
@@ -1246,8 +1246,8 @@ func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add
 			opt.add_item(  txt   )
 			if txt == selected_name:
 				opt.selected = i
+		var j:int = _listAgents.get_item_count()
 		if add_groups == true:
-			var j:int = _listAgents.get_item_count()
 			var lst_gp:VBoxContainer = get_node("%VBoxGp")
 			for gp in lst_gp.get_children():
 				var txt:String = gp.get_child(0).text
@@ -1255,6 +1255,20 @@ func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add
 				if txt == selected_name:
 					opt.selected = j
 				j = j + 1
+		if add_reactives == true:
+			opt.add_item("R1")
+			if "R1" == selected_name:
+				opt.selected = j
+			j = j + 1
+			opt.add_item("R2")
+			if "R2" == selected_name:
+				opt.selected = j
+			j = j + 1
+		if add_zero == true:
+			opt.add_item("0")
+			if "0" == selected_name:
+				opt.selected = j
+
 		# Set the selected agent / group
 		opt.set_text(selected_name)
 
