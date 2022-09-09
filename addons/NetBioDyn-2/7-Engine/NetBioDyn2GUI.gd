@@ -94,9 +94,12 @@ func _process(delta):
 		_sim_play_once = false
 		
 	# PLAY ONE step
-	if _step % 1 == 0:	
+	if _step % 100 == 0:
 		updateStatus()
 		
+	if _step % 10 == 0:
+		manage_graph()
+
 	# Play Behaviors
 	for behav in _node_behavs.get_children():
 		for agent in _node_env.get_children():
@@ -807,7 +810,7 @@ func addBehavRandomForce() -> void:
 	_listBehavs.set_item_metadata(_listBehavs.get_item_count()-1, "Random Force") # type of the item
 	
 	# Create default Behavior Type in 3D Scene -------------------	
-	var agents:String = "Agent-1"
+	var agents:String = ""
 	var dir:String = "0"
 	var angle:String = "360"
 	var intensity:String = "1"
@@ -815,7 +818,7 @@ func addBehavRandomForce() -> void:
 		# Set META
 	var node:Node = Node.new()
 	node.set_meta("Type", "Random Force")
-	node.set_meta("Name", "Au choix")
+	node.set_meta("Name", "Force aléatoire")
 	node.set_meta("Agents", agents)
 	node.set_meta("Dir", dir)
 	node.set_meta("Angle", angle)
@@ -840,7 +843,7 @@ func _on_BtnDelBehav_pressed() -> void:
 		lst.remove_item(sel[0])
 
 # Select behavior : META => GUI
-func _on_ListBehav_item_selected(index: int) -> void:
+func _on_ListBehav_item_selected(param) -> void:
 	var behav:Node = get_selected_behavior()
 	var type = behav.get_meta("Type")
 	# Find the Behavior Type
@@ -870,7 +873,7 @@ func _on_ListBehav_item_selected(index: int) -> void:
 		populate_option_btn_with_agents(get_node("%BehavRndFAgents"), behav.get_meta("Agents"), true, false, false)
 
 
-func GUI_param_updated(new_index:int = 0)->void:
+func GUI_param_updated(param=null)->void:
 	behavior_GUI_to_META()
 
 # Update behavior : GUI => META
@@ -1515,6 +1518,46 @@ func set_owner_recursive(root:Node, node:Node)->void:
 
 
 
+# ██████  ██████   █████  ██████  ██   ██ 
+#██       ██   ██ ██   ██ ██   ██ ██   ██ 
+#██   ███ ██████  ███████ ██████  ███████ 
+#██    ██ ██   ██ ██   ██ ██      ██   ██ 
+# ██████  ██   ██ ██   ██ ██      ██   ██
+
+
+
+# ************************************************
+#                       GRAPH                    *
+# ************************************************
+
+#var points_graph = PoolVector2Array()
+func manage_graph() -> void:
+	pass
+#	if _node_env == null:
+#		return
+#	# Create the curve : TODO must be created at Play (_step = 0 only)
+#
+#	# Panel to draw the graph
+#	var gfx:Node = get_node("%TextureGraph")
+#
+#	# Add new points
+#	points_graph.push_back( Vector2(_step, _node_env.get_child_count()))
+#
+#	# Draw graph
+#	var color:Color = Color(0.6 , 1 , 0.3)
+#
+#	#for i in range(1, points_graph.size()):
+#	var texture = gfx.get_texture()
+#	var img:Image = texture.get_data()
+#
+#	img.lock()
+#	img.set_pixel(  128 , 128 , Color(0,0,1,1)  )
+#	img.unlock()
+
+	#	gfx.get_texture().draw_line(points_graph[i-1], points_graph[i], color)
+
+
+
 
 
 #████████  ██████      ██████   ██████  
@@ -1537,16 +1580,22 @@ func set_owner_recursive(root:Node, node:Node)->void:
 # WORK in PROGRESS...
 # ************************************************
 func _on_BtnDebug_pressed():
-	var rb:RigidBody = _node_entities.get_children()[0]
-	var name:String = _selected_name
-
-	print(str("Name=", name))
-	rb.set_meta("Name", name)
-	print(str("Name=", rb.get_meta("Name")))
-
-	for c in _node_entities.get_children():
-		for meta_name in c.get_meta_list():
-			print(str("    Meta : ",meta_name," = ",c.get_meta(meta_name)))
+	var img = Image.new()
+	img.create(256, 256, false, Image.FORMAT_RGB8)
+	img.lock()
+	for x in 128:
+		for y in 128:
+			img.set_pixel(x, y, Color(128, 128, 128) )
+	img.unlock()
+	
+	#Create the texture
+	var tex=ImageTexture.new()
+	#tex.set_data(img)
+	tex.create_from_image ( img )
+	
+	# Put the texture
+	var gfx:Node = get_node("%TextureGraph")
+	gfx.set_texture(tex)
 
 
 func group_line_edit_on_focus()->void:
