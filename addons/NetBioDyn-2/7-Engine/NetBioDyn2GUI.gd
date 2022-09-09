@@ -97,7 +97,7 @@ func _process(delta):
 	if _step % 100 == 0:
 		updateStatus()
 		
-	if _step % 10 == 0:
+	if _step % 1 == 0:
 		manage_graph()
 
 	# Play Behaviors
@@ -1529,32 +1529,53 @@ func set_owner_recursive(root:Node, node:Node)->void:
 # ************************************************
 #                       GRAPH                    *
 # ************************************************
-
+var _pts_curve:PoolIntArray
+var _pt_max_y:int = 1
+var img = null
+var tex = null
 #var points_graph = PoolVector2Array()
 func manage_graph() -> void:
-	pass
-#	if _node_env == null:
-#		return
-#	# Create the curve : TODO must be created at Play (_step = 0 only)
-#
-#	# Panel to draw the graph
-#	var gfx:Node = get_node("%TextureGraph")
-#
-#	# Add new points
-#	points_graph.push_back( Vector2(_step, _node_env.get_child_count()))
-#
-#	# Draw graph
-#	var color:Color = Color(0.6 , 1 , 0.3)
-#
-#	#for i in range(1, points_graph.size()):
-#	var texture = gfx.get_texture()
-#	var img:Image = texture.get_data()
-#
-#	img.lock()
-#	img.set_pixel(  128 , 128 , Color(0,0,1,1)  )
-#	img.unlock()
-
-	#	gfx.get_texture().draw_line(points_graph[i-1], points_graph[i], color)
+	var nb_agents:float = _node_env.get_child_count()
+	if nb_agents > _pt_max_y:
+		_pt_max_y = nb_agents
+	_pts_curve.append(nb_agents)
+	
+	# Init
+	if _step == 0:
+		# Init the imag that draw the curve
+		img = Image.new()
+		img.create(256, 256, false, Image.FORMAT_RGB8)
+		img.lock()
+		for x in 256:
+			for y in 256:
+				img.set_pixel(x, y, Color(128, 128, 128) )
+		img.unlock()
+	
+		#Create the texture
+		tex=ImageTexture.new()
+		#tex.set_data(img)
+		tex.create_from_image ( img )
+	
+		# Put the texture
+		var gfx:Node = get_node("%TextureGraph")
+		gfx.set_texture(tex)
+		
+		# Init the array of curve points
+		_pts_curve = PoolIntArray()
+		
+		return
+	
+	# Draw
+	if _step%256 == 199:
+		img.fill(Color(1,1,1))
+		img.lock()
+		var x:float = 0
+		var pas:float = _pts_curve.size()/256
+		for pt in range(0, 256):
+			img.set_pixel(pt, (256*_pts_curve[x]) / _pt_max_y, Color(0,0,0))
+			x = x + pas
+		img.unlock()
+		tex.set_data(img)
 
 
 

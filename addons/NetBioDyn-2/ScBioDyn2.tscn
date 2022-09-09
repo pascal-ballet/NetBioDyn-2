@@ -475,6 +475,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 8 )
 stretch_mode = 1
+flip_v = true
 
 [node name="TabContainer" type="TabContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer"]
 unique_name_in_owner = true
@@ -934,6 +935,7 @@ R1+R2 =p=> P1+P2+P3
 align = 1
 
 [node name="Behavior_Random_Force" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
