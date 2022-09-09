@@ -843,24 +843,32 @@ func _on_ListBehav_item_selected(index: int) -> void:
 		# Update GUI Behavior
 		# Reaction: Set behavior Name
 		get_node("%ParamBehavName").set_text(behav.get_meta("Name"))
-		get_node("%ParamBehavR1").set_text(behav.get_meta("R1"))
-		get_node("%ParamBehavR2").set_text(behav.get_meta("R2"))
 		get_node("%ParamBehavProba").set_text(behav.get_meta("p"))
-		get_node("%ParamBehavP1").set_text(behav.get_meta("P1"))
-		get_node("%ParamBehavP2").set_text(behav.get_meta("P2"))
+		# Populate OptionButtons with agents & groups & R1 & R2 & 0
+		populate_option_btn_with_agents(get_node("%ParamBehavR1"), behav.get_meta("R1"), true)
+		populate_option_btn_with_agents(get_node("%ParamBehavR2"), behav.get_meta("R2"), true)
+		populate_option_btn_with_agents(get_node("%ParamBehavP1"), behav.get_meta("P1"), true)
+		get_node("%ParamBehavP1").add_item("R1")
+		get_node("%ParamBehavP1").add_item("R2")
+		get_node("%ParamBehavP1").add_item("0")
+		populate_option_btn_with_agents(get_node("%ParamBehavP2"), behav.get_meta("P2"), true)
+		get_node("%ParamBehavP2").add_item("R1")
+		get_node("%ParamBehavP2").add_item("R2")
+		get_node("%ParamBehavP2").add_item("0")
 
 	if type == "Random Force":
 		var tabs:TabContainer = get_node("%TabContainer")
 		tabs.current_tab = Prop.BEHAVIOR_RANDOM_FORCE
 		# Update GUI Behavior
-		# Random Force: Set behavior Name
 		get_node("%BehavRndFName").set_text(behav.get_meta("Name"))
-		get_node("%BehavRndFAgents").set_text(behav.get_meta("Agents"))
 		get_node("%BehavRndFDir").set_text(behav.get_meta("Dir"))
 		get_node("%BehavRndFAngle").set_text(behav.get_meta("Angle"))
 		get_node("%BehavRndFIntensity").set_text(behav.get_meta("Intensity"))
+		# Populate OptionButton with agents & groups
+		populate_option_btn_with_agents(get_node("%BehavRndFAgents"), behav.get_meta("Agents"), true)
 
-func GUI_param_updated(new_text: String="")->void:
+
+func GUI_param_updated(new_index:int = 0)->void:
 	behavior_GUI_to_META()
 
 # Update behavior : GUI => META
@@ -1031,71 +1039,6 @@ func set_group_from_simulator_to_GUI() -> void:
 
 
 
-
-
-
-
-# ************************************************************
-#                          Popup Menu                        *
-# ************************************************************
-
-var _popup_btn = null
-
-#func set_popup_btn() -> void: #ctrl:Control)->void:
-#	var tree:SceneTree	= get_tree()
-#	var scene:Node		= tree.get_current_scene()
-#	var space_state = scene.get_world().get_direct_space_state()
-#	var query = Physics2DShapeQueryParameters.new()
-#	var shape = RectangleShape2D.new()
-#	shape.set_extents(Vector2(1,1))
-#	query.set_shape(shape)
-#	var hits = space_state.intersect_shape(query)
-#	if hits.size() != 0:
-#		print("There is something here!")
-#	#_popup_btn = ctrl
-
-
-func open_popup_agents() -> void:
-	var tree:SceneTree	= get_tree()
-	var scene:Node		= tree.get_current_scene()
-	var position = scene.get_global_mouse_position()
-
-	_popup_btn = get_button_at_position(get_node("%TabContainer"), position)
-
-	var pp = PopupMenu.new()
-	pp.add_item("Test")
-	pp.add_separator()
-
-	var x = position.x
-	var y = position.y
-	scene.add_child(pp)
-	pp.popup(Rect2(x, y, 100, 100))
-
-	# Connect the id pressed signal to the function which will handle the option logic
-	pp.connect("id_pressed", self, "_item_selected")
-
-func _item_selected(id: int):
-	match id:
-		0:
-			print(_popup_btn.name)
-			_popup_btn.get_parent().get_child(0).text = "AZERT"
-
-func get_button_at_position(root:Node, pos:Vector2) -> Node:
-	print(str("Looking at : ", root.name))
-	if root is Button:
-		print(str("Found btn : ", root.name))
-		var btn:Button = root
-		if pos.x >= btn.rect_global_position.x && pos.x <= btn.rect_global_position.x + btn.rect_size.x:
-			if pos.y >= btn.rect_global_position.y && pos.y <= btn.rect_global_position.y + btn.rect_size.y:
-				print(str("Winner is : ", btn.name, " <<<<<<<<<<<<<<<<<<<<<"))
-				return btn
-				
-	for n in root.get_children():
-		if n.visible == true:
-			return get_button_at_position(n, pos)
-			
-	print(str("NO WINNER ..................... "))
-	return null
 
 
 
@@ -1292,6 +1235,29 @@ func get_selected_behavior() -> Node:
 	
 	var node:Node = _node_behavs.get_child(pos)
 	return node
+
+# Population Option Button
+func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add_groups:bool) -> void:
+		# Remove all items
+		opt.clear()
+		# Add Agents and eventually Groups
+		for i in _listAgents.get_item_count():
+			var txt:String = _listAgents.get_item_text(i)
+			opt.add_item(  txt   )
+			if txt == selected_name:
+				opt.selected = i
+		if add_groups == true:
+			var j:int = _listAgents.get_item_count()
+			var lst_gp:VBoxContainer = get_node("%VBoxGp")
+			for gp in lst_gp.get_children():
+				var txt:String = gp.get_child(0).text
+				opt.add_item(  txt   )
+				if txt == selected_name:
+					opt.selected = j
+				j = j + 1
+		# Set the selected agent / group
+		opt.set_text(selected_name)
+
 
 # Window / App control -------------------------
 func _on_BtnClose_pressed():
