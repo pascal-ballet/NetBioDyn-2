@@ -457,7 +457,7 @@ func _on_button_del_group_of_agent() -> void:
 # **********************************************************
 
 func _on_ButtonAddParam_button_down() -> void:
-	print(str("\nAdd GUI Param"))
+	#print(str("\nAdd GUI Param"))
 	# Crete a unique name for the parameter (Meta names are key of dictionnary)
 	var key_param:String  = key_param_create()
 	# Create the line of input boxes
@@ -469,8 +469,8 @@ func _on_ButtonAddParam_button_down() -> void:
 	vbox_param.add_child(new_line)
 	# Save to meta
 	agent_GUI_to_META()
-	_debug_display_all_meta()
-	print(str("Exit Add GUI Param\n"))
+	#_debug_display_all_meta()
+	#print(str("Exit Add GUI Param\n"))
 
 func add_param_line() -> void:
 	# Create the line of input boxes
@@ -494,8 +494,8 @@ func _on_Button_button_down() -> void:
 	
 # META => GUI PARAM
 func agent_META_to_GUI() -> void:
-	printerr(str("** Enter : META=>GUI"))
-	_debug_display_all_meta()
+	#printerr(str("** Enter : META=>GUI"))
+	#_debug_display_all_meta()
 
 	#printerr(str("meta => PARAM for ", _selected_name))
 	var rb:RigidBody = get_entity(_selected_name)
@@ -503,47 +503,47 @@ func agent_META_to_GUI() -> void:
 		return
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	# Clear Param VBox
-	print(str("CLEAR PARAM VBOX"))
-	_debug_display_all_meta()
+	#print(str("CLEAR PARAM VBOX"))
+	#_debug_display_all_meta()
 	for i in vbox_param.get_child_count():
 		var line:HBoxContainer = vbox_param.get_child(0)
 		vbox_param.remove_child(line)
 		line.queue_free()
 	# Fill Param VBox
-	print(str("FILL PARAM VBOX"))
-	_debug_display_all_meta()
+	#print(str("FILL PARAM VBOX"))
+	#_debug_display_all_meta()
 	var lst:PoolStringArray = rb.get_meta_list()
 	var nb_param:int = lst.size()
-	print(str("lst = ", lst))
+	#print(str("lst = ", lst))
 	for m in nb_param:
 		var meta_name :String  	= lst[m]# rb.get_meta_list()[m]
 		var meta_value			= rb.get_meta(meta_name)
-		print(str("  - ", _selected_name , " : META=>GUI ", meta_name , " = " , meta_value))
+		#print(str("  - ", _selected_name , " : META=>GUI ", meta_name , " = " , meta_value))
 		if meta_name != "Name":
 			add_param_line()
 			var nb_children:int 	= vbox_param.get_child_count()
 			var line:HBoxContainer 	= vbox_param.get_child(nb_children-1)
 			line.get_child(0).set_text(meta_name)
 			line.get_child(2).set_text(meta_value)
-	printerr(str("***    Exit : META=>GUI" ))
-	_debug_display_all_meta()
+	#printerr(str("***    Exit : META=>GUI" ))
+	#_debug_display_all_meta()
 
 
 # GUI => META
 func agent_GUI_to_META() -> void:
-	printerr(str("*** Enter : GUI => META for ", _selected_name))
-	_debug_display_all_meta()
+	#printerr(str("*** Enter : GUI => META for ", _selected_name))
+	#_debug_display_all_meta()
 	
 	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
 		return
 	# Clear Meta
 	for meta_name in rb.get_meta_list():
-		print(str("remove:",meta_name,"=",rb.get_meta(meta_name)))
+		#print(str("remove:",meta_name,"=",rb.get_meta(meta_name)))
 		rb.remove_meta(meta_name)
 		
 	#######################
-	print(str("a) nb meta=",rb.get_meta_list().size()))
+	#print(str("a) nb meta=",rb.get_meta_list().size()))
 		
 	rb.set_meta("Name", rb.name)
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
@@ -552,16 +552,16 @@ func agent_GUI_to_META() -> void:
 		var line:HBoxContainer = vbox_param.get_child(i)
 		var param_name :String  = line.get_child(0).get_text()
 		var param_value			= line.get_child(2).get_text()
-		print(str(_selected_name , " GUI=>META: ", param_name , " = " , param_value))
-		print(str(">>>>>> add meta:",param_name,"=",param_value))
+		#print(str(_selected_name , " GUI=>META: ", param_name , " = " , param_value))
+		#print(str(">>>>>> add meta:",param_name,"=",param_value))
 		rb.set_meta(param_name, param_value)
-	print(str("b) nb meta=",rb.get_meta_list().size()))
+	#print(str("b) nb meta=",rb.get_meta_list().size()))
 	#######################
-	printerr(str("***       : Before update instances" ))
-	_debug_display_all_meta()
+	#printerr(str("***       : Before update instances" ))
+	#_debug_display_all_meta()
 	update_agent_instances(rb)
-	printerr(str("***       : After update instances" ))
-	_debug_display_all_meta()
+	#printerr(str("***       : After update instances" ))
+	#_debug_display_all_meta()
 
 # get the line number of agent param having possibly the focus
 var _selected_param_pos:int = -1
@@ -579,11 +579,11 @@ func get_param_line_has_focus() -> int :
 	return -1
 
 func _on_ParamName_focus_exited() -> void:
-	print(str("** Enter : Param Focus Lost"))
+	#print(str("** Enter : Param Focus Lost"))
 	# Verif Name if unique
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	var i:int = _selected_param_pos
-	print(str("   _selected_param_pos = ", i))
+	#print(str("   _selected_param_pos = ", i))
 	var line:HBoxContainer = vbox_param.get_child(i)
 	var old_name:String = _selected_param_name
 	var new_name:String = line.get_child(0).get_text()

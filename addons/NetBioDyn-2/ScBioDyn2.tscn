@@ -733,6 +733,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Behavior_Reaction" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -927,7 +928,6 @@ R1+R2 =p=> P1+P2+P3
 align = 1
 
 [node name="Behavior_Random_Force" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -1492,7 +1492,6 @@ text = "-"
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/BehavRndFName" to="." method="GUI_param_updated"]
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/BehavRndFName" to="." method="GUI_param_updated"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp2/BehavRndFAgents" to="." method="GUI_param_updated"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp2/BehavRndFAgents" to="." method="GUI_param_updated"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/BehavRndFDir" to="." method="GUI_param_updated"]
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/BehavRndFDir" to="." method="GUI_param_updated"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5/BehavRndFAngle" to="." method="GUI_param_updated"]
