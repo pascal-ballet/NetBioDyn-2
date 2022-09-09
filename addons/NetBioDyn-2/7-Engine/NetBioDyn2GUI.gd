@@ -160,7 +160,8 @@ func addAgent(var name:String) -> void:
 	rb.set_meta("Name", name)
 	#rb.set_owner(get_node(_node_simu)
 	print(str("**** Exit : AddAgent"))
-	_debug_display_all_meta()
+	#_debug_display_all_meta()
+	# Select the added agent
 	_listAgents.select(_listAgents.get_item_count()-1)
 	_on_ListAgents_item_selected(i)
 	
@@ -767,11 +768,12 @@ func addBehavReaction() -> void:
 	_listBehavs.set_item_metadata(_listBehavs.get_item_count()-1, "Reaction") # type of the item
 	
 	# Create default Behavior Type in 3D Scene -------------------	
-	var r1:String = "Agent / Groupe / 0"
-	var r2:String = "Agent / Groupe / 0"
+	var r1:String = ""
+	var r2:String = "0"
 	var p:String = "100"
-	var p1:String = "Agent / R1 / R2 / 0"
-	var p2:String = "Agent / R1 / R2 / 0"
+	var p1:String = "0"
+	var p2:String = "0"
+	var p3:String = "0"
 	
 		# Set META
 	var node:Node = Node.new()
@@ -782,16 +784,21 @@ func addBehavReaction() -> void:
 	node.set_meta("p", p)
 	node.set_meta("P1", p1)
 	node.set_meta("P2", p2)
+	node.set_meta("P3", p3)
 	
 	# Set default Script
 	var script:GDScript = GDScript.new()
-	script.source_code = behav_script_reaction(r1, r2, p, p1, p2)
+	script.source_code = behav_script_reaction(r1, r2, p, p1, p2, p3)
 	print_debug(script.source_code)
 	script.reload()
 	node.set_script(script) #load("res://addons/NetBioDyn-2/4-Behaviors/DeathTest.gd"))
 
 	# Add Behavior to Simulator
 	_node_behavs.add_child(node)
+
+	# Select the added agent
+	_listBehavs.select(_listBehavs.get_item_count()-1)
+	_on_ListBehav_item_selected(_listBehavs.get_item_count()-1)
 
 # Add FORCE ALEATOIRE
 func addBehavRandomForce() -> void:	
@@ -848,13 +855,8 @@ func _on_ListBehav_item_selected(index: int) -> void:
 		populate_option_btn_with_agents(get_node("%ParamBehavR1"), behav.get_meta("R1"), true, false, false)
 		populate_option_btn_with_agents(get_node("%ParamBehavR2"), behav.get_meta("R2"), true, true, false)
 		populate_option_btn_with_agents(get_node("%ParamBehavP1"), behav.get_meta("P1"), true, true, true)
-#		get_node("%ParamBehavP1").add_item("R1")
-#		get_node("%ParamBehavP1").add_item("R2")
-#		get_node("%ParamBehavP1").add_item("0")
 		populate_option_btn_with_agents(get_node("%ParamBehavP2"), behav.get_meta("P2"), true, true, true)
-#		get_node("%ParamBehavP2").add_item("R1")
-#		get_node("%ParamBehavP2").add_item("R2")
-#		get_node("%ParamBehavP2").add_item("0")
+		populate_option_btn_with_agents(get_node("%ParamBehavP3"), behav.get_meta("P3"), true, true, true)
 
 	if type == "Random Force":
 		var tabs:TabContainer = get_node("%TabContainer")
@@ -892,16 +894,18 @@ func behavior_GUI_to_META() -> void:
 		var proba:String = get_node("%ParamBehavProba").get_text()
 		var P1:String = get_node("%ParamBehavP1").get_text()
 		var P2:String = get_node("%ParamBehavP2").get_text()
+		var P3:String = get_node("%ParamBehavP3").get_text()
 		behav.set_meta("Name", name)
 		behav.set_meta("R1", R1)
 		behav.set_meta("R2", R2)
 		behav.set_meta("p", proba)
 		behav.set_meta("P1", P1)
 		behav.set_meta("P2", P2)
+		behav.set_meta("P3", P3)
 		
 		# Set Script
 		var script:GDScript = GDScript.new()
-		script.source_code = behav_script_reaction(R1, R2, proba, P1, P2)
+		script.source_code = behav_script_reaction(R1, R2, proba, P1, P2, P3)
 		print_debug(script.source_code)
 		script.reload()
 		behav.set_script(script)
@@ -1240,12 +1244,13 @@ func get_selected_behavior() -> Node:
 func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add_groups:bool, add_zero:bool, add_reactives:bool) -> void:
 		# Remove all items
 		opt.clear()
+		opt.add_item(  ""   )
 		# Add Agents and eventually Groups
 		for i in _listAgents.get_item_count():
 			var txt:String = _listAgents.get_item_text(i)
 			opt.add_item(  txt   )
 			if txt == selected_name:
-				opt.selected = i
+				opt.selected = i+1
 		var j:int = _listAgents.get_item_count()
 		if add_groups == true:
 			var lst_gp:VBoxContainer = get_node("%VBoxGp")
@@ -1253,21 +1258,21 @@ func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add
 				var txt:String = gp.get_child(0).text
 				opt.add_item(  txt   )
 				if txt == selected_name:
-					opt.selected = j
+					opt.selected = j+1
 				j = j + 1
 		if add_reactives == true:
 			opt.add_item("R1")
 			if "R1" == selected_name:
-				opt.selected = j
+				opt.selected = j+1
 			j = j + 1
 			opt.add_item("R2")
 			if "R2" == selected_name:
-				opt.selected = j
+				opt.selected = j+1
 			j = j + 1
 		if add_zero == true:
 			opt.add_item("0")
 			if "0" == selected_name:
-				opt.selected = j
+				opt.selected = j+1
 
 		# Set the selected agent / group
 		opt.set_text(selected_name)
@@ -1324,7 +1329,7 @@ func action(tree, agent) -> void:
 """
 
 # Script REACTION
-func behav_script_reaction(r1:String, r2:String, p:String, p1:String, p2:String) -> String:
+func behav_script_reaction(r1:String, r2:String, p:String, p1:String, p2:String, p3:String) -> String:
 	return """
 extends Node
 
@@ -1359,6 +1364,9 @@ func action(tree, R1) -> void:
 					var P2 = R1.duplicate(8) # load(str("res://SimBioCell/3-PreFabAgents/",p2,".tscn")).instance()
 					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
 					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if """+in_quote(p3)+""" != "0" && """+in_quote(p3)+""" != "R1" && """+in_quote(p3)+""" != "R2" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p3)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
 				return
 			# Cas avec un 2nd réactif ########################################################################################
 			var bodies = R1.get_colliding_bodies()
@@ -1397,7 +1405,11 @@ func action(tree, R1) -> void:
 						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
 						R1.get_parent().add_child(P2)
 						R2.queue_free()
-						return
+					# si P3 APPARAIT
+					if """+in_quote(p3)+""" != "0" && """+in_quote(p3)+""" != "R1" && """+in_quote(p3)+""" != "R2" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,"""+in_quote(p3)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
 
 """
 
