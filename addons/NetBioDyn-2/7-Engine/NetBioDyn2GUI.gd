@@ -1126,6 +1126,9 @@ func _on_BtnStop_pressed() -> void:
 	_sim_pause = false
 	_sim_play_once = false
 	_step = 0
+	for i in _pts_curve.size():
+		_pts_curve.remove(0)
+	_pt_max_y = 1
 	updateStatus()
 
 var _node_simu_init:Spatial
@@ -1572,7 +1575,7 @@ func manage_graph() -> void:
 		var x:float = 0
 		var pas:float = _pts_curve.size()/256
 		for pt in range(0, 256):
-			img.set_pixel(pt, (256*_pts_curve[x]) / _pt_max_y, Color(0,0,0))
+			img.set_pixel(pt, (255*_pts_curve[x]) / _pt_max_y, Color(0,0,0))
 			x = x + pas
 		img.unlock()
 		tex.set_data(img)
