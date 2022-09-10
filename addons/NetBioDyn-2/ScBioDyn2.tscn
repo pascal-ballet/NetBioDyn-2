@@ -1314,12 +1314,13 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="OptAction" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction"]
+unique_name_in_owner = true
 margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
-text = "Produire Agt3"
+text = "Changer"
 flat = true
-items = [ "Force", null, false, 0, null, "Param", null, false, 1, null, "Changer", null, false, 2, null, "Produire Agt3", null, false, 3, null, "Déplacer", null, false, 4, null ]
+items = [ "Param", null, false, 0, null, "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Changer", null, false, 3, null, "Produire Agt3", null, false, 4, null, "Supprimer", null, false, 5, null ]
 selected = 3
 
 [node name="HBoxActionParam" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction"]
