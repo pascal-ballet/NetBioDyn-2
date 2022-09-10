@@ -1143,7 +1143,7 @@ margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
-text = "Agent Agt1"
+text = "Agent Agt1 ="
 valign = 1
 
 [node name="ParamBehavR2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxAgt1"]
@@ -1163,7 +1163,7 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Seul"
 flat = true
-items = [ "Seul", null, false, 0, null, "Touche Agt2", null, false, 1, null ]
+items = [ "Seul", null, false, 0, null, "Touche Agt2 =", null, false, 1, null ]
 selected = 0
 
 [node name="ParamBehavR1" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxCollision"]
@@ -1212,7 +1212,7 @@ margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "Critères"
+text = "Conditions"
 
 [node name="ButtonAddCriteria" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxCriteria/HBoxCriteriaPlus"]
 margin_left = 148.0
@@ -1254,7 +1254,7 @@ margin_right = 189.0
 margin_bottom = 24.0
 text = "Agt1"
 flat = true
-items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null, "Env", null, false, 2, null ]
+items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null, "Env", null, false, 2, null, "Grille-1", null, false, 3, null ]
 selected = 0
 
 [node name="OptOperator" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
@@ -1325,13 +1325,29 @@ selected = 3
 
 [node name="HBoxActionParam" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction"]
 visible = false
-margin_left = 236.0
-margin_right = 454.0
+margin_left = 84.0
+margin_right = 322.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
+[node name="OptParam" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
+margin_right = 53.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "Age"
+items = [ "Age", null, false, 0, null, "Energie", null, false, 1, null, "Temps", null, false, 2, null ]
+selected = 0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
+margin_left = 57.0
+margin_top = 5.0
+margin_right = 73.0
+margin_bottom = 19.0
+text = "de"
+
 [node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
-margin_right = 58.0
+margin_left = 77.0
+margin_right = 135.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "Agt1"
@@ -1339,18 +1355,9 @@ flat = true
 items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null, "Env", null, false, 2, null ]
 selected = 0
 
-[node name="OptParam" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
-margin_left = 62.0
-margin_right = 115.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "Age"
-items = [ "Age", null, false, 0, null, "Energie", null, false, 1, null, "Temps", null, false, 2, null ]
-selected = 0
-
 [node name="OptOperator" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
-margin_left = 119.0
-margin_right = 156.0
+margin_left = 139.0
+margin_right = 176.0
 margin_bottom = 24.0
 text = "+"
 flat = true
@@ -1358,8 +1365,8 @@ items = [ "+", null, false, 0, null, "-", null, false, 1, null, "=", null, false
 selected = 0
 
 [node name="CriteriaValue" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
-margin_left = 160.0
-margin_right = 218.0
+margin_left = 180.0
+margin_right = 238.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "100"
@@ -1480,22 +1487,22 @@ items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null, "Agent-1",
 selected = 0
 
 [node name="HBoxActionProdAgent" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction"]
-visible = false
-margin_left = 120.0
-margin_right = 204.0
+margin_left = 148.0
+margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionProdAgent"]
-margin_right = 84.0
+margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Agt1"
 flat = true
-items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null ]
+items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null, "Agent-1", null, false, 2, null ]
 selected = 0
 
 [node name="HBoxActionDelAgent" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxActions/VBoxLstActions/HBoxAction"]
+visible = false
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
