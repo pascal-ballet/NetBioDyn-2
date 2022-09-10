@@ -14,7 +14,7 @@
 extends Node
 
 # Param Tabs N°
-enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION, BEHAVIOR_RANDOM_FORCE, GRID, ENV, GROUP }
+enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION, BEHAVIOR_RANDOM_FORCE, BEHAVIOR_GENERIC, GRID, ENV, GROUP }
 
 # **********************************************************
 #                        KEY NODES                         *
@@ -763,6 +763,8 @@ func _on_PopupMenu_index_pressed(index: int) -> void:
 		addBehavReaction()
 	if index == 1: # Create Random Force
 		addBehavRandomForce()
+	if index == 2: # Create Generic
+		addBehavGeneric()
 
 # Add REACTION
 func addBehavReaction() -> void:	
@@ -834,6 +836,33 @@ func addBehavRandomForce() -> void:
 	# Add Behavior to Simulator
 	_node_behavs.add_child(node)
 
+# Add GENERIC
+func addBehavGeneric() -> void:	
+	# Create new Behavior in GUI --------------------------------
+	_listBehavs.add_item("Générique")
+	_listBehavs.set_item_metadata(_listBehavs.get_item_count()-1, "Generic") # type of the item
+	
+	# Create default Behavior Type in 3D Scene -------------------	
+	var agents:String = ""
+	var proba:String = "100"
+	
+	# Set META
+	var node:Node = Node.new()
+	node.set_meta("Type", "Generic")
+	node.set_meta("Name", "Générique")
+	node.set_meta("Agents", agents)
+	node.set_meta("Proba", proba)
+	
+	# Set default Script
+	var script:GDScript = GDScript.new()
+	script.source_code = behav_script_default()
+	print_debug(script.source_code)
+	script.reload()
+	node.set_script(script)
+
+	# Add Behavior to Simulator
+	_node_behavs.add_child(node)
+
 # Remove behavior
 func _on_BtnDelBehav_pressed() -> void:
 	var lst:ItemList = _listBehavs
@@ -871,6 +900,12 @@ func _on_ListBehav_item_selected(param) -> void:
 		get_node("%BehavRndFIntensity").set_text(behav.get_meta("Intensity"))
 		# Populate OptionButton with agents & groups
 		populate_option_btn_with_agents(get_node("%BehavRndFAgents"), behav.get_meta("Agents"), true, false, false)
+
+	if type == "Generic":
+		var tabs:TabContainer = get_node("%TabContainer")
+		tabs.current_tab = Prop.BEHAVIOR_GENERIC
+		# Update GUI Behavior
+		# Populate OptionButton with agents & groups
 
 
 func GUI_param_updated(param=null)->void:
@@ -937,10 +972,15 @@ func behavior_GUI_to_META() -> void:
 		script.reload()
 		behav.set_script(script)
 
-	#print_debug(param_name)
-	#print_debug(param_value)
-	#print_debug(behav)
-
+# GENERIC
+func _on_OptAction_item_selected(index: int) -> void:
+	var opt_action:Node = get_node("%OptAction")
+	# hide criteria
+	for n in range(1, opt_action.get_parent().get_child_count()):
+		opt_action.get_parent().get_child(n).visible = false
+	# show selected criteria
+	var selected_action:Node = opt_action.get_parent().get_child(index+1)
+	selected_action.visible = true
 
 
 
@@ -1547,10 +1587,10 @@ func manage_graph() -> void:
 	if _step == 0:
 		# Init the imag that draw the curve
 		img = Image.new()
-		img.create(256, 256, false, Image.FORMAT_RGB8)
+		img.create(256, 128, false, Image.FORMAT_RGB8)
 		img.lock()
 		for x in 256:
-			for y in 256:
+			for y in 128:
 				img.set_pixel(x, y, Color(128, 128, 128) )
 		img.unlock()
 	
@@ -1575,7 +1615,7 @@ func manage_graph() -> void:
 		var x:float = 0
 		var pas:float = _pts_curve.size()/256
 		for pt in range(0, 256):
-			img.set_pixel(pt, (255*_pts_curve[x]) / _pt_max_y, Color(0,0,0))
+			img.set_pixel(pt, (127*_pts_curve[x]) / _pt_max_y, Color(0,0,0))
 			x = x + pas
 		img.unlock()
 		tex.set_data(img)
@@ -1625,3 +1665,4 @@ func _on_BtnDebug_pressed():
 func group_line_edit_on_focus()->void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GROUP
+
