@@ -1459,6 +1459,25 @@ func action(tree, R1) -> void:
 
 """
 
+# Script GENERIC
+func behav_script_generic(agt1:String, agt2:String, p:String) -> String:
+	p = String(float(p) / 100.0)	# % to [0,1]
+	return """
+extends Node
+# Generic Behavior
+func action(tree, agent) -> void:
+	var proba:float = """+p+"""
+	var alea:float = rand_range(0,100)
+	if alea < proba:
+		if agent.get_meta("Name") == """+in_quote(agt1)+""" || agent.is_in_group("""+in_quote(agt1)+"""):
+			pass
+
+"""
+
+
+
+
+
 
 
 
