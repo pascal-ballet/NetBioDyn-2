@@ -1,0 +1,2443 @@
+[gd_scene load_steps=20 format=2]
+
+[sub_resource type="Environment" id=1]
+background_mode = 1
+background_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0.735984, 0.621225, 0.962688, 1 )
+
+[sub_resource type="SphereMesh" id=3]
+
+[sub_resource type="SphereShape" id=19]
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="SphereMesh" id=6]
+
+[sub_resource type="SphereShape" id=7]
+
+[sub_resource type="SpatialMaterial" id=8]
+albedo_color = Color( 0.353845, 0.315224, 0.92217, 1 )
+
+[sub_resource type="SphereMesh" id=9]
+
+[sub_resource type="SphereShape" id=10]
+
+[sub_resource type="GDScript" id=25]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 50
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Tumeur\" || R1.is_in_group(\"Tumeur\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"Vaisseau\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"Tumeur\" != \"0\" && \"Tumeur\" != \"R1\" && \"Tumeur\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"Tumeur\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"Tumeur\" == \"0\" || \"Tumeur\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"Tumeur\" != \"0\" && \"Tumeur\" != \"R1\" && \"Tumeur\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"Tumeur\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"Tumeur\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"Vaisseau\" || R2.is_in_group(\"Vaisseau\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"Tumeur\" != \"0\" && \"Tumeur\" != \"R1\" && \"Tumeur\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"Tumeur\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"Tumeur\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"Tumeur\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"Tumeur\" != \"0\" && \"Tumeur\" != \"R1\" && \"Tumeur\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"Tumeur\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"Tumeur\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"Tumeur\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=20]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 1
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Tumeur\" || R1.is_in_group(\"Tumeur\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"0\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"Tumeur\" != \"0\" && \"Tumeur\" != \"R1\" && \"Tumeur\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"Tumeur\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"Tumeur\" == \"0\" || \"Tumeur\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"A\" != \"0\" && \"A\" != \"R1\" && \"A\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"A\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"A\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"0\" || R2.is_in_group(\"0\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"Tumeur\" != \"0\" && \"Tumeur\" != \"R1\" && \"Tumeur\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"Tumeur\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"Tumeur\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"Tumeur\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"A\" != \"0\" && \"A\" != \"R1\" && \"A\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"A\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"A\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"A\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=17]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 0.1
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"A\" || R1.is_in_group(\"A\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"0\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"0\" == \"0\" || \"0\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"0\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"0\" || R2.is_in_group(\"0\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"0\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"0\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"0\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"0\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=15]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 100
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Vaisseau\" || R1.is_in_group(\"Vaisseau\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"A\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"Vaisseau\" != \"0\" && \"Vaisseau\" != \"R1\" && \"Vaisseau\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"Vaisseau\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"Vaisseau\" == \"0\" || \"Vaisseau\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"Vaisseau\" != \"0\" && \"Vaisseau\" != \"R1\" && \"Vaisseau\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"Vaisseau\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"Vaisseau\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"A\" || R2.is_in_group(\"A\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"Vaisseau\" != \"0\" && \"Vaisseau\" != \"R1\" && \"Vaisseau\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"Vaisseau\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"Vaisseau\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"Vaisseau\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"Vaisseau\" != \"0\" && \"Vaisseau\" != \"R1\" && \"Vaisseau\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"Vaisseau\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"Vaisseau\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"Vaisseau\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=18]
+script/source = "
+extends Node
+# Default Behavior
+func action(tree, agent) -> void:
+	if agent.get_meta(\"Name\") == \"A\" || agent.is_in_group(\"A\"):
+		var alpha:float = randf() * 6.283185 - 6.283185 /2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3(1.700537 * cos(alpha+0),0, 1.700537*sin(alpha+0)))
+"
+
+[sub_resource type="SphereShape" id=21]
+
+[sub_resource type="SphereShape" id=22]
+
+[sub_resource type="SphereShape" id=23]
+
+[sub_resource type="SphereShape" id=24]
+
+[node name="Simulator" type="Spatial"]
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -100, 0 )
+environment = SubResource( 1 )
+projection = 1
+current = true
+size = 80.0
+far = 200.0
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, 0, 12, 0 )
+
+[node name="Entities" type="Node" parent="."]
+
+[node name="Tumeur" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -996.954, 0, 0 )
+visible = false
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tumeur"
+}
+
+[node name="130" type="MeshInstance" parent="Entities/Tumeur"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="3462" type="CollisionShape" parent="Entities/Tumeur"]
+shape = SubResource( 19 )
+
+[node name="Vaisseau" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1001.05, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Entities/Vaisseau"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Entities/Vaisseau"]
+shape = SubResource( 7 )
+
+[node name="A" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -999, 0, 0 )
+visible = false
+mass = 0.4
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "A"
+}
+
+[node name="322" type="MeshInstance" parent="Entities/A"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="329" type="CollisionShape" parent="Entities/A"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 10 )
+
+[node name="Behaviors" type="Node" parent="."]
+
+[node name="330" type="Node" parent="Behaviors"]
+script = SubResource( 25 )
+__meta__ = {
+"Name": "Tumeur++",
+"P1": "Tumeur",
+"P2": "Tumeur",
+"P3": "0",
+"R1": "Tumeur",
+"R2": "Vaisseau",
+"Type": "Reaction",
+"p": "50"
+}
+
+[node name="332" type="Node" parent="Behaviors"]
+script = SubResource( 20 )
+__meta__ = {
+"Name": "Secrete A",
+"P1": "Tumeur",
+"P2": "A",
+"P3": "0",
+"R1": "Tumeur",
+"R2": "0",
+"Type": "Reaction",
+"p": "1"
+}
+
+[node name="333" type="Node" parent="Behaviors"]
+script = SubResource( 17 )
+__meta__ = {
+"Name": "Mort A",
+"P1": "0",
+"P2": "0",
+"P3": "0",
+"R1": "A",
+"R2": "0",
+"Type": "Reaction",
+"p": "0.1"
+}
+
+[node name="334" type="Node" parent="Behaviors"]
+script = SubResource( 15 )
+__meta__ = {
+"Name": "Vaisseau++",
+"P1": "Vaisseau",
+"P2": "Vaisseau",
+"P3": "0",
+"R1": "Vaisseau",
+"R2": "A",
+"Type": "Reaction",
+"p": "100"
+}
+
+[node name="336" type="Node" parent="Behaviors"]
+script = SubResource( 18 )
+__meta__ = {
+"Agents": "A",
+"Angle": "360",
+"Dir": "0",
+"Intensity": "2",
+"Name": "Diffuse A",
+"Type": "Random Force"
+}
+
+[node name="Groups" type="Node" parent="."]
+
+[node name="Grids" type="Node" parent="."]
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="Tumeur" type="RigidBody" parent="Environment"]
+transform = Transform( 0.985944, 0, -0.167075, 0, 1, 0, 0.167075, 0, 0.985944, -3.3888, 0, 4.75966 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tumeur"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Tumeur"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="3471" type="CollisionShape" parent="Environment/Tumeur"]
+shape = SubResource( 21 )
+
+[node name="Tumeur192" type="RigidBody" parent="Environment"]
+transform = Transform( 0.996736, 0, 0.0807264, 0, 1, 0, -0.0807264, 0, 0.996736, -1.59509, 0, 2.15382 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tumeur"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Tumeur192"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="3472" type="CollisionShape" parent="Environment/Tumeur192"]
+shape = SubResource( 22 )
+
+[node name="Tumeur193" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999984, 0, -0.0057352, 0, 1, 0, 0.0057352, 0, 0.999984, -1.37507, 0, 4.23945 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tumeur"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Tumeur193"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="3473" type="CollisionShape" parent="Environment/Tumeur193"]
+shape = SubResource( 23 )
+
+[node name="Tumeur194" type="RigidBody" parent="Environment"]
+transform = Transform( 0.996696, 0, -0.0812254, 0, 1, 0, 0.0812254, 0, 0.996696, -3.56352, 0, 2.73855 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tumeur"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Tumeur194"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="3474" type="CollisionShape" parent="Environment/Tumeur194"]
+shape = SubResource( 24 )
+
+[node name="Vaisseau206" type="RigidBody" parent="Environment"]
+transform = Transform( -0.97146, 0, 0.237203, 0, 1, 0, -0.237203, 0, -0.97146, -28.1314, 0, 33.2897 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau206"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau206"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau207" type="RigidBody" parent="Environment"]
+transform = Transform( 0.997052, 0, -0.0767241, 0, 1, 0, 0.0767241, 0, 0.997052, -28.0043, 0, 30.2799 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau207"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau207"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau208" type="RigidBody" parent="Environment"]
+transform = Transform( -0.943599, 0, 0.331092, 0, 1, 0, -0.331092, 0, -0.943599, -26.6835, 0, 31.8463 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau208"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau208"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau209" type="RigidBody" parent="Environment"]
+transform = Transform( -0.992981, 0, -0.118276, 0, 1, 0, 0.118276, 0, -0.992981, -24.6619, 0, 32.0232 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau209"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau209"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau210" type="RigidBody" parent="Environment"]
+transform = Transform( 0.87805, 0, -0.478568, 0, 1, 0, 0.478568, 0, 0.87805, -22.8778, 0, 31.1145 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau210"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau210"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau211" type="RigidBody" parent="Environment"]
+transform = Transform( 0.63484, 0, -0.772644, 0, 1, 0, 0.772644, 0, 0.63484, -22.0112, 0, 33.1407 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau211"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau211"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau212" type="RigidBody" parent="Environment"]
+transform = Transform( 0.155663, 0, -0.98781, 0, 1, 0, 0.98781, 0, 0.155663, -20.9054, 0, 31.4541 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau212"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau212"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau213" type="RigidBody" parent="Environment"]
+transform = Transform( -0.700498, 0, 0.713654, 0, 1, 0, -0.713654, 0, -0.700498, -19.8457, 0, 33.1832 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau213"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau213"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau214" type="RigidBody" parent="Environment"]
+transform = Transform( -0.913793, 0, 0.406179, 0, 1, 0, -0.406179, 0, -0.913793, -18.9816, 0, 30.673 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau214"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau214"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau215" type="RigidBody" parent="Environment"]
+transform = Transform( -0.998916, 0, -0.0465451, 0, 1, 0, 0.0465451, 0, -0.998916, -17.9285, 0, 32.4837 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau215"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau215"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau216" type="RigidBody" parent="Environment"]
+transform = Transform( 0.517202, 0, 0.855863, 0, 1, 0, -0.855863, 0, 0.517202, -16.2157, 0, 31.3756 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau216"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau216"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau217" type="RigidBody" parent="Environment"]
+transform = Transform( 0.870366, 0, 0.492406, 0, 1, 0, -0.492406, 0, 0.870366, -15.4495, 0, 29.4738 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau217"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau217"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau218" type="RigidBody" parent="Environment"]
+transform = Transform( -0.825732, 0, -0.564062, 0, 1, 0, 0.564062, 0, -0.825732, -14.1929, 0, 31.1661 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau218"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau218"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau219" type="RigidBody" parent="Environment"]
+transform = Transform( 0.24534, 0, -0.969437, 0, 1, 0, 0.969437, 0, 0.24534, -13.4489, 0, 29.2204 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau219"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau219"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau220" type="RigidBody" parent="Environment"]
+transform = Transform( -0.479535, 0, 0.877523, 0, 1, 0, -0.877523, 0, -0.479535, -12.1683, 0, 30.8886 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau220"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau220"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau221" type="RigidBody" parent="Environment"]
+transform = Transform( 0.249695, 0, -0.968324, 0, 1, 0, 0.968324, 0, 0.249695, -10.7461, 0, 29.4314 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau221"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau221"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau222" type="RigidBody" parent="Environment"]
+transform = Transform( 0.941888, 0, 0.335927, 0, 1, 0, -0.335927, 0, 0.941888, -9.84699, 0, 31.289 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau222"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau222"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau223" type="RigidBody" parent="Environment"]
+transform = Transform( -0.995036, 0, 0.0995114, 0, 1, 0, -0.0995114, 0, -0.995036, -8.38359, 0, 29.8624 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau223"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau223"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau224" type="RigidBody" parent="Environment"]
+transform = Transform( -0.996263, 0, 0.0863674, 0, 1, 0, -0.0863674, 0, -0.996263, -7.0582, 0, 31.5323 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau224"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau224"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau225" type="RigidBody" parent="Environment"]
+transform = Transform( 0.409837, 0, 0.912159, 0, 1, 0, -0.912159, 0, 0.409837, -6.37079, 0, 29.6218 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau225"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau225"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau226" type="RigidBody" parent="Environment"]
+transform = Transform( -0.808909, 0, 0.587933, 0, 1, 0, -0.587933, 0, -0.808909, -4.34847, 0, 29.7783 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau226"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau226"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau227" type="RigidBody" parent="Environment"]
+transform = Transform( 0.0754823, 0, 0.997147, 0, 1, 0, -0.997147, 0, 0.0754823, -3.19084, 0, 28.1208 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau227"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau227"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau228" type="RigidBody" parent="Environment"]
+transform = Transform( -0.944223, 0, 0.329307, 0, 1, 0, -0.329307, 0, -0.944223, -1.32087, 0, 28.9535 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau228"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau228"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau229" type="RigidBody" parent="Environment"]
+transform = Transform( -0.983128, 0, -0.182921, 0, 1, 0, 0.182921, 0, -0.983128, -1.61361, 0, 26.8206 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau229"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau229"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau230" type="RigidBody" parent="Environment"]
+transform = Transform( -0.966501, 0, 0.256661, 0, 1, 0, -0.256661, 0, -0.966501, 0.262824, 0, 27.6783 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau230"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau230"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau231" type="RigidBody" parent="Environment"]
+transform = Transform( 0.216032, 0, 0.976386, 0, 1, 0, -0.976386, 0, 0.216032, 0.782603, 0, 25.6975 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau231"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau231"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau232" type="RigidBody" parent="Environment"]
+transform = Transform( -0.761284, 0, -0.648419, 0, 1, 0, 0.648419, 0, -0.761284, 2.7943, 0, 25.9919 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau232"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau232"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau233" type="RigidBody" parent="Environment"]
+transform = Transform( 0.73157, 0, -0.681767, 0, 1, 0, 0.681767, 0, 0.73157, 3.7295, 0, 27.8046 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau233"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau233"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau234" type="RigidBody" parent="Environment"]
+transform = Transform( 0.233398, 0, 0.972381, 0, 1, 0, -0.972381, 0, 0.233398, 4.83962, 0, 26.1107 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau234"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau234"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau235" type="RigidBody" parent="Environment"]
+transform = Transform( -0.120112, 0, 0.99276, 0, 1, 0, -0.99276, 0, -0.120112, 5.71951, 0, 28.1674 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau235"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau235"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau236" type="RigidBody" parent="Environment"]
+transform = Transform( 0.836924, 0, -0.547319, 0, 1, 0, 0.547319, 0, 0.836924, 6.83663, 0, 26.46 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau236"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau236"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau237" type="RigidBody" parent="Environment"]
+transform = Transform( 0.816392, 0, -0.577499, 0, 1, 0, 0.577499, 0, 0.816392, 7.82234, 0, 28.2596 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau237"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau237"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau238" type="RigidBody" parent="Environment"]
+transform = Transform( 0.78471, 0, -0.619864, 0, 1, 0, 0.619864, 0, 0.78471, 8.83827, 0, 26.4649 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau238"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau238"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau239" type="RigidBody" parent="Environment"]
+transform = Transform( 0.974448, 0, 0.224614, 0, 1, 0, -0.224614, 0, 0.974448, 9.85559, 0, 28.2273 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau239"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau239"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau240" type="RigidBody" parent="Environment"]
+transform = Transform( -0.978705, 0, -0.20527, 0, 1, 0, 0.20527, 0, -0.978705, 11.0887, 0, 26.6513 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau240"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau240"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau241" type="RigidBody" parent="Environment"]
+transform = Transform( 0.512673, 0, 0.858584, 0, 1, 0, -0.858584, 0, 0.512673, 12.4568, 0, 28.1345 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau241"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau241"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau242" type="RigidBody" parent="Environment"]
+transform = Transform( -0.99182, 0, -0.127643, 0, 1, 0, 0.127643, 0, -0.99182, 13.966, 0, 26.7612 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau242"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau242"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau243" type="RigidBody" parent="Environment"]
+transform = Transform( 0.386551, 0, -0.922268, 0, 1, 0, 0.922268, 0, 0.386551, 16.0175, 0, 26.7957 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau243"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau243"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau244" type="RigidBody" parent="Environment"]
+transform = Transform( 0.949124, 0, 0.314904, 0, 1, 0, -0.314904, 0, 0.949124, 17.0269, 0, 28.8281 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau244"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau244"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau245" type="RigidBody" parent="Environment"]
+transform = Transform( -0.731607, 0, -0.681727, 0, 1, 0, 0.681727, 0, -0.731607, 18.0285, 0, 27.0495 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau245"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau245"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau246" type="RigidBody" parent="Environment"]
+transform = Transform( -0.861209, 0, -0.50825, 0, 1, 0, 0.50825, 0, -0.861209, 19.2398, 0, 28.6902 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau246"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau246"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau247" type="RigidBody" parent="Environment"]
+transform = Transform( 0.998085, 0, 0.0618612, 0, 1, 0, -0.0618612, 0, 0.998085, 21.0976, 0, 27.9225 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau247"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau247"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau248" type="RigidBody" parent="Environment"]
+transform = Transform( -0.795915, 0, -0.605408, 0, 1, 0, 0.605408, 0, -0.795915, 22.5562, 0, 26.5124 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau248"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau248"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau249" type="RigidBody" parent="Environment"]
+transform = Transform( -0.982189, 0, -0.187894, 0, 1, 0, 0.187894, 0, -0.982189, 24.1136, 0, 27.8116 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau249"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau249"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau250" type="RigidBody" parent="Environment"]
+transform = Transform( 0.63502, 0, 0.772496, 0, 1, 0, -0.772496, 0, 0.63502, 24.6901, 0, 25.8698 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau250"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau250"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau251" type="RigidBody" parent="Environment"]
+transform = Transform( 0.600935, 0, 0.799298, 0, 1, 0, -0.799298, 0, 0.600935, 26.1261, 0, 27.5682 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau251"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau251"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau252" type="RigidBody" parent="Environment"]
+transform = Transform( 0.119394, 0, -0.992847, 0, 1, 0, 0.992847, 0, 0.119394, 26.6921, 0, 25.6425 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau252"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau252"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau253" type="RigidBody" parent="Environment"]
+transform = Transform( 0.903611, 0, 0.428355, 0, 1, 0, -0.428355, 0, 0.903611, 28.1326, 0, 27.7187 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau253"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau253"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau254" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999914, 0, -0.0131199, 0, 1, 0, 0.0131199, 0, 0.999914, 28.6975, 0, 25.7997 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau254"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau254"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau255" type="RigidBody" parent="Environment"]
+transform = Transform( -0.501644, 0, -0.865074, 0, 1, 0, 0.865074, 0, -0.501644, 30.0927, 0, 24.3627 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau255"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau255"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau256" type="RigidBody" parent="Environment"]
+transform = Transform( 0.984953, 0, -0.172824, 0, 1, 0, 0.172824, 0, 0.984953, 31.5857, 0, 26.2312 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau256"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau256"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau257" type="RigidBody" parent="Environment"]
+transform = Transform( -0.156939, 0, 0.987608, 0, 1, 0, -0.987608, 0, -0.156939, 32.0778, 0, 23.9902 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau257"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau257"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau258" type="RigidBody" parent="Environment"]
+transform = Transform( 0.722192, 0, -0.691692, 0, 1, 0, 0.691692, 0, 0.722192, 33.4695, 0, 25.4689 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau258"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau258"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau259" type="RigidBody" parent="Environment"]
+transform = Transform( -0.540231, 0, -0.841517, 0, 1, 0, 0.841517, 0, -0.540231, 34.6413, 0, 23.2195 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau259"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau259"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau260" type="RigidBody" parent="Environment"]
+transform = Transform( -0.413344, 0, 0.910575, 0, 1, 0, -0.910575, 0, -0.413344, 35.4457, 0, 25.0734 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau260"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau260"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau261" type="RigidBody" parent="Environment"]
+transform = Transform( -0.552891, 0, -0.833254, 0, 1, 0, 0.833254, 0, -0.552891, 37.4592, 0, 25.3009 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau261"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau261"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau262" type="RigidBody" parent="Environment"]
+transform = Transform( 0.720564, 0, -0.693388, 0, 1, 0, 0.693388, 0, 0.720564, 36.912, 0, 23.2899 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau262"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau262"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau263" type="RigidBody" parent="Environment"]
+transform = Transform( 0.973356, 0, -0.229297, 0, 1, 0, 0.229297, 0, 0.973356, 39.4745, 0, 25.4817 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau263"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau263"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau283" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999978, 0, -0.00665403, 0, 1, 0, 0.00665403, 0, 0.999978, -29.227, 0, -5.84892 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau283"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau283"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau284" type="RigidBody" parent="Environment"]
+transform = Transform( -0.974109, 0, -0.226079, 0, 1, 0, 0.226079, 0, -0.974109, -29.5938, 0, -7.89601 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau284"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau284"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau285" type="RigidBody" parent="Environment"]
+transform = Transform( 0.262927, 0, -0.964816, 0, 1, 0, 0.964816, 0, 0.262927, -27.7038, 0, -7.15355 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau285"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau285"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau286" type="RigidBody" parent="Environment"]
+transform = Transform( -0.743912, 0, 0.668277, 0, 1, 0, -0.668277, 0, -0.743912, -26.9222, 0, -8.99472 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau286"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau286"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau287" type="RigidBody" parent="Environment"]
+transform = Transform( 0.890427, 0, -0.455127, 0, 1, 0, 0.455127, 0, 0.890427, -25.2858, 0, -10.2099 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau287"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau287"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau288" type="RigidBody" parent="Environment"]
+transform = Transform( -0.966432, 0, 0.256922, 0, 1, 0, -0.256922, 0, -0.966432, -24.2086, 0, -11.9514 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau288"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau288"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau289" type="RigidBody" parent="Environment"]
+transform = Transform( 0.105917, 0, -0.994375, 0, 1, 0, 0.994375, 0, 0.105917, -22.3584, 0, -10.6939 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau289"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau289"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau290" type="RigidBody" parent="Environment"]
+transform = Transform( -0.328203, 0, 0.944607, 0, 1, 0, -0.944607, 0, -0.328203, -22.4004, 0, -12.9001 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau290"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau290"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau291" type="RigidBody" parent="Environment"]
+transform = Transform( 0.624144, 0, 0.781309, 0, 1, 0, -0.781309, 0, 0.624144, -20.676, 0, -11.7991 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau291"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau291"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau292" type="RigidBody" parent="Environment"]
+transform = Transform( -0.708639, 0, 0.705571, 0, 1, 0, -0.705571, 0, -0.708639, -19.9773, 0, -13.7056 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau292"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau292"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau293" type="RigidBody" parent="Environment"]
+transform = Transform( -0.817013, 0, -0.576619, 0, 1, 0, 0.576619, 0, -0.817013, -18.3867, 0, -14.9314 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau293"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau293"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau294" type="RigidBody" parent="Environment"]
+transform = Transform( 0.977877, 0, 0.209182, 0, 1, 0, -0.209182, 0, 0.977877, -16.5623, 0, -14.0675 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau294"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau294"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau295" type="RigidBody" parent="Environment"]
+transform = Transform( 0.752396, 0, -0.658711, 0, 1, 0, 0.658711, 0, 0.752396, -17.1857, 0, -16.6052 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau295"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau295"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau296" type="RigidBody" parent="Environment"]
+transform = Transform( -0.449445, 0, -0.893308, 0, 1, 0, 0.893308, 0, -0.449445, -15.3554, 0, -15.7006 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau296"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau296"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau297" type="RigidBody" parent="Environment"]
+transform = Transform( 0.565008, 0, -0.825085, 0, 1, 0, 0.825085, 0, 0.565008, -13.8927, 0, -17.1244 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau297"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau297"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau298" type="RigidBody" parent="Environment"]
+transform = Transform( -0.85571, 0, 0.517456, 0, 1, 0, -0.517456, 0, -0.85571, -13.0061, 0, -18.9493 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau298"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau298"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau299" type="RigidBody" parent="Environment"]
+transform = Transform( 0.900678, 0, 0.434487, 0, 1, 0, -0.434487, 0, 0.900678, -10.9887, 0, -18.8748 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau299"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau299"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau300" type="RigidBody" parent="Environment"]
+transform = Transform( 0.0389766, 0, 0.99924, 0, 1, 0, -0.99924, 0, 0.0389766, -10.6987, 0, -20.8804 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau300"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau300"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau301" type="RigidBody" parent="Environment"]
+transform = Transform( -0.63916, 0, 0.769073, 0, 1, 0, -0.769073, 0, -0.63916, -8.67357, 0, -20.7412 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau301"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau301"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau302" type="RigidBody" parent="Environment"]
+transform = Transform( -0.330398, 0, -0.943842, 0, 1, 0, 0.943842, 0, -0.330398, -7.4592, 0, -22.3758 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau302"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau302"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau303" type="RigidBody" parent="Environment"]
+transform = Transform( -0.955175, 0, 0.296041, 0, 1, 0, -0.296041, 0, -0.955175, -6.06967, 0, -23.8557 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau303"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau303"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau304" type="RigidBody" parent="Environment"]
+transform = Transform( 0.809362, 0, -0.58731, 0, 1, 0, 0.58731, 0, 0.809362, -4.20932, 0, -23.0036 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau304"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau304"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau305" type="RigidBody" parent="Environment"]
+transform = Transform( 0.906921, 0, 0.421301, 0, 1, 0, -0.421301, 0, 0.906921, -4.46047, 0, -25.0517 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau305"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau305"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau306" type="RigidBody" parent="Environment"]
+transform = Transform( 0.991132, 0, 0.132882, 0, 1, 0, -0.132882, 0, 0.991132, -2.42763, 0, -24.7474 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau306"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau306"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau307" type="RigidBody" parent="Environment"]
+transform = Transform( 0.403336, 0, 0.915052, 0, 1, 0, -0.915052, 0, 0.403336, -2.72511, 0, -26.7775 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau307"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau307"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau308" type="RigidBody" parent="Environment"]
+transform = Transform( 0.71766, 0, 0.696393, 0, 1, 0, -0.696393, 0, 0.71766, -0.717581, 0, -26.402 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau308"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau308"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau309" type="RigidBody" parent="Environment"]
+transform = Transform( -0.427848, 0, -0.903851, 0, 1, 0, 0.903851, 0, -0.427848, -1.00437, 0, -28.4063 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau309"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau309"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau310" type="RigidBody" parent="Environment"]
+transform = Transform( 0.768408, 0, -0.63996, 0, 1, 0, 0.63996, 0, 0.768408, 1.03236, 0, -28.2391 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau310"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau310"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau311" type="RigidBody" parent="Environment"]
+transform = Transform( -0.574407, 0, 0.81857, 0, 1, 0, -0.81857, 0, -0.574407, 1.78709, 0, -30.1313 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau311"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau311"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau312" type="RigidBody" parent="Environment"]
+transform = Transform( -0.826914, 0, -0.562328, 0, 1, 0, 0.562328, 0, -0.826914, 2.56633, 0, -31.997 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau312"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau312"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau313" type="RigidBody" parent="Environment"]
+transform = Transform( 0.863468, 0, 0.504403, 0, 1, 0, -0.504403, 0, 0.863468, 4.4034, 0, -31.0691 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau313"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau313"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau314" type="RigidBody" parent="Environment"]
+transform = Transform( -0.972183, 0, 0.234223, 0, 1, 0, -0.234223, 0, -0.972183, 4.81624, 0, -33.0647 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau314"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau314"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau315" type="RigidBody" parent="Environment"]
+transform = Transform( -0.960801, 0, 0.277239, 0, 1, 0, -0.277239, 0, -0.960801, 6.31406, 0, -34.4343 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau315"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau315"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau316" type="RigidBody" parent="Environment"]
+transform = Transform( -0.15106, 0, 0.988525, 0, 1, 0, -0.988525, 0, -0.15106, 8.30847, 0, -34.2736 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau316"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau316"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau317" type="RigidBody" parent="Environment"]
+transform = Transform( 0.945273, 0, -0.32628, 0, 1, 0, 0.32628, 0, 0.945273, 8.80987, 0, -36.2215 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau317"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau317"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau318" type="RigidBody" parent="Environment"]
+transform = Transform( 0.540165, 0, -0.841559, 0, 1, 0, 0.841559, 0, 0.540165, 10.8296, 0, -36.3822 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau318"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau318"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau319" type="RigidBody" parent="Environment"]
+transform = Transform( -0.00137174, 0, 0.999999, 0, 1, 0, -0.999999, 0, -0.00137174, 11.2643, 0, -38.368 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau319"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau319"]
+shape = SubResource( 7 )
+
+[node name="Vaisseau321" type="RigidBody" parent="Environment"]
+transform = Transform( 0.718273, 0, -0.695762, 0, 1, 0, 0.695762, 0, 0.718273, 13.6743, 0, -38.7965 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Vaisseau"
+}
+
+[node name="132" type="MeshInstance" parent="Environment/Vaisseau321"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="133" type="CollisionShape" parent="Environment/Vaisseau321"]
+shape = SubResource( 7 )
