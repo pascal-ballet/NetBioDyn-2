@@ -1,0 +1,5876 @@
+[gd_scene load_steps=50 format=2]
+
+[sub_resource type="Environment" id=1]
+background_mode = 1
+background_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0.735984, 0.621225, 0.962688, 1 )
+
+[sub_resource type="SphereMesh" id=3]
+
+[sub_resource type="SphereShape" id=4]
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_color = Color( 0.978975, 0.256011, 0.734578, 1 )
+
+[sub_resource type="SphereMesh" id=6]
+
+[sub_resource type="SphereShape" id=7]
+
+[sub_resource type="SpatialMaterial" id=8]
+albedo_color = Color( 0.353845, 0.315224, 0.92217, 1 )
+
+[sub_resource type="SphereMesh" id=9]
+
+[sub_resource type="SphereShape" id=10]
+
+[sub_resource type="SpatialMaterial" id=11]
+albedo_color = Color( 0.418812, 0.127155, 0.615166, 1 )
+
+[sub_resource type="SphereMesh" id=12]
+
+[sub_resource type="SphereShape" id=13]
+
+[sub_resource type="GDScript" id=14]
+script/source = "
+extends Node
+# Default Behavior
+func action(tree, agent) -> void:
+	if agent.get_meta(\"Name\") == \"circul\" || agent.is_in_group(\"circul\"):
+		var alpha:float = randf() * 3.839724 - 3.839724 /2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3(0.531385 * cos(alpha+0),0, 0.531385*sin(alpha+0)))
+"
+
+[sub_resource type="GDScript" id=15]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 100
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Grand\" || R1.is_in_group(\"Grand\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"Endo\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"Grand\" != \"0\" && \"Grand\" != \"R1\" && \"Grand\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"Grand\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"Grand\" == \"0\" || \"Grand\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"Endo\" != \"0\" && \"Endo\" != \"R1\" && \"Endo\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"Endo\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"Endo\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"Endo\" || R2.is_in_group(\"Endo\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"Grand\" != \"0\" && \"Grand\" != \"R1\" && \"Grand\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"Grand\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"Grand\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"Grand\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"Endo\" != \"0\" && \"Endo\" != \"R1\" && \"Endo\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"Endo\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"Endo\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"Endo\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=16]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 100
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Moy\" || R1.is_in_group(\"Moy\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"Endo\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"Moy\" != \"0\" && \"Moy\" != \"R1\" && \"Moy\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"Moy\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"Moy\" == \"0\" || \"Moy\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"Endo\" != \"0\" && \"Endo\" != \"R1\" && \"Endo\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"Endo\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"Endo\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"Endo\" || R2.is_in_group(\"Endo\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"Moy\" != \"0\" && \"Moy\" != \"R1\" && \"Moy\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"Moy\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"Moy\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"Moy\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"Endo\" != \"0\" && \"Endo\" != \"R1\" && \"Endo\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"Endo\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"Endo\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"Endo\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=17]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 100
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Petit\" || R1.is_in_group(\"Petit\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"Endo\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"Petit\" != \"0\" && \"Petit\" != \"R1\" && \"Petit\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"Petit\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"Petit\" == \"0\" || \"Petit\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"Endo\" != \"0\" && \"Endo\" != \"R1\" && \"Endo\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"Endo\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"Endo\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"Endo\" || R2.is_in_group(\"Endo\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"Petit\" != \"0\" && \"Petit\" != \"R1\" && \"Petit\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"Petit\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"Petit\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"Petit\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"Endo\" != \"0\" && \"Endo\" != \"R1\" && \"Endo\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"Endo\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"Endo\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"Endo\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="SphereShape" id=18]
+
+[sub_resource type="SphereShape" id=19]
+
+[sub_resource type="SphereShape" id=20]
+
+[sub_resource type="SphereShape" id=21]
+
+[sub_resource type="SphereShape" id=22]
+
+[sub_resource type="SphereShape" id=23]
+
+[sub_resource type="SphereShape" id=24]
+
+[sub_resource type="SphereShape" id=25]
+
+[sub_resource type="SphereShape" id=26]
+
+[sub_resource type="SphereShape" id=27]
+
+[sub_resource type="SphereShape" id=28]
+
+[sub_resource type="SphereShape" id=29]
+
+[sub_resource type="SphereShape" id=30]
+
+[sub_resource type="SphereShape" id=31]
+
+[sub_resource type="SphereShape" id=32]
+
+[sub_resource type="SphereShape" id=33]
+
+[sub_resource type="SphereShape" id=34]
+
+[sub_resource type="SphereShape" id=35]
+
+[sub_resource type="SphereShape" id=36]
+
+[sub_resource type="SphereShape" id=37]
+
+[sub_resource type="SphereShape" id=38]
+
+[sub_resource type="SphereShape" id=39]
+
+[sub_resource type="SphereShape" id=40]
+
+[sub_resource type="SphereShape" id=41]
+
+[sub_resource type="SphereShape" id=42]
+
+[sub_resource type="SphereShape" id=43]
+
+[sub_resource type="SphereShape" id=44]
+
+[sub_resource type="SphereShape" id=45]
+
+[sub_resource type="SphereShape" id=46]
+
+[sub_resource type="SphereShape" id=47]
+
+[sub_resource type="SphereShape" id=48]
+
+[sub_resource type="SphereShape" id=49]
+
+[node name="Simulator" type="Spatial"]
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -100, 0 )
+environment = SubResource( 1 )
+projection = 1
+current = true
+size = 80.0
+far = 200.0
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, 0, 12, 0 )
+
+[node name="Entities" type="Node" parent="."]
+
+[node name="Endo" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -999, 0, 0 )
+visible = false
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Entities/Endo"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Entities/Endo"]
+shape = SubResource( 4 )
+
+[node name="Grand" type="RigidBody" parent="Entities" groups=["circul"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1007.11, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Entities/Grand"]
+transform = Transform( 1.69, 0, 0, 0, 1.69, 0, 0, 0, 1.69, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1294" type="CollisionShape" parent="Entities/Grand"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Moy" type="RigidBody" parent="Entities" groups=["circul"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1003.08, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Entities/Moy"]
+transform = Transform( 1.04, 0, 0, 0, 1.04, 0, 0, 0, 1.04, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1397" type="CollisionShape" parent="Entities/Moy"]
+transform = Transform( 0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0 )
+shape = SubResource( 10 )
+
+[node name="Petit" type="RigidBody" parent="Entities" groups=["circul"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1001.04, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Entities/Petit"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Entities/Petit"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Behaviors" type="Node" parent="."]
+
+[node name="403" type="Node" parent="Behaviors"]
+script = SubResource( 14 )
+__meta__ = {
+"Agents": "circul",
+"Angle": "220",
+"Dir": "0",
+"Intensity": "1",
+"Name": "Force aléatoire",
+"Type": "Random Force"
+}
+
+[node name="667" type="Node" parent="Behaviors"]
+script = SubResource( 15 )
+__meta__ = {
+"Name": "Frein Grand",
+"P1": "Grand",
+"P2": "Endo",
+"P3": "0",
+"R1": "Grand",
+"R2": "Endo",
+"Type": "Reaction",
+"p": "100"
+}
+
+[node name="2437" type="Node" parent="Behaviors"]
+script = SubResource( 16 )
+__meta__ = {
+"Name": "Frein Moy",
+"P1": "Moy",
+"P2": "Endo",
+"P3": "0",
+"R1": "Moy",
+"R2": "Endo",
+"Type": "Reaction",
+"p": "100"
+}
+
+[node name="2941" type="Node" parent="Behaviors"]
+script = SubResource( 17 )
+__meta__ = {
+"Name": "Frein Petit",
+"P1": "Petit",
+"P2": "Endo",
+"P3": "0",
+"R1": "Petit",
+"R2": "Endo",
+"Type": "Reaction",
+"p": "100"
+}
+
+[node name="Groups" type="Node" parent="."]
+
+[node name="circul" type="Node" parent="Groups"]
+
+[node name="Grids" type="Node" parent="."]
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="Endo140" type="RigidBody" parent="Environment"]
+transform = Transform( -0.0594991, 0, 0.998228, 0, 1, 0, -0.998228, 0, -0.0594991, -21.8246, 0, 9.12281 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo140"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo140"]
+shape = SubResource( 4 )
+
+[node name="Endo141" type="RigidBody" parent="Environment"]
+transform = Transform( 0.765658, 0, 0.643248, 0, 1, 0, -0.643248, 0, 0.765658, -21.4737, 0, 9.12281 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo141"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo141"]
+shape = SubResource( 4 )
+
+[node name="Endo142" type="RigidBody" parent="Environment"]
+transform = Transform( 0.793407, 0, -0.608692, 0, 1, 0, 0.608692, 0, 0.793407, -20.4211, 0, 9.05264 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo142"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo142"]
+shape = SubResource( 4 )
+
+[node name="Endo143" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -19.2982, 0, 8.98246 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo143"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo143"]
+shape = SubResource( 4 )
+
+[node name="Endo144" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.0351, 0, 8.91228 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo144"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo144"]
+shape = SubResource( 4 )
+
+[node name="Endo145" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.6316, 0, 8.91228 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo145"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo145"]
+shape = SubResource( 4 )
+
+[node name="Endo146" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.3684, 0, 8.84211 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo146"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo146"]
+shape = SubResource( 4 )
+
+[node name="Endo147" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14.1754, 0, 8.84211 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo147"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo147"]
+shape = SubResource( 4 )
+
+[node name="Endo148" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.1228, 0, 8.84211 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo148"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo148"]
+shape = SubResource( 4 )
+
+[node name="Endo149" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7895, 0, 8.84211 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo149"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo149"]
+shape = SubResource( 4 )
+
+[node name="Endo150" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.6667, 0, 8.84211 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo150"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo150"]
+shape = SubResource( 4 )
+
+[node name="Endo151" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.33333, 0, 8.84211 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo151"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo151"]
+shape = SubResource( 4 )
+
+[node name="Endo152" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.14035, 0, 8.84211 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo152"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo152"]
+shape = SubResource( 4 )
+
+[node name="Endo153" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.80702, 0, 8.84211 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo153"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo153"]
+shape = SubResource( 4 )
+
+[node name="Endo154" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.19298, 0, 8.91228 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo154"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo154"]
+shape = SubResource( 4 )
+
+[node name="Endo155" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5614, 0, 8.91228 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo155"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo155"]
+shape = SubResource( 4 )
+
+[node name="Endo156" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4386, 0, 8.91228 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo156"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo156"]
+shape = SubResource( 4 )
+
+[node name="Endo157" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.10526, 0, 8.91228 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo157"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo157"]
+shape = SubResource( 4 )
+
+[node name="Endo158" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05263, 0, 8.98246 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo158"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo158"]
+shape = SubResource( 4 )
+
+[node name="Endo159" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.140347, 0, 9.05264 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo159"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo159"]
+shape = SubResource( 4 )
+
+[node name="Endo160" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.33334, 0, 9.05264 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo160"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo160"]
+shape = SubResource( 4 )
+
+[node name="Endo161" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.38596, 0, 9.12281 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo161"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo161"]
+shape = SubResource( 4 )
+
+[node name="Endo162" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.57895, 0, 9.26316 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo162"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo162"]
+shape = SubResource( 4 )
+
+[node name="Endo163" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.85965, 0, 9.26316 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo163"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo163"]
+shape = SubResource( 4 )
+
+[node name="Endo164" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.91228, 0, 9.33334 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo164"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo164"]
+shape = SubResource( 4 )
+
+[node name="Endo165" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.31579, 0, 9.33334 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo165"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo165"]
+shape = SubResource( 4 )
+
+[node name="Endo166" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.80701, 0, 9.33334 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo166"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo166"]
+shape = SubResource( 4 )
+
+[node name="Endo167" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.2807, 0, 9.40351 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo167"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo167"]
+shape = SubResource( 4 )
+
+[node name="Endo168" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.8421, 0, 9.40351 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo168"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo168"]
+shape = SubResource( 4 )
+
+[node name="Endo169" type="RigidBody" parent="Environment"]
+transform = Transform( 0.994779, 0, 0.102051, 0, 1, 0, -0.102051, 0, 0.994779, 10.1053, 0, 9.40351 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo169"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo169"]
+shape = SubResource( 4 )
+
+[node name="Endo170" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.4386, 0, 9.47369 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo170"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo170"]
+shape = SubResource( 4 )
+
+[node name="Endo171" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.7895, 0, 9.47369 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo171"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo171"]
+shape = SubResource( 4 )
+
+[node name="Endo172" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.0526, 0, 9.54386 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo172"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo172"]
+shape = SubResource( 4 )
+
+[node name="Endo173" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3333, 0, 9.54386 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo173"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo173"]
+shape = SubResource( 4 )
+
+[node name="Endo174" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14.8772, 0, 9.61404 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo174"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo174"]
+shape = SubResource( 4 )
+
+[node name="Endo175" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.1404, 0, 9.68421 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo175"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo175"]
+shape = SubResource( 4 )
+
+[node name="Endo176" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5439, 0, 9.75439 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo176"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo176"]
+shape = SubResource( 4 )
+
+[node name="Endo177" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.9649, 0, 9.82457 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo177"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo177"]
+shape = SubResource( 4 )
+
+[node name="Endo178" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19.1579, 0, 9.82457 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo178"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo178"]
+shape = SubResource( 4 )
+
+[node name="Endo179" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2807, 0, 9.82457 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo179"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo179"]
+shape = SubResource( 4 )
+
+[node name="Endo180" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.5439, 0, 9.82457 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo180"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo180"]
+shape = SubResource( 4 )
+
+[node name="Endo181" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 23.0175, 0, 9.82457 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo181"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo181"]
+shape = SubResource( 4 )
+
+[node name="Endo182" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 23.4386, 0, 9.82457 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo182"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo182"]
+shape = SubResource( 4 )
+
+[node name="Endo183" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 24.8421, 0, 9.89474 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo183"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo183"]
+shape = SubResource( 4 )
+
+[node name="Endo184" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.4035, 0, 9.89474 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo184"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo184"]
+shape = SubResource( 4 )
+
+[node name="Endo185" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.9649, 0, 9.89474 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo185"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo185"]
+shape = SubResource( 4 )
+
+[node name="Endo186" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 27.2982, 0, 9.89474 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo186"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo186"]
+shape = SubResource( 4 )
+
+[node name="Endo187" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 28.5614, 0, 9.89474 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo187"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo187"]
+shape = SubResource( 4 )
+
+[node name="Endo188" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 29.9649, 0, 9.89474 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo188"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo188"]
+shape = SubResource( 4 )
+
+[node name="Endo189" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 31.0175, 0, 9.96492 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo189"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo189"]
+shape = SubResource( 4 )
+
+[node name="Endo190" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 31.3684, 0, 9.96492 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo190"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo190"]
+shape = SubResource( 4 )
+
+[node name="Endo191" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 32.4211, 0, 9.96492 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo191"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo191"]
+shape = SubResource( 4 )
+
+[node name="Endo201" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.3158, 0, -5.4035 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo201"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo201"]
+shape = SubResource( 4 )
+
+[node name="Endo202" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.8421, 0, -5.47368 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo202"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo202"]
+shape = SubResource( 4 )
+
+[node name="Endo203" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.4912, 0, -5.47368 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo203"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo203"]
+shape = SubResource( 4 )
+
+[node name="Endo204" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -19.2281, 0, -5.61403 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo204"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo204"]
+shape = SubResource( 4 )
+
+[node name="Endo205" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.8772, 0, -5.61403 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo205"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo205"]
+shape = SubResource( 4 )
+
+[node name="Endo206" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.4035, 0, -5.6842 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo206"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo206"]
+shape = SubResource( 4 )
+
+[node name="Endo207" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.9825, 0, -5.6842 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo207"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo207"]
+shape = SubResource( 4 )
+
+[node name="Endo208" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.7895, 0, -5.75438 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo208"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo208"]
+shape = SubResource( 4 )
+
+[node name="Endo209" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14.1754, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo209"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo209"]
+shape = SubResource( 4 )
+
+[node name="Endo210" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.7018, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo210"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo210"]
+shape = SubResource( 4 )
+
+[node name="Endo211" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.3509, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo211"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo211"]
+shape = SubResource( 4 )
+
+[node name="Endo212" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.807, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo212"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo212"]
+shape = SubResource( 4 )
+
+[node name="Endo213" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.3158, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo213"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo213"]
+shape = SubResource( 4 )
+
+[node name="Endo214" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.19298, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo214"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo214"]
+shape = SubResource( 4 )
+
+[node name="Endo215" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.91228, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo215"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo215"]
+shape = SubResource( 4 )
+
+[node name="Endo216" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.7193, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo216"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo216"]
+shape = SubResource( 4 )
+
+[node name="Endo217" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.66667, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo217"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo217"]
+shape = SubResource( 4 )
+
+[node name="Endo218" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.38596, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo218"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo218"]
+shape = SubResource( 4 )
+
+[node name="Endo219" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.19298, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo219"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo219"]
+shape = SubResource( 4 )
+
+[node name="Endo220" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.77193, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo220"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo220"]
+shape = SubResource( 4 )
+
+[node name="Endo221" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.57895, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo221"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo221"]
+shape = SubResource( 4 )
+
+[node name="Endo222" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.94737, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo222"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo222"]
+shape = SubResource( 4 )
+
+[node name="Endo223" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.54386, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo223"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo223"]
+shape = SubResource( 4 )
+
+[node name="Endo224" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.210526, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo224"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo224"]
+shape = SubResource( 4 )
+
+[node name="Endo225" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.350876, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo225"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo225"]
+shape = SubResource( 4 )
+
+[node name="Endo226" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.47368, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo226"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo226"]
+shape = SubResource( 4 )
+
+[node name="Endo227" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.80702, 0, -5.82456 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo227"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo227"]
+shape = SubResource( 4 )
+
+[node name="Endo228" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.92983, 0, -5.75438 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo228"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo228"]
+shape = SubResource( 4 )
+
+[node name="Endo229" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.33333, 0, -5.54386 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo229"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo229"]
+shape = SubResource( 4 )
+
+[node name="Endo230" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.68421, 0, -5.47368 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo230"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo230"]
+shape = SubResource( 4 )
+
+[node name="Endo231" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.22807, 0, -5.19298 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo231"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo231"]
+shape = SubResource( 4 )
+
+[node name="Endo232" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.92982, 0, -5.1228 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo232"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo232"]
+shape = SubResource( 4 )
+
+[node name="Endo233" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.47369, 0, -4.91228 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo233"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo233"]
+shape = SubResource( 4 )
+
+[node name="Endo234" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1053, 0, -4.8421 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo234"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo234"]
+shape = SubResource( 4 )
+
+[node name="Endo235" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.2281, 0, -4.70175 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo235"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo235"]
+shape = SubResource( 4 )
+
+[node name="Endo236" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.3509, 0, -4.5614 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo236"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo236"]
+shape = SubResource( 4 )
+
+[node name="Endo237" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5439, 0, -4.2807 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo237"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo237"]
+shape = SubResource( 4 )
+
+[node name="Endo238" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14.8772, 0, -4.07017 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo238"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo238"]
+shape = SubResource( 4 )
+
+[node name="Endo239" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.2982, 0, -4 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo239"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo239"]
+shape = SubResource( 4 )
+
+[node name="Endo240" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.3509, 0, -3.92982 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo240"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo240"]
+shape = SubResource( 4 )
+
+[node name="Endo241" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.6316, 0, -3.92982 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo241"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo241"]
+shape = SubResource( 4 )
+
+[node name="Endo242" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.193, 0, -3.85964 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo242"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo242"]
+shape = SubResource( 4 )
+
+[node name="Endo243" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3158, 0, -3.78947 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo243"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo243"]
+shape = SubResource( 4 )
+
+[node name="Endo244" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19.7193, 0, -3.71929 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo244"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo244"]
+shape = SubResource( 4 )
+
+[node name="Endo245" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.7719, 0, -3.71929 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo245"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo245"]
+shape = SubResource( 4 )
+
+[node name="Endo246" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.1228, 0, -3.71929 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo246"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo246"]
+shape = SubResource( 4 )
+
+[node name="Endo247" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 22.386, 0, -3.64912 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo247"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo247"]
+shape = SubResource( 4 )
+
+[node name="Endo248" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 23.4386, 0, -3.57894 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo248"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo248"]
+shape = SubResource( 4 )
+
+[node name="Endo249" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 23.7193, 0, -3.57894 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo249"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo249"]
+shape = SubResource( 4 )
+
+[node name="Endo250" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 24.9123, 0, -3.50877 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo250"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo250"]
+shape = SubResource( 4 )
+
+[node name="Endo251" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.193, 0, -3.50877 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo251"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo251"]
+shape = SubResource( 4 )
+
+[node name="Endo252" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 26.386, 0, -3.43859 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo252"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo252"]
+shape = SubResource( 4 )
+
+[node name="Endo253" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 26.9474, 0, -3.43859 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo253"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo253"]
+shape = SubResource( 4 )
+
+[node name="Endo254" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 28.3509, 0, -3.43859 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo254"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo254"]
+shape = SubResource( 4 )
+
+[node name="Endo255" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 28.6316, 0, -3.43859 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo255"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo255"]
+shape = SubResource( 4 )
+
+[node name="Endo256" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 29.7544, 0, -3.43859 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo256"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo256"]
+shape = SubResource( 4 )
+
+[node name="Endo257" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 30.807, 0, -3.36842 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo257"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo257"]
+shape = SubResource( 4 )
+
+[node name="Endo258" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 30.9474, 0, -3.36842 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo258"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo258"]
+shape = SubResource( 4 )
+
+[node name="Endo259" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 31.0877, 0, -3.36842 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo259"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo259"]
+shape = SubResource( 4 )
+
+[node name="Endo260" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2105, 0, -3.36842 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo260"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo260"]
+shape = SubResource( 4 )
+
+[node name="Endo261" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 33.2632, 0, -3.36842 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo261"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo261"]
+shape = SubResource( 4 )
+
+[node name="Moy" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.321145, 0, 0.94703, 0, 1, 0, -0.94703, 0, -0.321145, -26.6612, 0, 7.1935 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1398" type="CollisionShape" parent="Environment/Moy"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 18 )
+
+[node name="Moy332" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.355192, 0, -0.934793, 0, 1, 0, 0.934793, 0, 0.355192, -28.0532, 0, 5.69941 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy332"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1399" type="CollisionShape" parent="Environment/Moy332"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 19 )
+
+[node name="Moy333" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.478818, 0, -0.877914, 0, 1, 0, 0.877914, 0, 0.478818, -26.3327, 0, 4.53519 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy333"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1400" type="CollisionShape" parent="Environment/Moy333"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 20 )
+
+[node name="Moy334" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.984403, 0, -0.175925, 0, 1, 0, 0.175925, 0, 0.984403, -28.1776, 0, 3.65517 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy334"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1401" type="CollisionShape" parent="Environment/Moy334"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 21 )
+
+[node name="Moy335" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.933558, 0, -0.358427, 0, 1, 0, 0.358427, 0, 0.933558, -26.8644, 0, 2.11613 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy335"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1402" type="CollisionShape" parent="Environment/Moy335"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 22 )
+
+[node name="Moy336" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.266097, 0, 0.963946, 0, 1, 0, -0.963946, 0, 0.266097, -27.9447, 0, 0.398453 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy336"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1403" type="CollisionShape" parent="Environment/Moy336"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 23 )
+
+[node name="Moy337" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.187156, 0, -0.98233, 0, 1, 0, 0.98233, 0, -0.187156, -27.3863, 0, -1.56719 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy337"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1404" type="CollisionShape" parent="Environment/Moy337"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 24 )
+
+[node name="Grand" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.999694, 0, -0.0247404, 0, 1, 0, 0.0247404, 0, 0.999694, -22.2189, 0, 5.10558 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1295" type="CollisionShape" parent="Environment/Grand"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 25 )
+
+[node name="Grand348" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.769128, 0, 0.639094, 0, 1, 0, -0.639094, 0, 0.769128, -22.5055, 0, -1.16024 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand348"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1296" type="CollisionShape" parent="Environment/Grand348"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 26 )
+
+[node name="Grand349" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.932791, 0, -0.360417, 0, 1, 0, 0.360417, 0, 0.932791, -16.4998, 0, 3.16661 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand349"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1297" type="CollisionShape" parent="Environment/Grand349"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 27 )
+
+[node name="Grand350" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.997102, 0, 0.0760767, 0, 1, 0, -0.0760767, 0, 0.997102, -10.4715, 0, 4.65 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand350"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1298" type="CollisionShape" parent="Environment/Grand350"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 28 )
+
+[node name="Grand351" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.371201, 0, 0.928553, 0, 1, 0, -0.928553, 0, 0.371201, -10.8568, 0, -1.97299 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand351"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1299" type="CollisionShape" parent="Environment/Grand351"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 29 )
+
+[node name="Grand352" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.998935, 0, -0.0461348, 0, 1, 0, 0.0461348, 0, 0.998935, -5.34602, 0, -0.130904 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand352"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1300" type="CollisionShape" parent="Environment/Grand352"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 30 )
+
+[node name="Petit" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.256178, 0, -0.96663, 0, 1, 0, 0.96663, 0, -0.256178, 4.48066, 0, 4.55593 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit356" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.299198, 0, 0.954191, 0, 1, 0, -0.954191, 0, 0.299198, 3.82383, 0, 4.09778 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit356"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit356"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit357" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.8109, 0, 0.585185, 0, 1, 0, -0.585185, 0, 0.8109, 4.00466, 0, 3.3157 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit357"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit357"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit358" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.992157, 0, 0.125001, 0, 1, 0, -0.125001, 0, 0.992157, 3.73147, 0, 2.1323 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit358"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit358"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit359" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.351762, 0, 0.936089, 0, 1, 0, -0.936089, 0, -0.351762, 2.95957, 0, 1.92205 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit359"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit359"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit360" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.0417936, 0, 0.999126, 0, 1, 0, -0.999126, 0, 0.0417936, 3.18806, 0, 1.15511 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit360"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit360"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit361" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.143955, 0, -0.989584, 0, 1, 0, 0.989584, 0, 0.143955, 2.69304, 0, -0.488688 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit361"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit361"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit362" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.988167, 0, 0.153379, 0, 1, 0, -0.153379, 0, 0.988167, 2.58845, 0, -1.28247 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit362"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit362"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit363" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.999998, 0, -0.00210901, 0, 1, 0, 0.00210901, 0, -0.999998, 3.16331, 0, -1.84364 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit363"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit363"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit364" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.697616, 0, -0.716472, 0, 1, 0, 0.716472, 0, -0.697616, 3.67343, 0, -2.46605 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit364"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit364"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit365" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.503042, 0, -0.864262, 0, 1, 0, 0.864262, 0, 0.503042, 4.45074, 0, -2.20884 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit365"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit365"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit366" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.81716, 0, -0.576411, 0, 1, 0, 0.576411, 0, -0.81716, 5.20903, 0, -1.95381 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit366"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit366"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit367" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.0985807, 0, 0.995129, 0, 1, 0, -0.995129, 0, -0.0985807, 5.89175, 0, -2.38558 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit367"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit367"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit368" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.50975, 0, -0.860323, 0, 1, 0, 0.860323, 0, -0.50975, 5.91885, 0, -1.58465 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit368"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit368"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit369" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.99808, 0, 0.0619329, 0, 1, 0, -0.0619329, 0, -0.99808, 6.65624, 0, -2.68979 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit369"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit369"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit370" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.983546, 0, 0.180655, 0, 1, 0, -0.180655, 0, -0.983546, 8.73101, 0, -0.456021 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit370"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit370"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit371" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.916406, 0, -0.400251, 0, 1, 0, 0.400251, 0, 0.916406, 7.85854, 0, 0.108859 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit371"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit371"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit372" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.993893, 0, 0.110345, 0, 1, 0, -0.110345, 0, -0.993893, 8.30461, 0, 0.789761 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit372"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit372"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit373" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.377543, 0, 0.925992, 0, 1, 0, -0.925992, 0, 0.377543, 7.83954, 0, 1.44496 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit373"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit373"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit374" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.934061, 0, 0.357114, 0, 1, 0, -0.357114, 0, -0.934061, 7.00706, 0, 1.41099 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit374"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit374"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit375" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.733348, 0, -0.679854, 0, 1, 0, 0.679854, 0, -0.733348, 5.74335, 0, 2.16283 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit375"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit375"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit376" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.997424, 0, 0.0717361, 0, 1, 0, -0.0717361, 0, -0.997424, 5.16369, 0, 2.75331 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit376"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit376"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit377" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.400346, 0, -0.916364, 0, 1, 0, 0.916364, 0, -0.400346, 4.37575, 0, 2.60696 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit377"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit377"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit378" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.54543, 0, -0.838157, 0, 1, 0, 0.838157, 0, 0.54543, 1.37941, 0, 2.4338 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit378"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit378"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit379" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.890823, 0, -0.454351, 0, 1, 0, 0.454351, 0, 0.890823, 0.764441, 0, 2.9527 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit379"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit379"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit380" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.396921, 0, 0.917853, 0, 1, 0, -0.917853, 0, -0.396921, 0.227417, 0, 2.35942 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit380"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit380"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit381" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.126406, 0, -0.991979, 0, 1, 0, 0.991979, 0, 0.126406, -0.241138, 0, 1.65804 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit381"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit381"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit382" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.969793, 0, -0.24393, 0, 1, 0, 0.24393, 0, 0.969793, -1.05861, 0, 1.67399 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit382"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit382"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit383" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.0899221, 0, 0.995949, 0, 1, 0, -0.995949, 0, 0.0899221, -1.58453, 0, 1.05912 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit383"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit383"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit384" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.99253, 0, 0.122005, 0, 1, 0, -0.122005, 0, -0.99253, -1.72906, 0, 0.239056 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit384"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit384"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit385" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.911448, 0, 0.411416, 0, 1, 0, -0.411416, 0, 0.911448, -0.895536, 0, 0.0695715 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit385"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit385"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit386" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.0808401, 0, 0.996727, 0, 1, 0, -0.996727, 0, -0.0808401, -0.143837, 0, -0.307919 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit386"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit386"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit387" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.815406, 0, 0.578889, 0, 1, 0, -0.578889, 0, 0.815406, 0.270809, 0, 0.471156 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit387"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit387"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit388" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.950863, 0, -0.309612, 0, 1, 0, 0.309612, 0, -0.950863, 0.691216, 0, -0.253526 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit388"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit388"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit389" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.0115429, 0, 0.999933, 0, 1, 0, -0.999933, 0, -0.0115429, 1.47577, 0, -0.0786071 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit389"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit389"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit390" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.978856, 0, -0.204549, 0, 1, 0, 0.204549, 0, 0.978856, 2.23151, 0, 0.190808 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit390"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit390"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit391" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.993032, 0, -0.117843, 0, 1, 0, 0.117843, 0, -0.993032, 3.35317, 0, 2.85097 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit391"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit391"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit392" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.853521, 0, -0.521058, 0, 1, 0, 0.521058, 0, 0.853521, 2.85843, 0, 3.4839 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit392"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit392"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit393" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.954097, 0, 0.299497, 0, 1, 0, -0.299497, 0, -0.954097, 2.17366, 0, 3.02233 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit393"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit393"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit394" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.959192, 0, 0.282756, 0, 1, 0, -0.282756, 0, -0.959192, 2.17868, 0, 2.21238 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit394"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit394"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit395" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.52865, 0, 0.84884, 0, 1, 0, -0.84884, 0, -0.52865, 1.76954, 0, 1.47368 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit395"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit395"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit396" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.981308, 0, 0.192442, 0, 1, 0, -0.192442, 0, 0.981308, 2.40557, 0, 0.987858 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit396"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit396"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit397" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.854932, 0, -0.51874, 0, 1, 0, 0.51874, 0, -0.854932, 3.06416, 0, 0.324276 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit397"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit397"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit398" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.773418, 0, 0.633896, 0, 1, 0, -0.633896, 0, -0.773418, 4.00111, 0, 1.0521 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit398"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit398"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit399" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.999538, 0, 0.0303893, 0, 1, 0, -0.0303893, 0, -0.999538, 4.74446, 0, 0.733375 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit399"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit399"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit400" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.245829, 0, 0.969313, 0, 1, 0, -0.969313, 0, -0.245829, 5.37586, 0, 1.2605 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit400"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit400"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit401" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.864897, 0, -0.501949, 0, 1, 0, 0.501949, 0, 0.864897, 6.2086, 0, 1.46169 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit401"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit401"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit402" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.469692, 0, -0.88283, 0, 1, 0, 0.88283, 0, -0.469692, 6.63182, 0, 2.18399 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit402"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit402"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Endo" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.807, 0, 9.40351 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo"]
+shape = SubResource( 4 )
+
+[node name="Endo581" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -23.8596, 0, 9.61404 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo581"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo581"]
+shape = SubResource( 4 )
+
+[node name="Endo582" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -23.9298, 0, 9.61404 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo582"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo582"]
+shape = SubResource( 4 )
+
+[node name="Endo583" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -24.9825, 0, 9.75439 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo583"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo583"]
+shape = SubResource( 4 )
+
+[node name="Endo584" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.0526, 0, 9.75439 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo584"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo584"]
+shape = SubResource( 4 )
+
+[node name="Endo585" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -26.1053, 0, 9.89474 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo585"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo585"]
+shape = SubResource( 4 )
+
+[node name="Endo586" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -27.0877, 0, 10.1053 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo586"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo586"]
+shape = SubResource( 4 )
+
+[node name="Endo587" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -27.1579, 0, 10.1053 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo587"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo587"]
+shape = SubResource( 4 )
+
+[node name="Endo588" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -28.1404, 0, 10.3158 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo588"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo588"]
+shape = SubResource( 4 )
+
+[node name="Endo589" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.193, 0, 10.4561 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo589"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo589"]
+shape = SubResource( 4 )
+
+[node name="Endo590" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -30.2456, 0, 10.5965 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo590"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo590"]
+shape = SubResource( 4 )
+
+[node name="Endo591" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -31.2982, 0, 10.5965 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo591"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo591"]
+shape = SubResource( 4 )
+
+[node name="Endo592" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -32.3509, 0, 10.7368 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo592"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo592"]
+shape = SubResource( 4 )
+
+[node name="Endo593" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -33.4035, 0, 10.9474 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo593"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo593"]
+shape = SubResource( 4 )
+
+[node name="Endo594" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -33.5439, 0, 11.0175 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo594"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo594"]
+shape = SubResource( 4 )
+
+[node name="Endo595" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 0, -5.89473 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo595"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo595"]
+shape = SubResource( 4 )
+
+[node name="Endo596" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 0, -5.96491 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo596"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo596"]
+shape = SubResource( 4 )
+
+[node name="Endo597" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -24.0702, 0, -5.96491 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo597"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo597"]
+shape = SubResource( 4 )
+
+[node name="Endo598" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.1228, 0, -6.24561 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo598"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo598"]
+shape = SubResource( 4 )
+
+[node name="Endo599" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -26.1053, 0, -6.52631 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo599"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo599"]
+shape = SubResource( 4 )
+
+[node name="Endo600" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -27.0877, 0, -6.87719 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo600"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo600"]
+shape = SubResource( 4 )
+
+[node name="Endo601" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -27.1579, 0, -6.87719 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo601"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo601"]
+shape = SubResource( 4 )
+
+[node name="Endo602" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -28.1404, 0, -7.15789 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo602"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo602"]
+shape = SubResource( 4 )
+
+[node name="Endo603" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.1228, 0, -7.50877 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo603"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo603"]
+shape = SubResource( 4 )
+
+[node name="Endo604" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -30.1053, 0, -7.85965 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo604"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo604"]
+shape = SubResource( 4 )
+
+[node name="Endo605" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -31.1579, 0, -8.14034 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo605"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo605"]
+shape = SubResource( 4 )
+
+[node name="Endo606" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -32.1404, 0, -8.35087 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo606"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo606"]
+shape = SubResource( 4 )
+
+[node name="Endo607" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -33.1228, 0, -8.5614 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo607"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo607"]
+shape = SubResource( 4 )
+
+[node name="Endo608" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -34.1754, 0, -8.63157 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Endo"
+}
+
+[node name="130" type="MeshInstance" parent="Environment/Endo608"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[node name="131" type="CollisionShape" parent="Environment/Endo608"]
+shape = SubResource( 4 )
+
+[node name="Grand612" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.998086, 0, -0.0618339, 0, 1, 0, 0.0618339, 0, 0.998086, 9.89278, 0, 2.6258 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand612"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1301" type="CollisionShape" parent="Environment/Grand612"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 31 )
+
+[node name="Grand613" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.999967, 0, -0.00806809, 0, 1, 0, 0.00806809, 0, 0.999967, 9.84861, 0, 6.47199 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand613"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1302" type="CollisionShape" parent="Environment/Grand613"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 32 )
+
+[node name="Grand614" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.993974, 0, 0.10962, 0, 1, 0, -0.10962, 0, 0.993974, 30.8829, 0, 4.44045 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand614"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1303" type="CollisionShape" parent="Environment/Grand614"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 33 )
+
+[node name="Grand615" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.7018, 0, 0.561409 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand615"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1304" type="CollisionShape" parent="Environment/Grand615"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 34 )
+
+[node name="Grand616" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.1404, 0, 5.54386 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Grand"
+}
+
+[node name="262" type="MeshInstance" parent="Environment/Grand616"]
+transform = Transform( 1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0 )
+material_override = SubResource( 5 )
+mesh = SubResource( 6 )
+
+[node name="1305" type="CollisionShape" parent="Environment/Grand616"]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0 )
+shape = SubResource( 35 )
+
+[node name="Moy620" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, 5.22783e-10, 0, 1, 0, -5.22783e-10, 0, 1, -1.86159, 0, 3.92569 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy620"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1405" type="CollisionShape" parent="Environment/Moy620"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 36 )
+
+[node name="Moy621" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, -1.77095e-10, 0, 1, 0, 1.77095e-10, 0, 1, -4.1735, 0, 4.21467 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy621"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1406" type="CollisionShape" parent="Environment/Moy621"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 37 )
+
+[node name="Moy622" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.41113, 0, 0.911577, 0, 1, 0, -0.911577, 0, -0.41113, 2.56185, 0, -3.47503 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy622"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1407" type="CollisionShape" parent="Environment/Moy622"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 38 )
+
+[node name="Moy623" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.627683, 0, -0.778469, 0, 1, 0, 0.778469, 0, -0.627683, 1.13034, 0, -1.69205 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy623"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1408" type="CollisionShape" parent="Environment/Moy623"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 39 )
+
+[node name="Moy624" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.59861, 0, -0.801041, 0, 1, 0, 0.801041, 0, 0.59861, 4.17844, 0, -0.697756 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy624"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1409" type="CollisionShape" parent="Environment/Moy624"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 40 )
+
+[node name="Moy625" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.959102, 0, -0.283061, 0, 1, 0, 0.283061, 0, 0.959102, 6.28769, 0, -0.0378999 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy625"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1410" type="CollisionShape" parent="Environment/Moy625"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 41 )
+
+[node name="Moy626" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.0659028, 0, 0.997826, 0, 1, 0, -0.997826, 0, -0.0659028, 7.77598, 0, -1.65611 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy626"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1411" type="CollisionShape" parent="Environment/Moy626"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 42 )
+
+[node name="Moy627" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.2807, 0, 0.421056 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy627"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1412" type="CollisionShape" parent="Environment/Moy627"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 43 )
+
+[node name="Moy628" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, 6.19576e-08, 0, 1, 0, -6.19576e-08, 0, 1, 14.2392, 0, 3.76399 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy628"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1413" type="CollisionShape" parent="Environment/Moy628"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 44 )
+
+[node name="Moy629" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.998201, 0, -0.0599503, 0, 1, 0, 0.0599503, 0, 0.998201, 14.6884, 0, 6.2158 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy629"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1414" type="CollisionShape" parent="Environment/Moy629"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 45 )
+
+[node name="Moy630" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, -5.6827e-05, 0, 1, 0, 5.6827e-05, 0, 1, 16.5419, 0, 4.98757 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy630"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1415" type="CollisionShape" parent="Environment/Moy630"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 46 )
+
+[node name="Moy631" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.998205, 0, 0.0598966, 0, 1, 0, -0.0598966, 0, 0.998205, 18.1094, 0, 3.41862 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy631"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1416" type="CollisionShape" parent="Environment/Moy631"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 47 )
+
+[node name="Moy632" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 24.4211, 0, 1.54386 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy632"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1417" type="CollisionShape" parent="Environment/Moy632"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 48 )
+
+[node name="Moy633" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 27.7193, 0, 4.35088 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Moy"
+}
+
+[node name="286" type="MeshInstance" parent="Environment/Moy633"]
+transform = Transform( 1.17, 0, 0, 0, 1.17, 0, 0, 0, 1.17, 0, 0, 0 )
+material_override = SubResource( 8 )
+mesh = SubResource( 9 )
+
+[node name="1418" type="CollisionShape" parent="Environment/Moy633"]
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0 )
+shape = SubResource( 49 )
+
+[node name="Petit637" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 1, 0, 4.25492e-06, 0, 1, 0, -4.25492e-06, 0, 1, -23.4194, 0, 1.01292 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit637"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit637"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit638" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.974953, 0, -0.222413, 0, 1, 0, 0.222413, 0, 0.974953, -13.0982, 0, 3.70358 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit638"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit638"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit639" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.966805, 0, 0.255517, 0, 1, 0, -0.255517, 0, 0.966805, -12.9031, 0, 2.90496 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit639"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit639"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit640" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.999207, 0, -0.0398257, 0, 1, 0, 0.0398257, 0, -0.999207, -12.696, 0, 2.10411 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit640"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit640"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit641" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.99535, 0, 0.0963255, 0, 1, 0, -0.0963255, 0, 0.99535, -12.6093, 0, 1.27338 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit641"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit641"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit642" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.940694, 0, 0.339258, 0, 1, 0, -0.339258, 0, -0.940694, -12.7166, 0, 0.430977 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit642"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit642"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit643" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.646658, 0, -0.76278, 0, 1, 0, 0.76278, 0, -0.646658, -11.7978, 0, 0.933011 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit643"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit643"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit644" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.103836, 0, -0.994594, 0, 1, 0, 0.994594, 0, 0.103836, -11.7504, 0, 0.101383 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit644"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit644"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit645" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.999514, 0, -0.0311626, 0, 1, 0, 0.0311626, 0, 0.999514, -12.4217, 0, -0.398612 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit645"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit645"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit646" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.165241, 0, 0.986253, 0, 1, 0, -0.986253, 0, -0.165241, -13.1156, 0, -0.860743 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit646"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit646"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit647" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.423587, 0, -0.905855, 0, 1, 0, 0.905855, 0, 0.423587, -13.9323, 0, -0.755929 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit647"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit647"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit648" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.883395, 0, 0.468629, 0, 1, 0, -0.468629, 0, 0.883395, -14.193, 0, -1.59704 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit648"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit648"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit649" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.910312, 0, 0.413922, 0, 1, 0, -0.413922, 0, 0.910312, -14.7188, 0, -0.948095 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit649"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit649"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit650" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.987566, 0, 0.157204, 0, 1, 0, -0.157204, 0, -0.987566, -15.2448, 0, -1.57942 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit650"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit650"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit651" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.577555, 0, 0.816352, 0, 1, 0, -0.816352, 0, 0.577555, -15.8419, 0, -0.993475 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit651"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit651"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit652" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.475037, 0, -0.879966, 0, 1, 0, 0.879966, 0, 0.475037, -16.2641, 0, -1.70619 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit652"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit652"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit653" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.894013, 0, 0.448041, 0, 1, 0, -0.448041, 0, 0.894013, -17.0784, 0, -1.49994 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit653"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit653"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit654" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.85903, 0, -0.511926, 0, 1, 0, 0.511926, 0, -0.85903, -16.9502, 0, -0.614443 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit654"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit654"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit655" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.930651, 0, 0.365908, 0, 1, 0, -0.365908, 0, -0.930651, -17.7341, 0, -1.0061 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit655"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit655"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit656" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.0705408, 0, -0.997509, 0, 1, 0, 0.997509, 0, -0.0705408, -17.8586, 0, -0.165184 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit656"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit656"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit657" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.914281, 0, -0.40508, 0, 1, 0, 0.40508, 0, 0.914281, -18.5685, 0, 0.303404 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit657"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit657"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit658" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.887, 0, -0.46177, 0, 1, 0, 0.46177, 0, -0.887, -20.1466, 0, 3.51414 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit658"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit658"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit659" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.865208, 0, 0.501414, 0, 1, 0, -0.501414, 0, 0.865208, -20.6686, 0, 2.8943 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit659"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit659"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit660" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.983982, 0, -0.178269, 0, 1, 0, 0.178269, 0, 0.983982, -21.2539, 0, 2.30915 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit660"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit660"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit661" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.60338, 0, 0.797454, 0, 1, 0, -0.797454, 0, 0.60338, -21.0968, 0, 1.47999 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit661"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit661"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit662" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.941748, 0, 0.336318, 0, 1, 0, -0.336318, 0, -0.941748, -21.1947, 0, 0.642968 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit662"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit662"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit663" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( -0.0300145, 0, 0.999549, 0, 1, 0, -0.999549, 0, -0.0300145, -20.4168, 0, 0.315012 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit663"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit663"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit664" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.859706, 0, 0.510789, 0, 1, 0, -0.510789, 0, 0.859706, -20.2432, 0, 1.15065 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit664"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit664"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit665" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.878659, 0, -0.477449, 0, 1, 0, 0.477449, 0, 0.878659, 32.2859, 0, 1.6827 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit665"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit665"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )
+
+[node name="Petit666" type="RigidBody" parent="Environment" groups=["circul"]]
+transform = Transform( 0.999713, 0, 0.0239648, 0, 1, 0, -0.0239648, 0, 0.999713, 31.6383, 0, 2.22774 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Petit"
+}
+
+[node name="314" type="MeshInstance" parent="Environment/Petit666"]
+transform = Transform( 0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0 )
+material_override = SubResource( 11 )
+mesh = SubResource( 12 )
+
+[node name="323" type="CollisionShape" parent="Environment/Petit666"]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
+shape = SubResource( 13 )

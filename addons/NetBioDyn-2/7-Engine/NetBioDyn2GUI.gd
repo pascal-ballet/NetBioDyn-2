@@ -258,6 +258,12 @@ func _fill_properties_of_agent(var agt_type:Node):
 		var box_color:ColorPickerButton = get_node("%ColorAgent")
 		var mesh:MeshInstance = agt_type.get_child(0)
 		box_color.color = mesh.material_override.albedo_color
+		# size
+		var slide_size:HSlider 	= get_node("%SizeAgent")
+		var lbl_size:Label 		= get_node("%LabelSizeAgent")
+		var col:CollisionShape 	= agt_type.get_child(1)
+		slide_size.value = col.scale.x
+		lbl_size.text = str("Taille = ", str(col.scale.x))
 		# type
 		var opt_type:OptionButton = get_node("%OptionAgentType")
 		opt_type.select(0)
@@ -272,18 +278,42 @@ func _fill_properties_of_agent(var agt_type:Node):
 		
 # Properties => Agent -----------------------------
 # Agent COLOR
+func _on_ColorAgent_color_changed(color: Color) -> void:
+	var rb:RigidBody = get_entity(_selected_name)
+	if(rb != null):
+		change_agent_color(rb, color)
+	update_agent_instances(rb)
+	
 func change_agent_color(rb:RigidBody, color:Color)->void:
 	if rb==null:
 		return
 	var msh:MeshInstance = rb.get_child(0)
 	var mat:SpatialMaterial = msh.material_override
 	mat.albedo_color = color
-	
-func _on_ColorAgent_color_changed(color: Color) -> void:
+
+# Agent SIZE
+func _on_SizeAgent_changed(value:float) -> void:
 	var rb:RigidBody = get_entity(_selected_name)
 	if(rb != null):
-		change_agent_color(rb, color)
+		get_node("%LabelSizeAgent").text = str("Taille = ", str(value))
+		change_agent_size(rb, value)
 	update_agent_instances(rb)
+	
+func change_agent_size(rb:RigidBody, size:float)->void:
+	if rb==null:
+		return
+	# Mesh
+	var msh:MeshInstance = rb.get_child(0)
+	msh.scale = Vector3(size*1.3, size*1.3, size*1.3)
+	# Collision
+	rb.get_child(1).queue_free()
+	var col:CollisionShape = CollisionShape.new()
+	col.shape = SphereShape.new()
+	col.scale = Vector3(size, size, size)
+	rb.add_child(col)
+	# Mass
+	rb.mass = size
+
 
 # Agent NAME
 func _on_AgentName_focus_exited() -> void:
@@ -340,17 +370,13 @@ func update_agent_instances(var rb:RigidBody)->void:
 	# Agent instances
 	for agt in _node_env.get_children():
 		if agt.get_meta("Name") == _selected_name:
-			# update color (already made because color is a ref)
-			#var msh:MeshInstance = rb.get_child(0)
-			#var mat:SpatialMaterial = msh.material_override
-			#var color:Color = mat.albedo_color
-			#change_agent_color(agt, color)
-			
 			# update lock x,y,z
 			agt.axis_lock_linear_x = rb.axis_lock_linear_x
 			agt.axis_lock_linear_y = rb.axis_lock_linear_y
 			agt.axis_lock_linear_z = rb.axis_lock_linear_z
 			update_agent_layer_mask(agt)
+			# update size
+			change_agent_size(agt,rb.get_child(1).scale.x)
 			# update groups **********************
 			# Clear Group of agt
 			var lst_gp_agt = agt.get_groups()
@@ -888,8 +914,10 @@ func _on_ListBehav_item_selected(param) -> void:
 		populate_option_btn_with_agents(get_node("%ParamBehavR2"), behav.get_meta("R2"), true, true, false)
 		populate_option_btn_with_agents(get_node("%ParamBehavP1"), behav.get_meta("P1"), true, true, true)
 		populate_option_btn_with_agents(get_node("%ParamBehavP2"), behav.get_meta("P2"), true, true, true)
-		populate_option_btn_with_agents(get_node("%ParamBehavP3"), behav.get_meta("P3"), true, true, true)
-
+		if behav.has_meta("P3") == true:
+			populate_option_btn_with_agents(get_node("%ParamBehavP3"), behav.get_meta("P3"), true, true, true)
+		else:
+			populate_option_btn_with_agents(get_node("%ParamBehavP3"), "0", true, true, true)
 	if type == "Random Force":
 		var tabs:TabContainer = get_node("%TabContainer")
 		tabs.current_tab = Prop.BEHAVIOR_RANDOM_FORCE
@@ -1559,14 +1587,6 @@ func _on_BtnSave_pressed():
 	# Setting simu node as owner of all its
 	# children for saving reasons
 	set_owner_recursive(simu, simu)
-
-	# Debug : verify the goups before saving
-	var rb:RigidBody = get_entity(_selected_name)
-	var lst_gp = rb.get_groups()
-	print(str("For agent :", rb.name))
-	print(str("Nb groups = ", lst_gp.size()))
-	for gp in lst_gp:
-		print(gp)
 
 	# Continue to save
 	var save_build  = PackedScene.new()
