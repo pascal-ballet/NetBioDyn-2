@@ -1732,10 +1732,10 @@ func manage_graph() -> void:
 		var pas_lst:float = _pts_curve.size() / ( 256.0   )
 		if nb_agents > 0:
 			for pt in range(0, 256):
-				print(str("   i0=",i0))
-				print(str("   pt=",pt))
+				#print(str("   i0=",i0))
+				#print(str("   pt=",pt))
 				for na in nb_agents:
-					print(str("      na=",na))
+					#print(str("      na=",na))
 					if i0+na < _pts_curve.size():
 						img.set_pixel(  pt  ,   (127*_pts_curve[i0+na]) / _pt_max_y   , _pts_colors[i0+na])
 				i0 = i0 + pas_lst

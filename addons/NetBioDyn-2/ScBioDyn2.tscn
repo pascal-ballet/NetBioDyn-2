@@ -535,7 +535,6 @@ tabs_visible = false
 use_hidden_tabs_for_min_size = true
 
 [node name="Empty" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -1732,6 +1731,7 @@ size_flags_horizontal = 3
 text = "10"
 
 [node name="Env" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
