@@ -518,6 +518,13 @@ __meta__ = {
 [node name="Grids" type="Node" parent="."]
 
 [node name="Environment" type="Node" parent="."]
+__meta__ = {
+"SX": 80.0,
+"SY": 0.0,
+"SZ": 80.0,
+"Toric": true,
+"Unity": "mm"
+}
 
 [node name="Endo140" type="RigidBody" parent="Environment"]
 transform = Transform( -0.0594991, 0, 0.998228, 0, 1, 0, -0.998228, 0, -0.0594991, -21.8246, 0, 9.12281 )
@@ -4159,7 +4166,7 @@ transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
 shape = SubResource( 13 )
 
 [node name="Petit399" type="RigidBody" parent="Environment" groups=["circul"]]
-transform = Transform( -0.999538, 0, 0.0303893, 0, 1, 0, -0.0303893, 0, -0.999538, 4.74446, 0, 0.733375 )
+transform = Transform( -0.999538, 0, 0.0303895, 0, 1, 0, -0.0303895, 0, -0.999538, 4.74446, 0, 0.733375 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true
@@ -5856,7 +5863,7 @@ transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0 )
 shape = SubResource( 13 )
 
 [node name="Petit666" type="RigidBody" parent="Environment" groups=["circul"]]
-transform = Transform( 0.999713, 0, 0.0239648, 0, 1, 0, -0.0239648, 0, 0.999713, 31.6383, 0, 2.22774 )
+transform = Transform( 0.999713, 0, 0.023965, 0, 1, 0, -0.023965, 0, 0.999713, 31.6383, 0, 2.22774 )
 gravity_scale = 0.0
 contacts_reported = 1
 contact_monitor = true

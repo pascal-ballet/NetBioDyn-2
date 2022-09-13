@@ -2169,7 +2169,7 @@ shape = SubResource( 59 )
 shape = SubResource( 7 )
 
 [node name="Gluc202" type="RigidBody" parent="Environment"]
-transform = Transform( -0.998897, 0, 0.0469505, 0, 1, 0, -0.0469505, 0, -0.998897, 19.3138, 0, 3.13619 )
+transform = Transform( -0.998897, 0, 0.046951, 0, 1, 0, -0.046951, 0, -0.998897, 19.3138, 0, 3.13619 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -3209,7 +3209,7 @@ shape = SubResource( 99 )
 shape = SubResource( 7 )
 
 [node name="Gluc242" type="RigidBody" parent="Environment"]
-transform = Transform( -0.891481, 0, -0.453057, 0, 1, 0, 0.453057, 0, -0.891481, -25.5918, 0, 4.8757 )
+transform = Transform( -0.891482, 0, -0.453057, 0, 1, 0, 0.453057, 0, -0.891482, -25.5918, 0, 4.8757 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -3235,7 +3235,7 @@ shape = SubResource( 100 )
 shape = SubResource( 7 )
 
 [node name="Gluc243" type="RigidBody" parent="Environment"]
-transform = Transform( 0.0909688, 0, 0.995854, 0, 1, 0, -0.995854, 0, 0.0909688, -26.742, 0, 3.21916 )
+transform = Transform( 0.0909685, 0, 0.995854, 0, 1, 0, -0.995854, 0, 0.0909685, -26.742, 0, 3.21916 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -4431,7 +4431,7 @@ shape = SubResource( 146 )
 shape = SubResource( 7 )
 
 [node name="Gluc289" type="RigidBody" parent="Environment"]
-transform = Transform( 0.555193, 0, -0.831722, 0, 1, 0, 0.831722, 0, 0.555193, 19.7179, 0, -5.61892 )
+transform = Transform( 0.555193, 0, -0.831721, 0, 1, 0, 0.831721, 0, 0.555193, 19.7179, 0, -5.61892 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -5367,7 +5367,7 @@ shape = SubResource( 182 )
 shape = SubResource( 7 )
 
 [node name="Gluc325" type="RigidBody" parent="Environment"]
-transform = Transform( -0.0935926, 0, 0.995611, 0, 1, 0, -0.995611, 0, -0.0935926, 4.78708, 0, 27.6116 )
+transform = Transform( -0.0935928, 0, 0.995611, 0, 1, 0, -0.995611, 0, -0.0935928, 4.78708, 0, 27.6116 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -5575,7 +5575,7 @@ shape = SubResource( 190 )
 shape = SubResource( 7 )
 
 [node name="Gluc333" type="RigidBody" parent="Environment"]
-transform = Transform( 0.999919, 0, -0.0127069, 0, 1, 0, 0.0127069, 0, 0.999919, -8.30271, 0, 27.3989 )
+transform = Transform( 0.999919, 0, -0.0127071, 0, 1, 0, 0.0127071, 0, 0.999919, -8.30271, 0, 27.3989 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -5679,7 +5679,7 @@ shape = SubResource( 194 )
 shape = SubResource( 7 )
 
 [node name="Gluc337" type="RigidBody" parent="Environment"]
-transform = Transform( -0.999589, 0, -0.0286748, 0, 1, 0, 0.0286748, 0, -0.999589, -15.1156, 0, 26.287 )
+transform = Transform( -0.999589, 0, -0.028675, 0, 1, 0, 0.028675, 0, -0.999589, -15.1156, 0, 26.287 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -6043,7 +6043,7 @@ shape = SubResource( 208 )
 shape = SubResource( 7 )
 
 [node name="Gluc351" type="RigidBody" parent="Environment"]
-transform = Transform( 0.382464, 0, -0.923971, 0, 1, 0, 0.923971, 0, 0.382464, -31.4542, 0, 13.1166 )
+transform = Transform( 0.382464, 0, -0.92397, 0, 1, 0, 0.92397, 0, 0.382464, -31.4542, 0, 13.1166 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -6121,7 +6121,7 @@ shape = SubResource( 211 )
 shape = SubResource( 7 )
 
 [node name="Gluc354" type="RigidBody" parent="Environment"]
-transform = Transform( 0.0216407, 0, 0.999766, 0, 1, 0, -0.999766, 0, 0.0216407, -34.0509, 0, 10.0667 )
+transform = Transform( 0.0216402, 0, 0.999766, 0, 1, 0, -0.999766, 0, 0.0216402, -34.0509, 0, 10.0667 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -6251,7 +6251,7 @@ shape = SubResource( 216 )
 shape = SubResource( 7 )
 
 [node name="Gluc359" type="RigidBody" parent="Environment"]
-transform = Transform( -0.0510434, 0, -0.998696, 0, 1, 0, 0.998696, 0, -0.0510434, -33.7425, 0, 3.98313 )
+transform = Transform( -0.0510439, 0, -0.998696, 0, 1, 0, 0.998696, 0, -0.0510439, -33.7425, 0, 3.98313 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -6563,7 +6563,7 @@ shape = SubResource( 228 )
 shape = SubResource( 7 )
 
 [node name="Gluc371" type="RigidBody" parent="Environment"]
-transform = Transform( -0.00140309, 0, -0.999999, 0, 1, 0, 0.999999, 0, -0.00140309, -32.7925, 0, -11.243 )
+transform = Transform( -0.00140297, 0, -0.999999, 0, 1, 0, 0.999999, 0, -0.00140297, -32.7925, 0, -11.243 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -6745,7 +6745,7 @@ shape = SubResource( 235 )
 shape = SubResource( 7 )
 
 [node name="Gluc378" type="RigidBody" parent="Environment"]
-transform = Transform( -0.999923, 0, 0.0124506, 0, 1, 0, -0.0124506, 0, -0.999923, -25.1868, 0, -19.525 )
+transform = Transform( -0.999923, 0, 0.0124507, 0, 1, 0, -0.0124507, 0, -0.999923, -25.1868, 0, -19.525 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -6979,7 +6979,7 @@ shape = SubResource( 244 )
 shape = SubResource( 7 )
 
 [node name="Gluc387" type="RigidBody" parent="Environment"]
-transform = Transform( 0.999665, 0, 0.0258829, 0, 1, 0, -0.0258829, 0, 0.999665, -15.3481, 0, -24.7691 )
+transform = Transform( 0.999665, 0, 0.0258831, 0, 1, 0, -0.0258831, 0, 0.999665, -15.3481, 0, -24.7691 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -8461,7 +8461,7 @@ shape = SubResource( 301 )
 shape = SubResource( 7 )
 
 [node name="Gluc444" type="RigidBody" parent="Environment"]
-transform = Transform( -0.0842984, 0, -0.996441, 0, 1, 0, 0.996441, 0, -0.0842984, 32.9614, 0, 12.3576 )
+transform = Transform( -0.0842985, 0, -0.996441, 0, 1, 0, 0.996441, 0, -0.0842985, 32.9614, 0, 12.3576 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0
@@ -9605,7 +9605,7 @@ shape = SubResource( 345 )
 shape = SubResource( 7 )
 
 [node name="Gluc488" type="RigidBody" parent="Environment"]
-transform = Transform( 0.999071, 0, 0.0430973, 0, 1, 0, -0.0430973, 0, 0.999071, -12.7694, 0, 35.893 )
+transform = Transform( 0.999071, 0, 0.0430972, 0, 1, 0, -0.0430972, 0, 0.999071, -12.7694, 0, 35.893 )
 collision_mask = 3
 mass = 0.4
 gravity_scale = 0.0

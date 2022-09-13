@@ -965,6 +965,13 @@ __meta__ = {
 [node name="Grids" type="Node" parent="."]
 
 [node name="Environment" type="Node" parent="."]
+__meta__ = {
+"SX": 80.0,
+"SY": 0.0,
+"SZ": 80.0,
+"Toric": true,
+"Unity": "mm"
+}
 
 [node name="Endo146" type="RigidBody" parent="Environment"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -37.379, 0, -15.0806 )

@@ -57,11 +57,11 @@ func my_init() -> void:
 	if _node_simu == null:
 		return
 	_node_viewport		= _node_simu.get_parent()
-	_node_camera	 	= get_node_direct(_node_simu, "Camera")
+	_node_camera	 	= get_node_direct(_node_viewport, "Camera")
 	_node_entities 		= get_node_direct(_node_simu, "Entities")
 	_node_behavs	 	= get_node_direct(_node_simu, "Behaviors")
-	_node_env	 		= get_node_direct(_node_simu, "Environment")
 	_node_groups		= get_node_direct(_node_simu, "Groups")
+	_node_env	 		= get_node_direct(_node_simu, "Environment")
 
 	#get_viewport().connect("gui_focus_changed", self, "set_popup_btn")
 
@@ -97,7 +97,7 @@ func _process(delta):
 	if _step % 100 == 0:
 		updateStatus()
 		
-	if _step % 1 == 0:
+	if _step % 200 == 0:
 		manage_graph()
 
 	# Play Behaviors
@@ -108,20 +108,35 @@ func _process(delta):
 
 	# Environment constraints
 	# Torus
-	for agent in _node_env.get_children():
-		if agent.global_transform.origin.x < _env_min_x:
-			agent.global_transform.origin.x = _env_max_x
-		if agent.global_transform.origin.y < _env_min_y:
-			agent.global_transform.origin.y = _env_max_y
-		if agent.global_transform.origin.z < _env_min_z:
-			agent.global_transform.origin.z = _env_max_z
-		if agent.global_transform.origin.x > _env_max_x:
-			agent.global_transform.origin.x = _env_min_x
-		if agent.global_transform.origin.y > _env_max_y:
-			agent.global_transform.origin.y = _env_min_y
-		if agent.global_transform.origin.z > _env_max_z:
-			agent.global_transform.origin.z = _env_min_z
-			
+	if _env_is_toric == true:
+		for agent in _node_env.get_children():
+			if agent.global_transform.origin.x < _env_min_x:
+				agent.global_transform.origin.x = _env_max_x
+			if agent.global_transform.origin.y < _env_min_y:
+				agent.global_transform.origin.y = _env_max_y
+			if agent.global_transform.origin.z < _env_min_z:
+				agent.global_transform.origin.z = _env_max_z
+			if agent.global_transform.origin.x > _env_max_x:
+				agent.global_transform.origin.x = _env_min_x
+			if agent.global_transform.origin.y > _env_max_y:
+				agent.global_transform.origin.y = _env_min_y
+			if agent.global_transform.origin.z > _env_max_z:
+				agent.global_transform.origin.z = _env_min_z
+	else:
+		for agent in _node_env.get_children():
+			if agent.global_transform.origin.x < _env_min_x:
+				agent.global_transform.origin.x = _env_min_x
+			if agent.global_transform.origin.y < _env_min_y:
+				agent.global_transform.origin.y = _env_min_y
+			if agent.global_transform.origin.z < _env_min_z:
+				agent.global_transform.origin.z = _env_min_z
+			if agent.global_transform.origin.x > _env_max_x:
+				agent.global_transform.origin.x = _env_max_x
+			if agent.global_transform.origin.y > _env_max_y:
+				agent.global_transform.origin.y = _env_max_y
+			if agent.global_transform.origin.z > _env_max_z:
+				agent.global_transform.origin.z = _env_max_z
+
 	# Next simulation step
 	_step = _step + 1
 
@@ -670,11 +685,62 @@ func _debug_display_all_meta() -> void:
 enum _draw {POINT, SPRAY, LINE, ERASER, CLEAR }
 var _prev_cursor_agent_pos = Vector3(_env_min_x - 1000 , 0 , _env_min_z - 1000)
 var _mouse_btn_down:bool = false
+var _env_is_toric:bool = false
 
 # Show relevant property TAB ------------------------------
 func _on_Button_pressed() -> void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.ENV
+
+#Update ENV Size
+func _on_env_size_changed(txt:String="") -> void:
+	# Read the new value from GUI
+	var sx:float = float(get_node("%EnvSizeX").text)
+	var sy:float = float(get_node("%EnvSizeY").text)
+	var sz:float = float(get_node("%EnvSizeZ").text)
+	# Is Env Toric ?
+	_env_is_toric = get_node("%EnvToric").pressed
+	# Set the new borders
+	_env_min_x = -sx/2
+	_env_min_y = -sy/2
+	_env_min_z = -sz/2
+	_env_max_x =  sx/2
+	_env_max_y =  sy/2
+	_env_max_z =  sz/2
+	# Set the 3D EnvBorders
+	var cube:MeshInstance = get_node("%EnvBorders")
+	if sy<1:
+		sy = 2
+	cube.scale = Vector3(sx/2,sy/2,sz/2)
+	# Save to the Env node the data (for save/load reasons)
+	env_GUI_to_META()
+
+# ENV GUI => META
+func env_GUI_to_META() -> void:
+	# Read the new value from GUI
+	_node_env.set_meta("SX", _env_max_x - _env_min_x)
+	_node_env.set_meta("SY", _env_max_y - _env_min_y)
+	_node_env.set_meta("SZ", _env_max_z - _env_min_z)
+	# Torus
+	_node_env.set_meta("Toric", _env_is_toric)
+	# Unity
+	_node_env.set_meta("Unity", get_node("%OptionEnvUnity").text)
+
+# ENV META => GUI
+func env_META_to_GUI() -> void:
+	if _node_env.has_meta("SX"):
+		# Read the new value from GUI
+		get_node("%EnvSizeX").text = String(_node_env.get_meta("SX"))
+		get_node("%EnvSizeY").text = String(_node_env.get_meta("SY"))
+		get_node("%EnvSizeZ").text = String(_node_env.get_meta("SZ"))
+		# Torus
+		get_node("%EnvToric").pressed = _node_env.get_meta("Toric")
+		# Unity
+		get_node("%OptionEnvUnity").text = _node_env.get_meta("Unity")
+		_node_env.set_meta("Unity", get_node("%OptionEnvUnity").text)
+		# Update class attributes
+		_on_env_size_changed()
+	
 
 # On Mouse Click -----------------------------
 func _on_ViewportContainer_gui_input(event: InputEvent) -> void:
@@ -729,16 +795,6 @@ func get_object_under_mouse(mouse_pos:Vector2) -> Dictionary:
 	var selection:Dictionary = space_state.intersect_ray(from, cursorPos)
 	return selection
 	
-#	var ray_length:float = 100
-#	var mouse_pos = get_viewport().get_mouse_position()
-#	var ray_from = _node_camera.project_ray_origin(mouse_pos)
-#	var ray_to = ray_from + _node_camera.project_ray_normal(mouse_pos) * ray_length
-#	#print(ray_from)
-#	#print(ray_to)
-#	var space_state = _node_camera.get_world().direct_space_state
-#	var selection = space_state.intersect_ray(ray_from, ray_to)
-#	return selection
-		
 func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	# Spawn the new entity
 	var n_agents:Node 	= tree._node_env #tree.get_node("%Environment")
@@ -1229,7 +1285,6 @@ func load_initial_state() -> void:
 	_node_viewport.add_child(_node_simu_init)
 	
 	# re-init 3D node variables
-	_node_camera	= _node_simu_init.get_node("Camera")
 	_node_simu 		= _node_simu_init
 	_node_entities 	= _node_simu_init.get_node("Entities")
 	_node_behavs 	= _node_simu_init.get_node("Behaviors")
@@ -1539,7 +1594,7 @@ func _on_BtnLoad_pressed():
 	_node_viewport.remove_child(_node_simu)
 	_node_simu.call_deferred("free")
 
-	# Add the next level
+	# Load the new simulation
 	var next_simu_res = load(filename) #load("res://Simulations/Simu.tscn")
 	if next_simu_res == null:
 		print(str("Impossible to read file: ", filename))
@@ -1552,12 +1607,11 @@ func _on_BtnLoad_pressed():
 	_node_viewport.add_child(next_simu_node)
 	
 	# re-init 3D node variables
-	_node_camera	= next_simu_node.get_node("Camera")
 	_node_simu 		= next_simu_node
 	_node_entities 	= next_simu_node.get_node("Entities")
 	_node_behavs 	= next_simu_node.get_node("Behaviors")
-	_node_env 		= next_simu_node.get_node("Environment")
 	_node_groups	= next_simu_node.get_node("Groups")
+	_node_env 		= next_simu_node.get_node("Environment")
 
 	# Empty the 2D GUI
 	_listAgents.clear()
@@ -1569,6 +1623,11 @@ func _on_BtnLoad_pressed():
 	for agt in _node_behavs.get_children():
 		_listBehavs.add_item(agt.get_meta("Name"))
 	set_group_from_simulator_to_GUI()
+	
+	# Update Env
+	env_META_to_GUI()
+	
+	dialog.queue_free()
 
 # Save *****************************************************
 func _on_BtnSave_pressed():
@@ -1592,6 +1651,8 @@ func _on_BtnSave_pressed():
 	var save_build  = PackedScene.new()
 	save_build.pack(simu)
 	ResourceSaver.save(filename, save_build)
+	
+	dialog.queue_free()
 
 func set_owner_recursive(root:Node, node:Node)->void:
 	for child in node.get_children():
@@ -1612,15 +1673,29 @@ func set_owner_recursive(root:Node, node:Node)->void:
 #                       GRAPH                    *
 # ************************************************
 var _pts_curve:PoolIntArray
+var _pts_colors:PoolColorArray
 var _pt_max_y:int = 1
 var img = null
 var tex = null
 #var points_graph = PoolVector2Array()
 func manage_graph() -> void:
-	var nb_agents:float = _node_env.get_child_count()
-	if nb_agents > _pt_max_y:
-		_pt_max_y = nb_agents
-	_pts_curve.append(nb_agents)
+	# Store graph points for each agent
+	# Create the dictionnary of agent types
+	var dico_nb_agents:Dictionary = {}
+	var dico_colors:Dictionary = {}
+	for agt_type in _node_entities.get_children():
+		dico_nb_agents[agt_type.name] = 0
+		dico_colors[agt_type.name] = agt_type.get_child(0).material_override.albedo_color
+	# Compute the number of each instances from agent type
+	for agt in _node_env.get_children():
+		var agt_name = agt.get_meta("Name")
+		dico_nb_agents[agt_name] = dico_nb_agents[agt_name] + 1
+	# Add the points and colors in arrays
+	for pt_col in dico_nb_agents:
+		_pts_curve.append(dico_nb_agents[pt_col])
+		_pts_colors.append(dico_colors[pt_col])
+		if dico_nb_agents[pt_col] > _pt_max_y:
+			_pt_max_y = dico_nb_agents[pt_col]
 	
 	# Init
 	if _step == 0:
@@ -1648,14 +1723,22 @@ func manage_graph() -> void:
 		return
 	
 	# Draw
-	if _step%256 == 199:
+	if _step > 0: # == 200:
+		print(str("_step=",_step))
 		img.fill(Color(1,1,1))
 		img.lock()
-		var x:float = 0
-		var pas:float = _pts_curve.size()/256
-		for pt in range(0, 256):
-			img.set_pixel(pt, (127*_pts_curve[x]) / _pt_max_y, Color(0,0,0))
-			x = x + pas
+		var i0:float = 0
+		var nb_agents = _node_entities.get_child_count()
+		var pas_lst:float = _pts_curve.size() / ( 256.0   )
+		if nb_agents > 0:
+			for pt in range(0, 256):
+				print(str("   i0=",i0))
+				print(str("   pt=",pt))
+				for na in nb_agents:
+					print(str("      na=",na))
+					if i0+na < _pts_curve.size():
+						img.set_pixel(  pt  ,   (127*_pts_curve[i0+na]) / _pt_max_y   , _pts_colors[i0+na])
+				i0 = i0 + pas_lst
 		img.unlock()
 		tex.set_data(img)
 
@@ -1668,7 +1751,7 @@ func manage_graph() -> void:
 #   ██    ██    ██     ██   ██ ██    ██ 
 #   ██    ██    ██     ██   ██ ██    ██ 
 #   ██     ██████      ██████   ██████  
-									  
+  
 
 
 
