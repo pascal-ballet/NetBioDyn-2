@@ -1056,6 +1056,16 @@ func behavior_GUI_to_META() -> void:
 		script.reload()
 		behav.set_script(script)
 
+	if type == "Generic":
+		# Set the Name in the GUI List
+		var pos:int =sel[0]
+		_listBehavs.set_item_text(pos, get_node("%BehavGenericName").get_text())
+		
+		# Update behavior GUI => META
+		var name:String 		= get_node("%BehavGenericName").get_text()
+		behav.set_meta("Name", name)
+		
+		# Set Script: TODO
 
 
 
