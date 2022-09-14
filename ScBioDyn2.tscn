@@ -182,60 +182,59 @@ margin_right = 1016.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-split_offset = 225
 
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer"]
-margin_right = 444.0
+margin_right = 298.0
 margin_bottom = 538.0
-size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="VBoxAgentsGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer"]
-margin_right = 216.0
+margin_right = 137.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VSplitContainer" type="VSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp"]
-margin_right = 216.0
+margin_right = 137.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 split_offset = 150
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer"]
-margin_right = 216.0
+margin_right = 137.0
 margin_bottom = 413.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxAddAgents" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer"]
-margin_right = 216.0
+margin_right = 137.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="LabelPlusAgt" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents"]
 margin_top = 3.0
-margin_right = 171.0
+margin_right = 92.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
-text = "Agents"
+text = "      Agents      "
 
 [node name="BtnAddAgent" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents"]
 unique_name_in_owner = true
-margin_left = 175.0
-margin_right = 195.0
+margin_left = 96.0
+margin_right = 116.0
 margin_bottom = 20.0
 text = "+"
 
 [node name="BtnDelAgent" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents"]
-margin_left = 199.0
-margin_right = 216.0
+margin_left = 120.0
+margin_right = 137.0
 margin_bottom = 20.0
 text = "-"
 
 [node name="ListAgents" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer"]
 margin_top = 24.0
-margin_right = 216.0
+margin_right = 137.0
 margin_bottom = 413.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
@@ -246,86 +245,86 @@ allow_reselect = true
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer"]
 margin_top = 425.0
-margin_right = 216.0
+margin_right = 137.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2"]
-margin_right = 216.0
+margin_right = 137.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="LabelGp" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav"]
 margin_top = 3.0
-margin_right = 192.0
+margin_right = 113.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Groupes"
 
 [node name="BtnAddGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav"]
-margin_left = 196.0
-margin_right = 216.0
+margin_left = 117.0
+margin_right = 137.0
 margin_bottom = 20.0
 text = "+"
 
 [node name="VBoxGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 24.0
-margin_right = 216.0
+margin_right = 137.0
 margin_bottom = 113.0
 rect_min_size = Vector2( 50, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxAgentsBehav" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer"]
-margin_left = 228.0
-margin_right = 444.0
+margin_left = 149.0
+margin_right = 298.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VSplitContainer" type="VSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav"]
-margin_right = 216.0
+margin_right = 149.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 split_offset = 150
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer"]
-margin_right = 216.0
+margin_right = 149.0
 margin_bottom = 413.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer"]
-margin_right = 216.0
+margin_right = 149.0
 margin_bottom = 20.0
 
 [node name="LabelPlusBehav" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
 margin_top = 3.0
-margin_right = 171.0
+margin_right = 104.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Comportements"
 
 [node name="BtnAddBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
 unique_name_in_owner = true
-margin_left = 175.0
-margin_right = 195.0
+margin_left = 108.0
+margin_right = 128.0
 margin_bottom = 20.0
 text = "+"
 
 [node name="BtnDelBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
-margin_left = 199.0
-margin_right = 216.0
+margin_left = 132.0
+margin_right = 149.0
 margin_bottom = 20.0
 text = "-"
 
 [node name="ListBehav" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 24.0
-margin_right = 216.0
+margin_right = 149.0
 margin_bottom = 413.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
@@ -336,38 +335,38 @@ allow_reselect = true
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer"]
 margin_top = 425.0
-margin_right = 216.0
+margin_right = 149.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxAddGrids" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2"]
-margin_right = 216.0
+margin_right = 149.0
 margin_bottom = 20.0
 
 [node name="LabelPlusGrid" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids"]
 margin_top = 3.0
-margin_right = 171.0
+margin_right = 104.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Grilles"
 
 [node name="BtnAddGrid" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids"]
-margin_left = 175.0
-margin_right = 195.0
+margin_left = 108.0
+margin_right = 128.0
 margin_bottom = 20.0
 text = "+"
 
 [node name="BtnDelGrid" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids"]
-margin_left = 199.0
-margin_right = 216.0
+margin_left = 132.0
+margin_right = 149.0
 margin_bottom = 20.0
 text = "-"
 
 [node name="ListGrids" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 24.0
-margin_right = 216.0
+margin_right = 149.0
 margin_bottom = 113.0
 rect_min_size = Vector2( 50, 0 )
 rect_clip_content = false
@@ -377,13 +376,14 @@ custom_styles/selected_focus = ExtResource( 1 )
 allow_reselect = true
 
 [node name="HSplitContainer2" type="HSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer"]
-margin_left = 456.0
+margin_left = 310.0
 margin_right = 1008.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="VSplitEnvCurves" type="VSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2"]
-margin_right = 240.0
+margin_right = 386.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -528,13 +528,13 @@ text = "
 
 [node name="VBoxEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
-margin_right = 240.0
+margin_right = 386.0
 margin_bottom = 413.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv"]
-margin_right = 240.0
+margin_right = 386.0
 margin_bottom = 20.0
 
 [node name="Button" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer"]
@@ -546,15 +546,15 @@ text = "Environnement"
 [node name="LabelEnv2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer"]
 margin_left = 113.0
 margin_top = 3.0
-margin_right = 125.0
+margin_right = 271.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "   "
 
 [node name="CmbEnvDraw" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 129.0
-margin_right = 191.0
+margin_left = 275.0
+margin_right = 337.0
 margin_bottom = 20.0
 hint_tooltip = "Pen"
 text = "Point"
@@ -562,14 +562,14 @@ items = [ "Point", null, false, 0, null, "Spray", null, false, 1, null, "Ligne",
 selected = 0
 
 [node name="ButtonClearEnv" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer"]
-margin_left = 195.0
-margin_right = 240.0
+margin_left = 341.0
+margin_right = 386.0
 margin_bottom = 20.0
 text = "Vider"
 
 [node name="ViewportContainer" type="ViewportContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv"]
 margin_top = 24.0
-margin_right = 240.0
+margin_right = 386.0
 margin_bottom = 409.0
 rect_min_size = Vector2( 100, 0 )
 rect_clip_content = true
@@ -578,7 +578,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="Viewport" type="Viewport" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer"]
-size = Vector2( 240, 385 )
+size = Vector2( 386, 385 )
 handle_input_locally = false
 render_target_update_mode = 3
 
@@ -614,7 +614,7 @@ material/0 = SubResource( 5 )
 
 [node name="ToolbarPaint" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv"]
 margin_top = 413.0
-margin_right = 240.0
+margin_right = 386.0
 margin_bottom = 413.0
 grow_horizontal = 0
 alignment = 1
@@ -622,32 +622,32 @@ alignment = 1
 [node name="VBoxCurves" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
 margin_top = 425.0
-margin_right = 240.0
+margin_right = 386.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxCurves"]
-margin_right = 240.0
+margin_right = 386.0
 margin_bottom = 20.0
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxCurves/HBoxContainer"]
 margin_top = 3.0
-margin_right = 184.0
+margin_right = 330.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Courbes"
 
 [node name="ButtonExportGraph" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxCurves/HBoxContainer"]
-margin_left = 188.0
-margin_right = 240.0
+margin_left = 334.0
+margin_right = 386.0
 margin_bottom = 20.0
 text = "Export"
 
 [node name="PanelGraph" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxCurves"]
 unique_name_in_owner = true
 margin_top = 24.0
-margin_right = 240.0
+margin_right = 386.0
 margin_bottom = 113.0
 rect_min_size = Vector2( 100, 0 )
 size_flags_horizontal = 3
@@ -655,7 +655,7 @@ size_flags_vertical = 3
 
 [node name="TextureGraph" type="TextureRect" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxCurves/PanelGraph"]
 unique_name_in_owner = true
-margin_right = 240.0
+margin_right = 386.0
 margin_bottom = 89.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -664,8 +664,8 @@ flip_v = true
 
 [node name="TabContainer" type="TabContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2"]
 unique_name_in_owner = true
-margin_left = 252.0
-margin_right = 552.0
+margin_left = 398.0
+margin_right = 698.0
 margin_bottom = 538.0
 rect_min_size = Vector2( 300, 0 )
 size_flags_vertical = 3
