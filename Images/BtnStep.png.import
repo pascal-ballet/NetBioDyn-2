@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/RandomForce.png-29e62c630f22d8255b8ca58c4b3c0cd5.stex"
+path="res://.import/BtnStep.png-b57ba69f3f96a0bf8cae08f1daae6650.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/NetBioDyn-2/8-Images/RandomForce.png"
-dest_files=[ "res://.import/RandomForce.png-29e62c630f22d8255b8ca58c4b3c0cd5.stex" ]
+source_file="res://Images/BtnStep.png"
+dest_files=[ "res://.import/BtnStep.png-b57ba69f3f96a0bf8cae08f1daae6650.stex" ]
 
 [params]
 

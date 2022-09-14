@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/BtnPause.png-9558b5ab640b71f99ca9cc8cec240240.stex"
+path="res://.import/BtnPlay.png-3e1818fbc089057c9859906b4e4609c8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/NetBioDyn-2/8-Images/BtnPause.png"
-dest_files=[ "res://.import/BtnPause.png-9558b5ab640b71f99ca9cc8cec240240.stex" ]
+source_file="res://Images/BtnPlay.png"
+dest_files=[ "res://.import/BtnPlay.png-3e1818fbc089057c9859906b4e4609c8.stex" ]
 
 [params]
 

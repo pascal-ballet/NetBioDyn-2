@@ -9,30 +9,23 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node",
-"class": "NBD_Agent",
-"language": "GDScript",
-"path": "res://addons/NetBioDyn-2/7-Engine/agent.gd"
-}, {
 "base": "Object",
 "class": "TypeFormattingLogic",
 "language": "GDScript",
 "path": "res://addons/metadata_inspector/TypeFormattingLogic.gd"
 } ]
 _global_script_class_icons={
-"NBD_Agent": "",
 "TypeFormattingLogic": ""
 }
 
 [application]
 
 config/name="NetBioDyn-2"
-run/main_scene="res://scene.tscn"
-config/icon="res://icon.png"
+run/main_scene="res://ScBioDyn2.tscn"
 
 [autoload]
 
-NetBioDyn2gui="*res://addons/NetBioDyn-2/7-Engine/NetBioDyn2GUI.gd"
+NetBioDyn2gui="*res://NetBioDyn2GUI.gd"
 
 [display]
 

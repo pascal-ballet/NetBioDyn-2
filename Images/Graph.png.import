@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/agent.png-71735bc4e4f0d0c978d5c9007379e09b.stex"
+path="res://.import/Graph.png-d59d68e09b19c029d346c9daaf500904.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/NetBioDyn-2/7-Engine/agent.png"
-dest_files=[ "res://.import/agent.png-71735bc4e4f0d0c978d5c9007379e09b.stex" ]
+source_file="res://Images/Graph.png"
+dest_files=[ "res://.import/Graph.png-d59d68e09b19c029d346c9daaf500904.stex" ]
 
 [params]
 

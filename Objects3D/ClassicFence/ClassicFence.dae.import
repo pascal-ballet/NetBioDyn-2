@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/ClassicFence.dae-042279d0e240b510a7d1834ce393496a.scn"
+path="res://.import/ClassicFence.dae-9430ef69db1cd1e43de48b477e0bef20.scn"
 
 [deps]
 
-source_file="res://addons/NetBioDyn-2/2-Objects3D/ClassicFence/ClassicFence.dae"
-dest_files=[ "res://.import/ClassicFence.dae-042279d0e240b510a7d1834ce393496a.scn" ]
+source_file="res://Objects3D/ClassicFence/ClassicFence.dae"
+dest_files=[ "res://.import/ClassicFence.dae-9430ef69db1cd1e43de48b477e0bef20.scn" ]
 
 [params]
 
