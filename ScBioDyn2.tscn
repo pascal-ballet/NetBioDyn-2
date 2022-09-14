@@ -389,47 +389,145 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 split_offset = 150
 
-[node name="GraphBehav" type="GraphEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
+[node name="GraphBehav" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
-visible = false
 margin_right = 342.0
-margin_bottom = 413.0
+margin_bottom = 538.0
+
+[node name="HBoxCdts" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
+margin_right = 342.0
+margin_bottom = 20.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts"]
+margin_top = 3.0
+margin_right = 80.0
+margin_bottom = 17.0
+text = "Conditions : "
+
+[node name="OptAction2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts"]
+unique_name_in_owner = true
+margin_left = 84.0
+margin_right = 294.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Changer"
+flat = true
+items = [ "Choix agent", null, false, 0, null, "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Changer", null, false, 3, null, "Produire Agt3", null, false, 4, null, "Supprimer", null, false, 5, null ]
+selected = 3
+
+[node name="Button6" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts"]
+margin_left = 298.0
+margin_right = 318.0
+margin_bottom = 20.0
+text = "C"
+
+[node name="Button" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts"]
+margin_left = 322.0
+margin_right = 342.0
+margin_bottom = 20.0
+text = "X"
+
+[node name="HBoxActs" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
+margin_top = 24.0
+margin_right = 342.0
+margin_bottom = 44.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxActs"]
+margin_top = 3.0
+margin_right = 60.0
+margin_bottom = 17.0
+text = "Actions : "
+
+[node name="OptAction" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxActs"]
+unique_name_in_owner = true
+margin_left = 64.0
+margin_right = 318.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Changer"
+flat = true
+items = [ "Param", null, false, 0, null, "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Changer", null, false, 3, null, "Produire Agt3", null, false, 4, null, "Supprimer", null, false, 5, null ]
+selected = 3
+
+[node name="Button5" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxActs"]
+margin_left = 322.0
+margin_right = 342.0
+margin_bottom = 20.0
+text = "+"
+
+[node name="GraphEdit" type="GraphEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
+margin_top = 48.0
+margin_right = 342.0
+margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-scroll_offset = Vector2( 0, -35 )
+scroll_offset = Vector2( 0, -60 )
 zoom_min = 1.0
 zoom_max = 1.0
 minimap_enabled = false
 
-[node name="Button" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
-margin_right = 12.0
-margin_bottom = 20.0
-text = "x"
-
-[node name="GraphNodeCdt" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
+[node name="GraphNodeCdt" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit"]
 margin_left = 20.0
-margin_top = 95.0
-margin_right = 126.0
-margin_bottom = 125.0
+margin_top = 120.0
+margin_right = 149.0
+margin_bottom = 185.0
 mouse_filter = 1
-title = "Condition"
+title = "Début"
 offset = Vector2( 20, 60 )
-show_close = true
-resizable = true
+selected = true
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
 
-[node name="GraphNodeAct" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
-margin_left = 160.0
-margin_top = 95.0
-margin_right = 266.0
-margin_bottom = 125.0
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/GraphNodeCdt"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 113.0
+margin_bottom = 38.0
+text = "Agent / Groupe"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/GraphNodeCdt"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 113.0
+margin_bottom = 59.0
+
+[node name="GraphNodeAct" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit"]
+margin_left = 260.0
+margin_top = 120.0
+margin_right = 366.0
+margin_bottom = 198.0
 mouse_filter = 1
-title = "Action"
-offset = Vector2( 160, 60 )
-show_close = true
-resizable = true
+title = "Fin"
+offset = Vector2( 260, 60 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/GraphNodeAct"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 90.0
+margin_bottom = 72.0
+text = "
+|
+"
 
 [node name="VBoxEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
+visible = false
 margin_right = 342.0
 margin_bottom = 413.0
 size_flags_horizontal = 3
@@ -482,7 +580,7 @@ stretch = true
 [node name="Viewport" type="Viewport" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer"]
 size = Vector2( 342, 385 )
 handle_input_locally = false
-render_target_update_mode = 3
+render_target_update_mode = 0
 
 [node name="Camera" type="Camera" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer/Viewport"]
 unique_name_in_owner = true
@@ -523,7 +621,7 @@ alignment = 1
 
 [node name="VBoxCurves" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
-margin_top = 425.0
+visible = false
 margin_right = 342.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
@@ -550,7 +648,7 @@ text = "Export"
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 342.0
-margin_bottom = 113.0
+margin_bottom = 538.0
 rect_min_size = Vector2( 100, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -558,7 +656,7 @@ size_flags_vertical = 3
 [node name="TextureGraph" type="TextureRect" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxCurves/PanelGraph"]
 unique_name_in_owner = true
 margin_right = 342.0
-margin_bottom = 89.0
+margin_bottom = 514.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch_mode = 1
@@ -1465,16 +1563,6 @@ margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="OptAction" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
-unique_name_in_owner = true
-margin_right = 144.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-text = "Changer"
-flat = true
-items = [ "Param", null, false, 0, null, "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Changer", null, false, 3, null, "Produire Agt3", null, false, 4, null, "Supprimer", null, false, 5, null ]
-selected = 3
-
 [node name="HBoxActionParam" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
 visible = false
 margin_left = 84.0
@@ -2081,7 +2169,9 @@ text = "-"
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids/BtnAddGrid" to="." method="_on_BtnAddGrid_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids/BtnDelGrid" to="." method="_on_BtnDelGrid_pressed"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/ListGrids" to="." method="_on_ListGrids_item_selected"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/Button" to="." method="_on_hide_graph_behav"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts/OptAction2" to="." method="_on_OptAction_item_selected"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts/Button" to="." method="_on_hide_graph_behav"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxActs/OptAction" to="." method="_on_OptAction_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/Button" to="." method="_on_Button_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/ButtonClearEnv" to="." method="_on_ButtonClearEnv_pressed"]
 [connection signal="gui_input" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer" to="." method="_on_ViewportContainer_gui_input"]
@@ -2121,7 +2211,6 @@ text = "-"
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxProba/ParamBehavProba" to="." method="GUI_param_updated"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria/CriteriaValue" to="." method="GUI_param_updated"]
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria/CriteriaValue" to="." method="GUI_param_updated"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/OptAction" to="." method="_on_OptAction_item_selected"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam/CriteriaValue" to="." method="GUI_param_updated"]
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam/CriteriaValue" to="." method="GUI_param_updated"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce/CriteriaValue" to="." method="GUI_param_updated"]
