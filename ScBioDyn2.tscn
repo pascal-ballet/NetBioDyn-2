@@ -391,8 +391,9 @@ split_offset = 150
 
 [node name="GraphBehav" type="GraphEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
+visible = false
 margin_right = 342.0
-margin_bottom = 538.0
+margin_bottom = 413.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 scroll_offset = Vector2( 0, -35 )
@@ -429,7 +430,6 @@ resizable = true
 
 [node name="VBoxEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
-visible = false
 margin_right = 342.0
 margin_bottom = 413.0
 size_flags_horizontal = 3
@@ -482,7 +482,7 @@ stretch = true
 [node name="Viewport" type="Viewport" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer"]
 size = Vector2( 342, 385 )
 handle_input_locally = false
-render_target_update_mode = 0
+render_target_update_mode = 3
 
 [node name="Camera" type="Camera" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer/Viewport"]
 unique_name_in_owner = true
@@ -523,7 +523,7 @@ alignment = 1
 
 [node name="VBoxCurves" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
-visible = false
+margin_top = 425.0
 margin_right = 342.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
@@ -550,7 +550,7 @@ text = "Export"
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 342.0
-margin_bottom = 538.0
+margin_bottom = 113.0
 rect_min_size = Vector2( 100, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -558,7 +558,7 @@ size_flags_vertical = 3
 [node name="TextureGraph" type="TextureRect" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxCurves/PanelGraph"]
 unique_name_in_owner = true
 margin_right = 342.0
-margin_bottom = 514.0
+margin_bottom = 89.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch_mode = 1
