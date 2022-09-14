@@ -1056,6 +1056,24 @@ func behavior_GUI_to_META() -> void:
 		script.reload()
 		behav.set_script(script)
 
+
+
+
+
+# ██████  ███████ ███    ██ ███████ ██████  ██  ██████ 
+#██       ██      ████   ██ ██      ██   ██ ██ ██      
+#██   ███ █████   ██ ██  ██ █████   ██████  ██ ██      
+#██    ██ ██      ██  ██ ██ ██      ██   ██ ██ ██      
+# ██████  ███████ ██   ████ ███████ ██   ██ ██  ██████ 
+													 
+
+
+
+
+# ************************************************************
+#                           Generic                           *
+# ************************************************************
+
 # GENERIC
 func _on_OptAction_item_selected(index: int) -> void:
 	var opt_action:Node = get_node("%OptAction")
@@ -1065,6 +1083,18 @@ func _on_OptAction_item_selected(index: int) -> void:
 	# show selected criteria
 	var selected_action:Node = opt_action.get_parent().get_child(index+1)
 	selected_action.visible = true
+
+func _on_show_graph_behav()->void:
+	get_node("%VBoxEnv").visible 		= false
+	get_node("%VBoxCurves").visible 		= false
+	get_node("%TabContainer").visible 	= false
+	get_node("%GraphBehav").visible 		= true
+
+func _on_hide_graph_behav()->void:
+	get_node("%GraphBehav").visible 		= false
+	get_node("%VBoxEnv").visible 		= true
+	get_node("%VBoxCurves").visible 		= true
+	get_node("%TabContainer").visible 	= true
 
 
 
@@ -1724,7 +1754,7 @@ func manage_graph() -> void:
 	
 	# Draw
 	if _step > 0: # == 200:
-		print(str("_step=",_step))
+		#print(str("_step=",_step))
 		img.fill(Color(1,1,1))
 		img.lock()
 		var i0:float = 0
