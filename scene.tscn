@@ -6,6 +6,7 @@ anchor_bottom = 1.0
 margin_right = -624.0
 margin_bottom = -300.0
 rect_scale = Vector2( 4, 4 )
-text = "Try a scene example by
-opening the folder :
-addons / NetBioDyn-2 / SceneExamples"
+text = "Try NetBioDyn 2 by opening
+addons/NetBioDyn2/ScBioDyn2.tscn
+Load an exampe from the folder:
+Simulations"
