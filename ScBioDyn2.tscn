@@ -1614,7 +1614,6 @@ size_flags_horizontal = 3
 text = "10"
 
 [node name="Env" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -1656,7 +1655,7 @@ margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
-text = "80"
+text = "160"
 
 [node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_top = 46.0
@@ -2009,7 +2008,7 @@ transform = Transform( 1, 0, 0, 0, 0.5, -0.866025, 0, 0.866025, 0.5, 0, 12, 0 )
 
 [node name="EnvBorders" type="MeshInstance" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer/Viewport"]
 unique_name_in_owner = true
-transform = Transform( 40, 0, 0, 0, 1, 0, 0, 0, 40, 0, 3, 0 )
+transform = Transform( 80, 0, 0, 0, 1, 0, 0, 0, 40, 0, 3, 0 )
 mesh = SubResource( 2 )
 skeleton = NodePath("../Simulator")
 material/0 = SubResource( 5 )

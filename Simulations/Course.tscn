@@ -1,0 +1,2164 @@
+[gd_scene load_steps=52 format=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0.735984, 0.621225, 0.962688, 1 )
+
+[sub_resource type="SphereMesh" id=2]
+
+[sub_resource type="SphereShape" id=3]
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.978975, 0.256011, 0.734578, 1 )
+
+[sub_resource type="SphereMesh" id=5]
+
+[sub_resource type="SphereShape" id=6]
+
+[sub_resource type="GDScript" id=7]
+script/source = "
+extends Node
+# Default Behavior
+func action(tree, agent) -> void:
+	if agent.get_meta(\"Name\") == \"Tete\" || agent.is_in_group(\"Tete\"):
+		var alpha:float = randf() * 0.698132 - 0.698132 /2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3(0.602617 * cos(alpha+0),0, 0.602617*sin(alpha+0)))
+"
+
+[sub_resource type="GDScript" id=8]
+script/source = "
+extends Node
+# Default Behavior
+func action(tree, agent) -> void:
+	if agent.get_meta(\"Name\") == \"queue\" || agent.is_in_group(\"queue\"):
+		var alpha:float = randf() * 3.141593 - 3.141593 /2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3(0.078995 * cos(alpha+3.141593),0, 0.078995*sin(alpha+3.141593)))
+"
+
+[sub_resource type="GDScript" id=9]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 5
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Tete\" || R1.is_in_group(\"Tete\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"0\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"R1\" != \"0\" && \"R1\" != \"R1\" && \"R1\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"R1\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"R1\" == \"0\" || \"R1\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"queue\" != \"0\" && \"queue\" != \"R1\" && \"queue\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"queue\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"queue\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"0\" || R2.is_in_group(\"0\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"R1\" != \"0\" && \"R1\" != \"R1\" && \"R1\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"R1\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"R1\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"R1\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"queue\" != \"0\" && \"queue\" != \"R1\" && \"queue\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"queue\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"queue\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"queue\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=10]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1) -> void:
+	var proba:float = 1
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"queue\" || R1.is_in_group(\"queue\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			var nb_agents:int 	= R1.get_parent().get_child_count()
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"0\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"0\" == \"0\" || \"0\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"0\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"0\" || R2.is_in_group(\"0\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"0\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"0\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"0\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"0\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="SphereShape" id=11]
+
+[sub_resource type="SphereShape" id=12]
+
+[sub_resource type="SphereShape" id=13]
+
+[sub_resource type="SphereShape" id=14]
+
+[sub_resource type="SphereShape" id=15]
+
+[sub_resource type="SphereShape" id=16]
+
+[sub_resource type="SphereShape" id=17]
+
+[sub_resource type="SphereShape" id=18]
+
+[sub_resource type="SphereShape" id=19]
+
+[sub_resource type="SphereShape" id=20]
+
+[sub_resource type="SphereShape" id=21]
+
+[sub_resource type="SphereShape" id=22]
+
+[sub_resource type="SphereShape" id=23]
+
+[sub_resource type="SphereShape" id=24]
+
+[sub_resource type="SphereShape" id=25]
+
+[sub_resource type="SphereShape" id=26]
+
+[sub_resource type="SphereShape" id=27]
+
+[sub_resource type="SphereShape" id=28]
+
+[sub_resource type="SphereShape" id=29]
+
+[sub_resource type="SphereShape" id=30]
+
+[sub_resource type="SphereShape" id=31]
+
+[sub_resource type="SphereShape" id=32]
+
+[sub_resource type="SphereShape" id=33]
+
+[sub_resource type="SphereShape" id=34]
+
+[sub_resource type="SphereShape" id=35]
+
+[sub_resource type="SphereShape" id=36]
+
+[sub_resource type="SphereShape" id=37]
+
+[sub_resource type="SphereShape" id=38]
+
+[sub_resource type="SphereShape" id=39]
+
+[sub_resource type="SphereShape" id=40]
+
+[sub_resource type="SphereShape" id=41]
+
+[sub_resource type="SphereShape" id=42]
+
+[sub_resource type="SphereShape" id=43]
+
+[sub_resource type="SphereShape" id=44]
+
+[sub_resource type="SphereShape" id=45]
+
+[sub_resource type="SphereShape" id=46]
+
+[sub_resource type="SphereShape" id=47]
+
+[sub_resource type="SphereShape" id=48]
+
+[sub_resource type="SphereShape" id=49]
+
+[sub_resource type="SphereShape" id=50]
+
+[sub_resource type="SphereShape" id=51]
+
+[node name="Simulator" type="Spatial"]
+
+[node name="Entities" type="Node" parent="."]
+
+[node name="Tete" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -997.976, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Entities/Tete"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Entities/Tete"]
+shape = SubResource( 3 )
+
+[node name="queue" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1000.02, 0, 0 )
+visible = false
+mass = 0.3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "queue"
+}
+
+[node name="152" type="MeshInstance" parent="Entities/queue"]
+transform = Transform( 0.39, 0, 0, 0, 0.39, 0, 0, 0, 0.39, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="201" type="CollisionShape" parent="Entities/queue"]
+transform = Transform( 0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0 )
+shape = SubResource( 6 )
+
+[node name="Behaviors" type="Node" parent="."]
+
+[node name="154" type="Node" parent="Behaviors"]
+script = SubResource( 7 )
+__meta__ = {
+"Agents": "Tete",
+"Angle": "40",
+"Dir": "0",
+"Intensity": "5",
+"Name": "Mvt Tete",
+"Type": "Random Force"
+}
+
+[node name="202" type="Node" parent="Behaviors"]
+script = SubResource( 8 )
+__meta__ = {
+"Agents": "queue",
+"Angle": "180",
+"Dir": "180",
+"Intensity": "2",
+"Name": "Force aléatoire",
+"Type": "Random Force"
+}
+
+[node name="203" type="Node" parent="Behaviors"]
+script = SubResource( 9 )
+__meta__ = {
+"Name": "zoom",
+"P1": "R1",
+"P2": "queue",
+"P3": "0",
+"R1": "Tete",
+"R2": "0",
+"Type": "Reaction",
+"p": "5"
+}
+
+[node name="204" type="Node" parent="Behaviors"]
+script = SubResource( 10 )
+__meta__ = {
+"Name": "mort q",
+"P1": "0",
+"P2": "0",
+"P3": "0",
+"R1": "queue",
+"R2": "0",
+"Type": "Reaction",
+"p": "1"
+}
+
+[node name="Groups" type="Node" parent="."]
+
+[node name="Grids" type="Node" parent="."]
+
+[node name="Environment" type="Node" parent="."]
+__meta__ = {
+"SX": 160.0,
+"SY": 0.0,
+"SZ": 80.0,
+"Toric": true,
+"Unity": "mm"
+}
+
+[node name="Tete" type="RigidBody" parent="Environment"]
+transform = Transform( -0.936393, 0, -0.350952, 0, 1, 0, 0.350952, 0, -0.936393, -13.9115, 0, 34.0167 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53809" type="CollisionShape" parent="Environment/Tete"]
+shape = SubResource( 11 )
+
+[node name="Tete155" type="RigidBody" parent="Environment"]
+transform = Transform( -0.812157, 0, -0.583439, 0, 1, 0, 0.583439, 0, -0.812157, -15.6743, 0, 32.9966 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete155"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53810" type="CollisionShape" parent="Environment/Tete155"]
+shape = SubResource( 12 )
+
+[node name="Tete156" type="RigidBody" parent="Environment"]
+transform = Transform( 0.967264, 0, -0.253772, 0, 1, 0, 0.253772, 0, 0.967264, -16.4181, 0, 31.1101 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete156"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53811" type="CollisionShape" parent="Environment/Tete156"]
+shape = SubResource( 13 )
+
+[node name="Tete157" type="RigidBody" parent="Environment"]
+transform = Transform( 0.21518, 0, -0.976574, 0, 1, 0, 0.976574, 0, 0.21518, -18.2467, 0, 30.2147 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete157"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53812" type="CollisionShape" parent="Environment/Tete157"]
+shape = SubResource( 14 )
+
+[node name="Tete158" type="RigidBody" parent="Environment"]
+transform = Transform( 0.342106, 0, 0.939661, 0, 1, 0, -0.939661, 0, 0.342106, -19.3566, 0, 28.5094 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete158"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53813" type="CollisionShape" parent="Environment/Tete158"]
+shape = SubResource( 15 )
+
+[node name="Tete159" type="RigidBody" parent="Environment"]
+transform = Transform( -0.963896, 0, 0.266279, 0, 1, 0, -0.266279, 0, -0.963896, -19.7377, 0, 26.5204 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete159"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53814" type="CollisionShape" parent="Environment/Tete159"]
+shape = SubResource( 16 )
+
+[node name="Tete160" type="RigidBody" parent="Environment"]
+transform = Transform( -0.0332129, 0, 0.999448, 0, 1, 0, -0.999448, 0, -0.0332129, -21.2129, 0, 25.1201 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete160"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53815" type="CollisionShape" parent="Environment/Tete160"]
+shape = SubResource( 17 )
+
+[node name="Tete161" type="RigidBody" parent="Environment"]
+transform = Transform( 0.938859, 0, 0.344301, 0, 1, 0, -0.344301, 0, 0.938859, -20.2757, 0, 23.313 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete161"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53816" type="CollisionShape" parent="Environment/Tete161"]
+shape = SubResource( 18 )
+
+[node name="Tete162" type="RigidBody" parent="Environment"]
+transform = Transform( -0.929896, 0, 0.367822, 0, 1, 0, -0.367822, 0, -0.929896, -19.4483, 0, 21.454 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete162"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53817" type="CollisionShape" parent="Environment/Tete162"]
+shape = SubResource( 19 )
+
+[node name="Tete163" type="RigidBody" parent="Environment"]
+transform = Transform( -0.318851, 0, 0.947805, 0, 1, 0, -0.947805, 0, -0.318851, -20.979, 0, 20.0994 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete163"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53818" type="CollisionShape" parent="Environment/Tete163"]
+shape = SubResource( 20 )
+
+[node name="Tete164" type="RigidBody" parent="Environment"]
+transform = Transform( -0.125085, 0, -0.992146, 0, 1, 0, 0.992146, 0, -0.125085, -21.1466, 0, 18.0548 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete164"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53819" type="CollisionShape" parent="Environment/Tete164"]
+shape = SubResource( 21 )
+
+[node name="Tete165" type="RigidBody" parent="Environment"]
+transform = Transform( 0.737724, 0, 0.675102, 0, 1, 0, -0.675102, 0, 0.737724, -19.0876, 0, 18.0513 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete165"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53820" type="CollisionShape" parent="Environment/Tete165"]
+shape = SubResource( 22 )
+
+[node name="Tete166" type="RigidBody" parent="Environment"]
+transform = Transform( 0.545758, 0, 0.837943, 0, 1, 0, -0.837943, 0, 0.545758, -19.8748, 0, 16.1598 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete166"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53821" type="CollisionShape" parent="Environment/Tete166"]
+shape = SubResource( 23 )
+
+[node name="Tete167" type="RigidBody" parent="Environment"]
+transform = Transform( -0.673508, 0, 0.73918, 0, 1, 0, -0.73918, 0, -0.673508, -17.9288, 0, 15.5625 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete167"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53822" type="CollisionShape" parent="Environment/Tete167"]
+shape = SubResource( 24 )
+
+[node name="Tete168" type="RigidBody" parent="Environment"]
+transform = Transform( 0.672809, 0, 0.739816, 0, 1, 0, -0.739816, 0, 0.672809, -19.0917, 0, 13.8888 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete168"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53823" type="CollisionShape" parent="Environment/Tete168"]
+shape = SubResource( 25 )
+
+[node name="Tete169" type="RigidBody" parent="Environment"]
+transform = Transform( -0.565095, 0, -0.825026, 0, 1, 0, 0.825026, 0, -0.565095, -17.753, 0, 12.3414 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete169"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53824" type="CollisionShape" parent="Environment/Tete169"]
+shape = SubResource( 26 )
+
+[node name="Tete170" type="RigidBody" parent="Environment"]
+transform = Transform( 0.25487, 0, 0.966975, 0, 1, 0, -0.966975, 0, 0.25487, -16.5824, 0, 10.6731 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete170"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53825" type="CollisionShape" parent="Environment/Tete170"]
+shape = SubResource( 27 )
+
+[node name="Tete171" type="RigidBody" parent="Environment"]
+transform = Transform( 0.957715, 0, 0.287718, 0, 1, 0, -0.287718, 0, 0.957715, -18.1589, 0, 9.34807 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete171"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53826" type="CollisionShape" parent="Environment/Tete171"]
+shape = SubResource( 28 )
+
+[node name="Tete172" type="RigidBody" parent="Environment"]
+transform = Transform( -0.0874417, 0, 0.99617, 0, 1, 0, -0.99617, 0, -0.0874417, -16.3551, 0, 8.36097 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete172"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53827" type="CollisionShape" parent="Environment/Tete172"]
+shape = SubResource( 29 )
+
+[node name="Tete173" type="RigidBody" parent="Environment"]
+transform = Transform( 0.979781, 0, -0.200073, 0, 1, 0, 0.200073, 0, 0.979781, -18.0751, 0, 7.25079 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete173"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53828" type="CollisionShape" parent="Environment/Tete173"]
+shape = SubResource( 30 )
+
+[node name="Tete174" type="RigidBody" parent="Environment"]
+transform = Transform( 0.882834, 0, 0.469685, 0, 1, 0, -0.469685, 0, 0.882834, -17.4943, 0, 5.30269 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete174"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53829" type="CollisionShape" parent="Environment/Tete174"]
+shape = SubResource( 31 )
+
+[node name="Tete175" type="RigidBody" parent="Environment"]
+transform = Transform( -0.94665, 0, 0.322264, 0, 1, 0, -0.322264, 0, -0.94665, -19.5067, 0, 4.99572 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete175"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53830" type="CollisionShape" parent="Environment/Tete175"]
+shape = SubResource( 32 )
+
+[node name="Tete176" type="RigidBody" parent="Environment"]
+transform = Transform( 0.658217, 0, -0.752828, 0, 1, 0, 0.752828, 0, 0.658217, -18.8436, 0, 3.05642 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete176"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53831" type="CollisionShape" parent="Environment/Tete176"]
+shape = SubResource( 33 )
+
+[node name="Tete177" type="RigidBody" parent="Environment"]
+transform = Transform( -0.331047, 0, -0.943614, 0, 1, 0, 0.943614, 0, -0.331047, -20.9279, 0, 3.55588 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete177"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53832" type="CollisionShape" parent="Environment/Tete177"]
+shape = SubResource( 34 )
+
+[node name="Tete178" type="RigidBody" parent="Environment"]
+transform = Transform( -0.219267, 0, -0.975665, 0, 1, 0, 0.975665, 0, -0.219267, -20.235, 0, 1.61759 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete178"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53833" type="CollisionShape" parent="Environment/Tete178"]
+shape = SubResource( 35 )
+
+[node name="Tete179" type="RigidBody" parent="Environment"]
+transform = Transform( -0.992464, 0, -0.122538, 0, 1, 0, 0.122538, 0, -0.992464, -21.2898, 0, -0.128755 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete179"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53834" type="CollisionShape" parent="Environment/Tete179"]
+shape = SubResource( 36 )
+
+[node name="Tete180" type="RigidBody" parent="Environment"]
+transform = Transform( 0.901107, 0, 0.433596, 0, 1, 0, -0.433596, 0, 0.901107, -23.3386, 0, -0.163054 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete180"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53835" type="CollisionShape" parent="Environment/Tete180"]
+shape = SubResource( 37 )
+
+[node name="Tete181" type="RigidBody" parent="Environment"]
+transform = Transform( 0.767114, 0, -0.641511, 0, 1, 0, 0.641511, 0, 0.767114, -22.3754, 0, -1.98575 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete181"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53836" type="CollisionShape" parent="Environment/Tete181"]
+shape = SubResource( 38 )
+
+[node name="Tete182" type="RigidBody" parent="Environment"]
+transform = Transform( -0.942964, 0, 0.332895, 0, 1, 0, -0.332895, 0, -0.942964, -24.3206, 0, -2.61968 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete182"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53837" type="CollisionShape" parent="Environment/Tete182"]
+shape = SubResource( 39 )
+
+[node name="Tete183" type="RigidBody" parent="Environment"]
+transform = Transform( -0.999694, 0, -0.0247537, 0, 1, 0, 0.0247537, 0, -0.999694, -25.8465, 0, -3.96375 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete183"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53838" type="CollisionShape" parent="Environment/Tete183"]
+shape = SubResource( 40 )
+
+[node name="Tete184" type="RigidBody" parent="Environment"]
+transform = Transform( -0.983475, 0, -0.181042, 0, 1, 0, 0.181042, 0, -0.983475, -24.3416, 0, -5.34368 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete184"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53839" type="CollisionShape" parent="Environment/Tete184"]
+shape = SubResource( 41 )
+
+[node name="Tete185" type="RigidBody" parent="Environment"]
+transform = Transform( -0.605219, 0, -0.796059, 0, 1, 0, 0.796059, 0, -0.605219, -25.2895, 0, -7.16544 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete185"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53840" type="CollisionShape" parent="Environment/Tete185"]
+shape = SubResource( 42 )
+
+[node name="Tete186" type="RigidBody" parent="Environment"]
+transform = Transform( 0.892729, 0, -0.450595, 0, 1, 0, 0.450595, 0, 0.892729, -26.7074, 0, -8.64269 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete186"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53841" type="CollisionShape" parent="Environment/Tete186"]
+shape = SubResource( 43 )
+
+[node name="Tete187" type="RigidBody" parent="Environment"]
+transform = Transform( -0.602311, 0, 0.798262, 0, 1, 0, -0.798262, 0, -0.602311, -25.5301, 0, -10.2816 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete187"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53842" type="CollisionShape" parent="Environment/Tete187"]
+shape = SubResource( 44 )
+
+[node name="Tete188" type="RigidBody" parent="Environment"]
+transform = Transform( -0.738322, 0, -0.674448, 0, 1, 0, 0.674448, 0, -0.738322, -25.5252, 0, -12.3165 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete188"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53843" type="CollisionShape" parent="Environment/Tete188"]
+shape = SubResource( 45 )
+
+[node name="Tete189" type="RigidBody" parent="Environment"]
+transform = Transform( 0.624695, 0, -0.780869, 0, 1, 0, 0.780869, 0, 0.624695, -26.7944, 0, -13.9222 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete189"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53844" type="CollisionShape" parent="Environment/Tete189"]
+shape = SubResource( 46 )
+
+[node name="Tete190" type="RigidBody" parent="Environment"]
+transform = Transform( 0.99927, 0, 0.0382102, 0, 1, 0, -0.0382102, 0, 0.99927, -25.0798, 0, -15.0228 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete190"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53845" type="CollisionShape" parent="Environment/Tete190"]
+shape = SubResource( 47 )
+
+[node name="Tete191" type="RigidBody" parent="Environment"]
+transform = Transform( -0.981608, 0, 0.190908, 0, 1, 0, -0.190908, 0, -0.981608, -26.4168, 0, -16.5655 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete191"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53846" type="CollisionShape" parent="Environment/Tete191"]
+shape = SubResource( 48 )
+
+[node name="Tete192" type="RigidBody" parent="Environment"]
+transform = Transform( -0.511054, 0, -0.859549, 0, 1, 0, 0.859549, 0, -0.511054, -25.5463, 0, -18.4126 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete192"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53847" type="CollisionShape" parent="Environment/Tete192"]
+shape = SubResource( 49 )
+
+[node name="Tete193" type="RigidBody" parent="Environment"]
+transform = Transform( 0.998451, 0, 0.0556425, 0, 1, 0, -0.0556425, 0, 0.998451, -23.4788, 0, -18.3804 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete193"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53848" type="CollisionShape" parent="Environment/Tete193"]
+shape = SubResource( 50 )
+
+[node name="Tete194" type="RigidBody" parent="Environment"]
+transform = Transform( 0.916244, 0, 0.40062, 0, 1, 0, -0.40062, 0, 0.916244, -24.4457, 0, -20.1778 )
+collision_mask = 3
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete194"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53849" type="CollisionShape" parent="Environment/Tete194"]
+shape = SubResource( 51 )
+
+[node name="Tete53850" type="RigidBody" parent="Environment"]
+transform = Transform( -0.389635, 0, -0.92097, 0, 1, 0, 0.92097, 0, -0.389635, 35.8349, 0, 34.4408 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53850"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53850"]
+shape = SubResource( 3 )
+
+[node name="Tete53851" type="RigidBody" parent="Environment"]
+transform = Transform( 0.863989, 0, 0.50351, 0, 1, 0, -0.50351, 0, 0.863989, 37.1989, 0, 32.9431 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53851"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53851"]
+shape = SubResource( 3 )
+
+[node name="Tete53852" type="RigidBody" parent="Environment"]
+transform = Transform( 0.0886751, 0, 0.996061, 0, 1, 0, -0.996061, 0, 0.0886751, 36.6148, 0, 30.9969 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53852"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53852"]
+shape = SubResource( 3 )
+
+[node name="Tete53853" type="RigidBody" parent="Environment"]
+transform = Transform( 0.778952, 0, -0.627083, 0, 1, 0, 0.627083, 0, 0.778952, 38.6779, 0, 30.8718 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53853"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53853"]
+shape = SubResource( 3 )
+
+[node name="Tete53854" type="RigidBody" parent="Environment"]
+transform = Transform( -0.141384, 0, -0.989955, 0, 1, 0, 0.989955, 0, -0.141384, 37.5254, 0, 29.1692 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53854"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53854"]
+shape = SubResource( 3 )
+
+[node name="Tete53855" type="RigidBody" parent="Environment"]
+transform = Transform( 0.71186, 0, 0.702321, 0, 1, 0, -0.702321, 0, 0.71186, 39.3958, 0, 28.3386 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53855"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53855"]
+shape = SubResource( 3 )
+
+[node name="Tete53856" type="RigidBody" parent="Environment"]
+transform = Transform( 0.977776, 0, 0.209654, 0, 1, 0, -0.209654, 0, 0.977776, 38.234, 0, 26.6594 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53856"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53856"]
+shape = SubResource( 3 )
+
+[node name="Tete53857" type="RigidBody" parent="Environment"]
+transform = Transform( -0.878784, 0, -0.477219, 0, 1, 0, 0.477219, 0, -0.878784, 40.0923, 0, 25.8436 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53857"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53857"]
+shape = SubResource( 3 )
+
+[node name="Tete53858" type="RigidBody" parent="Environment"]
+transform = Transform( -0.887462, 0, 0.460881, 0, 1, 0, -0.460881, 0, -0.887462, 38.7793, 0, 24.3334 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53858"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53858"]
+shape = SubResource( 3 )
+
+[node name="Tete53859" type="RigidBody" parent="Environment"]
+transform = Transform( -0.236552, 0, 0.971619, 0, 1, 0, -0.971619, 0, -0.236552, 40.1685, 0, 22.8753 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53859"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53859"]
+shape = SubResource( 3 )
+
+[node name="Tete53860" type="RigidBody" parent="Environment"]
+transform = Transform( -0.571602, 0, -0.820531, 0, 1, 0, 0.820531, 0, -0.571602, 38.8838, 0, 21.3331 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53860"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53860"]
+shape = SubResource( 3 )
+
+[node name="Tete53861" type="RigidBody" parent="Environment"]
+transform = Transform( 0.949451, 0, -0.313915, 0, 1, 0, 0.313915, 0, 0.949451, 39.32, 0, 19.3694 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53861"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53861"]
+shape = SubResource( 3 )
+
+[node name="Tete53862" type="RigidBody" parent="Environment"]
+transform = Transform( -0.869983, 0, -0.493082, 0, 1, 0, 0.493082, 0, -0.869983, 37.6396, 0, 18.2715 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53862"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53862"]
+shape = SubResource( 3 )
+
+[node name="Tete53863" type="RigidBody" parent="Environment"]
+transform = Transform( -0.936368, 0, 0.351019, 0, 1, 0, -0.351019, 0, -0.936368, 37.1238, 0, 16.3079 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53863"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53863"]
+shape = SubResource( 3 )
+
+[node name="Tete53864" type="RigidBody" parent="Environment"]
+transform = Transform( 0.732613, 0, -0.680645, 0, 1, 0, 0.680645, 0, 0.732613, 35.1221, 0, 16.426 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53864"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53864"]
+shape = SubResource( 3 )
+
+[node name="Tete53865" type="RigidBody" parent="Environment"]
+transform = Transform( -0.945084, 0, -0.326828, 0, 1, 0, 0.326828, 0, -0.945084, 37.7475, 0, 14.3977 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53865"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53865"]
+shape = SubResource( 3 )
+
+[node name="Tete53866" type="RigidBody" parent="Environment"]
+transform = Transform( 0.619865, 0, 0.784708, 0, 1, 0, -0.784708, 0, 0.619865, 35.5072, 0, 14.4519 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53866"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53866"]
+shape = SubResource( 3 )
+
+[node name="Tete53867" type="RigidBody" parent="Environment"]
+transform = Transform( -0.412686, 0, 0.910874, 0, 1, 0, -0.910874, 0, -0.412686, 36.7115, 0, 12.6489 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53867"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53867"]
+shape = SubResource( 3 )
+
+[node name="Tete53868" type="RigidBody" parent="Environment"]
+transform = Transform( -0.429913, 0, -0.90287, 0, 1, 0, 0.90287, 0, -0.429913, 33.924, 0, 13.2243 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53868"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53868"]
+shape = SubResource( 3 )
+
+[node name="Tete53869" type="RigidBody" parent="Environment"]
+transform = Transform( -0.0209427, 0, 0.999781, 0, 1, 0, -0.999781, 0, -0.0209427, 35.0218, 0, 11.5291 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53869"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53869"]
+shape = SubResource( 3 )
+
+[node name="Tete53870" type="RigidBody" parent="Environment"]
+transform = Transform( 0.879606, 0, 0.475703, 0, 1, 0, -0.475703, 0, 0.879606, 32.5681, 0, 11.6845 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53870"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53870"]
+shape = SubResource( 3 )
+
+[node name="Tete53871" type="RigidBody" parent="Environment"]
+transform = Transform( 0.473329, 0, -0.880886, 0, 1, 0, 0.880886, 0, 0.473329, 33.6947, 0, 9.9858 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53871"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53871"]
+shape = SubResource( 3 )
+
+[node name="Tete53872" type="RigidBody" parent="Environment"]
+transform = Transform( 0.740381, 0, -0.672187, 0, 1, 0, 0.672187, 0, 0.740381, 33.8429, 0, 7.96407 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53872"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53872"]
+shape = SubResource( 3 )
+
+[node name="Tete53873" type="RigidBody" parent="Environment"]
+transform = Transform( -0.822102, 0, -0.56934, 0, 1, 0, 0.56934, 0, -0.822102, 31.8762, 0, 7.42389 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53873"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53873"]
+shape = SubResource( 3 )
+
+[node name="Tete53874" type="RigidBody" parent="Environment"]
+transform = Transform( 0.234003, 0, 0.972236, 0, 1, 0, -0.972236, 0, 0.234003, 33.7563, 0, 5.89729 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53874"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53874"]
+shape = SubResource( 3 )
+
+[node name="Tete53875" type="RigidBody" parent="Environment"]
+transform = Transform( 0.191769, 0, -0.98144, 0, 1, 0, 0.98144, 0, 0.191769, 31.5308, 0, 5.41951 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53875"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53875"]
+shape = SubResource( 3 )
+
+[node name="Tete53876" type="RigidBody" parent="Environment"]
+transform = Transform( -0.716436, 0, -0.697652, 0, 1, 0, 0.697652, 0, -0.716436, 32.9154, 0, 3.91333 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53876"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53876"]
+shape = SubResource( 3 )
+
+[node name="Tete53877" type="RigidBody" parent="Environment"]
+transform = Transform( 0.406675, 0, 0.913573, 0, 1, 0, -0.913573, 0, 0.406675, 34.0826, 0, 2.23466 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53877"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53877"]
+shape = SubResource( 3 )
+
+[node name="Tete53878" type="RigidBody" parent="Environment"]
+transform = Transform( 0.990073, 0, -0.140555, 0, 1, 0, 0.140555, 0, 0.990073, 32.9441, 0, 0.540022 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53878"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53878"]
+shape = SubResource( 3 )
+
+[node name="Tete53879" type="RigidBody" parent="Environment"]
+transform = Transform( 0.991274, 0, -0.131815, 0, 1, 0, 0.131815, 0, 0.991274, 34.9116, 0, -0.0505547 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53879"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53879"]
+shape = SubResource( 3 )
+
+[node name="Tete53880" type="RigidBody" parent="Environment"]
+transform = Transform( 0.89393, 0, -0.448206, 0, 1, 0, 0.448206, 0, 0.89393, 33.8167, 0, -1.77996 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53880"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53880"]
+shape = SubResource( 3 )
+
+[node name="Tete53881" type="RigidBody" parent="Environment"]
+transform = Transform( 0.15162, 0, -0.988439, 0, 1, 0, 0.988439, 0, 0.15162, 35.8202, 0, -2.11921 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53881"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53881"]
+shape = SubResource( 3 )
+
+[node name="Tete53882" type="RigidBody" parent="Environment"]
+transform = Transform( -0.684292, 0, 0.729209, 0, 1, 0, -0.729209, 0, -0.684292, 35.4745, 0, -4.12747 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53882"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53882"]
+shape = SubResource( 3 )
+
+[node name="Tete53883" type="RigidBody" parent="Environment"]
+transform = Transform( 0.644234, 0, -0.764829, 0, 1, 0, 0.764829, 0, 0.644234, 35.0568, 0, -6.10023 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53883"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53883"]
+shape = SubResource( 3 )
+
+[node name="Tete53884" type="RigidBody" parent="Environment"]
+transform = Transform( -0.0699754, 0, -0.997549, 0, 1, 0, 0.997549, 0, -0.0699754, 36.9003, 0, -7.06354 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53884"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53884"]
+shape = SubResource( 3 )
+
+[node name="Tete53885" type="RigidBody" parent="Environment"]
+transform = Transform( 0.571122, 0, 0.820865, 0, 1, 0, -0.820865, 0, 0.571122, 35.0899, 0, -8.11296 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53885"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53885"]
+shape = SubResource( 3 )
+
+[node name="Tete53886" type="RigidBody" parent="Environment"]
+transform = Transform( -0.0259132, 0, 0.999664, 0, 1, 0, -0.999664, 0, -0.0259132, 36.9799, 0, -9.09576 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53886"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53886"]
+shape = SubResource( 3 )
+
+[node name="Tete53887" type="RigidBody" parent="Environment"]
+transform = Transform( 0.605181, 0, 0.796088, 0, 1, 0, -0.796088, 0, 0.605181, 35.1972, 0, -10.1203 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53887"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53887"]
+shape = SubResource( 3 )
+
+[node name="Tete53888" type="RigidBody" parent="Environment"]
+transform = Transform( -0.807357, 0, -0.590063, 0, 1, 0, 0.590063, 0, -0.807357, 37.0579, 0, -11.1394 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53888"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53888"]
+shape = SubResource( 3 )
+
+[node name="Tete53889" type="RigidBody" parent="Environment"]
+transform = Transform( 0.140567, 0, -0.990071, 0, 1, 0, 0.990071, 0, 0.140567, 35.1906, 0, -12.1466 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53889"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53889"]
+shape = SubResource( 3 )
+
+[node name="Tete53890" type="RigidBody" parent="Environment"]
+transform = Transform( -0.441615, 0, 0.897205, 0, 1, 0, -0.897205, 0, -0.441615, 36.9713, 0, -13.1403 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53890"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53890"]
+shape = SubResource( 3 )
+
+[node name="Tete53891" type="RigidBody" parent="Environment"]
+transform = Transform( 0.204473, 0, -0.978872, 0, 1, 0, 0.978872, 0, 0.204473, 35.6807, 0, -14.6705 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53891"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53891"]
+shape = SubResource( 3 )
+
+[node name="Tete53892" type="RigidBody" parent="Environment"]
+transform = Transform( 0.800257, 0, 0.599657, 0, 1, 0, -0.599657, 0, 0.800257, 36.4269, 0, -16.5264 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53892"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53892"]
+shape = SubResource( 3 )
+
+[node name="Tete53893" type="RigidBody" parent="Environment"]
+transform = Transform( 0.58788, 0, 0.808948, 0, 1, 0, -0.808948, 0, 0.58788, 35.139, 0, -18.0572 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53893"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53893"]
+shape = SubResource( 3 )
+
+[node name="Tete53894" type="RigidBody" parent="Environment"]
+transform = Transform( -0.121866, 0, 0.992547, 0, 1, 0, -0.992547, 0, -0.121866, 36.9179, 0, -19.1704 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53894"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53894"]
+shape = SubResource( 3 )
+
+[node name="Tete53895" type="RigidBody" parent="Environment"]
+transform = Transform( 0.707428, 0, -0.706785, 0, 1, 0, 0.706785, 0, 0.707428, 35.1104, 0, -20.0713 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53895"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53895"]
+shape = SubResource( 3 )
+
+[node name="Tete53896" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999887, 0, -0.0150335, 0, 1, 0, 0.0150335, 0, 0.999887, 36.876, 0, -21.4627 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53896"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53896"]
+shape = SubResource( 3 )
+
+[node name="Tete53897" type="RigidBody" parent="Environment"]
+transform = Transform( 0.906265, 0, -0.422711, 0, 1, 0, 0.422711, 0, 0.906265, 34.941, 0, -22.1049 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53897"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53897"]
+shape = SubResource( 3 )
+
+[node name="Tete53898" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999959, 0, -0.00905558, 0, 1, 0, 0.00905558, 0, 0.999959, 34.4963, 0, -24.1043 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53898"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53898"]
+shape = SubResource( 3 )
+
+[node name="Tete53899" type="RigidBody" parent="Environment"]
+transform = Transform( 0.426743, 0, 0.904373, 0, 1, 0, -0.904373, 0, 0.426743, 33.5108, 0, -25.8972 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Tete"
+}
+
+[node name="150" type="MeshInstance" parent="Environment/Tete53899"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="53808" type="CollisionShape" parent="Environment/Tete53899"]
+shape = SubResource( 3 )

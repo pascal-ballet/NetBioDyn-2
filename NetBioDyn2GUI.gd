@@ -35,11 +35,11 @@ var _node_groups	:Node
 # Simulator time steps
 var _step:int = 0
 # Env sizes
-var _env_min_x:float = -40
+var _env_min_x:float = -80
+var _env_max_x:float =  80
 var _env_min_y:float =  0
-var _env_min_z:float = -40
-var _env_max_x:float =  40
 var _env_max_y:float =  0
+var _env_min_z:float = -40
 var _env_max_z:float =  40
 # instances size
 var MAX_AGENTS:int = 2000
