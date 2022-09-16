@@ -1614,6 +1614,7 @@ size_flags_horizontal = 3
 text = "10"
 
 [node name="Env" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
