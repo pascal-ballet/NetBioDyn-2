@@ -1086,25 +1086,31 @@ func behavior_GUI_to_META() -> void:
 
 # GENERIC
 func _on_OptAction_item_selected(index: int) -> void:
-	var opt_action:Node = get_node("%OptAction")
-	# hide criteria
-	for n in range(1, opt_action.get_parent().get_child_count()):
-		opt_action.get_parent().get_child(n).visible = false
-	# show selected criteria
-	var selected_action:Node = opt_action.get_parent().get_child(index+1)
-	selected_action.visible = true
+	pass
+#	var opt_action:Node = get_node("%OptAction")
+#	# hide criteria
+#	for n in range(1, opt_action.get_parent().get_child_count()):
+#		opt_action.get_parent().get_child(n).visible = false
+#	# show selected criteria
+#	var selected_action:Node = opt_action.get_parent().get_child(index+1)
+#	selected_action.visible = true
 
 func _on_show_graph_behav()->void:
-	get_node("%VBoxEnv").visible 		= false
-	get_node("%VBoxCurves").visible 		= false
-	get_node("%TabContainer").visible 	= false
-	get_node("%GraphBehav").visible 		= true
+	get_node("%HSplitLeftContainer").visible = false
+	get_node("%HBoxSimuCtrl").visible				= false
+	get_node("%VBoxEnv").visible 			= false
+	get_node("%VBoxCurves").visible 			= false
+	get_node("%VBoxTabContainer").visible 	= false
+	get_node("%GraphBehav").visible 			= true
+
 
 func _on_hide_graph_behav()->void:
-	get_node("%GraphBehav").visible 		= false
-	get_node("%VBoxEnv").visible 		= true
-	get_node("%VBoxCurves").visible 		= true
-	get_node("%TabContainer").visible 	= true
+	get_node("%HSplitLeftContainer").visible = true
+	get_node("%HBoxSimuCtrl").visible				= true
+	get_node("%GraphBehav").visible 			= false
+	get_node("%VBoxEnv").visible 			= true
+	get_node("%VBoxCurves").visible 			= true
+	get_node("%VBoxTabContainer").visible 	= true
 
 
 

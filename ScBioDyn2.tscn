@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Images/bg_focus.tres" type="StyleBox" id=1]
 [ext_resource path="res://Images/BtnStep.png" type="Texture" id=2]
@@ -7,6 +7,12 @@
 [ext_resource path="res://Images/BtnStop.png" type="Texture" id=5]
 [ext_resource path="res://Images/RandomForce2.png" type="Texture" id=6]
 [ext_resource path="res://NetBioDyn2GUI.gd" type="Script" id=7]
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0, 0.564706, 0.27451, 1 )
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 0.235294, 0.529412, 0.988235, 1 )
 
 [sub_resource type="Environment" id=1]
 background_mode = 1
@@ -59,6 +65,7 @@ size_flags_vertical = 3
 script = ExtResource( 7 )
 
 [node name="Toolbar" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
 margin_right = 1024.0
 margin_bottom = 32.0
 grow_horizontal = 0
@@ -90,9 +97,14 @@ size_flags_horizontal = 3
 disabled = true
 flat = false
 
-[node name="BtnPlay" type="ToolButton" parent="Toolbar"]
+[node name="HBoxSimuCtrl" type="HBoxContainer" parent="Toolbar"]
+unique_name_in_owner = true
 margin_left = 471.0
-margin_right = 503.0
+margin_right = 611.0
+margin_bottom = 32.0
+
+[node name="BtnPlay" type="ToolButton" parent="Toolbar/HBoxSimuCtrl"]
+margin_right = 32.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 3 )
@@ -100,27 +112,27 @@ flat = false
 icon_align = 1
 expand_icon = true
 
-[node name="BtnStep" type="ToolButton" parent="Toolbar"]
-margin_left = 507.0
-margin_right = 539.0
+[node name="BtnStep" type="ToolButton" parent="Toolbar/HBoxSimuCtrl"]
+margin_left = 36.0
+margin_right = 68.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 2 )
 flat = false
 expand_icon = true
 
-[node name="BtnPause" type="ToolButton" parent="Toolbar"]
-margin_left = 543.0
-margin_right = 575.0
+[node name="BtnPause" type="ToolButton" parent="Toolbar/HBoxSimuCtrl"]
+margin_left = 72.0
+margin_right = 104.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 4 )
 flat = false
 expand_icon = true
 
-[node name="BtnStop" type="ToolButton" parent="Toolbar"]
-margin_left = 579.0
-margin_right = 611.0
+[node name="BtnStop" type="ToolButton" parent="Toolbar/HBoxSimuCtrl"]
+margin_left = 108.0
+margin_right = 140.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 5 )
@@ -183,36 +195,37 @@ margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HSplitContainer" type="HSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer"]
+[node name="HSplitLeftContainer" type="HSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer"]
+unique_name_in_owner = true
 margin_right = 298.0
 margin_bottom = 538.0
 size_flags_vertical = 3
 
-[node name="VBoxAgentsGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer"]
+[node name="VBoxAgentsGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer"]
 margin_right = 137.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VSplitContainer" type="VSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp"]
+[node name="VSplitContainer" type="VSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp"]
 margin_right = 137.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 split_offset = 150
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer"]
 margin_right = 137.0
 margin_bottom = 413.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxAddAgents" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer"]
+[node name="HBoxAddAgents" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer"]
 margin_right = 137.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="LabelPlusAgt" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents"]
+[node name="LabelPlusAgt" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents"]
 margin_top = 3.0
 margin_right = 92.0
 margin_bottom = 17.0
@@ -220,20 +233,20 @@ size_flags_horizontal = 3
 text = "      Agents      "
 align = 1
 
-[node name="BtnAddAgent" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents"]
+[node name="BtnAddAgent" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents"]
 unique_name_in_owner = true
 margin_left = 96.0
 margin_right = 116.0
 margin_bottom = 20.0
 text = "+"
 
-[node name="BtnDelAgent" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents"]
+[node name="BtnDelAgent" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents"]
 margin_left = 120.0
 margin_right = 137.0
 margin_bottom = 20.0
 text = "-"
 
-[node name="ListAgents" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer"]
+[node name="ListAgents" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer"]
 margin_top = 24.0
 margin_right = 137.0
 margin_bottom = 413.0
@@ -244,32 +257,32 @@ size_flags_vertical = 3
 custom_styles/selected_focus = ExtResource( 1 )
 allow_reselect = true
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer"]
 margin_top = 425.0
 margin_right = 137.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2"]
+[node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2"]
 margin_right = 137.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="LabelGp" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav"]
+[node name="LabelGp" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav"]
 margin_top = 3.0
 margin_right = 113.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Groupes"
 
-[node name="BtnAddGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav"]
+[node name="BtnAddGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav"]
 margin_left = 117.0
 margin_right = 137.0
 margin_bottom = 20.0
 text = "+"
 
-[node name="VBoxGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2"]
+[node name="VBoxGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 137.0
@@ -278,31 +291,31 @@ rect_min_size = Vector2( 50, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxAgentsBehav" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer"]
+[node name="VBoxAgentsBehav" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer"]
 margin_left = 149.0
 margin_right = 298.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VSplitContainer" type="VSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav"]
+[node name="VSplitContainer" type="VSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav"]
 margin_right = 149.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 split_offset = 150
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer"]
 margin_right = 149.0
 margin_bottom = 413.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer"]
+[node name="HBoxAddBehav" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer"]
 margin_right = 149.0
 margin_bottom = 20.0
 
-[node name="LabelPlusBehav" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
+[node name="LabelPlusBehav" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
 margin_top = 3.0
 margin_right = 104.0
 margin_bottom = 17.0
@@ -310,20 +323,20 @@ size_flags_horizontal = 3
 text = "Comportements"
 align = 1
 
-[node name="BtnAddBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
+[node name="BtnAddBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
 unique_name_in_owner = true
 margin_left = 108.0
 margin_right = 128.0
 margin_bottom = 20.0
 text = "+"
 
-[node name="BtnDelBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
+[node name="BtnDelBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav"]
 margin_left = 132.0
 margin_right = 149.0
 margin_bottom = 20.0
 text = "-"
 
-[node name="ListBehav" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer"]
+[node name="ListBehav" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 149.0
@@ -335,37 +348,37 @@ size_flags_vertical = 3
 custom_styles/selected_focus = ExtResource( 1 )
 allow_reselect = true
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer"]
 margin_top = 425.0
 margin_right = 149.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxAddGrids" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2"]
+[node name="HBoxAddGrids" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2"]
 margin_right = 149.0
 margin_bottom = 20.0
 
-[node name="LabelPlusGrid" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids"]
+[node name="LabelPlusGrid" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids"]
 margin_top = 3.0
 margin_right = 104.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Grilles"
 
-[node name="BtnAddGrid" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids"]
+[node name="BtnAddGrid" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids"]
 margin_left = 108.0
 margin_right = 128.0
 margin_bottom = 20.0
 text = "+"
 
-[node name="BtnDelGrid" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids"]
+[node name="BtnDelGrid" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids"]
 margin_left = 132.0
 margin_right = 149.0
 margin_bottom = 20.0
 text = "-"
 
-[node name="ListGrids" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2"]
+[node name="ListGrids" type="ItemList" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 149.0
@@ -384,15 +397,16 @@ margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2"]
+[node name="VBoxTabContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2"]
+unique_name_in_owner = true
 margin_right = 300.0
 margin_bottom = 538.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer"]
 margin_right = 300.0
 margin_bottom = 20.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/HBoxContainer"]
 margin_top = 3.0
 margin_right = 284.0
 margin_bottom = 17.0
@@ -400,14 +414,14 @@ size_flags_horizontal = 3
 text = "Propriétés"
 align = 1
 
-[node name="Button" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/HBoxContainer"]
+[node name="Button" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/HBoxContainer"]
 margin_left = 288.0
 margin_right = 300.0
 margin_bottom = 20.0
 disabled = true
 flat = true
 
-[node name="TabContainer" type="TabContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer"]
+[node name="TabContainer" type="TabContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer"]
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 300.0
@@ -418,7 +432,7 @@ tab_align = 0
 tabs_visible = false
 use_hidden_tabs_for_min_size = true
 
-[node name="Empty" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
+[node name="Empty" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -428,7 +442,7 @@ margin_bottom = -4.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxPropsVide" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Empty"]
+[node name="VBoxPropsVide" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Empty"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -98.0
@@ -436,14 +450,14 @@ margin_bottom = -522.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Empty/VBoxPropsVide"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Empty/VBoxPropsVide"]
 margin_right = 194.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
 text = "Aucun objets sélectionné."
 valign = 1
 
-[node name="Agent" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
+[node name="Agent" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -454,26 +468,26 @@ margin_bottom = -4.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxPropsAgt" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent"]
+[node name="VBoxPropsAgt" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_right = 292.0
 margin_bottom = 14.0
 custom_styles/normal = ExtResource( 1 )
 text = "Agent"
 align = 1
 
-[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 18.0
 margin_right = 292.0
 margin_bottom = 42.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -481,7 +495,7 @@ size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="AgentName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1"]
+[node name="AgentName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -489,14 +503,14 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "Macrophage"
 
-[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 visible = false
 margin_top = 46.0
 margin_right = 292.0
 margin_bottom = 66.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp3"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp3"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -504,7 +518,7 @@ size_flags_horizontal = 3
 text = "Type"
 valign = 1
 
-[node name="OptionAgentType" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp3"]
+[node name="OptionAgentType" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp3"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -515,13 +529,13 @@ text = "Agent"
 items = [ "Agent", null, false, 0, null, "Taxon", null, false, 0, null ]
 selected = 0
 
-[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 46.0
 margin_right = 292.0
 margin_bottom = 66.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -529,7 +543,7 @@ size_flags_horizontal = 3
 text = "Couleur"
 valign = 1
 
-[node name="ColorAgent" type="ColorPickerButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2"]
+[node name="ColorAgent" type="ColorPickerButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -537,13 +551,13 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 color = Color( 0.4, 0.498039, 1, 1 )
 
-[node name="HBoxProp6" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HBoxProp6" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 70.0
 margin_right = 292.0
 margin_bottom = 86.0
 size_flags_horizontal = 3
 
-[node name="LabelSizeAgent" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp6"]
+[node name="LabelSizeAgent" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp6"]
 unique_name_in_owner = true
 margin_top = 1.0
 margin_right = 144.0
@@ -552,7 +566,7 @@ size_flags_horizontal = 3
 text = "Taille = 1"
 valign = 1
 
-[node name="SizeAgent" type="HSlider" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp6"]
+[node name="SizeAgent" type="HSlider" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp6"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -566,13 +580,13 @@ exp_edit = true
 tick_count = 20
 ticks_on_borders = true
 
-[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 90.0
 margin_right = 292.0
 margin_bottom = 114.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -580,20 +594,20 @@ size_flags_horizontal = 3
 text = "Bloquer"
 valign = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
-[node name="CheckX" type="CheckBox" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer"]
+[node name="CheckX" type="CheckBox" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer"]
 unique_name_in_owner = true
 margin_right = 45.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "x"
 
-[node name="CheckY" type="CheckBox" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer"]
+[node name="CheckY" type="CheckBox" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 49.0
 margin_right = 94.0
@@ -602,7 +616,7 @@ size_flags_horizontal = 3
 disabled = true
 text = "y"
 
-[node name="CheckZ" type="CheckBox" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer"]
+[node name="CheckZ" type="CheckBox" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 98.0
 margin_right = 144.0
@@ -610,25 +624,25 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "z"
 
-[node name="HSeparator" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HSeparator" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 118.0
 margin_right = 292.0
 margin_bottom = 122.0
 
-[node name="HBoxPropGroup" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HBoxPropGroup" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 126.0
 margin_right = 292.0
 margin_bottom = 146.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxPropGroup"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxPropGroup"]
 margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Groupes"
 
-[node name="ButtonAddGroup" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxPropGroup"]
+[node name="ButtonAddGroup" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxPropGroup"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
@@ -636,32 +650,32 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "+"
 
-[node name="VBoxAgentGroup" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="VBoxAgentGroup" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 unique_name_in_owner = true
 margin_top = 150.0
 margin_right = 292.0
 margin_bottom = 150.0
 size_flags_horizontal = 3
 
-[node name="HSeparator2" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HSeparator2" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 154.0
 margin_right = 292.0
 margin_bottom = 158.0
 
-[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 162.0
 margin_right = 292.0
 margin_bottom = 182.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
 margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Paramètres"
 
-[node name="ButtonAddParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
+[node name="ButtonAddParam" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
@@ -669,20 +683,20 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "+"
 
-[node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 margin_top = 186.0
 margin_right = 292.0
 margin_bottom = 200.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp7"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp7"]
 margin_right = 144.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Nom"
 
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp7"]
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp7"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 14.0
@@ -690,7 +704,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Valeur initiale"
 
-[node name="VBoxAgentParam" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt"]
+[node name="VBoxAgentParam" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt"]
 unique_name_in_owner = true
 margin_top = 204.0
 margin_right = 292.0
@@ -698,7 +712,7 @@ margin_bottom = 526.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Behavior_Reaction" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
+[node name="Behavior_Reaction" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -709,25 +723,25 @@ margin_bottom = -4.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxPropsComport" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction"]
+[node name="VBoxPropsComport" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport"]
 margin_right = 292.0
 margin_bottom = 14.0
 custom_styles/normal = ExtResource( 1 )
 text = "Réaction"
 align = 1
 
-[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport"]
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport"]
 margin_top = 18.0
 margin_right = 292.0
 margin_bottom = 42.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/HBoxProp1"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/HBoxProp1"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -735,7 +749,7 @@ size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="ParamBehavName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/HBoxProp1"]
+[node name="ParamBehavName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/HBoxProp1"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -743,16 +757,16 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "Réaction"
 
-[node name="VBoxReaction" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport"]
+[node name="VBoxReaction" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport"]
 margin_top = 46.0
 margin_right = 292.0
 margin_bottom = 242.0
 
-[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
 margin_right = 292.0
 margin_bottom = 20.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp4"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp4"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -760,19 +774,19 @@ size_flags_horizontal = 3
 text = "Réactif R1"
 valign = 1
 
-[node name="ParamBehavR1" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp4"]
+[node name="ParamBehavR1" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp4"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
 margin_top = 24.0
 margin_right = 292.0
 margin_bottom = 44.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp5"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp5"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -780,19 +794,19 @@ size_flags_horizontal = 3
 text = "Réactif R2"
 valign = 1
 
-[node name="ParamBehavR2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp5"]
+[node name="ParamBehavR2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp5"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
 margin_top = 48.0
 margin_right = 292.0
 margin_bottom = 72.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp2"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp2"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -800,7 +814,7 @@ size_flags_horizontal = 3
 text = "Probabilite p %"
 valign = 1
 
-[node name="ParamBehavProba" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp2"]
+[node name="ParamBehavProba" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp2"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -808,12 +822,12 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "100"
 
-[node name="HBoxProp6" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp6" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
 margin_top = 76.0
 margin_right = 292.0
 margin_bottom = 96.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp6"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp6"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -821,7 +835,7 @@ size_flags_horizontal = 3
 text = "Produit P1"
 valign = 1
 
-[node name="ParamBehavP1" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp6"]
+[node name="ParamBehavP1" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp6"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -829,12 +843,12 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "agent / R1 / R2 / 0"
 
-[node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
 margin_top = 100.0
 margin_right = 292.0
 margin_bottom = 120.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp7"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp7"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -842,7 +856,7 @@ size_flags_horizontal = 3
 text = "Produit P2"
 valign = 1
 
-[node name="ParamBehavP2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp7"]
+[node name="ParamBehavP2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp7"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -850,12 +864,12 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "agent / R1 / R2 / 0"
 
-[node name="HBoxProp9" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp9" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
 margin_top = 124.0
 margin_right = 292.0
 margin_bottom = 144.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp9"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp9"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -863,7 +877,7 @@ size_flags_horizontal = 3
 text = "Produit P3"
 valign = 1
 
-[node name="ParamBehavP3" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp9"]
+[node name="ParamBehavP3" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp9"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -871,12 +885,12 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "agent / R1 / R2 / 0"
 
-[node name="HBoxProp8" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp8" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction"]
 margin_top = 148.0
 margin_right = 292.0
 margin_bottom = 196.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp8"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp8"]
 margin_top = 17.0
 margin_right = 144.0
 margin_bottom = 31.0
@@ -884,7 +898,7 @@ size_flags_horizontal = 3
 text = "Aide"
 valign = 1
 
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp8"]
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp8"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 48.0
@@ -893,7 +907,7 @@ R1+R2 =p=> P1+P2+P3
 "
 align = 1
 
-[node name="Behavior_Random_Force" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
+[node name="Behavior_Random_Force" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -904,25 +918,25 @@ margin_bottom = -4.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxPropsComport" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force"]
+[node name="VBoxPropsComport" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
 margin_right = 292.0
 margin_bottom = 14.0
 custom_styles/normal = ExtResource( 1 )
 text = "Force aléatoire"
 align = 1
 
-[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
 margin_top = 18.0
 margin_right = 292.0
 margin_bottom = 42.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -930,7 +944,7 @@ size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="BehavRndFName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1"]
+[node name="BehavRndFName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -938,12 +952,12 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "Force aléatoire"
 
-[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
 margin_top = 46.0
 margin_right = 292.0
 margin_bottom = 66.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp2"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp2"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -951,23 +965,23 @@ size_flags_horizontal = 3
 text = "Sur Agent/Groupes"
 valign = 1
 
-[node name="BehavRndFAgents" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp2"]
+[node name="BehavRndFAgents" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp2"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="VBoxReaction" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
+[node name="VBoxReaction" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
 margin_top = 70.0
 margin_right = 292.0
 margin_bottom = 150.0
 
-[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction"]
 margin_right = 292.0
 margin_bottom = 24.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -975,7 +989,7 @@ size_flags_horizontal = 3
 text = "Direction (en °)"
 valign = 1
 
-[node name="BehavRndFDir" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4"]
+[node name="BehavRndFDir" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -983,12 +997,12 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "0"
 
-[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction"]
 margin_top = 28.0
 margin_right = 292.0
 margin_bottom = 52.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -996,7 +1010,7 @@ size_flags_horizontal = 3
 text = "Angle d'ouverture"
 valign = 1
 
-[node name="BehavRndFAngle" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5"]
+[node name="BehavRndFAngle" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -1004,12 +1018,12 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "360"
 
-[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction"]
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction"]
 margin_top = 56.0
 margin_right = 292.0
 margin_bottom = 80.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1017,7 +1031,7 @@ size_flags_horizontal = 3
 text = "Intensité"
 valign = 1
 
-[node name="BehavRndFIntensity" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2"]
+[node name="BehavRndFIntensity" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -1025,12 +1039,12 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "1"
 
-[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
+[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport"]
 margin_top = 154.0
 margin_right = 292.0
 margin_bottom = 278.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp3"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp3"]
 margin_top = 55.0
 margin_right = 156.0
 margin_bottom = 69.0
@@ -1038,7 +1052,7 @@ size_flags_horizontal = 3
 text = "Aide"
 valign = 1
 
-[node name="BtnImage" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp3"]
+[node name="BtnImage" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp3"]
 margin_left = 160.0
 margin_right = 292.0
 margin_bottom = 124.0
@@ -1046,7 +1060,7 @@ icon = ExtResource( 6 )
 align = 2
 icon_align = 1
 
-[node name="Behavior_Generic" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
+[node name="Behavior_Generic" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -1056,25 +1070,25 @@ margin_bottom = -4.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxPropsComport" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic"]
+[node name="VBoxPropsComport" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
 margin_right = 292.0
 margin_bottom = 14.0
 custom_styles/normal = ExtResource( 1 )
 text = "Générique"
 align = 1
 
-[node name="HBoxName" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
+[node name="HBoxName" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
 margin_top = 18.0
 margin_right = 292.0
 margin_bottom = 42.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxName"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxName"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1082,19 +1096,19 @@ size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="BehavGenericName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxName"]
+[node name="BehavGenericName" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxName"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
-[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
 margin_top = 46.0
 margin_right = 292.0
 margin_bottom = 66.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxProp2"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxProp2"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -1102,7 +1116,7 @@ size_flags_horizontal = 3
 text = "Sur Agt/Gp/Gril/Env"
 valign = 1
 
-[node name="BehavGenericAgtGpGrilEnv" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxProp2"]
+[node name="BehavGenericAgtGpGrilEnv" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxProp2"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
@@ -1111,37 +1125,37 @@ text = "Agt-1"
 items = [ "Agt-1", null, false, 0, null, "Gp-1", null, false, 1, null, "Grille-1", null, false, 2, null, "Environnement", null, false, 3, null ]
 selected = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
 margin_top = 70.0
 margin_right = 292.0
 margin_bottom = 90.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxContainer"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxContainer"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Configuration"
 
-[node name="BtnShowGraphBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxContainer"]
+[node name="BtnShowGraphBehav" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxContainer"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Editer..."
 
-[node name="HSeparator2" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
+[node name="HSeparator2" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
 margin_top = 94.0
 margin_right = 292.0
 margin_bottom = 98.0
 
-[node name="HBoxHelp" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
+[node name="HBoxHelp" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
 margin_top = 102.0
 margin_right = 292.0
 margin_bottom = 269.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxHelp"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxHelp"]
 margin_top = 76.0
 margin_right = 142.0
 margin_bottom = 90.0
@@ -1149,7 +1163,7 @@ size_flags_horizontal = 3
 text = "Aide"
 valign = 1
 
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxHelp"]
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxHelp"]
 margin_left = 146.0
 margin_right = 292.0
 margin_bottom = 167.0
@@ -1164,17 +1178,17 @@ Peut s'appliquer sur :
  - des Grilles ou
  - l'Environnement"
 
-[node name="VBoxToDo" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
+[node name="VBoxToDo" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
 visible = false
 margin_top = 54.0
 margin_right = 292.0
 margin_bottom = 250.0
 
-[node name="HBoxAgt1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
+[node name="HBoxAgt1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
 margin_right = 292.0
 margin_bottom = 20.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxAgt1"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxAgt1"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -1182,18 +1196,18 @@ size_flags_horizontal = 3
 text = "Agent Agt1 ="
 valign = 1
 
-[node name="ParamBehavR2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxAgt1"]
+[node name="ParamBehavR2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxAgt1"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="HBoxCollision" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
+[node name="HBoxCollision" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
 margin_top = 24.0
 margin_right = 292.0
 margin_bottom = 44.0
 
-[node name="Label" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxCollision"]
+[node name="Label" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxCollision"]
 margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
@@ -1202,18 +1216,18 @@ flat = true
 items = [ "Seul", null, false, 0, null, "Touche Agt2 =", null, false, 1, null ]
 selected = 0
 
-[node name="ParamBehavR1" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxCollision"]
+[node name="ParamBehavR1" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxCollision"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="HBoxProba" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
+[node name="HBoxProba" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
 margin_top = 48.0
 margin_right = 292.0
 margin_bottom = 72.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxProba"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxProba"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1221,36 +1235,36 @@ size_flags_horizontal = 3
 text = "Probabilite p %"
 valign = 1
 
-[node name="ParamBehavProba" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxProba"]
+[node name="ParamBehavProba" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxProba"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "100"
 
-[node name="HSeparator" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
+[node name="HSeparator" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
 margin_top = 76.0
 margin_right = 292.0
 margin_bottom = 80.0
 
-[node name="VBoxCriteria" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
+[node name="VBoxCriteria" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
 margin_top = 84.0
 margin_right = 292.0
 margin_bottom = 132.0
 
-[node name="HBoxCriteriaPlus" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria"]
+[node name="HBoxCriteriaPlus" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria"]
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/HBoxCriteriaPlus"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/HBoxCriteriaPlus"]
 margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Conditions"
 
-[node name="ButtonAddCriteria" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/HBoxCriteriaPlus"]
+[node name="ButtonAddCriteria" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/HBoxCriteriaPlus"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
@@ -1258,18 +1272,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "+"
 
-[node name="VBoxLstCriteria" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria"]
+[node name="VBoxLstCriteria" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria"]
 margin_top = 24.0
 margin_right = 292.0
 margin_bottom = 48.0
 size_flags_horizontal = 3
 
-[node name="HBoxCriteria" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria"]
+[node name="HBoxCriteria" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria"]
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
-[node name="OptParam" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
+[node name="OptParam" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
 margin_right = 107.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
@@ -1277,14 +1291,14 @@ text = "Age"
 items = [ "Age", null, false, 0, null, "Energie", null, false, 1, null, "Temps", null, false, 2, null ]
 selected = 0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
 margin_left = 111.0
 margin_top = 5.0
 margin_right = 127.0
 margin_bottom = 19.0
 text = "de"
 
-[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
+[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
 margin_left = 131.0
 margin_right = 189.0
 margin_bottom = 24.0
@@ -1293,7 +1307,7 @@ flat = true
 items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null, "Env", null, false, 2, null, "Grille-1", null, false, 3, null ]
 selected = 0
 
-[node name="OptOperator" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
+[node name="OptOperator" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
 margin_left = 193.0
 margin_right = 230.0
 margin_bottom = 24.0
@@ -1302,35 +1316,35 @@ flat = true
 items = [ "=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null ]
 selected = 0
 
-[node name="CriteriaValue" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
+[node name="CriteriaValue" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria"]
 margin_left = 234.0
 margin_right = 292.0
 margin_bottom = 24.0
 text = "100"
 
-[node name="HSeparator4" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
+[node name="HSeparator4" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
 margin_top = 136.0
 margin_right = 292.0
 margin_bottom = 140.0
 
-[node name="VBoxActions" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
+[node name="VBoxActions" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
 margin_top = 144.0
 margin_right = 292.0
 margin_bottom = 188.0
 
-[node name="HBoxActionPlus" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions"]
+[node name="HBoxActionPlus" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions"]
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/HBoxActionPlus"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/HBoxActionPlus"]
 margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Actions"
 
-[node name="ButtonAddAction" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/HBoxActionPlus"]
+[node name="ButtonAddAction" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/HBoxActionPlus"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
@@ -1338,25 +1352,25 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "+"
 
-[node name="VBoxLstActions" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions"]
+[node name="VBoxLstActions" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions"]
 margin_top = 24.0
 margin_right = 292.0
 margin_bottom = 44.0
 size_flags_horizontal = 3
 
-[node name="HBoxAction" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions"]
+[node name="HBoxAction" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions"]
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="HBoxActionParam" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
+[node name="HBoxActionParam" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
 visible = false
 margin_left = 84.0
 margin_right = 322.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
-[node name="OptParam" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
+[node name="OptParam" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
 margin_right = 53.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
@@ -1364,14 +1378,14 @@ text = "Age"
 items = [ "Age", null, false, 0, null, "Energie", null, false, 1, null, "Temps", null, false, 2, null ]
 selected = 0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
 margin_left = 57.0
 margin_top = 5.0
 margin_right = 73.0
 margin_bottom = 19.0
 text = "de"
 
-[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
+[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
 margin_left = 77.0
 margin_right = 135.0
 margin_bottom = 24.0
@@ -1381,7 +1395,7 @@ flat = true
 items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null, "Env", null, false, 2, null ]
 selected = 0
 
-[node name="OptOperator" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
+[node name="OptOperator" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
 margin_left = 139.0
 margin_right = 176.0
 margin_bottom = 24.0
@@ -1390,40 +1404,40 @@ flat = true
 items = [ "+", null, false, 0, null, "-", null, false, 1, null, "=", null, false, 2, null ]
 selected = 0
 
-[node name="CriteriaValue" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
+[node name="CriteriaValue" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam"]
 margin_left = 180.0
 margin_right = 238.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "100"
 
-[node name="HBoxActionForce" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
+[node name="HBoxActionForce" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
 visible = false
 margin_left = 128.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce"]
 margin_top = 5.0
 margin_right = 16.0
 margin_bottom = 19.0
 text = "de"
 
-[node name="CriteriaValue" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce"]
+[node name="CriteriaValue" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce"]
 margin_left = 20.0
 margin_right = 78.0
 margin_bottom = 24.0
 text = "100"
 
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce"]
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce"]
 margin_left = 82.0
 margin_top = 5.0
 margin_right = 102.0
 margin_bottom = 19.0
 text = "sur"
 
-[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce"]
+[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce"]
 margin_left = 106.0
 margin_right = 164.0
 margin_bottom = 24.0
@@ -1433,13 +1447,13 @@ flat = true
 items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null ]
 selected = 0
 
-[node name="HBoxActionMoveAgent" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
+[node name="HBoxActionMoveAgent" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
 visible = false
 margin_left = 91.0
 margin_right = 292.0
 margin_bottom = 24.0
 
-[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
+[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
 margin_right = 58.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
@@ -1448,14 +1462,14 @@ flat = true
 items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null ]
 selected = 0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
 margin_left = 62.0
 margin_top = 5.0
 margin_right = 78.0
 margin_bottom = 19.0
 text = "en"
 
-[node name="OptAxis" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
+[node name="OptAxis" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
 margin_left = 82.0
 margin_right = 119.0
 margin_bottom = 24.0
@@ -1465,28 +1479,28 @@ flat = true
 items = [ "X", null, false, 0, null, "Y", null, false, 1, null, "Z", null, false, 2, null ]
 selected = 0
 
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
 margin_left = 123.0
 margin_top = 5.0
 margin_right = 139.0
 margin_bottom = 19.0
 text = "de"
 
-[node name="XValue" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
+[node name="XValue" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent"]
 margin_left = 143.0
 margin_right = 201.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "100"
 
-[node name="HBoxActionChanger" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
+[node name="HBoxActionChanger" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
 visible = false
 margin_left = 87.0
 margin_right = 227.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionChanger"]
+[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionChanger"]
 margin_right = 58.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
@@ -1495,14 +1509,14 @@ flat = true
 items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null ]
 selected = 0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionChanger"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionChanger"]
 margin_left = 62.0
 margin_top = 3.0
 margin_right = 78.0
 margin_bottom = 17.0
 text = "en"
 
-[node name="OptObjet2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionChanger"]
+[node name="OptObjet2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionChanger"]
 margin_left = 82.0
 margin_right = 140.0
 margin_bottom = 20.0
@@ -1512,13 +1526,13 @@ flat = true
 items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null, "Agent-1", null, false, 2, null, "Agent-2", null, false, 3, null ]
 selected = 0
 
-[node name="HBoxActionProdAgent" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
+[node name="HBoxActionProdAgent" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionProdAgent"]
+[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionProdAgent"]
 margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
@@ -1527,14 +1541,14 @@ flat = true
 items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null, "Agent-1", null, false, 2, null ]
 selected = 0
 
-[node name="HBoxActionDelAgent" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
+[node name="HBoxActionDelAgent" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction"]
 visible = false
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionDelAgent"]
+[node name="OptObjet" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionDelAgent"]
 margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
@@ -1543,12 +1557,12 @@ flat = true
 items = [ "Agt1", null, false, 0, null, "Agt2", null, false, 1, null ]
 selected = 0
 
-[node name="HSeparator3" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
+[node name="HSeparator3" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo"]
 margin_top = 192.0
 margin_right = 292.0
 margin_bottom = 196.0
 
-[node name="Grilles" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
+[node name="Grilles" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1559,25 +1573,25 @@ margin_bottom = -4.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxPropsEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles"]
+[node name="VBoxPropsEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv"]
 margin_right = 292.0
 margin_bottom = 14.0
 custom_styles/normal = ExtResource( 1 )
 text = "Grille"
 align = 1
 
-[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv"]
+[node name="HBoxProp2" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv"]
 margin_top = 18.0
 margin_right = 292.0
 margin_bottom = 42.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp2"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp2"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1585,19 +1599,19 @@ size_flags_horizontal = 3
 text = "Nom"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp2"]
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp2"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "Densité"
 
-[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv"]
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv"]
 margin_top = 46.0
 margin_right = 292.0
 margin_bottom = 70.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp1"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp1"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1605,19 +1619,19 @@ size_flags_horizontal = 3
 text = "Subdivisions X"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp1"]
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp1"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "10"
 
-[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv"]
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv"]
 margin_top = 74.0
 margin_right = 292.0
 margin_bottom = 98.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp4"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp4"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1625,19 +1639,19 @@ size_flags_horizontal = 3
 text = "Subdivisions Y"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp4"]
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp4"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "10"
 
-[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv"]
+[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv"]
 margin_top = 102.0
 margin_right = 292.0
 margin_bottom = 126.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp5"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp5"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1645,14 +1659,14 @@ size_flags_horizontal = 3
 text = "Subdivisions Z"
 valign = 1
 
-[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp5"]
+[node name="LineEdit" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Grilles/VBoxPropsEnv/HBoxProp5"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "10"
 
-[node name="Env" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
+[node name="Env" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1663,25 +1677,25 @@ margin_bottom = -4.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxPropsEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env"]
+[node name="VBoxPropsEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_right = 292.0
 margin_bottom = 14.0
 custom_styles/normal = ExtResource( 1 )
 text = "Environnement"
 align = 1
 
-[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv"]
+[node name="HBoxProp1" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_top = 18.0
 margin_right = 292.0
 margin_bottom = 42.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1689,7 +1703,7 @@ size_flags_horizontal = 3
 text = "Taille X"
 valign = 1
 
-[node name="EnvSizeX" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1"]
+[node name="EnvSizeX" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -1697,12 +1711,12 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "160"
 
-[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv"]
+[node name="HBoxProp4" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_top = 46.0
 margin_right = 292.0
 margin_bottom = 70.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1710,7 +1724,7 @@ size_flags_horizontal = 3
 text = "Taille Y"
 valign = 1
 
-[node name="EnvSizeY" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4"]
+[node name="EnvSizeY" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -1719,12 +1733,12 @@ size_flags_horizontal = 3
 text = "0"
 editable = false
 
-[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv"]
+[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_top = 74.0
 margin_right = 292.0
 margin_bottom = 98.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1732,7 +1746,7 @@ size_flags_horizontal = 3
 text = "Taille Z"
 valign = 1
 
-[node name="EnvSizeZ" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5"]
+[node name="EnvSizeZ" type="LineEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -1740,12 +1754,12 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "80"
 
-[node name="HBoxProp6" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv"]
+[node name="HBoxProp6" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_top = 102.0
 margin_right = 292.0
 margin_bottom = 126.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6"]
 margin_top = 5.0
 margin_right = 144.0
 margin_bottom = 19.0
@@ -1753,19 +1767,19 @@ size_flags_horizontal = 3
 text = "Torique"
 valign = 1
 
-[node name="EnvToric" type="CheckBox" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6"]
+[node name="EnvToric" type="CheckBox" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
-[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv"]
+[node name="HBoxProp3" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv"]
 margin_top = 130.0
 margin_right = 292.0
 margin_bottom = 150.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp3"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp3"]
 margin_top = 3.0
 margin_right = 144.0
 margin_bottom = 17.0
@@ -1773,7 +1787,7 @@ size_flags_horizontal = 3
 text = "Unité"
 valign = 1
 
-[node name="OptionEnvUnity" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp3"]
+[node name="OptionEnvUnity" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp3"]
 unique_name_in_owner = true
 margin_left = 148.0
 margin_right = 292.0
@@ -1784,7 +1798,7 @@ text = "mm"
 items = [ "nano", null, false, 0, null, "micro", null, false, 0, null, "mm", null, false, 1, null, "cm", null, false, 2, null, "m", null, false, 3, null, "km", null, false, 4, null, "parsec", null, false, 5, null ]
 selected = 2
 
-[node name="Group" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer"]
+[node name="Group" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1796,27 +1810,27 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 scrolling_enabled = false
 
-[node name="VBoxPropsGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Group"]
+[node name="VBoxPropsGp" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Group"]
 anchor_right = 1.0
 margin_bottom = 150.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Group/VBoxPropsGp"]
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Group/VBoxPropsGp"]
 margin_right = 292.0
 margin_bottom = 14.0
 custom_styles/normal = ExtResource( 1 )
 text = "Groupes"
 align = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Group/VBoxPropsGp"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Group/VBoxPropsGp"]
 margin_top = 18.0
 margin_right = 292.0
 margin_bottom = 168.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Group/VBoxPropsGp/HBoxContainer"]
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Group/VBoxPropsGp/HBoxContainer"]
 margin_right = 144.0
 margin_bottom = 150.0
 size_flags_horizontal = 3
@@ -1824,7 +1838,7 @@ size_flags_vertical = 1
 text = "Aide"
 autowrap = true
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Group/VBoxPropsGp/HBoxContainer"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Group/VBoxPropsGp/HBoxContainer"]
 margin_left = 148.0
 margin_right = 292.0
 margin_bottom = 150.0
@@ -1846,85 +1860,111 @@ split_offset = 150
 unique_name_in_owner = true
 margin_right = 386.0
 margin_bottom = 538.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="HBoxGenericOn" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
 margin_right = 386.0
-margin_bottom = 20.0
+margin_bottom = 62.0
+size_flags_horizontal = 3
 
-[node name="LabelGenericOn" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxGenericOn"]
-margin_top = 3.0
-margin_right = 362.0
-margin_bottom = 17.0
+[node name="VBoxGenericTitle" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer"]
+margin_right = 326.0
+margin_bottom = 62.0
+size_flags_horizontal = 3
+
+[node name="LabelGenericOn" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle"]
+margin_right = 326.0
+margin_bottom = 14.0
 size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 1 )
 text = "Comportement pour : Groupe Diffuse"
 align = 1
 
-[node name="Button" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxGenericOn"]
-margin_left = 366.0
-margin_right = 386.0
-margin_bottom = 20.0
-text = "X"
+[node name="HBoxCdts" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle"]
+margin_top = 18.0
+margin_right = 326.0
+margin_bottom = 38.0
 
-[node name="HBoxCdts" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
-margin_top = 24.0
-margin_right = 386.0
-margin_bottom = 44.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts"]
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
 margin_top = 3.0
-margin_right = 80.0
+margin_right = 8.0
+margin_bottom = 17.0
+custom_styles/normal = SubResource( 6 )
+text = "o"
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
+margin_left = 12.0
+margin_top = 3.0
+margin_right = 92.0
 margin_bottom = 17.0
 text = "Conditions : "
 
-[node name="OptAction2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts"]
+[node name="OptAction2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
 unique_name_in_owner = true
-margin_left = 84.0
-margin_right = 362.0
+margin_left = 96.0
+margin_right = 157.0
 margin_bottom = 20.0
-size_flags_horizontal = 3
-text = "Changer"
+text = "Math"
 flat = true
-items = [ "Choix agent", null, false, 0, null, "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Changer", null, false, 3, null, "Produire Agt3", null, false, 4, null, "Supprimer", null, false, 5, null ]
+items = [ "ET", null, false, 0, null, "OU", null, false, 1, null, "Agt/Gp Param", null, false, 2, null, "Math", null, false, 3, null, "Env Param", null, false, 4, null, "Grille Param", null, false, 5, null ]
 selected = 3
 
-[node name="Button6" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts"]
-margin_left = 366.0
-margin_right = 386.0
+[node name="Button6" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
+margin_left = 161.0
+margin_right = 181.0
 margin_bottom = 20.0
 text = "+"
 
-[node name="HBoxActs" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
-margin_top = 48.0
-margin_right = 386.0
-margin_bottom = 68.0
+[node name="HBoxActs" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle"]
+margin_top = 42.0
+margin_right = 326.0
+margin_bottom = 62.0
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxActs"]
+[node name="Label3" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
 margin_top = 3.0
-margin_right = 60.0
+margin_right = 8.0
+margin_bottom = 17.0
+custom_styles/normal = SubResource( 7 )
+text = "o"
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
+margin_left = 12.0
+margin_top = 3.0
+margin_right = 72.0
 margin_bottom = 17.0
 text = "Actions : "
 
-[node name="OptAction" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxActs"]
+[node name="OptAction" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
 unique_name_in_owner = true
-margin_left = 64.0
-margin_right = 362.0
+margin_left = 76.0
+margin_right = 156.0
 margin_bottom = 20.0
-size_flags_horizontal = 3
 text = "Changer"
 flat = true
-items = [ "Param", null, false, 0, null, "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Changer", null, false, 3, null, "Produire Agt3", null, false, 4, null, "Supprimer", null, false, 5, null ]
+items = [ "Param", null, false, 0, null, "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Changer", null, false, 3, null, "Produire", null, false, 4, null, "Supprimer", null, false, 5, null ]
 selected = 3
 
-[node name="Button5" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxActs"]
-margin_left = 366.0
-margin_right = 386.0
+[node name="Button5" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
+margin_left = 160.0
+margin_right = 180.0
 margin_bottom = 20.0
 text = "+"
 
+[node name="Button" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer"]
+margin_left = 330.0
+margin_right = 386.0
+margin_bottom = 62.0
+text = "Valider"
+
+[node name="HBoxGenericOn" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
+margin_top = 66.0
+margin_right = 386.0
+margin_bottom = 66.0
+
 [node name="GraphEdit" type="GraphEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
 unique_name_in_owner = true
-margin_top = 72.0
+margin_top = 70.0
 margin_right = 386.0
 margin_bottom = 538.0
 rect_pivot_offset = Vector2( 164, 105 )
@@ -1943,6 +1983,7 @@ margin_bottom = 212.0
 mouse_filter = 1
 title = "Alors"
 offset = Vector2( 150, 0 )
+overlay = 1
 slot/0/left_enabled = true
 slot/0/left_type = 0
 slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
@@ -1966,6 +2007,7 @@ margin_bottom = 228.0
 mouse_filter = 1
 title = "Fin"
 offset = Vector2( 300, 0 )
+overlay = 1
 slot/0/left_enabled = true
 slot/0/left_type = 1
 slot/0/left_color = Color( 0.235294, 0.529412, 0.988235, 1 )
@@ -1981,6 +2023,72 @@ margin_bottom = 72.0
 text = "
 |
 "
+
+[node name="CdtET" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit"]
+margin_left = 50.0
+margin_top = 150.0
+margin_right = 96.0
+margin_bottom = 209.0
+mouse_filter = 1
+title = "ET"
+offset = Vector2( 50, 0 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 0
+slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/CdtET"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 30.0
+margin_bottom = 38.0
+
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/CdtET"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 30.0
+margin_bottom = 53.0
+
+[node name="CdtOR" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit"]
+margin_left = 50.0
+margin_top = 230.0
+margin_right = 103.0
+margin_bottom = 289.0
+mouse_filter = 1
+title = "OU"
+offset = Vector2( 50, 80 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 0
+slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/CdtOR"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 37.0
+margin_bottom = 38.0
+
+[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/CdtOR"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 37.0
+margin_bottom = 53.0
 
 [node name="VBoxEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
@@ -2225,77 +2333,143 @@ margin_right = 292.0
 margin_bottom = 24.0
 text = "-"
 
+[node name="CdtAND" type="GraphNode" parent="Runtime"]
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 106.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "ET"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 0
+slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="Runtime/CdtAND"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 30.0
+margin_bottom = 38.0
+
+[node name="Label2" type="Label" parent="Runtime/CdtAND"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 30.0
+margin_bottom = 53.0
+
+[node name="CdtOR" type="GraphNode" parent="Runtime"]
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 106.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "OU"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 0
+slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="Runtime/CdtOR"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 37.0
+margin_bottom = 38.0
+
+[node name="Label2" type="Label" parent="Runtime/CdtOR"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 37.0
+margin_bottom = 53.0
+
 [connection signal="pressed" from="Toolbar/BtnLoad" to="." method="_on_BtnLoad_pressed"]
 [connection signal="pressed" from="Toolbar/BtnSave" to="." method="_on_BtnSave_pressed"]
-[connection signal="pressed" from="Toolbar/BtnPlay" to="." method="_on_BtnPlay_pressed"]
-[connection signal="pressed" from="Toolbar/BtnStep" to="." method="_on_BtnStep_pressed"]
-[connection signal="pressed" from="Toolbar/BtnPause" to="." method="_on_BtnPause_pressed"]
-[connection signal="pressed" from="Toolbar/BtnStop" to="." method="_on_BtnStop_pressed"]
+[connection signal="pressed" from="Toolbar/HBoxSimuCtrl/BtnPlay" to="." method="_on_BtnPlay_pressed"]
+[connection signal="pressed" from="Toolbar/HBoxSimuCtrl/BtnStep" to="." method="_on_BtnStep_pressed"]
+[connection signal="pressed" from="Toolbar/HBoxSimuCtrl/BtnPause" to="." method="_on_BtnPause_pressed"]
+[connection signal="pressed" from="Toolbar/HBoxSimuCtrl/BtnStop" to="." method="_on_BtnStop_pressed"]
 [connection signal="pressed" from="Toolbar/BtnDebug" to="." method="_on_BtnDebug_pressed"]
 [connection signal="pressed" from="Toolbar/BtnClose" to="." method="_on_BtnClose_pressed"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnAddAgent" to="." method="_on_ToolPlusAgent_pressed"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnDelAgent" to="." method="_on_BtnDelAgent_pressed"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/ListAgents" to="." method="_on_ListAgents_item_selected"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav/BtnAddGp" to="." method="_on_BtnAddGp_pressed"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav/BtnAddBehav" to="." method="_on_BtnAddBehav_pressed"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav/BtnDelBehav" to="." method="_on_BtnDelBehav_pressed"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/ListBehav" to="." method="_on_ListBehav_item_selected"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids/BtnAddGrid" to="." method="_on_BtnAddGrid_pressed"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids/BtnDelGrid" to="." method="_on_BtnDelGrid_pressed"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/ListGrids" to="." method="_on_ListGrids_item_selected"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/AgentName" to="." method="_on_AgentName_focus_exited"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/AgentName" to="." method="_on_AgentName_text_entered"]
-[connection signal="color_changed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2/ColorAgent" to="." method="_on_ColorAgent_color_changed"]
-[connection signal="value_changed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp6/SizeAgent" to="." method="_on_SizeAgent_changed"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer/CheckX" to="." method="update_agent_axes_lock"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer/CheckY" to="." method="update_agent_axes_lock"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer/CheckZ" to="." method="update_agent_axes_lock"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxPropGroup/ButtonAddGroup" to="." method="_on_ButtonAddGroup"]
-[connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5/ButtonAddParam" to="." method="_on_ButtonAddParam_button_down"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/HBoxProp1/ParamBehavName" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/HBoxProp1/ParamBehavName" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp4/ParamBehavR1" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp5/ParamBehavR2" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp2/ParamBehavProba" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp2/ParamBehavProba" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp6/ParamBehavP1" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp7/ParamBehavP2" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp9/ParamBehavP3" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/BehavRndFName" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/BehavRndFName" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp2/BehavRndFAgents" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/BehavRndFDir" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/BehavRndFDir" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5/BehavRndFAngle" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5/BehavRndFAngle" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2/BehavRndFIntensity" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2/BehavRndFIntensity" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxName/BehavGenericName" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxName/BehavGenericName" to="." method="GUI_param_updated"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxContainer/BtnShowGraphBehav" to="." method="_on_show_graph_behav"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxAgt1/ParamBehavR2" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxCollision/ParamBehavR1" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxProba/ParamBehavProba" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxProba/ParamBehavProba" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria/CriteriaValue" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria/CriteriaValue" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam/CriteriaValue" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam/CriteriaValue" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce/CriteriaValue" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce/CriteriaValue" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent/XValue" to="." method="GUI_param_updated"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent/XValue" to="." method="GUI_param_updated"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1/EnvSizeX" to="." method="_on_env_size_changed"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1/EnvSizeX" to="." method="_on_env_size_changed"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4/EnvSizeY" to="." method="_on_env_size_changed"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4/EnvSizeY" to="." method="_on_env_size_changed"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5/EnvSizeZ" to="." method="_on_env_size_changed"]
-[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5/EnvSizeZ" to="." method="_on_env_size_changed"]
-[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxGenericOn/Button" to="." method="_on_hide_graph_behav"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxCdts/OptAction2" to="." method="_on_OptAction_item_selected"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxActs/OptAction" to="." method="_on_OptAction_item_selected"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnAddAgent" to="." method="_on_ToolPlusAgent_pressed"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnDelAgent" to="." method="_on_BtnDelAgent_pressed"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/ListAgents" to="." method="_on_ListAgents_item_selected"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer2/HBoxAddBehav/BtnAddGp" to="." method="_on_BtnAddGp_pressed"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav/BtnAddBehav" to="." method="_on_BtnAddBehav_pressed"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/HBoxAddBehav/BtnDelBehav" to="." method="_on_BtnDelBehav_pressed"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer/ListBehav" to="." method="_on_ListBehav_item_selected"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids/BtnAddGrid" to="." method="_on_BtnAddGrid_pressed"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/HBoxAddGrids/BtnDelGrid" to="." method="_on_BtnDelGrid_pressed"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsBehav/VSplitContainer/VBoxContainer2/ListGrids" to="." method="_on_ListGrids_item_selected"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/AgentName" to="." method="_on_AgentName_focus_exited"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp1/AgentName" to="." method="_on_AgentName_text_entered"]
+[connection signal="color_changed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp2/ColorAgent" to="." method="_on_ColorAgent_color_changed"]
+[connection signal="value_changed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp6/SizeAgent" to="." method="_on_SizeAgent_changed"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer/CheckX" to="." method="update_agent_axes_lock"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer/CheckY" to="." method="update_agent_axes_lock"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp4/HBoxContainer/CheckZ" to="." method="update_agent_axes_lock"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxPropGroup/ButtonAddGroup" to="." method="_on_ButtonAddGroup"]
+[connection signal="button_down" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Agent/VBoxPropsAgt/HBoxProp5/ButtonAddParam" to="." method="_on_ButtonAddParam_button_down"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/HBoxProp1/ParamBehavName" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/HBoxProp1/ParamBehavName" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp4/ParamBehavR1" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp5/ParamBehavR2" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp2/ParamBehavProba" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp2/ParamBehavProba" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp6/ParamBehavP1" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp7/ParamBehavP2" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Reaction/VBoxPropsComport/VBoxReaction/HBoxProp9/ParamBehavP3" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/BehavRndFName" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp1/BehavRndFName" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/HBoxProp2/BehavRndFAgents" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/BehavRndFDir" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp4/BehavRndFDir" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5/BehavRndFAngle" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp5/BehavRndFAngle" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2/BehavRndFIntensity" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Random_Force/VBoxPropsComport/VBoxReaction/HBoxProp2/BehavRndFIntensity" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxName/BehavGenericName" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxName/BehavGenericName" to="." method="GUI_param_updated"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxContainer/BtnShowGraphBehav" to="." method="_on_show_graph_behav"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxAgt1/ParamBehavR2" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxCollision/ParamBehavR1" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxProba/ParamBehavProba" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/HBoxProba/ParamBehavProba" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria/CriteriaValue" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxCriteria/VBoxLstCriteria/HBoxCriteria/CriteriaValue" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam/CriteriaValue" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionParam/CriteriaValue" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce/CriteriaValue" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionForce/CriteriaValue" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent/XValue" to="." method="GUI_param_updated"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/VBoxToDo/VBoxActions/VBoxLstActions/HBoxAction/HBoxActionMoveAgent/XValue" to="." method="GUI_param_updated"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1/EnvSizeX" to="." method="_on_env_size_changed"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp1/EnvSizeX" to="." method="_on_env_size_changed"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4/EnvSizeY" to="." method="_on_env_size_changed"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp4/EnvSizeY" to="." method="_on_env_size_changed"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5/EnvSizeZ" to="." method="_on_env_size_changed"]
+[connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5/EnvSizeZ" to="." method="_on_env_size_changed"]
+[connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts/OptAction2" to="." method="_on_OptAction_item_selected"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs/OptAction" to="." method="_on_OptAction_item_selected"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/Button" to="." method="_on_hide_graph_behav"]
 [connection signal="connection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit" to="." method="_on_GraphEdit_connection_request"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/Button" to="." method="_on_Button_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/ButtonClearEnv" to="." method="_on_ButtonClearEnv_pressed"]
