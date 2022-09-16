@@ -835,7 +835,7 @@ var _pm:PopupMenu
 
 # Display the Behaviors PopupMenu
 func _on_BtnAddBehav_pressed() -> void:
-	_pm = $PopupMenu
+	_pm = get_node("%PopupMenu")
 	var btn_add = get_node("%BtnAddBehav")
 	_pm.popup(Rect2(btn_add.get_global_position().x, btn_add.get_global_position().y, _pm.rect_size.x, _pm.rect_size.y))
 
@@ -1828,3 +1828,15 @@ func group_line_edit_on_focus()->void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GROUP
 
+# ************************************
+#            GRAPH EDIT              *
+# ************************************
+func _on_GraphEdit_connection_request(from: String, from_slot: int, to: String, to_slot: int) -> void:
+	# Don't connect to input that is already connected
+	for con in get_node("%GraphEdit").get_connection_list():
+		if con.to == to and con.to_port == to_slot:
+			return
+	get_node("%GraphEdit").connect_node(from, from_slot, to, to_slot)
+	
+	
+	
