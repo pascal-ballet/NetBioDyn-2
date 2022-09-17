@@ -1879,7 +1879,7 @@ func remove_connections_to_node(node):
 func get_input_graphnode(evt=null):
 	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
 	for node in gfx_edit.get_children():
-		if node is GraphNode:
+		if node is GraphNode && node.title != "Alors" && node.title != "Fin":
 			if  node.selected == true:
 				node.show_close = true
 			else:
