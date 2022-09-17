@@ -1837,12 +1837,50 @@ func group_line_edit_on_focus()->void:
 # ************************************
 #            GRAPH EDIT              *
 # ************************************
-func _on_GraphEdit_connection_request(from: String, from_slot: int, to: String, to_slot: int) -> void:
+func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: String, to_slot: int) -> void:
 	# Don't connect to input that is already connected
-	for con in get_node("%GraphEdit").get_connection_list():
+	for con in get_node("%GraphGeneric").get_connection_list():
 		if con.to == to and con.to_port == to_slot:
 			return
-	get_node("%GraphEdit").connect_node(from, from_slot, to, to_slot)
-	
-	
-	
+	get_node("%GraphGeneric").connect_node(from, from_slot, to, to_slot)
+
+# Add a Graph Node
+func _on_BtnAddGenericCdtAgtGp() -> void:
+	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
+	var cdt:String = get_node("%OptCdtsAgtGp").text
+	if cdt == "ET":
+		var gfx_node:GraphNode = get_node("%CdtAND").duplicate(15)
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+	if cdt == "OU":
+		var gfx_node:GraphNode = get_node("%CdtOR").duplicate(15)
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+	if cdt == "NON":
+		var gfx_node:GraphNode = get_node("%CdtNOT").duplicate(15)
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+		
+		
+# Remove a Graph Node
+func _on_GraphNode_close_request() -> void:
+	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
+	for node in gfx_edit.get_children():
+		if node is GraphNode && node.selected == true:
+			remove_connections_to_node(node)
+			node.queue_free()
+
+func remove_connections_to_node(node):
+	for con in get_node("%GraphGeneric").get_connection_list():
+		if con.to == node.name or con.from == node.name:
+			get_node("%GraphGeneric").disconnect_node(con.from, con.from_port, con.to, con.to_port)
+
+# Get focus
+func get_input_graphnode(evt=null):
+	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
+	for node in gfx_edit.get_children():
+		if node is GraphNode:
+			if  node.selected == true:
+				node.show_close = true
+			else:
+				node.show_close = false

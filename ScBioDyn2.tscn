@@ -1061,6 +1061,7 @@ align = 2
 icon_align = 1
 
 [node name="Behavior_Generic" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -1900,17 +1901,17 @@ margin_right = 92.0
 margin_bottom = 17.0
 text = "Conditions : "
 
-[node name="OptAction2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
+[node name="OptCdtsAgtGp" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
 unique_name_in_owner = true
 margin_left = 96.0
 margin_right = 157.0
 margin_bottom = 20.0
 text = "Math"
 flat = true
-items = [ "ET", null, false, 0, null, "OU", null, false, 1, null, "Agt/Gp Param", null, false, 2, null, "Math", null, false, 3, null, "Env Param", null, false, 4, null, "Grille Param", null, false, 5, null ]
+items = [ "ET", null, false, 0, null, "OU", null, false, 1, null, "Agt/Gp Param", null, false, 2, null, "Math", null, false, 3, null, "Env Param", null, false, 4, null, "Grille Param", null, false, 5, null, "NON", null, false, 6, null ]
 selected = 3
 
-[node name="Button6" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
+[node name="BtnAddGenericCdtAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
 margin_left = 161.0
 margin_right = 181.0
 margin_bottom = 20.0
@@ -1935,7 +1936,7 @@ margin_right = 72.0
 margin_bottom = 17.0
 text = "Actions : "
 
-[node name="OptAction" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
+[node name="OptActAgtGp" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
 unique_name_in_owner = true
 margin_left = 76.0
 margin_right = 156.0
@@ -1962,7 +1963,7 @@ margin_top = 66.0
 margin_right = 386.0
 margin_bottom = 66.0
 
-[node name="GraphEdit" type="GraphEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
+[node name="GraphGeneric" type="GraphEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
 unique_name_in_owner = true
 margin_top = 70.0
 margin_right = 386.0
@@ -1975,7 +1976,7 @@ zoom_min = 1.0
 zoom_max = 1.0
 minimap_enabled = false
 
-[node name="GraphNodeThen" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit"]
+[node name="GraphNodeThen" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric"]
 margin_left = 150.0
 margin_top = 150.0
 margin_right = 279.0
@@ -1991,7 +1992,7 @@ slot/0/right_enabled = true
 slot/0/right_type = 1
 slot/0/right_color = Color( 0.235294, 0.529412, 0.988235, 1 )
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/GraphNodeThen"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeThen"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 113.0
@@ -1999,7 +2000,7 @@ margin_bottom = 38.0
 text = ">          >"
 align = 1
 
-[node name="GraphNodeEnd" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit"]
+[node name="GraphNodeEnd" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric"]
 margin_left = 300.0
 margin_top = 150.0
 margin_right = 406.0
@@ -2015,7 +2016,7 @@ slot/0/right_enabled = false
 slot/0/right_type = 0
 slot/0/right_color = Color( 1, 1, 1, 1 )
 
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/GraphNodeEnd"]
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeEnd"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 90.0
@@ -2023,72 +2024,6 @@ margin_bottom = 72.0
 text = "
 |
 "
-
-[node name="CdtET" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit"]
-margin_left = 50.0
-margin_top = 150.0
-margin_right = 96.0
-margin_bottom = 209.0
-mouse_filter = 1
-title = "ET"
-offset = Vector2( 50, 0 )
-slot/0/left_enabled = true
-slot/0/left_type = 0
-slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/0/right_enabled = true
-slot/0/right_type = 0
-slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/1/left_enabled = true
-slot/1/left_type = 0
-slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/CdtET"]
-margin_left = 16.0
-margin_top = 24.0
-margin_right = 30.0
-margin_bottom = 38.0
-
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/CdtET"]
-margin_left = 16.0
-margin_top = 39.0
-margin_right = 30.0
-margin_bottom = 53.0
-
-[node name="CdtOR" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit"]
-margin_left = 50.0
-margin_top = 230.0
-margin_right = 103.0
-margin_bottom = 289.0
-mouse_filter = 1
-title = "OU"
-offset = Vector2( 50, 80 )
-slot/0/left_enabled = true
-slot/0/left_type = 0
-slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/0/right_enabled = true
-slot/0/right_type = 0
-slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/1/left_enabled = true
-slot/1/left_type = 0
-slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/CdtOR"]
-margin_left = 16.0
-margin_top = 24.0
-margin_right = 37.0
-margin_bottom = 38.0
-
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit/CdtOR"]
-margin_left = 16.0
-margin_top = 39.0
-margin_right = 37.0
-margin_bottom = 53.0
 
 [node name="VBoxEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
@@ -2334,13 +2269,14 @@ margin_bottom = 24.0
 text = "-"
 
 [node name="CdtAND" type="GraphNode" parent="Runtime"]
+unique_name_in_owner = true
 visible = false
 margin_left = 60.0
 margin_top = 208.0
 margin_right = 106.0
 margin_bottom = 267.0
 mouse_filter = 1
-title = "ET"
+title = "ET    "
 slot/0/left_enabled = true
 slot/0/left_type = 0
 slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
@@ -2367,13 +2303,15 @@ margin_right = 30.0
 margin_bottom = 53.0
 
 [node name="CdtOR" type="GraphNode" parent="Runtime"]
+unique_name_in_owner = true
 visible = false
 margin_left = 60.0
 margin_top = 208.0
 margin_right = 106.0
 margin_bottom = 267.0
 mouse_filter = 1
-title = "OU"
+title = "OU    "
+show_close = true
 slot/0/left_enabled = true
 slot/0/left_type = 0
 slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
@@ -2394,6 +2332,41 @@ margin_right = 37.0
 margin_bottom = 38.0
 
 [node name="Label2" type="Label" parent="Runtime/CdtOR"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 37.0
+margin_bottom = 53.0
+
+[node name="CdtNOT" type="GraphNode" parent="Runtime"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 106.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "NON    "
+show_close = true
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 0
+slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="Runtime/CdtNOT"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 37.0
+margin_bottom = 38.0
+
+[node name="Label2" type="Label" parent="Runtime/CdtNOT"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 37.0
@@ -2467,10 +2440,12 @@ margin_bottom = 53.0
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5/EnvSizeZ" to="." method="_on_env_size_changed"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts/OptAction2" to="." method="_on_OptAction_item_selected"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs/OptAction" to="." method="_on_OptAction_item_selected"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts/OptCdtsAgtGp" to="." method="_on_OptAction_item_selected"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts/BtnAddGenericCdtAgtGp" to="." method="_on_BtnAddGenericCdtAgtGp"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs/OptActAgtGp" to="." method="_on_OptAction_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/Button" to="." method="_on_hide_graph_behav"]
-[connection signal="connection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphEdit" to="." method="_on_GraphEdit_connection_request"]
+[connection signal="connection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_connection_request"]
+[connection signal="delete_nodes_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_delete_nodes_request"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/Button" to="." method="_on_Button_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/ButtonClearEnv" to="." method="_on_ButtonClearEnv_pressed"]
 [connection signal="gui_input" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer" to="." method="_on_ViewportContainer_gui_input"]
@@ -2488,3 +2463,7 @@ margin_bottom = 53.0
 [connection signal="text_entered" from="Runtime/HBoxLineParam/ParamName" to="." method="_on_ParamName_text_entered"]
 [connection signal="focus_exited" from="Runtime/HBoxLineParam/ParamValue" to="." method="_on_ParamValue_focus_exited"]
 [connection signal="button_down" from="Runtime/HBoxLineParam/Button" to="." method="_on_Button_button_down"]
+[connection signal="close_request" from="Runtime/CdtAND" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/CdtAND" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/CdtAND" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/CdtAND" to="." method="get_input_graphnode"]
