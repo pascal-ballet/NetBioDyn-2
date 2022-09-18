@@ -1977,10 +1977,10 @@ zoom_max = 1.0
 minimap_enabled = false
 
 [node name="GraphNodeThen" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric"]
-margin_left = 150.0
-margin_top = 150.0
-margin_right = 279.0
-margin_bottom = 212.0
+margin_left = 126.0
+margin_top = 152.0
+margin_right = 255.0
+margin_bottom = 214.0
 mouse_filter = 1
 title = "Alors"
 offset = Vector2( 150, 0 )
