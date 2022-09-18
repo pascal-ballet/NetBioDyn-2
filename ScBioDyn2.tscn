@@ -1908,7 +1908,7 @@ margin_right = 157.0
 margin_bottom = 20.0
 text = "Math"
 flat = true
-items = [ "ET", null, false, 0, null, "OU", null, false, 1, null, "Agt/Gp Param", null, false, 2, null, "Math", null, false, 3, null, "Env Param", null, false, 4, null, "Grille Param", null, false, 5, null, "NON", null, false, 6, null ]
+items = [ "ET", null, false, 0, null, "OU", null, false, 1, null, "Paramètres", null, false, 2, null, "Math", null, false, 3, null, "NON", null, false, 6, null ]
 selected = 3
 
 [node name="BtnAddGenericCdtAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
@@ -2351,12 +2351,6 @@ slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
 slot/0/right_enabled = true
 slot/0/right_type = 0
 slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/1/left_enabled = true
-slot/1/left_type = 0
-slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
 
 [node name="Label" type="Label" parent="Runtime/CdtNOT"]
 margin_left = 16.0
@@ -2364,11 +2358,66 @@ margin_top = 24.0
 margin_right = 30.0
 margin_bottom = 38.0
 
-[node name="Label2" type="Label" parent="Runtime/CdtNOT"]
+[node name="CdtParam" type="GraphNode" parent="Runtime"]
+unique_name_in_owner = true
+visible = false
+margin_top = 150.0
+margin_right = 143.0
+margin_bottom = 221.0
+mouse_filter = 1
+title = "Paramètre"
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 0
+slot/1/right_color = Color( 0, 0.564706, 0.27451, 1 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/CdtParam"]
 margin_left = 16.0
-margin_top = 39.0
-margin_right = 30.0
-margin_bottom = 53.0
+margin_top = 24.0
+margin_right = 127.0
+margin_bottom = 44.0
+
+[node name="Label" type="Label" parent="Runtime/CdtParam/HBoxContainer"]
+margin_top = 3.0
+margin_right = 44.0
+margin_bottom = 17.0
+text = "Objet :"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/CdtParam/HBoxContainer"]
+margin_left = 48.0
+margin_right = 111.0
+margin_bottom = 20.0
+text = "Agt-1"
+items = [ "Agt-1", null, false, -1, null, "Gp-1", null, false, 0, null, "Environnement", null, false, 1, null, "Grille", null, false, 2, null ]
+selected = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/CdtParam"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 127.0
+margin_bottom = 65.0
+
+[node name="Label" type="Label" parent="Runtime/CdtParam/HBoxContainer2"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "Param :"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/CdtParam/HBoxContainer2"]
+margin_left = 52.0
+margin_right = 89.0
+margin_bottom = 20.0
+text = "X"
+items = [ "X", null, false, -1, null, "Y", null, false, 0, null, "Z", null, false, 1, null, "Vx", null, false, 2, null, "Horloge", null, false, 3, null, "pH", null, false, 4, null, "Température", null, false, 5, null, "Valeur Case", null, false, 6, null ]
+selected = 0
 
 [connection signal="pressed" from="Toolbar/BtnLoad" to="." method="_on_BtnLoad_pressed"]
 [connection signal="pressed" from="Toolbar/BtnSave" to="." method="_on_BtnSave_pressed"]
@@ -2473,3 +2522,7 @@ margin_bottom = 53.0
 [connection signal="gui_input" from="Runtime/CdtNOT" to="." method="get_input_graphnode"]
 [connection signal="mouse_entered" from="Runtime/CdtNOT" to="." method="get_input_graphnode"]
 [connection signal="mouse_exited" from="Runtime/CdtNOT" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/CdtParam" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/CdtParam" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/CdtParam" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/CdtParam" to="." method="get_input_graphnode"]

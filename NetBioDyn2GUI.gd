@@ -1860,6 +1860,10 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 		var gfx_node:GraphNode = get_node("%CdtNOT").duplicate(15)
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
+	if cdt == "Paramètres":
+		var gfx_node:GraphNode = get_node("%CdtParam").duplicate(15)
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
 		
 		
 # Remove a Graph Node
