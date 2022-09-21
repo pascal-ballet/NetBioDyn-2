@@ -1481,6 +1481,13 @@ func populate_option_btn_with_params(opt:OptionButton, selected_name:String, typ
 			if "TailleX"  == selected_name:
 				opt.selected = 0
 
+func populate_option_btn_with(opt:OptionButton, selected_name:String, lst:Array) -> void:
+		# Remove all items
+		opt.clear()
+		opt.add_item(  ""   )
+		# Add
+		for i in range(0, lst.size()):
+			opt.add_item(  lst[i]   )
 
 
 # Window / App control -------------------------
@@ -1679,7 +1686,7 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 			var opt_obj:Node   = gfx_node.get_child(0).get_child(1)
 			var opt_param:Node = gfx_node.get_child(1).get_child(1)
 			opt_obj.clear()
-			populate_option_btn_with_agents(opt_obj,"", false, false, true, true, true,true,true)
+			populate_option_btn_with(opt_obj,"", ["R1","R2","P1","P2","P3"])
 			opt_param.clear()
 			populate_option_btn_with_params(opt_param,"", type)
 		gfx_node.visible = true
