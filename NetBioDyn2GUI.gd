@@ -966,14 +966,14 @@ func _on_ListBehav_item_selected(param) -> void:
 		get_node("%ParamBehavName").set_text(behav.get_meta("Name"))
 		get_node("%ParamBehavProba").set_text(behav.get_meta("p"))
 		# Populate OptionButtons with agents & groups & R1 & R2 & 0
-		populate_option_btn_with_agents(get_node("%ParamBehavR1"), behav.get_meta("R1"), true, false, false)
-		populate_option_btn_with_agents(get_node("%ParamBehavR2"), behav.get_meta("R2"), true, true, false)
-		populate_option_btn_with_agents(get_node("%ParamBehavP1"), behav.get_meta("P1"), true, true, true)
-		populate_option_btn_with_agents(get_node("%ParamBehavP2"), behav.get_meta("P2"), true, true, true)
+		populate_option_btn_with_agents(get_node("%ParamBehavR1"), behav.get_meta("R1"), true, false, false,false,false,false,false)
+		populate_option_btn_with_agents(get_node("%ParamBehavR2"), behav.get_meta("R2"), true, true,  false,false,false,false,false)
+		populate_option_btn_with_agents(get_node("%ParamBehavP1"), behav.get_meta("P1"), true, true,  true, true,false,false,false)
+		populate_option_btn_with_agents(get_node("%ParamBehavP2"), behav.get_meta("P2"), true, true,  true, true,false,false,false)
 		if behav.has_meta("P3") == true:
-			populate_option_btn_with_agents(get_node("%ParamBehavP3"), behav.get_meta("P3"), true, true, true)
+			populate_option_btn_with_agents(get_node("%ParamBehavP3"), behav.get_meta("P3"),true,true,true, true,false,false,false)
 		else:
-			populate_option_btn_with_agents(get_node("%ParamBehavP3"), "0", true, true, true)
+			populate_option_btn_with_agents(get_node("%ParamBehavP3"), "0", true, true, true, true,false,false,false)
 	if type == "Random Force":
 		var tabs:TabContainer = get_node("%TabContainer")
 		tabs.current_tab = Prop.BEHAVIOR_RANDOM_FORCE
@@ -983,7 +983,7 @@ func _on_ListBehav_item_selected(param) -> void:
 		get_node("%BehavRndFAngle").set_text(behav.get_meta("Angle"))
 		get_node("%BehavRndFIntensity").set_text(behav.get_meta("Intensity"))
 		# Populate OptionButton with agents & groups
-		populate_option_btn_with_agents(get_node("%BehavRndFAgents"), behav.get_meta("Agents"), true, false, false)
+		populate_option_btn_with_agents(get_node("%BehavRndFAgents"), behav.get_meta("Agents"),true,false,false,false,false,false,false)
 
 	if type == "Generic":
 		var tabs:TabContainer = get_node("%TabContainer")
@@ -1097,11 +1097,12 @@ func _on_OptAction_item_selected(index: int) -> void:
 
 func _on_show_graph_behav()->void:
 	get_node("%HSplitLeftContainer").visible = false
-	get_node("%HBoxSimuCtrl").visible				= false
+	get_node("%HBoxSimuCtrl").visible		= false
+	get_node("%GraphBehav").visible 			= true
 	get_node("%VBoxEnv").visible 			= false
 	get_node("%VBoxCurves").visible 			= false
 	get_node("%VBoxTabContainer").visible 	= false
-	get_node("%GraphBehav").visible 			= true
+
 
 
 func _on_hide_graph_behav()->void:
@@ -1416,7 +1417,7 @@ func get_selected_behavior() -> Node:
 	return node
 
 # Population Option Button
-func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add_groups:bool, add_zero:bool, add_reactives:bool) -> void:
+func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add_groups:bool, add_zero:bool, add_R1:bool, add_R2:bool, add_P1:bool, add_P2:bool, add_P3:bool) -> void:
 		# Remove all items
 		opt.clear()
 		opt.add_item(  ""   )
@@ -1435,15 +1436,32 @@ func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add
 				if txt == selected_name:
 					opt.selected = j+1
 				j = j + 1
-		if add_reactives == true:
+		if add_R1 == true:
 			opt.add_item("R1")
 			if "R1" == selected_name:
 				opt.selected = j+1
 			j = j + 1
+		if add_R2 == true:
 			opt.add_item("R2")
 			if "R2" == selected_name:
 				opt.selected = j+1
 			j = j + 1
+		if add_P1 == true:
+			opt.add_item("P1")
+			if "P1" == selected_name:
+				opt.selected = j+1
+			j = j + 1
+		if add_P2 == true:
+			opt.add_item("P2")
+			if "P2" == selected_name:
+				opt.selected = j+1
+			j = j + 1
+		if add_P3 == true:
+			opt.add_item("P3")
+			if "P3" == selected_name:
+				opt.selected = j+1
+			j = j + 1
+
 		if add_zero == true:
 			opt.add_item("0")
 			if "0" == selected_name:
@@ -1451,6 +1469,18 @@ func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add
 
 		# Set the selected agent / group
 		opt.set_text(selected_name)
+
+
+func populate_option_btn_with_params(opt:OptionButton, selected_name:String, type:String) -> void:
+		# Remove all items
+		opt.clear()
+		opt.add_item(  ""   )
+		# Add Agents and eventually Groups
+		if type == "Env":
+			opt.add_item(  "TailleX"   )
+			if "TailleX"  == selected_name:
+				opt.selected = 0
+
 
 
 # Window / App control -------------------------
@@ -1603,6 +1633,81 @@ func action(tree, agent) -> void:
 
 """
 
+
+
+# ██████  ███████ ██   ██      ██████  ██████  ██████  ███████ 
+#██       ██       ██ ██      ██      ██    ██ ██   ██ ██      
+#██   ███ █████     ███       ██      ██    ██ ██   ██ █████   
+#██    ██ ██       ██ ██      ██      ██    ██ ██   ██ ██      
+# ██████  ██      ██   ██      ██████  ██████  ██████  ███████ 
+															 
+
+
+
+# ************************************
+#             GFX CODE               *
+# ************************************
+func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: String, to_slot: int) -> void:
+	# Don't connect to input that is already connected
+	for con in get_node("%GraphGeneric").get_connection_list():
+		if con.to == to and con.to_port == to_slot:
+			return
+	get_node("%GraphGeneric").connect_node(from, from_slot, to, to_slot)
+
+# Add a Graph Node
+func _on_BtnAddGenericCdtAgtGp() -> void:
+	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
+	var cdt:String = get_node("%OptCdtsAgtGp").text
+	if cdt == "ET":
+		var gfx_node:GraphNode = get_node("%CdtAND").duplicate(15)
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+	if cdt == "OU":
+		var gfx_node:GraphNode = get_node("%CdtOR").duplicate(15)
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+	if cdt == "NON":
+		var gfx_node:GraphNode = get_node("%CdtNOT").duplicate(15)
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+	if cdt == "Paramètres":
+		var gfx_node:GraphNode = get_node("%CdtParam").duplicate(15)
+		var behav:Node = get_selected_behavior()
+		var type = behav.get_meta("Type")
+		# Find the Behavior Type
+		if type == "Reaction":
+			var opt_obj:Node   = gfx_node.get_child(0).get_child(1)
+			var opt_param:Node = gfx_node.get_child(1).get_child(1)
+			opt_obj.clear()
+			populate_option_btn_with_agents(opt_obj,"", false, false, true, true, true,true,true)
+			opt_param.clear()
+			populate_option_btn_with_params(opt_param,"", type)
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+		
+		
+# Remove a Graph Node
+func _on_GraphNode_close_request() -> void:
+	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
+	for node in gfx_edit.get_children():
+		if node is GraphNode && node.selected == true:
+			remove_connections_to_node(node)
+			node.queue_free()
+
+func remove_connections_to_node(node):
+	for con in get_node("%GraphGeneric").get_connection_list():
+		if con.to == node.name or con.from == node.name:
+			get_node("%GraphGeneric").disconnect_node(con.from, con.from_port, con.to, con.to_port)
+
+# Get focus on a Graph Node
+func get_input_graphnode(evt=null):
+	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
+	for node in gfx_edit.get_children():
+		if node is GraphNode && node.title != "Alors" && node.title != "Fin":
+			if  node.selected == true:
+				node.show_close = true
+			else:
+				node.show_close = false
 
 
 
@@ -1834,57 +1939,4 @@ func group_line_edit_on_focus()->void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GROUP
 
-# ************************************
-#            GRAPH EDIT              *
-# ************************************
-func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: String, to_slot: int) -> void:
-	# Don't connect to input that is already connected
-	for con in get_node("%GraphGeneric").get_connection_list():
-		if con.to == to and con.to_port == to_slot:
-			return
-	get_node("%GraphGeneric").connect_node(from, from_slot, to, to_slot)
 
-# Add a Graph Node
-func _on_BtnAddGenericCdtAgtGp() -> void:
-	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
-	var cdt:String = get_node("%OptCdtsAgtGp").text
-	if cdt == "ET":
-		var gfx_node:GraphNode = get_node("%CdtAND").duplicate(15)
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "OU":
-		var gfx_node:GraphNode = get_node("%CdtOR").duplicate(15)
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "NON":
-		var gfx_node:GraphNode = get_node("%CdtNOT").duplicate(15)
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "Paramètres":
-		var gfx_node:GraphNode = get_node("%CdtParam").duplicate(15)
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-		
-		
-# Remove a Graph Node
-func _on_GraphNode_close_request() -> void:
-	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
-	for node in gfx_edit.get_children():
-		if node is GraphNode && node.selected == true:
-			remove_connections_to_node(node)
-			node.queue_free()
-
-func remove_connections_to_node(node):
-	for con in get_node("%GraphGeneric").get_connection_list():
-		if con.to == node.name or con.from == node.name:
-			get_node("%GraphGeneric").disconnect_node(con.from, con.from_port, con.to, con.to_port)
-
-# Get focus
-func get_input_graphnode(evt=null):
-	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
-	for node in gfx_edit.get_children():
-		if node is GraphNode && node.title != "Alors" && node.title != "Fin":
-			if  node.selected == true:
-				node.show_close = true
-			else:
-				node.show_close = false
