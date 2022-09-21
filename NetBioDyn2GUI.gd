@@ -1106,7 +1106,7 @@ func _on_show_graph_behav()->void:
 
 func _on_hide_graph_behav()->void:
 	get_node("%HSplitLeftContainer").visible = true
-	get_node("%HBoxSimuCtrl").visible				= true
+	get_node("%HBoxSimuCtrl").visible		= true
 	get_node("%GraphBehav").visible 			= false
 	get_node("%VBoxEnv").visible 			= true
 	get_node("%VBoxCurves").visible 			= true
