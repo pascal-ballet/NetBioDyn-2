@@ -597,7 +597,7 @@ func agent_GUI_to_META() -> void:
 
 
 # META => ARRAY
-func agent_get_META(agt_name:String) -> Array:
+func agent_get_ALL_META(agt_name:String) -> Array:
 	var rb:RigidBody = get_entity(agt_name)
 	if rb==null:
 		return []
@@ -951,6 +951,17 @@ func addBehavGeneric() -> void:
 
 	# Add Behavior to Simulator
 	_node_behavs.add_child(node)
+
+# Get SELECTED Behavior
+func get_selected_behavior() -> Node:
+	var sel:PoolIntArray = _listBehavs.get_selected_items()
+	if sel.size() == 0:
+		return null
+	
+	var pos:int =sel[0]
+	
+	var node:Node = _node_behavs.get_child(pos)
+	return node
 
 # Remove behavior
 func _on_BtnDelBehav_pressed() -> void:
@@ -1413,16 +1424,6 @@ func key_param_exists(var key_name:String) -> int:
 			nb = nb+1
 	return nb
 
-func get_selected_behavior() -> Node:
-	var sel:PoolIntArray = _listBehavs.get_selected_items()
-	if sel.size() == 0:
-		return null
-	
-	var pos:int =sel[0]
-	
-	var node:Node = _node_behavs.get_child(pos)
-	return node
-
 # Population Option Button
 func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add_groups:bool, add_zero:bool, add_R1:bool, add_R2:bool, add_P1:bool, add_P2:bool, add_P3:bool) -> void:
 		# Remove all items
@@ -1690,16 +1691,45 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 		var type = behav.get_meta("Type")
 		# Find the Behavior Type
 		if type == "Reaction":
+			var r1:String = behav.get_meta("R1")
+			var r2:String = behav.get_meta("R2")
+			var p1:String = behav.get_meta("P1")
+			var p2:String = behav.get_meta("P2")
+			var p3:String = behav.get_meta("P3")
 			var opt_obj:Node   = gfx_node.get_child(0).get_child(1)
 			var opt_param:Node = gfx_node.get_child(1).get_child(1)
 			opt_obj.clear()
-			populate_option_btn_from_list(opt_obj,"", ["R1","R2","P1","P2","P3"])
+			var agts:Array = []
+			if r1 != "" && r1 != "0":
+				agts = agts + ["R1:"+r1]
+			if r2 != "" && r2 != "0":
+				agts = agts + ["R2:"+r2]
+			if p1 != "" && p1 != "0" && p1 != "R1" && p1 != "R2":
+				agts = agts + ["P1:"+p1]
+			if p2 != "" && p2 != "0" && p2 != "R1" && p2 != "R2":
+				agts = agts + ["P2:"+p2]
+			if p3 != "" && p3 != "0" && p3 != "R1" && p3 != "R2":
+				agts = agts + ["P3:"+p3]
+			populate_option_btn_from_list( opt_obj,"", agts )
 			opt_param.clear()
-			populate_option_btn_from_list(opt_param,"", get_agent_param())
+			var sel_agt:String = r1 # TODO Change to the saved agent/gp
+			populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(r1) )
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
-		
-		
+
+var _sel_gfx_node:GraphNode = null
+
+# 
+func _on_OptCdtParamObj_item_selected(i:int) -> void:
+	if _sel_gfx_node == null:
+		return
+	var opt_obj:Node   	= _sel_gfx_node.get_child(0).get_child(1)
+	var opt_param:Node 	= _sel_gfx_node.get_child(1).get_child(1)
+	var agt_gp:String 	= opt_obj.get_item_text(i)
+	agt_gp = agt_gp.right(3)
+	opt_param.clear()
+	populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agt_gp) )
+	
 # Remove a Graph Node
 func _on_GraphNode_close_request() -> void:
 	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
@@ -1707,6 +1737,7 @@ func _on_GraphNode_close_request() -> void:
 		if node is GraphNode && node.selected == true:
 			remove_connections_to_node(node)
 			node.queue_free()
+			_sel_gfx_node = null
 
 func remove_connections_to_node(node):
 	for con in get_node("%GraphGeneric").get_connection_list():
@@ -1720,6 +1751,7 @@ func get_input_graphnode(evt=null):
 		if node is GraphNode && node.title != "Alors" && node.title != "Fin":
 			if  node.selected == true:
 				node.show_close = true
+				_sel_gfx_node = node
 			else:
 				node.show_close = false
 
@@ -1925,10 +1957,10 @@ func manage_graph() -> void:
 #                       TODO                     *
 # ************************************************
 
-#placer des listes déroulantes pour les agents / groupe dans les comportements
+# placer des listes déroulantes pour les agents / groupe dans les comportements
 
 # ************************************************
-# WORK in PROGRESS...
+# WORK in PROGRESS...                            *
 # ************************************************
 func _on_BtnDebug_pressed():
 	var img = Image.new()
@@ -1952,5 +1984,4 @@ func _on_BtnDebug_pressed():
 func group_line_edit_on_focus()->void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GROUP
-
 
