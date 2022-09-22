@@ -289,7 +289,7 @@ func _fill_properties_of_agent(var agt_type:Node):
 		# groups
 		agent_group_to_GUI_group()
 		# param
-		agent_META_to_GUI() # TODO rename into agent_meta_to_GUI_param
+		agent_META_to_GUI_param() # TODO rename into agent_meta_to_GUI_param
 		
 # Properties => Agent -----------------------------
 # Agent COLOR
@@ -537,40 +537,28 @@ func _on_Button_button_down() -> void:
 	agent_GUI_to_META()
 	
 # META => GUI PARAM
-func agent_META_to_GUI() -> void:
-	#printerr(str("** Enter : META=>GUI"))
-	#_debug_display_all_meta()
-
-	#printerr(str("meta => PARAM for ", _selected_name))
+func agent_META_to_GUI_param() -> void:
 	var rb:RigidBody = get_entity(_selected_name)
 	if rb==null:
 		return
 	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
 	# Clear Param VBox
-	#print(str("CLEAR PARAM VBOX"))
-	#_debug_display_all_meta()
 	for i in vbox_param.get_child_count():
 		var line:HBoxContainer = vbox_param.get_child(0)
 		vbox_param.remove_child(line)
 		line.queue_free()
 	# Fill Param VBox
-	#print(str("FILL PARAM VBOX"))
-	#_debug_display_all_meta()
 	var lst:PoolStringArray = rb.get_meta_list()
 	var nb_param:int = lst.size()
-	#print(str("lst = ", lst))
 	for m in nb_param:
 		var meta_name :String  	= lst[m]# rb.get_meta_list()[m]
 		var meta_value			= rb.get_meta(meta_name)
-		#print(str("  - ", _selected_name , " : META=>GUI ", meta_name , " = " , meta_value))
 		if meta_name != "Name":
 			add_param_line()
 			var nb_children:int 	= vbox_param.get_child_count()
 			var line:HBoxContainer 	= vbox_param.get_child(nb_children-1)
 			line.get_child(0).set_text(meta_name)
 			line.get_child(2).set_text(meta_value)
-	#printerr(str("***    Exit : META=>GUI" ))
-	#_debug_display_all_meta()
 
 
 # GUI => META
@@ -606,6 +594,25 @@ func agent_GUI_to_META() -> void:
 	update_agent_instances(rb)
 	#printerr(str("***       : After update instances" ))
 	#_debug_display_all_meta()
+
+
+# META => ARRAY
+func agent_get_META(agt_name:String) -> Array:
+	var rb:RigidBody = get_entity(agt_name)
+	if rb==null:
+		return []
+	var vbox_param:	VBoxContainer = get_node("%VBoxAgentParam")
+	# Fill Array
+	var lst:PoolStringArray = rb.get_meta_list()
+	var lst_res:Array = []
+	var nb_param:int = lst.size()
+	for m in nb_param:
+		var meta_name :String  	= lst[m]
+		var meta_value			= rb.get_meta(meta_name)
+		if meta_name != "Name":
+			lst_res.append(meta_name)
+	return lst_res
+
 
 # get the line number of agent param having possibly the focus
 var _selected_param_pos:int = -1
@@ -1481,7 +1488,7 @@ func populate_option_btn_with_params(opt:OptionButton, selected_name:String, typ
 			if "TailleX"  == selected_name:
 				opt.selected = 0
 
-func populate_option_btn_with(opt:OptionButton, selected_name:String, lst:Array) -> void:
+func populate_option_btn_from_list(opt:OptionButton, selected_name:String, lst:Array) -> void:
 		# Remove all items
 		opt.clear()
 		opt.add_item(  ""   )
@@ -1686,9 +1693,9 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 			var opt_obj:Node   = gfx_node.get_child(0).get_child(1)
 			var opt_param:Node = gfx_node.get_child(1).get_child(1)
 			opt_obj.clear()
-			populate_option_btn_with(opt_obj,"", ["R1","R2","P1","P2","P3"])
+			populate_option_btn_from_list(opt_obj,"", ["R1","R2","P1","P2","P3"])
 			opt_param.clear()
-			populate_option_btn_with_params(opt_param,"", type)
+			populate_option_btn_from_list(opt_param,"", get_agent_param())
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 		
