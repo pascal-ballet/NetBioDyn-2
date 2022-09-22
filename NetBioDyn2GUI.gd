@@ -23,6 +23,9 @@ enum Prop {EMPTY, ENTITY, BEHAVIOR_REACTION, BEHAVIOR_RANDOM_FORCE, BEHAVIOR_GEN
 var _listAgents:ItemList
 var _listBehavs:ItemList
 var _node_status	:Label
+var _gfx_code_init:GraphEdit
+var _gfx_code_current:GraphEdit
+
 # 3D simulator nodes
 var _node_viewport	:Node
 var _node_simu		:Node
@@ -46,13 +49,15 @@ var MAX_AGENTS:int = 2000
 
 # Called when the node enters the scene tree for the first time.
 func my_init() -> void:
-	# 2D important nodes
-	_listAgents 		= find_node("ListAgents")
-	_listBehavs 		= find_node("ListBehav")
-	_node_status	 	= find_node("LabelStatusbar")
-	# 3D simulator nodes
 	var tree:SceneTree	= get_tree()
 	var scene:Node		= tree.get_current_scene()
+	# 2D important nodes
+	_listAgents 		= scene.find_node("ListAgents")
+	_listBehavs 		= scene.find_node("ListBehav")
+	_node_status	 	= scene.find_node("LabelStatusbar")
+	_gfx_code_current= scene.find_node("GraphGeneric")
+	_gfx_code_init	= _gfx_code_current.duplicate(15) # copy of the GraphGeneric
+	# 3D simulator nodes
 	_node_simu	 		= scene.find_node("Simulator") #get_node_recursive(get_tree().get_current_scene(), "Simulator") #get_node("/root/VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer")
 	if _node_simu == null:
 		return
@@ -217,7 +222,7 @@ func clone_rigid_body_agent(var rb0:RigidBody) -> RigidBody:
 	
 # Add Agent -----------------------------
 func _on_ToolPlusAgent_pressed() -> void:
-	var name:String = key_name_create()
+	var name:String = key_agent_create()
 	#_selected_name = name
 	addAgent(name)
 
@@ -1088,52 +1093,6 @@ func behavior_GUI_to_META() -> void:
 
 
 
-# ██████  ███████ ███    ██ ███████ ██████  ██  ██████ 
-#██       ██      ████   ██ ██      ██   ██ ██ ██      
-#██   ███ █████   ██ ██  ██ █████   ██████  ██ ██      
-#██    ██ ██      ██  ██ ██ ██      ██   ██ ██ ██      
-# ██████  ███████ ██   ████ ███████ ██   ██ ██  ██████ 
-													 
-
-
-
-
-# ************************************************************
-#                           Generic                           *
-# ************************************************************
-
-# GENERIC
-func _on_OptAction_item_selected(index: int) -> void:
-	pass
-#	var opt_action:Node = get_node("%OptAction")
-#	# hide criteria
-#	for n in range(1, opt_action.get_parent().get_child_count()):
-#		opt_action.get_parent().get_child(n).visible = false
-#	# show selected criteria
-#	var selected_action:Node = opt_action.get_parent().get_child(index+1)
-#	selected_action.visible = true
-
-func _on_show_graph_behav()->void:
-	get_node("%HSplitLeftContainer").visible = false
-	get_node("%HBoxSimuCtrl").visible		= false
-	get_node("%GraphBehav").visible 			= true
-	get_node("%VBoxEnv").visible 			= false
-	get_node("%VBoxCurves").visible 			= false
-	get_node("%VBoxTabContainer").visible 	= false
-
-
-
-func _on_hide_graph_behav()->void:
-	get_node("%HSplitLeftContainer").visible = true
-	get_node("%HBoxSimuCtrl").visible		= true
-	get_node("%GraphBehav").visible 			= false
-	get_node("%VBoxEnv").visible 			= true
-	get_node("%VBoxCurves").visible 			= true
-	get_node("%VBoxTabContainer").visible 	= true
-
-
-
-
 # ██████  ██████   ██████  ██    ██ ██████  ███████ 
 #██       ██   ██ ██    ██ ██    ██ ██   ██ ██      
 #██   ███ ██████  ██    ██ ██    ██ ██████  ███████ 
@@ -1373,7 +1332,16 @@ func load_initial_state() -> void:
 # ************************************************************
 
 # Key name Generator --------------------------
-func key_name_create() -> String:
+func key_name_create(root:Node, prefix:String) -> String:
+	for n in range(1,999999):
+		var key_name:String = prefix + String(n)
+		var exists:Node = get_node_direct(root, key_name)
+		if exists == null:
+			return key_name
+	return "FULL"
+	
+# TODO : use only key_name_create instead of key_agent_create and key_param_create
+func key_agent_create() -> String:
 	var prefix:String = "Agent-"
 	for n in range(1,999999):
 		var key_name:String = prefix + String(n)
@@ -1381,7 +1349,17 @@ func key_name_create() -> String:
 		if exists == null:
 			return key_name
 	return "FULL"
+func key_param_create() -> String:
+	var prefix:String = "Param-"
+	var vbox:VBoxContainer = get_node("%VBoxAgentParam")
+	for n in range(1, 999999):
+		var key_name:String = prefix + String(n)
+		var exists:int = key_param_exists(key_name)
+		if exists == 0:
+			return key_name
+	return "FULL"
 	
+# Get direct node
 func get_node_direct(var root:Node, var key_name:String) -> Node:
 	for nd in root.get_children():
 		if nd.name == key_name:
@@ -1398,16 +1376,7 @@ func get_node_recursive(var node:Node, var name:String) -> Node:
 	return null
 	
 
-func key_param_create() -> String:
-	var prefix:String = "Param-"
-	var vbox:VBoxContainer = get_node("%VBoxAgentParam")
-	for n in range(1, 999999):
-		var key_name:String = prefix + String(n)
-		#printerr(str("Try to create param : ", key_name))
-		var exists:int = key_param_exists(key_name)
-		if exists == 0:
-			return key_name
-	return "FULL"
+
 
 func key_param_exists(var key_name:String) -> int:
 	var vbox:VBoxContainer = get_node("%VBoxAgentParam")
@@ -1664,29 +1633,34 @@ func action(tree, agent) -> void:
 # ************************************
 func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: String, to_slot: int) -> void:
 	# Don't connect to input that is already connected
-	for con in get_node("%GraphGeneric").get_connection_list():
+	for con in _gfx_code_current.get_connection_list(): # get_node("%GraphGeneric").get_connection_list():
 		if con.to == to and con.to_port == to_slot:
 			return
-	get_node("%GraphGeneric").connect_node(from, from_slot, to, to_slot)
+	#get_node("%GraphGeneric").connect_node(from, from_slot, to, to_slot)
+	_gfx_code_current.connect_node(from, from_slot, to, to_slot)
 
 # Add a Graph Node
 func _on_BtnAddGenericCdtAgtGp() -> void:
-	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
+	var gfx_edit:GraphEdit = _gfx_code_current
 	var cdt:String = get_node("%OptCdtsAgtGp").text
 	if cdt == "ET":
 		var gfx_node:GraphNode = get_node("%CdtAND").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtAND")
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 	if cdt == "OU":
 		var gfx_node:GraphNode = get_node("%CdtOR").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtOR")
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 	if cdt == "NON":
 		var gfx_node:GraphNode = get_node("%CdtNOT").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtNOT")
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 	if cdt == "Paramètres":
 		var gfx_node:GraphNode = get_node("%CdtParam").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtParam")
 		var behav:Node = get_selected_behavior()
 		var type = behav.get_meta("Type")
 		# Find the Behavior Type
@@ -1732,7 +1706,7 @@ func _on_OptCdtParamObj_item_selected(i:int) -> void:
 	
 # Remove a Graph Node
 func _on_GraphNode_close_request() -> void:
-	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
+	var gfx_edit:GraphEdit = _gfx_code_current
 	for node in gfx_edit.get_children():
 		if node is GraphNode && node.selected == true:
 			remove_connections_to_node(node)
@@ -1740,13 +1714,13 @@ func _on_GraphNode_close_request() -> void:
 			_sel_gfx_node = null
 
 func remove_connections_to_node(node):
-	for con in get_node("%GraphGeneric").get_connection_list():
+	for con in _gfx_code_current.get_connection_list():
 		if con.to == node.name or con.from == node.name:
-			get_node("%GraphGeneric").disconnect_node(con.from, con.from_port, con.to, con.to_port)
+			_gfx_code_current.disconnect_node(con.from, con.from_port, con.to, con.to_port)
 
 # Get focus on a Graph Node
 func get_input_graphnode(evt=null):
-	var gfx_edit:GraphEdit = get_node("%GraphGeneric")
+	var gfx_edit:GraphEdit = _gfx_code_current
 	for node in gfx_edit.get_children():
 		if node is GraphNode && node.title != "Alors" && node.title != "Fin":
 			if  node.selected == true:
@@ -1755,8 +1729,63 @@ func get_input_graphnode(evt=null):
 			else:
 				node.show_close = false
 
+# OPEN GFX Code
+func _on_show_graph_behav()->void:
+	# Load GraphEdit of the selected behavior node
+	# --------------------------------------------
+	var behav:Node = get_selected_behavior()
+	var gfx_code_prev:GraphEdit = _gfx_code_current
+	# Re-put stored GFX code
+	if behav.get_child_count() > 0: # There is a GFX Code for this behavior
+		gfx_code_prev.queue_free() # Remove the prev gfx code
+		var gfx_code:GraphEdit = behav.get_child(0).duplicate(15) # Duplicate from the behav node
+		gfx_code.visible = true
+		get_node("%GraphBehav").add_child(gfx_code) # put the stored gfx from node to GraphBehav
+		_gfx_code_current = gfx_code
+		
+		# Re-connect all connections
+		var lst_links:Array = behav.get_meta("Links") 
+		for i in lst_links.size():
+			var dico_link:Dictionary = lst_links[i]
+			_gfx_code_current.connect_node(dico_link["from"], dico_link["from_port"],dico_link["to"],dico_link["to_port"])
 
+		
+	else: # Ther is NO GFX Code for this behavior => put the default one
+		gfx_code_prev.queue_free() # Remove the current gfx code
+		var gfx_code:GraphEdit = _gfx_code_init.duplicate(15) # Duplicate from the behav node
+		gfx_code.visible = true
+		get_node("%GraphBehav").add_child(gfx_code) # put the stored gfx from node to GraphBehav
+		_gfx_code_current = gfx_code
+	get_node("%HSplitLeftContainer").visible = false
+	get_node("%HBoxSimuCtrl").visible		= false
+	get_node("%GraphBehav").visible 			= true
+	get_node("%VBoxEnv").visible 			= false
+	get_node("%VBoxCurves").visible 			= false
+	get_node("%VBoxTabContainer").visible 	= false
 
+# CLOSE GFX Code
+func _on_hide_graph_behav()->void:
+	# Save GraphEdit in the selected behavior node
+	# --------------------------------------------
+	var behav:Node = get_selected_behavior()
+	var gfx_code:GraphEdit = _gfx_code_current.duplicate(15) #get_node("%GraphGeneric").duplicate(15)
+	behav.set_meta("Links", _gfx_code_current.get_connection_list())
+	# Remove previous GFX code from behav
+	if behav.get_child_count() > 0:
+		behav.get_child(0).queue_free()
+	# Put the gfx code into the Behav
+	gfx_code.visible = false
+	behav.add_child(gfx_code)
+
+	
+	# Hide/Show panels
+	get_node("%HSplitLeftContainer").visible = true
+	get_node("%HBoxSimuCtrl").visible		= true
+	get_node("%GraphBehav").visible 			= false
+	get_node("%VBoxEnv").visible 			= true
+	get_node("%VBoxCurves").visible 			= true
+	get_node("%VBoxTabContainer").visible 	= true
+	
 
 
 
@@ -1963,6 +1992,43 @@ func manage_graph() -> void:
 # WORK in PROGRESS...                            *
 # ************************************************
 func _on_BtnDebug_pressed():
+	#var behav:Node = get_selected_behavior()
+	
+	var lst_0:Array = _gfx_code_current.get_connection_list() 
+	var gfx_code:GraphEdit = _gfx_code_current.duplicate(15)
+	var lst_1:Array = gfx_code.get_connection_list()
+		
+	# Set the good names
+	for n in range(0, _gfx_code_current.get_child_count()):
+		gfx_code.get_child(n).name = _gfx_code_current.get_child(n).name
+		
+	# Display name
+	for node_0 in _gfx_code_current.get_children():
+		print(node_0.name)
+	print("****")
+	for node_1 in gfx_code.get_children():
+		print(node_1.name)
+		
+	# Re-connect all connections
+	for i in lst_0.size():
+		var dico_0:Dictionary = lst_0[i]
+		gfx_code.connect_node(dico_0["from"], dico_0["from_port"],dico_0["to"],dico_0["to_port"])
+		
+
+	
+	#for key in dict:
+	#    var value = dict[key]
+
+	
+	# Remove previous GFX code from behav
+	#if behav.get_child_count() > 0:
+	#	behav.get_child(0).queue_free()
+	# Put the gfx code
+	#gfx_code.visible = true
+	#get_node("%GraphBehav").add_child(gfx_code)
+
+
+func test_texture():
 	var img = Image.new()
 	img.create(256, 256, false, Image.FORMAT_RGB8)
 	img.lock()
