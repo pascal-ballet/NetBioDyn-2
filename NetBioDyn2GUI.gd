@@ -823,7 +823,7 @@ func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 func _on_ButtonClearEnv_pressed() -> void:
 	for rb in _node_env.get_children():
 		rb.queue_free()
-
+	
 
 
 
@@ -1248,7 +1248,6 @@ var _sim_pause:bool  = false
 var _sim_play_once: bool  = false
 
 func _on_BtnPlay_pressed() -> void:
-	# TODO : Save initial state
 	if _sim_play == false:
 		save_initial_state()
 	_sim_play = true
@@ -1282,6 +1281,8 @@ var _node_simu_init:Spatial
 # Save initial state when playing
 func save_initial_state() -> void:
 	# Duplicate the node (prevents an error)
+	if _node_simu_init != null:
+		_node_simu_init.call_deferred("free")
 	_node_simu_init = _node_simu.duplicate(15)
 
 	# Setting simu node as owner of all its
@@ -1305,7 +1306,7 @@ func load_initial_state() -> void:
 	# TO DO : verify the tree structure before loading it (Nodes Simulator, then Entities, Behaviors ,etc)
 	
 	# The structure is ok => attach it to the Viewport
-	_node_viewport.add_child(_node_simu_init)
+	_node_viewport.add_child(_node_simu_init.duplicate(15))
 	
 	# re-init 3D node variables
 	_node_simu 		= _node_simu_init
