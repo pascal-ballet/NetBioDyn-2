@@ -51,16 +51,20 @@ var MAX_AGENTS:int = 2000
 func my_init() -> void:
 	var tree:SceneTree	= get_tree()
 	var scene:Node		= tree.get_current_scene()
+
+	# Simulator node
+	_node_simu	 		= scene.find_node("Simulator")
+	if _node_simu == null:
+		return
+	
 	# 2D important nodes
 	_listAgents 		= scene.find_node("ListAgents")
 	_listBehavs 		= scene.find_node("ListBehav")
 	_node_status	 	= scene.find_node("LabelStatusbar")
 	_gfx_code_current= scene.find_node("GraphGeneric")
 	_gfx_code_init	= _gfx_code_current.duplicate(15) # copy of the GraphGeneric
+
 	# 3D simulator nodes
-	_node_simu	 		= scene.find_node("Simulator") #get_node_recursive(get_tree().get_current_scene(), "Simulator") #get_node("/root/VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitContainer/VBoxEnvGraph/ViewportContainer")
-	if _node_simu == null:
-		return
 	_node_viewport		= _node_simu.get_parent()
 	_node_camera	 		= get_node_direct(_node_viewport, "Camera")
 	_node_entities 		= get_node_direct(_node_simu, "Entities")
@@ -68,6 +72,10 @@ func my_init() -> void:
 	_node_groups			= get_node_direct(_node_simu, "Groups")
 	_node_env	 		= get_node_direct(_node_simu, "Environment")
 
+	# New initial state
+	_node_simu_init = _node_simu.duplicate(15)
+	var nb_agts:int = _node_env.get_child_count()
+	pass
 	#get_viewport().connect("gui_focus_changed", self, "set_popup_btn")
 
 
@@ -89,6 +97,7 @@ func _process(delta):
 	# MANAGE Simulator Control (PLAY / STEP / PAUSE / STOP)
 	if _sim_play == false:
 		if _node_simu == null:
+			print(self)
 			my_init()
 		return
 		
@@ -822,8 +831,14 @@ func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 
 func _on_ButtonClearEnv_pressed() -> void:
 	for rb in _node_env.get_children():
+		_node_env.remove_child(rb)
 		rb.queue_free()
-	
+		
+	#if _sim_play == false:
+	#	duplicate_node_simu_INTO_node_simu_INIT()
+		
+	#var nb_agts:int = _node_env.get_child_count()
+	#pass
 
 
 
@@ -1249,10 +1264,12 @@ var _sim_play_once: bool  = false
 
 func _on_BtnPlay_pressed() -> void:
 	if _sim_play == false:
-		save_initial_state()
+		duplicate_node_simu_INTO_node_simu_INIT()
 	_sim_play = true
 	_sim_pause = false
 	_sim_play_once = false
+	#var nb_agts:int = _node_env.get_child_count()
+	pass
 	
 func _on_BtnStep_pressed() -> void:
 	_sim_play = true
@@ -1267,7 +1284,7 @@ func _on_BtnPause_pressed() -> void:
 		
 func _on_BtnStop_pressed() -> void:
 	if _sim_play == true:
-		load_initial_state()
+		duplicate_node_simu_INIT_INTO_node_simu()
 	_sim_play = false
 	_sim_pause = false
 	_sim_play_once = false
@@ -1275,45 +1292,108 @@ func _on_BtnStop_pressed() -> void:
 	for i in _pts_curve.size():
 		_pts_curve.remove(0)
 	_pt_max_y = 1
+	#var nb_agts:int = _node_env.get_child_count()
 	updateStatus()
 
 var _node_simu_init:Spatial
+# **************************************
 # Save initial state when playing
-func save_initial_state() -> void:
-	# Duplicate the node (prevents an error)
-	if _node_simu_init != null:
-		_node_simu_init.call_deferred("free")
-	_node_simu_init = _node_simu.duplicate(15)
+func duplicate_node_simu_INTO_node_simu_INIT() -> void:
+	#var nb_agts:int = _node_env.get_child_count()
+	#print(str("DUPLICATE _node_simu INTO _node_simu_INIT. _node_env.nb_agts=", nb_agts))
+	
+	# Duplicate the node_simu into init
+	var new_init:Node = _node_simu.duplicate(15)
+	new_init.name="INIT"
 
+	# Remove & delete the old init
+	_node_simu_init.queue_free() #call_deferred("free")
+	#_node_viewport.remove_child(_node_simu_init)
+	# Set the new init
+	_node_simu_init = new_init
+	
+	# Put the new init for debug
+	#_node_viewport.add_child(_node_simu_init)
+
+
+
+
+
+
+	var i1:int = _node_simu_init.get_child_count()
+	var rg:Array = range( 5, i1 )
+	for i in rg:
+		var n:Node = _node_simu_init.get_child(5)
+		_node_simu_init.remove_child(n)
+		n.queue_free()
+
+	
+	# re-name 3D node variables
+	_node_simu.find_node("*Entities*",true,false).name 	= "Entities"
+	_node_simu.find_node("*Behaviors*",true,false).name 	= "Behaviors"
+	_node_simu.find_node("*Groups*",true,false).name 	= "Groups"
+	_node_simu.find_node("*Environment*",true,false).name= "Environment"
+
+
+
+
+
+
+	#var node_env_init:Node = get_node_direct(_node_simu_init, "Environment")
+	#var nb_agts_init:int = node_env_init.get_child_count()
+	pass
 	# Setting simu node as owner of all its
 	# children for saving reasons
 	#set_owner_recursive(_node_simu_init, _node_simu_init)
 
 # Load initial state when stopping
-func load_initial_state() -> void:
-	# Load the simulation
-	# Remove the current simu
-	_node_viewport.remove_child(_node_simu)
+func duplicate_node_simu_INIT_INTO_node_simu() -> void:
+	# Remove current simulator
 	_node_simu.call_deferred("free")
+	_node_viewport.remove_child(_node_simu)
+	
+	# Duplicate the _node_simu_init into _node_sim
+	_node_simu = _node_simu_init.duplicate(15)
+	_node_simu.name="Simulator"
+	
+	
+	
+	
 
-	# Add the next level
-	#var next_simu_res = load(filename) #load("res://Simulations/Simu.tscn")
-	#if next_simu_res == null:
-	#	print(str("Impossible to read file: ", filename))
-	#	return
-	#var next_simu_node = next_simu_res.instance()
+	var i1:int = _node_simu.get_child_count()
+	var rg:Array = range( 5, i1 )
+	for i in rg:
+		var n:Node = _node_simu.get_child(5)
+		_node_simu.remove_child(n)
+		n.queue_free()
+
 	
-	# TO DO : verify the tree structure before loading it (Nodes Simulator, then Entities, Behaviors ,etc)
+	# re-name 3D node variables (NOT working... why?)
+	_node_simu.find_node("*Entities*",true,false).name 	= "Entities"
+	_node_simu.find_node("*Behaviors*",true,false).name 	= "Behaviors"
+	_node_simu.find_node("*Groups*",true,false).name 	= "Groups"
+	_node_simu.find_node("*Environment*",true,false).name= "Environment"
+
 	
-	# The structure is ok => attach it to the Viewport
-	_node_viewport.add_child(_node_simu_init.duplicate(15))
 	
+	
+	
+	
+	
+	
+	#var node_env_init:Node = get_node_direct(_node_simu_init, "Environment")
+	#var nb_agts_init:int = node_env_init.get_child_count()
+	
+	# attach it to the Viewport
+	_node_viewport.add_child(_node_simu)
 	# re-init 3D node variables
-	_node_simu 		= _node_simu_init
-	_node_entities 	= _node_simu_init.get_node("Entities")
-	_node_behavs 	= _node_simu_init.get_node("Behaviors")
-	_node_env 		= _node_simu_init.get_node("Environment")
-	_node_groups		= _node_simu_init.get_node("Groups")
+	_node_entities 	= _node_simu.find_node("*Entities*",true,false)
+	_node_behavs 	= _node_simu.find_node("*Behaviors*",true,false)
+	_node_groups		= _node_simu.find_node("*Groups*",true,false)
+	_node_env 		= _node_simu.find_node("*Environment*",true,false)
+
+	#var nb_agts:int = _node_env.get_child_count()
+	#print(str("DUPLICATE _node_simu_INIT INTO _node_simu. NEW _node_env.nb_agts=", nb_agts))
 
 
 
@@ -1815,29 +1895,49 @@ func _on_BtnLoad_pressed():
 	dialog.popup_centered_ratio()
 	var filename = yield(dialog, "file_selected")
 	
-	# Load the simulation
+	# Load the new simulation
+	var next_simu_scn = load(filename)
+	if next_simu_scn == null:
+		print(str("Impossible to read file: ", filename))
+		return
+		
+	# Load is a success...
+	
 	# Remove the current simu
 	_node_viewport.remove_child(_node_simu)
 	_node_simu.call_deferred("free")
 
-	# Load the new simulation
-	var next_simu_res = load(filename) #load("res://Simulations/Simu.tscn")
-	if next_simu_res == null:
-		print(str("Impossible to read file: ", filename))
-		return
-	var next_simu_node = next_simu_res.instance()
+	var new_simu:Node = next_simu_scn.instance()
+	unset_owner_recursive(new_simu, new_simu)
+
+	_node_simu = new_simu.duplicate(7) #next_simu_scn.instance()
+	#var i0:int = _node_simu.get_child_count()/2
+	var i1:int = _node_simu.get_child_count()
+	for i in range( 5, i1 ):
+		var n:Node = _node_simu.get_child(5)
+		_node_simu.remove_child(n)
+		n.queue_free()
+		
+	#new_simu.queue_free()
+	_node_simu.name="Simulator"
 	
 	# TO DO : verify the tree structure before loading it (Nodes Simulator, then Entities, Behaviors ,etc)
+	# UNSetting simu node as owner of all its
+	# children because duplicate copy owned nodes that are not required.
+	#unset_owner_recursive(_node_simu, _node_simu)
+	
 	
 	# The structure is ok => attach it to the Viewport
-	_node_viewport.add_child(next_simu_node)
+	_node_viewport.add_child(_node_simu)
 	
 	# re-init 3D node variables
-	_node_simu 		= next_simu_node
-	_node_entities 	= next_simu_node.get_node("Entities")
-	_node_behavs 	= next_simu_node.get_node("Behaviors")
-	_node_groups		= next_simu_node.get_node("Groups")
-	_node_env 		= next_simu_node.get_node("Environment")
+	_node_entities 	= _node_simu.find_node("*Entities*",true,false)
+	_node_behavs 	= _node_simu.find_node("*Behaviors*",true,false)
+	_node_groups		= _node_simu.find_node("*Groups*",true,false)
+	_node_env 		= _node_simu.find_node("*Environment*",true,false)
+
+	# Set the new initial_state
+	duplicate_node_simu_INTO_node_simu_INIT()
 
 	# Empty the 2D GUI
 	_listAgents.clear()
@@ -1852,11 +1952,9 @@ func _on_BtnLoad_pressed():
 	
 	# Update Env
 	env_META_to_GUI()
-	
+	var nb_agts:int = _node_env.get_child_count()
 	dialog.queue_free()
 	
-	# Set the initial_state
-	save_initial_state()
 
 # Save *****************************************************
 func _on_BtnSave_pressed():
@@ -1869,14 +1967,14 @@ func _on_BtnSave_pressed():
 	dialog.popup_centered_ratio()
 	var filename = yield(dialog, "file_selected")
 	
-	# Duplicate the node (prevents an error)
-	var simu = _node_simu.duplicate(15) #.duplicate_and_reown()
+	# Duplicate the node
+	var simu = _node_simu.duplicate(15)
 
 	# Setting simu node as owner of all its
 	# children for saving reasons
 	set_owner_recursive(simu, simu)
 
-	# Continue to save
+	# Save it packed
 	var save_build  = PackedScene.new()
 	save_build.pack(simu)
 	ResourceSaver.save(filename, save_build)
@@ -1888,7 +1986,14 @@ func set_owner_recursive(root:Node, node:Node)->void:
 		child.set_owner(root)
 		set_owner_recursive(root, child)
 
-
+func unset_owner_recursive(root:Node, node:Node)->void:
+	for child in node.get_children():
+		root.remove_child(child) # Unsetting parent
+		node.add_child(child) # Re-put the node
+		unset_owner_recursive(root, child)
+		
+		
+		
 
 # ██████  ██████   █████  ██████  ██   ██ 
 #██       ██   ██ ██   ██ ██   ██ ██   ██ 
