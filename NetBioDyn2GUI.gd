@@ -106,6 +106,7 @@ func _process(delta):
 		
 	if _sim_play_once == true:
 		_sim_play_once = false
+		updateStatus()
 		
 	# PLAY ONE step
 	if _step % 100 == 0:
@@ -1287,6 +1288,7 @@ func _on_BtnStep_pressed() -> void:
 	_sim_pause = true
 	_sim_play_once = true
 	
+	
 func _on_BtnPause_pressed() -> void:
 	if _sim_pause == true:
 		_sim_pause = false
@@ -1739,6 +1741,11 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 	if cdt == "NON":
 		var gfx_node:GraphNode = get_node("%CdtNOT").duplicate(15)
 		gfx_node.name = key_name_create(_gfx_code_current, "CdtNOT")
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+	if cdt == "Opérateur":
+		var gfx_node:GraphNode = get_node("%CdtOp").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtOp")
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 	if cdt == "Paramètres":
