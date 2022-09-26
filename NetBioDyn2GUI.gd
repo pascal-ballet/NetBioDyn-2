@@ -440,14 +440,24 @@ func _on_AgentName_text_entered(new_text: String) -> void:
 # Thanks to: http://patorjk.com/software/taag/#p=display&f=ANSI%20Regular&t=AGTS%20%3A%20GP
 func _on_ButtonAddGroup() -> void:
 	# Crete a unique name for the parameter (Meta names are key of dictionnary)
-	# Create the line of input boxes
+	# Create the line of option boxes
 	var vbox_group:	VBoxContainer = get_node("%VBoxAgentGroup")
 	var hbox_line :	HBoxContainer = get_node("%HBoxLineGroup")
 	var new_line: 	HBoxContainer = hbox_line.duplicate()
 	new_line.visible = true
 	vbox_group.add_child(new_line)
 	# Save to groups
-	#agent_GUI_groups_to_groups()
+	#var line:HBoxContainer = vbox_group.get_child(vbox_group.get_child_count()-1)
+	var lst_gps:Array = get_groups()
+	populate_option_btn_from_list(new_line.get_child(1), "", lst_gps)
+
+func get_groups() -> Array:
+	var lst_gp:VBoxContainer = get_node("%VBoxGp")
+	var lst_gps:Array = []
+	for gp in lst_gp.get_children():
+		var txt:String = gp.get_child(0).text
+		lst_gps.append(  txt   )
+	return lst_gps
 
 # GUI GROUPS => GROUPS
 func agent_GUI_groups_to_groups(new_group: String="") -> void:
@@ -483,7 +493,8 @@ func agent_group_to_GUI_group() -> void:
 		#var group_name :String = rb.get_groups()[m]
 		_on_ButtonAddGroup() # Add the Line widgets
 		var line:HBoxContainer = vbox_group.get_child(vbox_group.get_child_count()-1)
-		line.get_child(1).set_text(gp) #group_name) # Display the group name in the LineEdit widget
+		populate_option_btn_with_agents(line.get_child(1), gp, true, false, false,false,false,false,false)
+		#line.get_child(1).set_text(gp) #group_name) # Display the group name in the LineEdit widget
 
 # Remove group
 func _on_button_del_group_of_agent() -> void:
