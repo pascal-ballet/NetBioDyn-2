@@ -1329,22 +1329,10 @@ func duplicate_node_simu_INTO_node_simu_INIT() -> void:
 
 	
 	# re-name 3D node variables
-	_node_simu.find_node("*Entities*",true,false).name 	= "Entities"
-	_node_simu.find_node("*Behaviors*",true,false).name 	= "Behaviors"
-	_node_simu.find_node("*Groups*",true,false).name 	= "Groups"
-	_node_simu.find_node("*Environment*",true,false).name= "Environment"
-
-
-
-
-
-
-	#var node_env_init:Node = get_node_direct(_node_simu_init, "Environment")
-	#var nb_agts_init:int = node_env_init.get_child_count()
-	pass
-	# Setting simu node as owner of all its
-	# children for saving reasons
-	#set_owner_recursive(_node_simu_init, _node_simu_init)
+	_node_simu.find_node("*Entities*",   true,false).name 	= "Entities"
+	_node_simu.find_node("*Behaviors*",  true,false).name 	= "Behaviors"
+	_node_simu.find_node("*Groups*",     true,false).name 	= "Groups"
+	_node_simu.find_node("*Environment*",true,false).name	= "Environment"
 
 # Load initial state when stopping
 func duplicate_node_simu_INIT_INTO_node_simu() -> void:
