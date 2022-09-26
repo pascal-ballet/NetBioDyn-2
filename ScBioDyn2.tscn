@@ -458,6 +458,7 @@ text = "Aucun objets sélectionné."
 valign = 1
 
 [node name="Agent" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -2001,6 +2002,7 @@ margin_bottom = 538.0
 rect_pivot_offset = Vector2( 164, 105 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
+right_disconnects = true
 scroll_offset = Vector2( 0, -150 )
 zoom_min = 1.0
 zoom_max = 1.0
@@ -2523,6 +2525,7 @@ selected = 0
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/Button" to="." method="_on_hide_graph_behav"]
 [connection signal="connection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_connection_request"]
 [connection signal="delete_nodes_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_delete_nodes_request"]
+[connection signal="disconnection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_disconnection_request"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/Button" to="." method="_on_Button_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/ButtonClearEnv" to="." method="_on_ButtonClearEnv_pressed"]
 [connection signal="gui_input" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer" to="." method="_on_ViewportContainer_gui_input"]

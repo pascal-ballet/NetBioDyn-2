@@ -1710,13 +1710,17 @@ func action(tree, agent) -> void:
 # ************************************
 #             GFX CODE               *
 # ************************************
+# Ask for a link connection
 func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: String, to_slot: int) -> void:
 	# Don't connect to input that is already connected
-	for con in _gfx_code_current.get_connection_list(): # get_node("%GraphGeneric").get_connection_list():
-		if con.to == to and con.to_port == to_slot:
+	for c in _gfx_code_current.get_connection_list():
+		if c.to == to and c.to_port == to_slot:
 			return
-	#get_node("%GraphGeneric").connect_node(from, from_slot, to, to_slot)
 	_gfx_code_current.connect_node(from, from_slot, to, to_slot)
+
+# Ask for a link disconnection
+func _on_GraphGeneric_disconnection_request(from, from_slot, to, to_slot):
+	_gfx_code_current.disconnect_node(from, from_slot, to, to_slot)
 
 # Add a Graph Node
 func _on_BtnAddGenericCdtAgtGp() -> void:
@@ -1772,7 +1776,7 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 
 var _sel_gfx_node:GraphNode = null
 
-# 
+# Populate option btn of Param Box
 func _on_OptCdtParamObj_item_selected(i:int) -> void:
 	if _sel_gfx_node == null:
 		return
@@ -1797,7 +1801,7 @@ func remove_connections_to_node(node):
 		if con.to == node.name or con.from == node.name:
 			_gfx_code_current.disconnect_node(con.from, con.from_port, con.to, con.to_port)
 
-# Get focus on a Graph Node
+# Get focus on a Graph Node => display the Delete cross
 func get_input_graphnode(evt=null):
 	var gfx_edit:GraphEdit = _gfx_code_current
 	for node in gfx_edit.get_children():
@@ -1828,13 +1832,13 @@ func _on_show_graph_behav()->void:
 			var dico_link:Dictionary = lst_links[i]
 			_gfx_code_current.connect_node(dico_link["from"], dico_link["from_port"],dico_link["to"],dico_link["to_port"])
 
-		
 	else: # Ther is NO GFX Code for this behavior => put the default one
 		gfx_code_prev.queue_free() # Remove the current gfx code
 		var gfx_code:GraphEdit = _gfx_code_init.duplicate(15) # Duplicate from the behav node
 		gfx_code.visible = true
 		get_node("%GraphBehav").add_child(gfx_code) # put the stored gfx from node to GraphBehav
 		_gfx_code_current = gfx_code
+		
 	get_node("%HSplitLeftContainer").visible = false
 	get_node("%HBoxSimuCtrl").visible		= false
 	get_node("%GraphBehav").visible 			= true
