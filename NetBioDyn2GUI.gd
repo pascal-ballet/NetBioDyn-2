@@ -1586,7 +1586,7 @@ func action(tree, agent) -> void:
 func behav_script_random_force(agents:String, dir:String, angle:String, intensity:String) -> String:
 	angle = String(float(angle) * 6.28318530718 / 360.0) # deg to rad
 	dir = String(float(dir) * 6.28318530718 / 360.0)	# deg to rad
-	var intens = randf() * float(intensity) # The intensity is in [0, intensity]
+	var intens = float(intensity) # The intensity is in [0, intensity]
 	print(intens)
 	intensity = String(intens)
 	return """
@@ -1595,7 +1595,7 @@ extends Node
 func action(tree, agent) -> void:
 	if agent.get_meta("Name") == """+in_quote(agents)+""" || agent.is_in_group("""+in_quote(agents)+"""):
 		var alpha:float = randf() * """+angle+""" - """ +angle+ """ /2.0
-		agent.apply_impulse(Vector3(0,0,0), Vector3("""+intensity+""" * cos(alpha+"""+dir+"""),0, """+intensity+"""*sin(alpha+"""+dir+""")))
+		agent.apply_impulse(Vector3(0,0,0), Vector3(randf() * """+intensity+""" * cos(alpha+"""+dir+"""),0, randf() * """+intensity+"""*sin(alpha+"""+dir+""")))
 """
 
 # Script REACTION
@@ -1724,7 +1724,42 @@ func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: Strin
 func _on_GraphGeneric_disconnection_request(from, from_slot, to, to_slot):
 	_gfx_code_current.disconnect_node(from, from_slot, to, to_slot)
 
-# Add a Graph Node
+# Add a Graph Node ACTION
+func _on_BtnAddGenericActAgtGp_pressed() -> void:
+	var gfx_edit:GraphEdit = _gfx_code_current
+	var cdt:String = get_node("%OptActAgtGp").text
+	if cdt == "Supprimer":
+		var gfx_node:GraphNode = get_node("%ActDEL").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "ActDEL")
+		var behav:Node = get_selected_behavior()
+		var type = behav.get_meta("Type")
+		# Find the Behavior Type
+		if type == "Reaction":
+			var r1:String = behav.get_meta("R1")
+			var r2:String = behav.get_meta("R2")
+			var p1:String = behav.get_meta("P1")
+			var p2:String = behav.get_meta("P2")
+			var p3:String = behav.get_meta("P3")
+			var opt_obj:Node   = gfx_node.get_child(1)
+			opt_obj.clear()
+			var agts:Array = []
+			if r1 != "" && r1 != "0":
+				agts = agts + ["R1:"+r1]
+			if r2 != "" && r2 != "0":
+				agts = agts + ["R2:"+r2]
+			if p1 != "" && p1 != "0" && p1 != "R1" && p1 != "R2":
+				agts = agts + ["P1:"+p1]
+			if p2 != "" && p2 != "0" && p2 != "R1" && p2 != "R2":
+				agts = agts + ["P2:"+p2]
+			if p3 != "" && p3 != "0" && p3 != "R1" && p3 != "R2":
+				agts = agts + ["P3:"+p3]
+			populate_option_btn_from_list( opt_obj,"", agts )
+			var sel_agt:String = r1 # TODO Change to the saved agent/gp
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+
+
+# Add a Graph Node CONDITION
 func _on_BtnAddGenericCdtAgtGp() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
 	var cdt:String = get_node("%OptCdtsAgtGp").text
@@ -1783,7 +1818,7 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 
 var _sel_gfx_node:GraphNode = null
 
-# Populate option btn of Param Box
+# Populate option btn of Cdt Param Box
 func _on_OptCdtParamObj_item_selected(i:int) -> void:
 	if _sel_gfx_node == null:
 		return

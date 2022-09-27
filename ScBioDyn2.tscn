@@ -1939,7 +1939,7 @@ margin_right = 157.0
 margin_bottom = 20.0
 text = "Math"
 flat = true
-items = [ "ET", null, false, 0, null, "OU", null, false, 1, null, "Paramètres", null, false, 2, null, "Math", null, false, 3, null, "NON", null, false, 6, null ]
+items = [ "ET", null, false, 0, null, "OU", null, false, 1, null, "Paramètres", null, false, 2, null, "Math", null, false, 3, null, "NON", null, false, 6, null, "Opérateur", null, false, 5, null ]
 selected = 3
 
 [node name="BtnAddGenericCdtAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
@@ -1977,7 +1977,7 @@ flat = true
 items = [ "Param", null, false, 0, null, "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Changer", null, false, 3, null, "Produire", null, false, 4, null, "Supprimer", null, false, 5, null ]
 selected = 3
 
-[node name="Button5" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
+[node name="BtnAddGenericActAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
 margin_left = 160.0
 margin_right = 180.0
 margin_bottom = 20.0
@@ -2464,10 +2464,10 @@ slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
 slot/0/right_enabled = true
 slot/0/right_type = 0
 slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/1/left_enabled = false
+slot/1/left_enabled = true
 slot/1/left_type = 0
 slot/1/left_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/1/right_enabled = true
+slot/1/right_enabled = false
 slot/1/right_type = 0
 slot/1/right_color = Color( 0, 0.564706, 0.27451, 1 )
 slot/2/left_enabled = false
@@ -2498,6 +2498,43 @@ margin_left = 16.0
 margin_top = 24.0
 margin_right = 127.0
 margin_bottom = 44.0
+
+[node name="ActDEL" type="GraphNode" parent="Runtime"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 139.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "Supprimer    "
+slot/0/left_enabled = true
+slot/0/left_type = 1
+slot/0/left_color = Color( 0.109804, 0.101961, 0.960784, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 0.109804, 0.101961, 0.960784, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="Runtime/ActDEL"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 30.0
+margin_bottom = 38.0
+
+[node name="OptActParamAgt" type="OptionButton" parent="Runtime/ActDEL"]
+margin_left = 4.0
+margin_top = -34.0
+margin_right = 67.0
+margin_bottom = -14.0
+text = "Agt-1"
+items = [ "Agt-1", null, false, 0, null, "Gp-1", null, false, 0, null, "Environnement", null, false, 1, null, "Grille", null, false, 2, null ]
+selected = 0
 
 [connection signal="pressed" from="Toolbar/BtnLoad" to="." method="_on_BtnLoad_pressed"]
 [connection signal="pressed" from="Toolbar/BtnSave" to="." method="_on_BtnSave_pressed"]
@@ -2571,6 +2608,7 @@ margin_bottom = 44.0
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts/OptCdtsAgtGp" to="." method="_on_OptAction_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts/BtnAddGenericCdtAgtGp" to="." method="_on_BtnAddGenericCdtAgtGp"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs/OptActAgtGp" to="." method="_on_OptAction_item_selected"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs/BtnAddGenericActAgtGp" to="." method="_on_BtnAddGenericActAgtGp_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/Button" to="." method="_on_hide_graph_behav"]
 [connection signal="connection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_connection_request"]
 [connection signal="delete_nodes_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_delete_nodes_request"]
@@ -2613,3 +2651,7 @@ margin_bottom = 44.0
 [connection signal="mouse_entered" from="Runtime/CdtOp" to="." method="get_input_graphnode"]
 [connection signal="mouse_exited" from="Runtime/CdtOp" to="." method="get_input_graphnode"]
 [connection signal="item_selected" from="Runtime/CdtOp/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
+[connection signal="close_request" from="Runtime/ActDEL" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/ActDEL" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/ActDEL" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/ActDEL" to="." method="get_input_graphnode"]
