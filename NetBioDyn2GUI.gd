@@ -1820,7 +1820,7 @@ var _sel_gfx_node:GraphNode = null
 
 # Populate option btn of Cdt Param Box
 func _on_OptCdtParamObj_item_selected(i:int) -> void:
-	if _sel_gfx_node == null:
+	if _sel_gfx_node == null || _sel_gfx_node.title != "Paramètre":
 		return
 	var opt_obj:Node   	= _sel_gfx_node.get_child(0).get_child(1)
 	var opt_param:Node 	= _sel_gfx_node.get_child(1).get_child(1)
