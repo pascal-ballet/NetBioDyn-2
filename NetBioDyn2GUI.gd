@@ -1903,7 +1903,7 @@ func _on_show_graph_behav()->void:
 	get_node("%VBoxTabContainer").visible 	= false
 
 # CLOSE GFX Code
-func _on_hide_graph_behav()->void:
+func _on_validate_graph_behav()->void:
 	# Save GraphEdit in the selected behavior node
 	# --------------------------------------------
 	var behav:Node = get_selected_behavior()
@@ -1915,8 +1915,9 @@ func _on_hide_graph_behav()->void:
 	# Put the gfx code into the Behav
 	gfx_code.visible = false
 	behav.add_child(gfx_code)
+	hide_gfx()
 
-	
+func hide_gfx()->void:
 	# Hide/Show panels
 	get_node("%HSplitLeftContainer").visible = true
 	get_node("%HBoxSimuCtrl").visible		= true
