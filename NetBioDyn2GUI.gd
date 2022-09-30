@@ -1724,6 +1724,32 @@ func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: Strin
 func _on_GraphGeneric_disconnection_request(from, from_slot, to, to_slot):
 	_gfx_code_current.disconnect_node(from, from_slot, to, to_slot)
 
+# Add a Graph Node CONDITION
+func _on_BtnAddGenericCdtAgtGp() -> void:
+	var gfx_edit:GraphEdit = _gfx_code_current
+	var cdt:String = get_node("%OptCdtsAgtGp").text
+	if cdt == "Et":
+		var gfx_node:GraphNode = get_node("%CdtAND").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtAND")
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+	if cdt == "Ou":
+		var gfx_node:GraphNode = get_node("%CdtOR").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtOR")
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+	if cdt == "Non":
+		var gfx_node:GraphNode = get_node("%CdtNOT").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtNOT")
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+	if cdt == "Comparer":
+		var gfx_node:GraphNode = get_node("%CdtOp").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtOp")
+		gfx_node.visible = true
+		gfx_edit.add_child(gfx_node)
+
+
 # Add a Graph Node ACTION
 func _on_BtnAddGenericActAgtGp_pressed() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
@@ -1759,36 +1785,16 @@ func _on_BtnAddGenericActAgtGp_pressed() -> void:
 		gfx_edit.add_child(gfx_node)
 
 
-# Add a Graph Node CONDITION
-func _on_BtnAddGenericCdtAgtGp() -> void:
+# Add a Graph Node VALEUR
+func _on_BtnAddGenericValAgtGp_pressed() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
-	var cdt:String = get_node("%OptCdtsAgtGp").text
-	if cdt == "ET":
-		var gfx_node:GraphNode = get_node("%CdtAND").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtAND")
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "OU":
-		var gfx_node:GraphNode = get_node("%CdtOR").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtOR")
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "NON":
-		var gfx_node:GraphNode = get_node("%CdtNOT").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtNOT")
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "Comparer":
-		var gfx_node:GraphNode = get_node("%CdtOp").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtOp")
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "CONSTANTE":
+	var val:String = get_node("%OptValAgtGp").text
+	if val == "Constante":
 		var gfx_node:GraphNode = get_node("%CdtActCONSTANT").duplicate(15)
 		gfx_node.name = key_name_create(_gfx_code_current, "CdtActCONSTANT")
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
-	if cdt == "Paramètres":
+	if val == "Paramètre Agent":
 		var gfx_node:GraphNode = get_node("%CdtParam").duplicate(15)
 		gfx_node.name = key_name_create(_gfx_code_current, "CdtParam")
 		var behav:Node = get_selected_behavior()
@@ -1820,6 +1826,8 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 			populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(r1) )
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
+
+
 
 var _sel_gfx_node:GraphNode = null
 
