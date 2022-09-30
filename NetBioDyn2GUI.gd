@@ -1024,6 +1024,7 @@ func _on_ListBehav_item_selected(param) -> void:
 			populate_option_btn_with_agents(get_node("%ParamBehavP3"), behav.get_meta("P3"),true,true,true, true,false,false,false)
 		else:
 			populate_option_btn_with_agents(get_node("%ParamBehavP3"), "0", true, true, true, true,false,false,false)
+
 	if type == "Random Force":
 		var tabs:TabContainer = get_node("%TabContainer")
 		tabs.current_tab = Prop.BEHAVIOR_RANDOM_FORCE
