@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Images/bg_focus.tres" type="StyleBox" id=1]
 [ext_resource path="res://Images/BtnStep.png" type="Texture" id=2]
@@ -7,12 +7,6 @@
 [ext_resource path="res://Images/BtnStop.png" type="Texture" id=5]
 [ext_resource path="res://Images/RandomForce2.png" type="Texture" id=6]
 [ext_resource path="res://NetBioDyn2GUI.gd" type="Script" id=7]
-
-[sub_resource type="StyleBoxFlat" id=6]
-bg_color = Color( 0, 0.564706, 0.27451, 1 )
-
-[sub_resource type="StyleBoxFlat" id=7]
-bg_color = Color( 0.235294, 0.529412, 0.988235, 1 )
 
 [sub_resource type="Environment" id=1]
 background_mode = 1
@@ -1918,13 +1912,6 @@ margin_top = 18.0
 margin_right = 326.0
 margin_bottom = 38.0
 
-[node name="Label2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
-margin_top = 3.0
-margin_right = 8.0
-margin_bottom = 17.0
-custom_styles/normal = SubResource( 6 )
-text = "o"
-
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
 margin_left = 12.0
 margin_top = 3.0
@@ -1939,7 +1926,7 @@ margin_right = 157.0
 margin_bottom = 20.0
 text = "Math"
 flat = true
-items = [ "ET", null, false, 0, null, "OU", null, false, 1, null, "Paramètres", null, false, 2, null, "Math", null, false, 3, null, "NON", null, false, 6, null, "Opérateur", null, false, 5, null, "CONSTANTE", null, false, 6, null ]
+items = [ "Et", null, false, 0, null, "Ou", null, false, 1, null, "Non", null, false, 6, null, "Comparer", null, false, 5, null ]
 selected = 3
 
 [node name="BtnAddGenericCdtAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts"]
@@ -1953,13 +1940,6 @@ margin_top = 42.0
 margin_right = 326.0
 margin_bottom = 62.0
 
-[node name="Label3" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
-margin_top = 3.0
-margin_right = 8.0
-margin_bottom = 17.0
-custom_styles/normal = SubResource( 7 )
-text = "o"
-
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
 margin_left = 12.0
 margin_top = 3.0
@@ -1972,12 +1952,35 @@ unique_name_in_owner = true
 margin_left = 76.0
 margin_right = 156.0
 margin_bottom = 20.0
-text = "Changer"
 flat = true
-items = [ "Param", null, false, 0, null, "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Changer", null, false, 3, null, "Produire", null, false, 4, null, "Supprimer", null, false, 5, null ]
-selected = 3
+items = [ "Force", null, false, 1, null, "Déplacer", null, false, 2, null ]
 
 [node name="BtnAddGenericActAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs"]
+margin_left = 160.0
+margin_right = 180.0
+margin_bottom = 20.0
+text = "+"
+
+[node name="HBoxVal" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle"]
+margin_top = 42.0
+margin_right = 326.0
+margin_bottom = 62.0
+
+[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxVal"]
+margin_left = 12.0
+margin_top = 3.0
+margin_right = 72.0
+margin_bottom = 17.0
+text = "Valeurs : "
+
+[node name="OptValAgtGp" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxVal"]
+margin_left = 76.0
+margin_right = 156.0
+margin_bottom = 20.0
+flat = true
+items = [ "Paramètre Agent", null, false, 0, null, "Paramètre Environnement", null, false, 1, null, "Paramètre Grille", null, false, 2, null, "Constante", null, false, 3, null ]
+
+[node name="BtnAddGenericActAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxVal"]
 margin_left = 160.0
 margin_right = 180.0
 margin_bottom = 20.0
@@ -2645,6 +2648,8 @@ margin_bottom = 48.0
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxCdts/BtnAddGenericCdtAgtGp" to="." method="_on_BtnAddGenericCdtAgtGp"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs/OptActAgtGp" to="." method="_on_OptAction_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxActs/BtnAddGenericActAgtGp" to="." method="_on_BtnAddGenericActAgtGp_pressed"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxVal/OptValAgtGp" to="." method="_on_OptAction_item_selected"]
+[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxVal/BtnAddGenericActAgtGp" to="." method="_on_BtnAddGenericActAgtGp_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/Button" to="." method="_on_hide_graph_behav"]
 [connection signal="connection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_connection_request"]
 [connection signal="delete_nodes_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_delete_nodes_request"]

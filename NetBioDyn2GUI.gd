@@ -1778,7 +1778,7 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 		gfx_node.name = key_name_create(_gfx_code_current, "CdtNOT")
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
-	if cdt == "Opérateur":
+	if cdt == "Comparer":
 		var gfx_node:GraphNode = get_node("%CdtOp").duplicate(15)
 		gfx_node.name = key_name_create(_gfx_code_current, "CdtOp")
 		gfx_node.visible = true
