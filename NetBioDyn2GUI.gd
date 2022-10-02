@@ -1042,6 +1042,28 @@ func _on_ListBehav_item_selected(param) -> void:
 		# Update GUI Behavior
 		# Populate OptionButton with agents & groups
 
+func GUI_Evt_Changed(i:int)->void:
+	if i == 0: # 1 Agent
+		get_node("%HBoxR1").visible = true
+		get_node("%HBoxR2").visible = false
+		get_node("%LabelR1").text = "L'Agent"
+		get_node("%LabelP1").text = "devient"
+		get_node("%LabelP2").text = "et on ajoute"
+	if i == 1: # 2 Agents
+		get_node("%HBoxR1").visible = true
+		get_node("%HBoxR2").visible = true
+		get_node("%LabelR1").text = "Quand l'Agent"
+		get_node("%LabelR2").text = "rencontre"
+		get_node("%LabelP1").text = "ils deviennent"
+		get_node("%LabelP2").text = "et"
+		get_node("%LabelP3").text = "et on ajoute"
+	if i == 2: # On Simulation Step
+		get_node("%HBoxR1").visible = false
+		get_node("%HBoxR2").visible = false
+		get_node("%LabelP1").text = "On ajoute"
+		get_node("%LabelP2").text = "avec"
+		get_node("%LabelP3").text = "et"
+		
 
 func GUI_param_updated(param=null)->void:
 	behavior_GUI_to_META()
