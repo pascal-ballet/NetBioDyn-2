@@ -1112,11 +1112,11 @@ func update_evt_gfx_names()->void:
 				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
 				widg	.clear()
 				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 2:
-					populate_option_btn_from_list(widg, widg.text, [opt_R1.text, opt_R2.text])
+					populate_option_btn_from_list(widg, "", [opt_R1.text, opt_R2.text])
 				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 1:
-					populate_option_btn_from_list(widg, widg.text, [opt_R1.text])	
+					populate_option_btn_from_list(widg, "", [opt_R1.text])	
 				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 0:
-					populate_option_btn_from_list(widg, widg.text, [])
+					populate_option_btn_from_list(widg, "", [])
 
 func GUI_param_updated(param=null)->void:
 	behavior_GUI_to_META()
