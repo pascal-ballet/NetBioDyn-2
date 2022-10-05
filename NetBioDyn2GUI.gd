@@ -1024,6 +1024,14 @@ func _on_ListBehav_item_selected(param) -> void:
 			populate_option_btn_with_agents(get_node("%ParamBehavP3"), behav.get_meta("P3"),true,true,true, true,false,false,false)
 		else:
 			populate_option_btn_with_agents(get_node("%ParamBehavP3"), "0", true, true, true, true,false,false,false)
+		if behav.has_meta("SubType") == true:
+			if behav.get_meta("SubType") == "OneAgent":
+				GUI_Evt_Changed(0)
+			else:
+				GUI_Evt_Changed(1)
+		else:
+			behav.set_meta("SubType", "TwoAgents")
+			GUI_Evt_Changed(1)
 
 	if type == "Random Force":
 		var tabs:TabContainer = get_node("%TabContainer")
@@ -1044,11 +1052,15 @@ func _on_ListBehav_item_selected(param) -> void:
 
 func GUI_Evt_Changed(i:int)->void:
 	if i == 0: # 1 Agent
+		get_node("%LabelR1").text = "L'Agent"
 		get_node("%HBoxR1").visible = true
 		get_node("%HBoxR2").visible = false
-		get_node("%LabelR1").text = "L'Agent"
+		get_node("%ParamBehavR2").text = "0"		
 		get_node("%LabelP1").text = "devient"
-		get_node("%LabelP2").text = "et on ajoute"
+		get_node("%LabelP2").text = "puis ajoute"
+		get_node("%LabelP3").text = "et"
+		if get_selected_behavior() != null:
+			get_selected_behavior().set_meta("SubType", "OneAgent")
 	if i == 1: # 2 Agents
 		get_node("%HBoxR1").visible = true
 		get_node("%HBoxR2").visible = true
@@ -1056,13 +1068,28 @@ func GUI_Evt_Changed(i:int)->void:
 		get_node("%LabelR2").text = "rencontre"
 		get_node("%LabelP1").text = "ils deviennent"
 		get_node("%LabelP2").text = "et"
-		get_node("%LabelP3").text = "et on ajoute"
-	if i == 2: # On Simulation Step
-		get_node("%HBoxR1").visible = false
-		get_node("%HBoxR2").visible = false
-		get_node("%LabelP1").text = "On ajoute"
-		get_node("%LabelP2").text = "avec"
-		get_node("%LabelP3").text = "et"
+		get_node("%LabelP3").text = "puis ajoutent"
+		if get_selected_behavior() != null:
+			get_selected_behavior().set_meta("SubType", "TwoAgents")
+
+#	if i == 2: # On Simulation Step
+#		get_node("%HBoxR1").visible = false
+#		get_node("%HBoxR2").visible = false
+#		get_node("%LabelP1").text = "On ajoute"
+#		get_node("%LabelP2").text = "avec"
+#		get_node("%LabelP3").text = "et"
+
+func GUI_evt_gfx_changed(i:int):
+	if i == 0:
+		get_node("%OptAgentR1").visible = false
+		get_node("%OptAgentR2").visible = false
+	if i == 1:
+		get_node("%OptAgentR1").visible = true
+		get_node("%OptAgentR2").visible = false
+	if i == 2:
+		get_node("%OptAgentR1").visible = true
+		get_node("%OptAgentR2").visible = true
+		
 		
 
 func GUI_param_updated(param=null)->void:
