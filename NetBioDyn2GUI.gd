@@ -1096,6 +1096,27 @@ func GUI_evt_gfx_changed(i:int):
 	if i == 2:
 		opt_R1.visible = true
 		opt_R2.visible = true
+	update_evt_gfx_names()
+
+func GUI_evt_gfx_R1_changed(i:int)->void:
+	update_evt_gfx_names()
+	
+func GUI_evt_gfx_R2_changed(i:int)->void:
+	update_evt_gfx_names()
+
+func update_evt_gfx_names()->void:
+	for box in _gfx_code_current.get_children():
+		for widg in box.get_children():
+			if widg.is_in_group("OptEvtAgtsGp") :
+				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
+				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
+				widg	.clear()
+				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 2:
+					populate_option_btn_from_list(widg, widg.text, [opt_R1.text, opt_R2.text])
+				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 1:
+					populate_option_btn_from_list(widg, widg.text, [opt_R1.text])	
+				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 0:
+					populate_option_btn_from_list(widg, widg.text, [])
 
 func GUI_param_updated(param=null)->void:
 	behavior_GUI_to_META()
@@ -1779,6 +1800,14 @@ func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: Strin
 func _on_GraphGeneric_disconnection_request(from, from_slot, to, to_slot):
 	_gfx_code_current.disconnect_node(from, from_slot, to, to_slot)
 
+func gfx_get_evt_agents()->Array:
+	var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
+	var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
+
+	var agts:Array = [opt_R1.text, opt_R2.text]
+	return agts
+	
+
 # Add a Graph Node CONDITION
 func _on_BtnAddGenericCdtAgtGp() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
@@ -1816,11 +1845,11 @@ func _on_BtnAddGenericActAgtGp_pressed() -> void:
 		var opt_obj:Node   = gfx_node.get_child(1)
 		opt_obj.clear()
 		
-		var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
-		var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
-
-		var agts:Array = [opt_R1.text, opt_R2.text]
-		populate_option_btn_from_list( opt_obj,"", agts )
+#		var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
+#		var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
+#
+#		var agts:Array = [opt_R1.text, opt_R2.text]
+		populate_option_btn_from_list( opt_obj,"", gfx_get_evt_agents() )
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 

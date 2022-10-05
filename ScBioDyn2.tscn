@@ -2701,7 +2701,6 @@ text = "Valeur 2"
 
 [node name="ActDEL" type="GraphNode" parent="Runtime"]
 unique_name_in_owner = true
-visible = false
 margin_left = 60.0
 margin_top = 208.0
 margin_right = 139.0
@@ -2727,7 +2726,7 @@ margin_top = 24.0
 margin_right = 98.0
 margin_bottom = 38.0
 
-[node name="OptActParamAgt" type="OptionButton" parent="Runtime/ActDEL"]
+[node name="OptActParamAgt" type="OptionButton" parent="Runtime/ActDEL" groups=["OptEvtAgtsGp"]]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 98.0
@@ -2843,6 +2842,8 @@ margin_bottom = 48.0
 [connection signal="delete_nodes_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_delete_nodes_request"]
 [connection signal="disconnection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_disconnection_request"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeEvt/OptEvt" to="." method="GUI_evt_gfx_changed"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeEvt/OptAgentR1" to="." method="GUI_evt_gfx_R1_changed"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeEvt/OptAgentR2" to="." method="GUI_evt_gfx_R2_changed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/Button" to="." method="_on_Button_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer/ButtonClearEnv" to="." method="_on_ButtonClearEnv_pressed"]
 [connection signal="gui_input" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer" to="." method="_on_ViewportContainer_gui_input"]
