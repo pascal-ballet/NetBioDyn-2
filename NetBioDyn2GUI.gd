@@ -1014,6 +1014,7 @@ func _on_ListBehav_item_selected(param) -> void:
 		# Update GUI Behavior
 		# Reaction: Set behavior Name
 		get_node("%ParamBehavName").set_text(behav.get_meta("Name"))
+		# Reaction: Set behavior Proba
 		get_node("%ParamBehavProba").set_text(behav.get_meta("p"))
 		# Populate OptionButtons with agents & groups & R1 & R2 & 0
 		populate_option_btn_with_agents(get_node("%ParamBehavR1"), behav.get_meta("R1"), true, false, false,false,false,false,false)
@@ -1048,7 +1049,9 @@ func _on_ListBehav_item_selected(param) -> void:
 		var tabs:TabContainer = get_node("%TabContainer")
 		tabs.current_tab = Prop.BEHAVIOR_GENERIC
 		# Update GUI Behavior
-		# Populate OptionButton with agents & groups
+		# Reaction: Set behavior Name
+		get_node("%BehavGenericName").set_text(behav.get_meta("Name"))
+
 
 func GUI_Evt_Changed(i:int)->void:
 	if i == 0: # 1 Agent
@@ -1810,29 +1813,14 @@ func _on_BtnAddGenericActAgtGp_pressed() -> void:
 		var gfx_node:GraphNode = get_node("%ActDEL").duplicate(15)
 		gfx_node.name = key_name_create(_gfx_code_current, "ActDEL")
 		var behav:Node = get_selected_behavior()
-		var type = behav.get_meta("Type")
-		# Find the Behavior Type
-		if type == "Reaction":
-			var r1:String = behav.get_meta("R1")
-			var r2:String = behav.get_meta("R2")
-			var p1:String = behav.get_meta("P1")
-			var p2:String = behav.get_meta("P2")
-			var p3:String = behav.get_meta("P3")
-			var opt_obj:Node   = gfx_node.get_child(1)
-			opt_obj.clear()
-			var agts:Array = []
-			if r1 != "" && r1 != "0":
-				agts = agts + ["R1:"+r1]
-			if r2 != "" && r2 != "0":
-				agts = agts + ["R2:"+r2]
-			if p1 != "" && p1 != "0" && p1 != "R1" && p1 != "R2":
-				agts = agts + ["P1:"+p1]
-			if p2 != "" && p2 != "0" && p2 != "R1" && p2 != "R2":
-				agts = agts + ["P2:"+p2]
-			if p3 != "" && p3 != "0" && p3 != "R1" && p3 != "R2":
-				agts = agts + ["P3:"+p3]
-			populate_option_btn_from_list( opt_obj,"", agts )
-			var sel_agt:String = r1 # TODO Change to the saved agent/gp
+		var opt_obj:Node   = gfx_node.get_child(1)
+		opt_obj.clear()
+		
+		var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
+		var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
+
+		var agts:Array = [opt_R1.text, opt_R2.text]
+		populate_option_btn_from_list( opt_obj,"", agts )
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 
