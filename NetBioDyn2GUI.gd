@@ -1080,17 +1080,19 @@ func GUI_Evt_Changed(i:int)->void:
 #		get_node("%LabelP3").text = "et"
 
 func GUI_evt_gfx_changed(i:int):
+	var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
+	var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
+	populate_option_btn_with_agents(opt_R1, opt_R1.text,true,false,false, false,false,false,false)
+	populate_option_btn_with_agents(opt_R2, opt_R2.text,true,false,false, false,false,false,false)
 	if i == 0:
-		get_node("%OptAgentR1").visible = false
-		get_node("%OptAgentR2").visible = false
+		opt_R1.visible = false
+		opt_R2.visible = false
 	if i == 1:
-		get_node("%OptAgentR1").visible = true
-		get_node("%OptAgentR2").visible = false
+		opt_R1.visible = true
+		opt_R2.visible = false
 	if i == 2:
-		get_node("%OptAgentR1").visible = true
-		get_node("%OptAgentR2").visible = true
-		
-		
+		opt_R1.visible = true
+		opt_R2.visible = true
 
 func GUI_param_updated(param=null)->void:
 	behavior_GUI_to_META()
@@ -1943,6 +1945,8 @@ func _on_show_graph_behav()->void:
 		gfx_code.visible = true
 		get_node("%GraphBehav").add_child(gfx_code) # put the stored gfx from node to GraphBehav
 		_gfx_code_current = gfx_code
+		# Fill the gfx evts box with default = collision
+		GUI_evt_gfx_changed(2)
 		
 	get_node("%HSplitLeftContainer").visible = false
 	get_node("%HBoxSimuCtrl").visible		= false
