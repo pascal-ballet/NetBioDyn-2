@@ -1775,8 +1775,8 @@ func action(tree, agent) -> void:
 	
 func generate_code_gfx(then:GraphNode) -> String:
 	var code:String = ":"
-	var lst_con:Array = then.get_incoming_connections()
-	var cdts:String = generate_code_cdts(then.get_incoming_connections()[0])
+	var lst_cnx:Array = then.get_parent().get_connection_list()
+	var cdts:String = generate_code_cdts(get_graphnodes_entering("GraphNodeThen", lst_cnx))
 	var acts:String = generate_code_acts(then.get_[0])
 	return ""
 	
@@ -1786,6 +1786,12 @@ func generate_code_cdts(gfx:GraphEdit) -> String:
 func generate_code_acts(gfx:GraphEdit) -> String:
 	return ""
 
+func get_graphnodes_entering(box:String, cnx_list:Array)->Array:
+	return []
+	
+func get_graphnodes_exiting(box:String, cnx_list:Array) ->Array:
+	return []
+	
 
 # ██████  ███████ ██   ██      ██████  ██████  ██████  ███████ 
 #██       ██       ██ ██      ██      ██    ██ ██   ██ ██      
