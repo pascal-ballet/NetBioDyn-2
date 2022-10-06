@@ -947,7 +947,7 @@ func addBehavRandomForce() -> void:
 	node.set_meta("Angle", angle)
 	node.set_meta("Intensity", intensity)
 	
-	# Set default Script
+	# Set Force Script
 	var script:GDScript = GDScript.new()
 	script.source_code = behav_script_random_force(agents, dir, angle, intensity)
 	print_debug(script.source_code)
@@ -963,20 +963,16 @@ func addBehavGeneric() -> void:
 	_listBehavs.add_item("Générique")
 	_listBehavs.set_item_metadata(_listBehavs.get_item_count()-1, "Generic") # type of the item
 	
-	# Create default Behavior Type in 3D Scene -------------------	
-	var agents:String = ""
-	var proba:String = "100"
+	# Create default Behavior Type in 3D Scene -------------------
 	
 	# Set META
 	var node:Node = Node.new()
 	node.set_meta("Type", "Generic")
 	node.set_meta("Name", "Générique")
-	node.set_meta("Agents", agents)
-	node.set_meta("Proba", proba)
 	
-	# Set default Script
+	# Set Generic Script
 	var script:GDScript = GDScript.new()
-	script.source_code = behav_script_default()
+	script.source_code = behav_script_generic(null)
 	print_debug(script.source_code)
 	script.reload()
 	node.set_script(script)
@@ -1191,7 +1187,12 @@ func behavior_GUI_to_META() -> void:
 		var name:String 		= get_node("%BehavGenericName").get_text()
 		behav.set_meta("Name", name)
 		
-		# Set Script: TODO
+		# Set Script generic
+		var script:GDScript = GDScript.new()
+		script.source_code = behav_script_generic(_gfx_code_current)
+		print_debug(script.source_code)
+		script.reload()
+		behav.set_script(script)
 
 
 
@@ -1760,20 +1761,30 @@ func action(tree, R1) -> void:
 """
 
 # Script GENERIC
-func behav_script_generic(agt1:String, agt2:String, p:String) -> String:
-	p = String(float(p) / 100.0)	# % to [0,1]
-	return """
+func behav_script_generic(gfx:GraphEdit) -> String:
+	if gfx == null:
+		return """
 extends Node
-# Generic Behavior
+# Default Behavior
 func action(tree, agent) -> void:
-	var proba:float = """+p+"""
-	var alea:float = rand_range(0,100)
-	if alea < proba:
-		if agent.get_meta("Name") == """+in_quote(agt1)+""" || agent.is_in_group("""+in_quote(agt1)+"""):
-			pass
-
+	pass
 """
+	else:
+		var then:GraphNode = gfx.find_node("*GraphNodeThen*",true,false)
+		return generate_code_gfx(then)
+	
+func generate_code_gfx(then:GraphNode) -> String:
+	var code:String = ":"
+	var lst_con:Array = then.get_incoming_connections()
+	var cdts:String = generate_code_cdts(then.get_incoming_connections()[0])
+	var acts:String = generate_code_acts(then.get_[0])
+	return ""
+	
+func generate_code_cdts(gfx:GraphEdit) -> String:
+	return ""
 
+func generate_code_acts(gfx:GraphEdit) -> String:
+	return ""
 
 
 # ██████  ███████ ██   ██      ██████  ██████  ██████  ███████ 
