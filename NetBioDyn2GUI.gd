@@ -1790,7 +1790,7 @@ func generate_code_cdts(box:String, lst_cnx:Array) -> String:
 		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx) + " : "
 	
 	if box.length()>5 and box.left(6) == "CdtAND":
-		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx) + " and " + generate_code_cdts(lst_input_boxes[1], lst_cnx) 
+		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx) + " and " + generate_code_cdts(lst_input_boxes[1], lst_cnx) + ")"
 	
 	if box == "GraphNodeEvt":
 		code_cdts = "collision() "
