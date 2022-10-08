@@ -1774,20 +1774,38 @@ func action(tree, agent) -> void:
 		return generate_code_gfx(then)
 	
 func generate_code_gfx(then:GraphNode) -> String:
-	var code:String = ":"
 	var lst_cnx:Array = then.get_parent().get_connection_list()
-	var cdts:String = generate_code_cdts(get_graphnodes_entering("GraphNodeThen", lst_cnx))
-	var acts:String = generate_code_acts(then.get_[0])
-	return ""
+	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx)
+	var code_acts:String = generate_code_acts("GraphNodeThen", lst_cnx)
 	
-func generate_code_cdts(gfx:GraphEdit) -> String:
-	return ""
+	var code:String = "if "+code_cdts + code_acts
+	print("gfx code: "+code)
+	return code
+	
+func generate_code_cdts(box:String, lst_cnx:Array) -> String:
+	var lst_input_boxes:Array = get_graphnodes_entering(box, lst_cnx)
+	var code_cdts:String = ""
+	
+	if box == "GraphNodeThen":
+		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx) + " : "
+	
+	if box.length()>5 and box.left(6) == "CdtAND":
+		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx) + " and " + generate_code_cdts(lst_input_boxes[1], lst_cnx) 
+	
+	if box == "GraphNodeEvt":
+		code_cdts = "collision() "
+	
+	return code_cdts
 
-func generate_code_acts(gfx:GraphEdit) -> String:
+func generate_code_acts(box:String, lst_cnx:Array) -> String:
 	return ""
 
 func get_graphnodes_entering(box:String, cnx_list:Array)->Array:
-	return []
+	var lst_in_boxes:Array = []
+	for cnx in cnx_list:
+		if cnx.get("to")==box:
+			lst_in_boxes.append(cnx.get("from"))
+	return lst_in_boxes
 	
 func get_graphnodes_exiting(box:String, cnx_list:Array) ->Array:
 	return []
@@ -2247,6 +2265,10 @@ func manage_graph() -> void:
 # WORK in PROGRESS...                            *
 # ************************************************
 func _on_BtnDebug_pressed():
+	print("toto".left(2))
+	if true:
+		return
+		
 	#var behav:Node = get_selected_behavior()
 	
 	var lst_0:Array = _gfx_code_current.get_connection_list() 
