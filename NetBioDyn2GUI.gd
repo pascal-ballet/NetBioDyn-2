@@ -1771,33 +1771,39 @@ func action(tree, agent) -> void:
 """
 	else:
 		var then:GraphNode = gfx.find_node("*GraphNodeThen*",true,false)
-		return generate_code_gfx(then)
+		return generate_code_gfx(then, gfx)
 	
-func generate_code_gfx(then:GraphNode) -> String:
+func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
 	var lst_cnx:Array = then.get_parent().get_connection_list()
-	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx)
-	var code_acts:String = generate_code_acts("GraphNodeThen", lst_cnx)
+	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx, gfx)
+	var code_acts:String = generate_code_acts("GraphNodeThen", lst_cnx, gfx)
 	
-	var code:String = "if "+code_cdts + code_acts
-	print("gfx code: "+code)
+	var code:String = """func action(tree, R1) -> void:\n"""
+	code += "	if "+code_cdts + code_acts
+	print("gfx code: ")
+	print(code)
 	return code
 	
-func generate_code_cdts(box:String, lst_cnx:Array) -> String:
+func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	var lst_input_boxes:Array = get_graphnodes_entering(box, lst_cnx)
 	var code_cdts:String = ""
 	
 	if box == "GraphNodeThen":
-		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx) + " : "
+		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " : "
 	
 	if box.length()>5 and box.left(6) == "CdtAND":
-		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx) + " and " + generate_code_cdts(lst_input_boxes[1], lst_cnx) + ")"
+		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " and " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
 	
 	if box == "GraphNodeEvt":
-		code_cdts = "collision() "
+		var box_ref:GraphNode = gfx.find_node("GraphNodeEvt",true,false)
+		if box_ref.get_child(0).get_selected_id() == 1:
+			code_cdts =  """ R1.get_meta("Name") == \"""" + box_ref.get_child(1).text + """\" || R1.is_in_group(\"""" + box_ref.get_child(1).text + """\")"""
+		if box_ref.get_child(0).get_selected_id() == 2:
+			code_cdts = "collision() "
 	
 	return code_cdts
 
-func generate_code_acts(box:String, lst_cnx:Array) -> String:
+func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	return ""
 
 func get_graphnodes_entering(box:String, cnx_list:Array)->Array:
