@@ -116,8 +116,8 @@ func _process(delta):
 		manage_graph()
 
 	# Play Behaviors
-	for behav in _node_behavs.get_children():
-		for agent in _node_env.get_children():
+	for behav in _node_behavs.get_children(): # Apply behav...
+		for agent in _node_env.get_children():# on every agents
 			behav.action(self, agent) # on applique le comportement behav sur l'agent agt
 			#print("test")
 
@@ -972,7 +972,7 @@ func addBehavGeneric() -> void:
 	
 	# Set Generic Script
 	var script:GDScript = GDScript.new()
-	script.source_code = behav_script_generic(null)
+	script.source_code = behav_script_generic(_gfx_code_current)
 	print_debug(script.source_code)
 	script.reload()
 	node.set_script(script)
@@ -1762,7 +1762,13 @@ func action(tree, R1) -> void:
 
 # Script GENERIC
 func behav_script_generic(gfx:GraphEdit) -> String:
+	var is_gfx_coherent = true
 	if gfx == null:
+		is_gfx_coherent = false
+	else:
+		if gfx.get_connection_list().size() == 0:
+			is_gfx_coherent = false
+	if is_gfx_coherent == false:
 		return """
 extends Node
 # Default Behavior
@@ -2059,7 +2065,7 @@ func _on_validate_graph_behav()->void:
 func hide_gfx()->void:
 	# Hide/Show panels
 	get_node("%HSplitLeftContainer").visible = true
-	get_node("%HBoxSimuCtrl").visible		= true
+	get_node("%HBoxSimuCtrl").visible			= true
 	get_node("%GraphBehav").visible 			= false
 	get_node("%VBoxEnv").visible 			= true
 	get_node("%VBoxCurves").visible 			= true
