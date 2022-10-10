@@ -1796,11 +1796,25 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	
 	if box == "GraphNodeEvt":
 		var box_ref:GraphNode = gfx.find_node("GraphNodeEvt",true,false)
+		if box_ref.get_child(0).get_selected_id() == 0:
+			code_cdts =  """ true """
 		if box_ref.get_child(0).get_selected_id() == 1:
-			code_cdts =  """ R1.get_meta("Name") == \"""" + box_ref.get_child(1).text + """\" || R1.is_in_group(\"""" + box_ref.get_child(1).text + """\")"""
+			var r1:String = box_ref.get_child(1).text
+			code_cdts =  """ R1.get_meta("Name") == """ + in_quote(r1) + """ || R1.is_in_group(""" + in_quote(r1) + """)"""
 		if box_ref.get_child(0).get_selected_id() == 2:
-			code_cdts = "collision() "
-	
+			var r2:String = box_ref.get_child(2).text
+			code_cdts = """
+	var bodies = R1.get_colliding_bodies()
+	if bodies.size() > 0:
+		#print(str("collision size:",bodies.size() ))
+		#print("R1 is colliding")
+		var R2 = bodies[0]
+		#print( str( "List R1 : ", R1.get_meta_list()    ) )
+		#print( str( "List R2 : ", R2.get_meta_list()    ) )
+		#print( str("R2.get_meta(Name) : ",  R2.get_meta("Name")   ) )
+		if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")):
+"""
+
 	return code_cdts
 
 func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
