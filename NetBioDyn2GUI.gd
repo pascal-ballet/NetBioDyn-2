@@ -1776,7 +1776,7 @@ func action(tree, agent) -> void:
 func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
 	var lst_cnx:Array = then.get_parent().get_connection_list()
 	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx, gfx)
-	var code_acts:String = generate_code_acts("GraphNodeThen", lst_cnx, gfx)
+	var code_acts:String = generate_code_acts("GraphNodeEnd", lst_cnx, gfx)
 	
 	var code:String = """func action(tree, R1) -> void:\n"""
 	code += "	if "+code_cdts + code_acts
@@ -1791,8 +1791,8 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if box == "GraphNodeThen":
 		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " : "
 	
-	if box.length()>5 and box.left(6) == "CdtAND":
-		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " and " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+	if box.length() >= 6 && box.left(6) == "CdtAND":
+		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " && " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
 	
 	if box == "GraphNodeEvt":
 		var box_ref:GraphNode = gfx.find_node("GraphNodeEvt",true,false)
@@ -1805,20 +1805,30 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 			var r2:String = box_ref.get_child(2).text
 			code_cdts = """
 	var bodies = R1.get_colliding_bodies()
+	var R2 = null
 	if bodies.size() > 0:
+		R2 = bodies[0]
+	if R2 != null && R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")):
 		#print(str("collision size:",bodies.size() ))
 		#print("R1 is colliding")
-		var R2 = bodies[0]
 		#print( str( "List R1 : ", R1.get_meta_list()    ) )
 		#print( str( "List R2 : ", R2.get_meta_list()    ) )
 		#print( str("R2.get_meta(Name) : ",  R2.get_meta("Name")   ) )
-		if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")):
 """
 
 	return code_cdts
 
 func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
-	return ""
+	var lst_output_boxes:Array = get_graphnodes_entering(box, lst_cnx)
+	var code_acts:String = ""
+	if box == "GraphNodeEnd":
+		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)
+		
+	if box.length() >= 6 && box.left(6) == "ActDEL":
+		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+		R1.queue_free()"""
+	
+	return code_acts
 
 func get_graphnodes_entering(box:String, cnx_list:Array)->Array:
 	var lst_in_boxes:Array = []
@@ -1828,7 +1838,11 @@ func get_graphnodes_entering(box:String, cnx_list:Array)->Array:
 	return lst_in_boxes
 	
 func get_graphnodes_exiting(box:String, cnx_list:Array) ->Array:
-	return []
+	var lst_out_boxes:Array = []
+	for cnx in cnx_list:
+		if cnx.get("from")==box:
+			lst_out_boxes.append(cnx.get("to"))
+	return lst_out_boxes
 	
 
 # ██████  ███████ ██   ██      ██████  ██████  ██████  ███████ 
