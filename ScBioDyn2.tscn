@@ -1899,6 +1899,7 @@ size_flags_horizontal = 3
 margin_right = 698.0
 margin_bottom = 31.0
 hint_tooltip = "Quand Diffusant rencontre E-Coli, alors E-Coli ' et E-Coli '' apparaissent."
+mouse_filter = 0
 size_flags_horizontal = 7
 size_flags_vertical = 5
 custom_styles/normal = ExtResource( 1 )
@@ -1920,14 +1921,15 @@ margin_bottom = 44.0
 margin_right = 178.0
 margin_bottom = 20.0
 
-[node name="Label" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts"]
+[node name="OptGfxCategories" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts"]
+unique_name_in_owner = true
 margin_right = 59.0
 margin_bottom = 20.0
 text = "Tous"
 items = [ "Tous", null, false, 0, null, "Actions", null, false, 1, null, "Conditions", null, false, 2, null, "Math", null, false, 3, null, "Paramètres", null, false, 4, null ]
 selected = 0
 
-[node name="OptCdtsAgtGp" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts"]
+[node name="OptGfxNodes" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts"]
 unique_name_in_owner = true
 margin_left = 63.0
 margin_right = 154.0
@@ -2483,8 +2485,9 @@ margin_bottom = 24.0
 text = "-"
 
 [node name="GfxNodes" type="Node" parent="Runtime"]
+unique_name_in_owner = true
 
-[node name="CdtAND" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxAND" type="GraphNode" parent="Runtime/GfxNodes"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2505,20 +2508,25 @@ slot/1/left_color = Color( 1, 0, 0, 1 )
 slot/1/right_enabled = false
 slot/1/right_type = 0
 slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Logique",
+"Name": "GfxAND",
+"NameToShow": "Et"
+}
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/CdtAND"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxAND"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 46.0
 margin_bottom = 38.0
 
-[node name="Label2" type="Label" parent="Runtime/GfxNodes/CdtAND"]
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/GfxAND"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 46.0
 margin_bottom = 53.0
 
-[node name="CdtOR" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxOR" type="GraphNode" parent="Runtime/GfxNodes"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2539,20 +2547,25 @@ slot/1/left_color = Color( 1, 0, 0, 1 )
 slot/1/right_enabled = false
 slot/1/right_type = 0
 slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Logique",
+"Name": "GfxOR",
+"NameToShow": "Ou"
+}
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/CdtOR"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxOR"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 53.0
 margin_bottom = 38.0
 
-[node name="Label2" type="Label" parent="Runtime/GfxNodes/CdtOR"]
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/GfxOR"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 53.0
 margin_bottom = 53.0
 
-[node name="CdtNOT" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxNOT" type="GraphNode" parent="Runtime/GfxNodes"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2567,14 +2580,19 @@ slot/0/left_color = Color( 1, 0, 0, 1 )
 slot/0/right_enabled = true
 slot/0/right_type = 1
 slot/0/right_color = Color( 1, 0, 0, 1 )
+__meta__ = {
+"Category": "Logique",
+"Name": "GfxNOT",
+"NameToShow": "Non"
+}
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/CdtNOT"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxNOT"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 63.0
 margin_bottom = 38.0
 
-[node name="CdtParam" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxParam" type="GraphNode" parent="Runtime/GfxNodes"]
 unique_name_in_owner = true
 visible = false
 margin_top = 150.0
@@ -2594,20 +2612,25 @@ slot/1/left_color = Color( 1, 1, 1, 1 )
 slot/1/right_enabled = true
 slot/1/right_type = 2
 slot/1/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Agent",
+"Name": "GfxParam",
+"NameToShow": "Paramètres"
+}
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/CdtParam"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/GfxParam"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 127.0
 margin_bottom = 44.0
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/CdtParam/HBoxContainer"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxParam/HBoxContainer"]
 margin_top = 3.0
 margin_right = 44.0
 margin_bottom = 17.0
 text = "Objet :"
 
-[node name="OptCdtParamObj" type="OptionButton" parent="Runtime/GfxNodes/CdtParam/HBoxContainer"]
+[node name="OptCdtParamObj" type="OptionButton" parent="Runtime/GfxNodes/GfxParam/HBoxContainer"]
 margin_left = 48.0
 margin_right = 111.0
 margin_bottom = 20.0
@@ -2615,19 +2638,19 @@ text = "Agt-1"
 items = [ "Agt-1", null, false, 0, null, "Gp-1", null, false, 0, null, "Environnement", null, false, 1, null, "Grille", null, false, 2, null ]
 selected = 0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/CdtParam"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/GfxParam"]
 margin_left = 16.0
 margin_top = 45.0
 margin_right = 127.0
 margin_bottom = 65.0
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/CdtParam/HBoxContainer2"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxParam/HBoxContainer2"]
 margin_top = 3.0
 margin_right = 48.0
 margin_bottom = 17.0
 text = "Param :"
 
-[node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/CdtParam/HBoxContainer2"]
+[node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/GfxParam/HBoxContainer2"]
 margin_left = 52.0
 margin_right = 89.0
 margin_bottom = 20.0
@@ -2635,7 +2658,7 @@ text = "X"
 items = [ "X", null, false, 0, null, "Y", null, false, 0, null, "Z", null, false, 1, null, "Vx", null, false, 2, null, "Horloge", null, false, 3, null, "pH", null, false, 4, null, "Température", null, false, 5, null, "Valeur Case", null, false, 6, null ]
 selected = 0
 
-[node name="CdtCompare" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxCompare" type="GraphNode" parent="Runtime/GfxNodes"]
 unique_name_in_owner = true
 visible = false
 margin_top = 150.0
@@ -2661,25 +2684,30 @@ slot/2/left_color = Color( 0, 1, 0, 1 )
 slot/2/right_enabled = false
 slot/2/right_type = 0
 slot/2/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Logique",
+"Name": "GfxCompare",
+"NameToShow": "Comparer"
+}
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/CdtCompare"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/GfxCompare"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 127.0
 margin_bottom = 38.0
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/CdtCompare/HBoxContainer2"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxCompare/HBoxContainer2"]
 margin_right = 52.0
 margin_bottom = 14.0
 text = "Valeur 1"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/CdtCompare"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/GfxCompare"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 127.0
 margin_bottom = 59.0
 
-[node name="OptCdtParamObj" type="OptionButton" parent="Runtime/GfxNodes/CdtCompare/HBoxContainer3"]
+[node name="OptCdtParamObj" type="OptionButton" parent="Runtime/GfxNodes/GfxCompare/HBoxContainer3"]
 margin_right = 111.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
@@ -2687,18 +2715,18 @@ text = "="
 items = [ "=", null, false, 0, null, "=/=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
 selected = 0
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/CdtCompare"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/GfxCompare"]
 margin_left = 16.0
 margin_top = 60.0
 margin_right = 127.0
 margin_bottom = 74.0
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/CdtCompare/HBoxContainer4"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxCompare/HBoxContainer4"]
 margin_right = 52.0
 margin_bottom = 14.0
 text = "Valeur 2"
 
-[node name="ActDEL" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxDEL" type="GraphNode" parent="Runtime/GfxNodes"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2719,23 +2747,25 @@ slot/1/left_color = Color( 1, 1, 1, 1 )
 slot/1/right_enabled = false
 slot/1/right_type = 0
 slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Truc",
+"Name": "GfxDEL",
+"NameToShow": "Supprimer"
+}
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/ActDEL"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxDEL"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 98.0
 margin_bottom = 38.0
 
-[node name="OptActParamAgt" type="OptionButton" parent="Runtime/GfxNodes/ActDEL" groups=["OptEvtAgtsGp"]]
+[node name="OptActParamAgt" type="OptionButton" parent="Runtime/GfxNodes/GfxDEL" groups=["OptEvtAgtsGp"]]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 98.0
 margin_bottom = 59.0
-text = "Agt-1"
-items = [ "Agt-1", null, false, 0, null, "Gp-1", null, false, 0, null, "Environnement", null, false, 1, null, "Grille", null, false, 2, null ]
-selected = 0
 
-[node name="CdtActNumber" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxNumber" type="GraphNode" parent="Runtime/GfxNodes"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2750,14 +2780,19 @@ slot/0/left_color = Color( 1, 1, 1, 1 )
 slot/0/right_enabled = true
 slot/0/right_type = 2
 slot/0/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Math",
+"Name": "GfxNumber",
+"NameToShow": "Nombre"
+}
 
-[node name="Label" type="LineEdit" parent="Runtime/GfxNodes/CdtActNumber"]
+[node name="Label" type="LineEdit" parent="Runtime/GfxNodes/GfxNumber"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 84.0
 margin_bottom = 48.0
 
-[node name="CdtProba" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxProba" type="GraphNode" parent="Runtime/GfxNodes"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2772,8 +2807,13 @@ slot/0/left_color = Color( 1, 1, 1, 1 )
 slot/0/right_enabled = true
 slot/0/right_type = 2
 slot/0/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Math",
+"Name": "GfxProba",
+"NameToShow": "Probabilité"
+}
 
-[node name="Label" type="LineEdit" parent="Runtime/GfxNodes/CdtProba"]
+[node name="Label" type="LineEdit" parent="Runtime/GfxNodes/GfxProba"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 101.0
@@ -2849,7 +2889,8 @@ margin_bottom = 48.0
 [connection signal="text_entered" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp5/EnvSizeZ" to="." method="_on_env_size_changed"]
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/OptCdtsAgtGp" to="." method="_on_OptAction_item_selected"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/OptGfxCategories" to="." method="_on_OptGfxCategories_item_selected"]
+[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/OptGfxNodes" to="." method="_on_OptAction_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/BtnAddGenericCdtAgtGp" to="." method="_on_BtnAddGfxNode"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxActs/OptActAgtGp" to="." method="_on_OptAction_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxActs/BtnAddGenericActAgtGp" to="." method="_on_BtnAddGenericActAgtGp_pressed"]
@@ -2881,37 +2922,37 @@ margin_bottom = 48.0
 [connection signal="text_entered" from="Runtime/HBoxLineParam/ParamName" to="." method="_on_ParamName_text_entered"]
 [connection signal="focus_exited" from="Runtime/HBoxLineParam/ParamValue" to="." method="_on_ParamValue_focus_exited"]
 [connection signal="button_down" from="Runtime/HBoxLineParam/Button" to="." method="_on_Button_button_down"]
-[connection signal="close_request" from="Runtime/GfxNodes/CdtAND" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/CdtAND" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/CdtAND" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/CdtAND" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/CdtOR" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/CdtOR" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/CdtOR" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/CdtOR" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/CdtNOT" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/CdtNOT" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/CdtNOT" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/CdtNOT" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/CdtParam" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/CdtParam" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/CdtParam" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/CdtParam" to="." method="get_input_graphnode"]
-[connection signal="item_selected" from="Runtime/GfxNodes/CdtParam/HBoxContainer/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
-[connection signal="close_request" from="Runtime/GfxNodes/CdtCompare" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/CdtCompare" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/CdtCompare" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/CdtCompare" to="." method="get_input_graphnode"]
-[connection signal="item_selected" from="Runtime/GfxNodes/CdtCompare/HBoxContainer3/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
-[connection signal="close_request" from="Runtime/GfxNodes/ActDEL" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/ActDEL" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/ActDEL" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/ActDEL" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/CdtActNumber" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/CdtActNumber" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/CdtActNumber" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/CdtActNumber" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/CdtProba" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/CdtProba" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/CdtProba" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/CdtProba" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/GfxAND" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/GfxAND" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxAND" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxAND" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/GfxOR" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/GfxOR" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxOR" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxOR" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/GfxNOT" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/GfxNOT" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxNOT" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxNOT" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/GfxParam" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/GfxParam" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxParam" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxParam" to="." method="get_input_graphnode"]
+[connection signal="item_selected" from="Runtime/GfxNodes/GfxParam/HBoxContainer/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
+[connection signal="close_request" from="Runtime/GfxNodes/GfxCompare" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/GfxCompare" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxCompare" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxCompare" to="." method="get_input_graphnode"]
+[connection signal="item_selected" from="Runtime/GfxNodes/GfxCompare/HBoxContainer3/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
+[connection signal="close_request" from="Runtime/GfxNodes/GfxDEL" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/GfxDEL" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxDEL" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxDEL" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/GfxNumber" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/GfxNumber" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxNumber" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxNumber" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/GfxProba" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/GfxProba" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxProba" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxProba" to="." method="get_input_graphnode"]

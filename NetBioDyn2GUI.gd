@@ -25,6 +25,9 @@ var _listBehavs:ItemList
 var _node_status	:Label
 var _gfx_code_init:GraphEdit
 var _gfx_code_current:GraphEdit
+var _gfx_nodes:Node
+var _gfx_opt_nodes:OptionButton
+var _opt_gfx_cat:OptionButton
 
 # 3D simulator nodes
 var _node_viewport	:Node
@@ -63,6 +66,9 @@ func my_init() -> void:
 	_node_status	 	= scene.find_node("LabelStatusbar")
 	_gfx_code_current= scene.find_node("GraphGeneric")
 	_gfx_code_init	= _gfx_code_current.duplicate(15) # copy of the GraphGeneric
+	_gfx_nodes		= scene.find_node("GfxNodes")
+	_gfx_opt_nodes	= scene.find_node("OptGfxNodes")
+	_opt_gfx_cat 	= scene.find_node("OptGfxCategories")
 
 	# 3D simulator nodes
 	_node_viewport		= _node_simu.get_parent()
@@ -71,6 +77,9 @@ func my_init() -> void:
 	_node_behavs	 		= get_node_direct(_node_simu, "Behaviors")
 	_node_groups			= get_node_direct(_node_simu, "Groups")
 	_node_env	 		= get_node_direct(_node_simu, "Environment")
+
+	# Populate the GFX OptButton
+	populate_gfx_opt("Tous")
 
 	# New initial state
 	_node_simu_init = _node_simu.duplicate(15)
@@ -1802,7 +1811,7 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if box == "GraphNodeThen":
 		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " : "
 	
-	if box.length() >= 6 && box.left(6) == "CdtAND":
+	if box.length() >= 6 && box.left(6) == "GfxAND":
 		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " && " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
 	
 	if box == "GraphNodeEvt":
@@ -1835,7 +1844,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if box == "GraphNodeEnd":
 		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)
 		
-	if box.length() >= 6 && box.left(6) == "ActDEL":
+	if box.length() >= 6 && box.left(6) == "GfxDEL":
 		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
 		R1.queue_free()"""
 	
@@ -1886,66 +1895,30 @@ func gfx_get_evt_agents()->Array:
 
 	var agts:Array = [opt_R1.text, opt_R2.text]
 	return agts
-	
+
+# Return the name of a GFX Node in the tree from its NameToShow metadata
+func gfx_get_name_from_nameToShow(name_to_show:String)->String:
+	for g in _gfx_nodes.get_children():
+		if g.get_meta("NameToShow" == nam_to_show):
+			return g.name
 
 # Add a Graph Node CONDITION
 func _on_BtnAddGfxNode() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
-	var cdt:String = get_node("%OptCdtsAgtGp").text
-	if cdt == "Et":
-		var gfx_node:GraphNode = get_node("%CdtAND").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtAND")
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "Ou":
-		var gfx_node:GraphNode = get_node("%CdtOR").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtOR")
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "Non":
-		var gfx_node:GraphNode = get_node("%CdtNOT").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtNOT")
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if cdt == "Comparer":
-		var gfx_node:GraphNode = get_node("%CdtCompare").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtCompare")
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
+	var gfx_node_name2show:String = get_node("%OptGfxNodes").text
+	var gfx_node_name:String = gfx_get_name_from_nameToShow(gfx_node_name2show)
+	var gfx_node:GraphNode = get_node(str("%",gfx_node_name)).duplicate(15)
+	gfx_node.name = key_name_create(_gfx_code_current, gfx_node_name)
+	gfx_node.visible = true
+	gfx_edit.add_child(gfx_node)
 
-
-# Add a Graph Node ACTION
-func _on_BtnAddGenericActAgtGp_pressed() -> void:
-	var gfx_edit:GraphEdit = _gfx_code_current
-	var cdt:String = get_node("%OptActAgtGp").text
-	if cdt == "Supprimer":
-		var gfx_node:GraphNode = get_node("%ActDEL").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "ActDEL")
+	# Specific cases
+	if gfx_node_name == "GfxDEL":
 		var behav:Node = get_selected_behavior()
 		var opt_obj:Node   = gfx_node.get_child(1)
-		opt_obj.clear()
-		
-#		var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
-#		var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
-#
-#		var agts:Array = [opt_R1.text, opt_R2.text]
 		populate_option_btn_from_list( opt_obj,"", gfx_get_evt_agents() )
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
 
-
-# Add a Graph Node VALEUR
-func _on_BtnAddGenericValAgtGp_pressed() -> void:
-	var gfx_edit:GraphEdit = _gfx_code_current
-	var val:String = get_node("%OptValAgtGp").text
-	if val == "Constante":
-		var gfx_node:GraphNode = get_node("%CdtActNumber").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtActNumber")
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-	if val == "Paramètre Agent":
-		var gfx_node:GraphNode = get_node("%CdtParam").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtParam")
+	if gfx_node_name == "GfxParam":
 		var behav:Node = get_selected_behavior()
 		var type = behav.get_meta("Type")
 		# Find the Behavior Type
@@ -1973,10 +1946,6 @@ func _on_BtnAddGenericValAgtGp_pressed() -> void:
 			opt_param.clear()
 			var sel_agt:String = r1 # TODO Change to the saved agent/gp
 			populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(r1) )
-		gfx_node.visible = true
-		gfx_edit.add_child(gfx_node)
-
-
 
 var _sel_gfx_node:GraphNode = null
 
@@ -1990,7 +1959,21 @@ func _on_OptCdtParamObj_item_selected(i:int) -> void:
 	agt_gp = agt_gp.right(3)
 	opt_param.clear()
 	populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agt_gp) )
-	
+
+# Populate the GFX OptButton
+func populate_gfx_opt(cat:String):
+	_gfx_opt_nodes.clear()
+	for g in _gfx_nodes.get_children():
+		var lst_meta = g.get_meta_list()
+		var cate = g.get_meta("Category")
+		var name2show = g.get_meta("NameToShow")
+		if g.get_meta("Category") == cat || cat == "Tous":
+			_gfx_opt_nodes.add_item(g.get_meta("NameToShow"))
+
+# Re-populate the GFX Opt Nodes when changing the category
+func _on_OptGfxCategories_item_selected(index: int) -> void:
+	populate_gfx_opt(_opt_gfx_cat.get_item_text(index))
+
 # Remove a Graph Node
 func _on_GraphNode_close_request() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
@@ -2375,4 +2358,5 @@ func test_texture():
 func group_line_edit_on_focus()->void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GROUP
+
 
