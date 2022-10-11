@@ -1762,6 +1762,7 @@ func action(tree, R1) -> void:
 
 # Script GENERIC
 func behav_script_generic(gfx:GraphEdit) -> String:
+	# TODO Verify the gfx code can be executed
 	var is_gfx_coherent = true
 	if gfx == null:
 		is_gfx_coherent = false
@@ -1784,7 +1785,11 @@ func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
 	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx, gfx)
 	var code_acts:String = generate_code_acts("GraphNodeEnd", lst_cnx, gfx)
 	
-	var code:String = """func action(tree, R1) -> void:\n"""
+	var code:String = """
+extends Node
+# Generic Behavior
+func action(tree, R1) -> void:
+"""
 	code += "	if "+code_cdts + code_acts
 	print("gfx code: ")
 	print(code)
@@ -1884,7 +1889,7 @@ func gfx_get_evt_agents()->Array:
 	
 
 # Add a Graph Node CONDITION
-func _on_BtnAddGenericCdtAgtGp() -> void:
+func _on_BtnAddGfxNode() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
 	var cdt:String = get_node("%OptCdtsAgtGp").text
 	if cdt == "Et":
@@ -1903,8 +1908,8 @@ func _on_BtnAddGenericCdtAgtGp() -> void:
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 	if cdt == "Comparer":
-		var gfx_node:GraphNode = get_node("%CdtOp").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtOp")
+		var gfx_node:GraphNode = get_node("%CdtCompare").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtCompare")
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 
@@ -1934,8 +1939,8 @@ func _on_BtnAddGenericValAgtGp_pressed() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
 	var val:String = get_node("%OptValAgtGp").text
 	if val == "Constante":
-		var gfx_node:GraphNode = get_node("%CdtActCONSTANT").duplicate(15)
-		gfx_node.name = key_name_create(_gfx_code_current, "CdtActCONSTANT")
+		var gfx_node:GraphNode = get_node("%CdtActNumber").duplicate(15)
+		gfx_node.name = key_name_create(_gfx_code_current, "CdtActNumber")
 		gfx_node.visible = true
 		gfx_edit.add_child(gfx_node)
 	if val == "Paramètre Agent":
@@ -2040,12 +2045,7 @@ func _on_show_graph_behav()->void:
 		# Fill the gfx evts box with default = collision
 		GUI_evt_gfx_changed(2)
 		
-	get_node("%HSplitLeftContainer").visible = false
-	get_node("%HBoxSimuCtrl").visible		= false
-	get_node("%GraphBehav").visible 			= true
-	get_node("%VBoxEnv").visible 			= false
-	get_node("%VBoxCurves").visible 			= false
-	get_node("%VBoxTabContainer").visible 	= false
+	show_gfx()
 
 # CLOSE GFX Code
 func _on_validate_graph_behav()->void:
@@ -2061,17 +2061,25 @@ func _on_validate_graph_behav()->void:
 	gfx_code.visible = false
 	behav.add_child(gfx_code)
 	hide_gfx()
+	behavior_GUI_to_META()
 
 func hide_gfx()->void:
-	# Hide/Show panels
-	get_node("%HSplitLeftContainer").visible = true
-	get_node("%HBoxSimuCtrl").visible			= true
-	get_node("%GraphBehav").visible 			= false
-	get_node("%VBoxEnv").visible 			= true
-	get_node("%VBoxCurves").visible 			= true
-	get_node("%VBoxTabContainer").visible 	= true
+	get_node("%GraphBehav").visible 			= false # Main GFX Code
 	
-
+	get_node("%HSplitLeftContainer").visible = true  # Agents + Behav + Gps + Grids
+	get_node("%HBoxSimuCtrl").visible			= true  # Play / Pause / Step / Stop btn
+	get_node("%VBoxEnv").visible 			= true  # 3D Simulation
+	get_node("%VBoxCurves").visible 			= true  # Curves
+	get_node("%VBoxTabContainer").visible 	= true  # Property Tab
+	
+func show_gfx()->void:
+	get_node("%HSplitLeftContainer").visible 	= false # Agents + Behav + Gps + Grids
+	get_node("%HBoxSimuCtrl").visible			= false # Play / Pause / Step / Stop btn
+	get_node("%VBoxEnv").visible 			= false # 3D Simulation
+	get_node("%VBoxCurves").visible 			= false # Curves
+	get_node("%VBoxTabContainer").visible 	= false # Property Tab
+	
+	get_node("%GraphBehav").visible 			= true  # Main GFX Code
 
 
 
