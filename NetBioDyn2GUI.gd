@@ -27,7 +27,7 @@ var _gfx_code_init:GraphEdit
 var _gfx_code_current:GraphEdit
 var _gfx_nodes:Node
 var _gfx_opt_nodes:OptionButton
-var _opt_gfx_cat:OptionButton
+var _gfx_opt_cat:OptionButton
 
 # 3D simulator nodes
 var _node_viewport	:Node
@@ -68,7 +68,7 @@ func my_init() -> void:
 	_gfx_code_init	= _gfx_code_current.duplicate(15) # copy of the GraphGeneric
 	_gfx_nodes		= scene.find_node("GfxNodes")
 	_gfx_opt_nodes	= scene.find_node("OptGfxNodes")
-	_opt_gfx_cat 	= scene.find_node("OptGfxCategories")
+	_gfx_opt_cat 	= scene.find_node("OptGfxCategories")
 
 	# 3D simulator nodes
 	_node_viewport		= _node_simu.get_parent()
@@ -78,8 +78,9 @@ func my_init() -> void:
 	_node_groups			= get_node_direct(_node_simu, "Groups")
 	_node_env	 		= get_node_direct(_node_simu, "Environment")
 
-	# Populate the GFX OptButton
-	populate_gfx_opt("Tous")
+	# Populate the GFX OptButton Cat and Nodes
+	populate_gfx_opt_cat()
+	populate_gfx_opt_nodes("Tous")
 
 	# New initial state
 	_node_simu_init = _node_simu.duplicate(15)
@@ -1899,9 +1900,10 @@ func gfx_get_evt_agents()->Array:
 # Return the name of a GFX Node in the tree from its NameToShow metadata
 func gfx_get_name_from_nameToShow(name_to_show:String)->String:
 	for g in _gfx_nodes.get_children():
-		if g.get_meta("NameToShow" == nam_to_show):
+		if g.get_meta("NameToShow" == name_to_show):
 			return g.name
-
+	return ""
+	
 # Add a Graph Node CONDITION
 func _on_BtnAddGfxNode() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
@@ -1960,19 +1962,22 @@ func _on_OptCdtParamObj_item_selected(i:int) -> void:
 	opt_param.clear()
 	populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agt_gp) )
 
-# Populate the GFX OptButton
-func populate_gfx_opt(cat:String):
+# Populate the GFX OptButton Cat
+func populate_gfx_opt_cat():
+	_gfx_opt_cat.clear()
+	for g in _gfx_nodes.get_children():
+		_gfx_opt_cat.add_item(g.get_meta("Category"))
+
+# Populate the GFX OptButton Nodes
+func populate_gfx_opt_nodes(cat:String):
 	_gfx_opt_nodes.clear()
 	for g in _gfx_nodes.get_children():
-		var lst_meta = g.get_meta_list()
-		var cate = g.get_meta("Category")
-		var name2show = g.get_meta("NameToShow")
 		if g.get_meta("Category") == cat || cat == "Tous":
 			_gfx_opt_nodes.add_item(g.get_meta("NameToShow"))
 
 # Re-populate the GFX Opt Nodes when changing the category
 func _on_OptGfxCategories_item_selected(index: int) -> void:
-	populate_gfx_opt(_opt_gfx_cat.get_item_text(index))
+	populate_gfx_opt_nodes(_gfx_opt_cat.get_item_text(index))
 
 # Remove a Graph Node
 func _on_GraphNode_close_request() -> void:
