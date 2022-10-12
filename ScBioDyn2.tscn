@@ -60,7 +60,7 @@ script = ExtResource( 7 )
 
 [node name="Toolbar" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
-margin_right = 1402.0
+margin_right = 1024.0
 margin_bottom = 32.0
 grow_horizontal = 0
 size_flags_horizontal = 3
@@ -85,7 +85,7 @@ align = 2
 
 [node name="Marge2" type="ToolButton" parent="Toolbar"]
 margin_left = 122.0
-margin_right = 656.0
+margin_right = 467.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 disabled = true
@@ -93,8 +93,8 @@ flat = false
 
 [node name="HBoxSimuCtrl" type="HBoxContainer" parent="Toolbar"]
 unique_name_in_owner = true
-margin_left = 660.0
-margin_right = 800.0
+margin_left = 471.0
+margin_right = 611.0
 margin_bottom = 32.0
 
 [node name="BtnPlay" type="ToolButton" parent="Toolbar/HBoxSimuCtrl"]
@@ -134,17 +134,17 @@ flat = false
 expand_icon = true
 
 [node name="LblVersion" type="Label" parent="Toolbar"]
-margin_left = 804.0
+margin_left = 615.0
 margin_top = 9.0
-margin_right = 1339.0
+margin_right = 961.0
 margin_bottom = 23.0
 size_flags_horizontal = 3
 text = " NetBioDyn 2   - version 9/2022"
 align = 2
 
 [node name="BtnDebug" type="ToolButton" parent="Toolbar"]
-margin_left = 1343.0
-margin_right = 1378.0
+margin_left = 965.0
+margin_right = 1000.0
 margin_bottom = 32.0
 grow_horizontal = 0
 text = "dbg"
@@ -152,8 +152,8 @@ flat = false
 align = 2
 
 [node name="BtnClose" type="ToolButton" parent="Toolbar"]
-margin_left = 1382.0
-margin_right = 1402.0
+margin_left = 1004.0
+margin_right = 1024.0
 margin_bottom = 32.0
 grow_horizontal = 0
 text = "X"
@@ -162,18 +162,18 @@ align = 2
 
 [node name="HSeparator" type="HSeparator" parent="."]
 margin_top = 36.0
-margin_right = 1402.0
+margin_right = 1024.0
 margin_bottom = 40.0
 
 [node name="VBoxFrame" type="VBoxContainer" parent="."]
 margin_top = 44.0
-margin_right = 1402.0
+margin_right = 1024.0
 margin_bottom = 582.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxWindows" type="HBoxContainer" parent="VBoxFrame"]
-margin_right = 1402.0
+margin_right = 1024.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -184,7 +184,7 @@ margin_bottom = 538.0
 
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxFrame/HBoxWindows"]
 margin_left = 8.0
-margin_right = 1394.0
+margin_right = 1016.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -386,7 +386,7 @@ allow_reselect = true
 
 [node name="HSplitContainer2" type="HSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer"]
 margin_left = 310.0
-margin_right = 1386.0
+margin_right = 1008.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1872,7 +1872,7 @@ autowrap = true
 
 [node name="VSplitEnvCurves" type="VSplitContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2"]
 margin_left = 312.0
-margin_right = 1076.0
+margin_right = 698.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1880,23 +1880,23 @@ split_offset = 150
 
 [node name="GraphBehav" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
-margin_right = 764.0
+margin_right = 386.0
 margin_bottom = 413.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
-margin_right = 764.0
-margin_bottom = 79.0
+margin_right = 386.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 
 [node name="VBoxGenericTitle" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer"]
-margin_right = 698.0
-margin_bottom = 79.0
+margin_right = 320.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 
 [node name="LabelGfxTitle" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle"]
-margin_right = 698.0
+margin_right = 320.0
 margin_bottom = 31.0
 hint_tooltip = "Quand Diffusant rencontre E-Coli, alors E-Coli ' et E-Coli '' apparaissent."
 mouse_filter = 0
@@ -1910,15 +1910,15 @@ valign = 1
 
 [node name="HBoxOptions" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle"]
 margin_top = 35.0
-margin_right = 698.0
-margin_bottom = 79.0
+margin_right = 320.0
+margin_bottom = 55.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions"]
-margin_right = 178.0
-margin_bottom = 44.0
+margin_right = 128.0
+margin_bottom = 20.0
 
 [node name="HBoxCdts" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer"]
-margin_right = 178.0
+margin_right = 128.0
 margin_bottom = 20.0
 
 [node name="OptGfxCategories" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts"]
@@ -1932,205 +1932,42 @@ selected = 0
 [node name="OptGfxNodes" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts"]
 unique_name_in_owner = true
 margin_left = 63.0
-margin_right = 154.0
+margin_right = 104.0
 margin_bottom = 20.0
-text = "Comparer"
+text = "Et"
 flat = true
-items = [ "Et", null, false, 0, null, "Ou", null, false, 1, null, "Non", null, false, 6, null, "Comparer", null, false, 5, null ]
 selected = 3
 
 [node name="BtnAddGenericCdtAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts"]
-margin_left = 158.0
-margin_right = 178.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-text = "+"
-align = 2
-
-[node name="HBoxActs" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer"]
-margin_top = 24.0
-margin_right = 178.0
-margin_bottom = 44.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxActs"]
-margin_top = 3.0
-margin_right = 60.0
-margin_bottom = 17.0
-text = "Actions : "
-
-[node name="OptActAgtGp" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxActs"]
-unique_name_in_owner = true
-margin_left = 64.0
+margin_left = 108.0
 margin_right = 128.0
 margin_bottom = 20.0
-text = "Force"
-flat = true
-items = [ "Force", null, false, 1, null, "Déplacer", null, false, 2, null, "Transformer", null, false, 2, null, "Supprimer", null, false, 3, null, "Tourner autour", null, false, 4, null, "Ajouter Agent", null, false, 5, null, "Attacher 2 Agents", null, false, 6, null, "Traverser Agent", null, false, 7, null ]
-selected = 0
-
-[node name="BtnAddGenericActAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxActs"]
-margin_left = 132.0
-margin_right = 178.0
-margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "+"
 align = 2
-
-[node name="VSeparator" type="VSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions"]
-margin_left = 182.0
-margin_right = 186.0
-margin_bottom = 44.0
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions"]
-margin_left = 190.0
-margin_right = 441.0
-margin_bottom = 44.0
-
-[node name="HBoxVal" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2"]
-margin_right = 251.0
-margin_bottom = 20.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2/HBoxVal"]
-margin_top = 3.0
-margin_right = 59.0
-margin_bottom = 17.0
-text = "Valeurs : "
-
-[node name="OptValAgtGp" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2/HBoxVal"]
-unique_name_in_owner = true
-margin_left = 63.0
-margin_right = 227.0
-margin_bottom = 20.0
-text = "Lire Paramètre Agent"
-flat = true
-items = [ "Lire Paramètre Agent", null, false, 0, null, "Lire Paramètre Environnement", null, false, 1, null, "Lire Grille", null, false, 2, null, "Nombre", null, false, 3, null, "Ecrire Paramètre Agent", null, false, 4, null, "Ecrire Paramètre Environnement", null, false, 5, null, "Ecrire Grille", null, false, 6, null ]
-selected = 0
-
-[node name="BtnAddGenericValAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2/HBoxVal"]
-margin_left = 231.0
-margin_right = 251.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-text = "+"
-align = 2
-
-[node name="HBoxMath" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2"]
-margin_top = 24.0
-margin_right = 251.0
-margin_bottom = 44.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2/HBoxMath"]
-margin_top = 3.0
-margin_right = 44.0
-margin_bottom = 17.0
-text = "Math : "
-
-[node name="OptMathAgtGp" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2/HBoxMath"]
-margin_left = 48.0
-margin_right = 129.0
-margin_bottom = 20.0
-text = "Absolue"
-flat = true
-items = [ "Absolue", null, false, 0, null, "Addition", null, false, 1, null, "Cosinus", null, false, 2, null, "Multiplication", null, false, 3, null, "Sinus", null, false, 4, null, "Probabilité", null, false, 5, null, "Soustraction", null, false, 6, null ]
-selected = 0
-
-[node name="BtnAddGenericMathAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2/HBoxMath"]
-margin_left = 133.0
-margin_right = 251.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-text = "+"
-align = 2
-icon_align = 1
-
-[node name="VSeparator2" type="VSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions"]
-margin_left = 445.0
-margin_right = 449.0
-margin_bottom = 44.0
-
-[node name="VBoxContainer3" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions"]
-margin_left = 453.0
-margin_right = 698.0
-margin_bottom = 44.0
-
-[node name="HBoxVal" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3"]
-margin_right = 245.0
-margin_bottom = 20.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3/HBoxVal"]
-margin_top = 3.0
-margin_right = 65.0
-margin_bottom = 17.0
-text = "Divers 1 : "
-
-[node name="OptValAgtGp" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3/HBoxVal"]
-margin_left = 69.0
-margin_right = 197.0
-margin_bottom = 20.0
-text = "Faire demi-tour"
-flat = true
-items = [ "Faire demi-tour", null, false, 0, null, "Téléporter au point", null, false, 1, null, "Fixer Agent", null, false, 2, null, "Défixer Agent", null, false, 3, null, "Vacher Agent", null, false, 4, null ]
-selected = 0
-
-[node name="BtnAddGenericValAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3/HBoxVal"]
-margin_left = 201.0
-margin_right = 245.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-text = "+"
-align = 2
-
-[node name="HBoxMath" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3"]
-margin_top = 24.0
-margin_right = 245.0
-margin_bottom = 44.0
-
-[node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3/HBoxMath"]
-margin_top = 3.0
-margin_right = 65.0
-margin_bottom = 17.0
-text = "Divers 2 : "
-
-[node name="OptMathAgtGp" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3/HBoxMath"]
-margin_left = 69.0
-margin_right = 221.0
-margin_bottom = 20.0
-text = "Diffuser dans Grille"
-flat = true
-items = [ "Diffuser dans Grille", null, false, 0, null, "Ajouter dans Grille", null, false, 1, null, "Dégrader dans Grille", null, false, 2, null ]
-selected = 0
-
-[node name="BtnAddGenericMathAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3/HBoxMath"]
-margin_left = 225.0
-margin_right = 245.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-text = "+"
-align = 2
-icon_align = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer"]
-margin_left = 702.0
-margin_right = 764.0
-margin_bottom = 79.0
+margin_left = 324.0
+margin_right = 386.0
+margin_bottom = 55.0
 size_flags_vertical = 3
 
 [node name="ButtonValiderGfx" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer"]
 margin_right = 62.0
-margin_bottom = 55.0
+margin_bottom = 31.0
 size_flags_vertical = 3
 text = "Valider"
 
 [node name="ButtonAnnulerGfx" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer"]
-margin_top = 59.0
+margin_top = 35.0
 margin_right = 62.0
-margin_bottom = 79.0
+margin_bottom = 55.0
 text = "Annuler"
 
 [node name="GraphGeneric" type="GraphEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
 unique_name_in_owner = true
-margin_top = 83.0
-margin_right = 764.0
+margin_top = 59.0
+margin_right = 386.0
 margin_bottom = 413.0
 rect_min_size = Vector2( 100, 0 )
 rect_pivot_offset = Vector2( 164, 105 )
@@ -2244,13 +2081,13 @@ text = "|"
 [node name="VBoxEnv" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves"]
 unique_name_in_owner = true
 margin_top = 425.0
-margin_right = 764.0
+margin_right = 386.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv"]
-margin_right = 764.0
+margin_right = 386.0
 margin_bottom = 20.0
 
 [node name="Button" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer"]
@@ -2262,15 +2099,15 @@ text = "Environnement"
 [node name="LabelEnv2" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer"]
 margin_left = 113.0
 margin_top = 3.0
-margin_right = 649.0
+margin_right = 271.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "   "
 
 [node name="CmbEnvDraw" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 653.0
-margin_right = 715.0
+margin_left = 275.0
+margin_right = 337.0
 margin_bottom = 20.0
 hint_tooltip = "Pen"
 text = "Point"
@@ -2278,14 +2115,14 @@ items = [ "Point", null, false, 0, null, "Spray", null, false, 1, null, "Ligne",
 selected = 0
 
 [node name="ButtonClearEnv" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/HBoxContainer"]
-margin_left = 719.0
-margin_right = 764.0
+margin_left = 341.0
+margin_right = 386.0
 margin_bottom = 20.0
 text = "Vider"
 
 [node name="ViewportContainer" type="ViewportContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv"]
 margin_top = 24.0
-margin_right = 764.0
+margin_right = 386.0
 margin_bottom = 109.0
 rect_min_size = Vector2( 100, 0 )
 rect_clip_content = true
@@ -2294,7 +2131,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="Viewport" type="Viewport" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv/ViewportContainer"]
-size = Vector2( 764, 85 )
+size = Vector2( 386, 85 )
 handle_input_locally = false
 render_target_update_mode = 3
 
@@ -2330,7 +2167,7 @@ material/0 = SubResource( 5 )
 
 [node name="ToolbarPaint" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/VBoxEnv"]
 margin_top = 113.0
-margin_right = 764.0
+margin_right = 386.0
 margin_bottom = 113.0
 grow_horizontal = 0
 alignment = 1
@@ -2379,18 +2216,18 @@ stretch_mode = 1
 flip_v = true
 
 [node name="VSeparator3" type="VSeparator" parent="VBoxFrame/HBoxWindows"]
-margin_left = 1398.0
-margin_right = 1402.0
+margin_left = 1020.0
+margin_right = 1024.0
 margin_bottom = 538.0
 
 [node name="HBoxStatus" type="HBoxContainer" parent="."]
 margin_top = 586.0
-margin_right = 1402.0
+margin_right = 1024.0
 margin_bottom = 600.0
 
 [node name="LabelStatusbar" type="Label" parent="HBoxStatus"]
 unique_name_in_owner = true
-margin_right = 1402.0
+margin_right = 1024.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
 text = "Temps = 0 | Nb agents = 0 | Nb comportements = 0 "
@@ -2487,7 +2324,9 @@ text = "-"
 [node name="GfxNodes" type="Node" parent="Runtime"]
 unique_name_in_owner = true
 
-[node name="GfxAND" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="Logic" type="Node" parent="Runtime/GfxNodes"]
+
+[node name="GfxAND" type="GraphNode" parent="Runtime/GfxNodes/Logic"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2495,7 +2334,7 @@ margin_top = 208.0
 margin_right = 122.0
 margin_bottom = 267.0
 mouse_filter = 1
-title = "ET    "
+title = "ET"
 slot/0/left_enabled = true
 slot/0/left_type = 1
 slot/0/left_color = Color( 1, 0, 0, 1 )
@@ -2510,23 +2349,22 @@ slot/1/right_type = 0
 slot/1/right_color = Color( 1, 1, 1, 1 )
 __meta__ = {
 "Category": "Logique",
-"Name": "GfxAND",
 "NameToShow": "Et"
 }
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxAND"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Logic/GfxAND"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 46.0
 margin_bottom = 38.0
 
-[node name="Label2" type="Label" parent="Runtime/GfxNodes/GfxAND"]
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Logic/GfxAND"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 46.0
 margin_bottom = 53.0
 
-[node name="GfxOR" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxOR" type="GraphNode" parent="Runtime/GfxNodes/Logic"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2534,7 +2372,7 @@ margin_top = 208.0
 margin_right = 129.0
 margin_bottom = 267.0
 mouse_filter = 1
-title = "OU    "
+title = "OU"
 slot/0/left_enabled = true
 slot/0/left_type = 1
 slot/0/left_color = Color( 1, 0, 0, 1 )
@@ -2549,23 +2387,22 @@ slot/1/right_type = 0
 slot/1/right_color = Color( 1, 1, 1, 1 )
 __meta__ = {
 "Category": "Logique",
-"Name": "GfxOR",
 "NameToShow": "Ou"
 }
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxOR"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Logic/GfxOR"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 53.0
 margin_bottom = 38.0
 
-[node name="Label2" type="Label" parent="Runtime/GfxNodes/GfxOR"]
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Logic/GfxOR"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 53.0
 margin_bottom = 53.0
 
-[node name="GfxNOT" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxNOT" type="GraphNode" parent="Runtime/GfxNodes/Logic"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2573,7 +2410,7 @@ margin_top = 208.0
 margin_right = 139.0
 margin_bottom = 267.0
 mouse_filter = 1
-title = "NON    "
+title = "NON"
 slot/0/left_enabled = true
 slot/0/left_type = 1
 slot/0/left_color = Color( 1, 0, 0, 1 )
@@ -2582,83 +2419,16 @@ slot/0/right_type = 1
 slot/0/right_color = Color( 1, 0, 0, 1 )
 __meta__ = {
 "Category": "Logique",
-"Name": "GfxNOT",
 "NameToShow": "Non"
 }
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxNOT"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Logic/GfxNOT"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 63.0
 margin_bottom = 38.0
 
-[node name="GfxParam" type="GraphNode" parent="Runtime/GfxNodes"]
-unique_name_in_owner = true
-visible = false
-margin_top = 150.0
-margin_right = 143.0
-margin_bottom = 221.0
-mouse_filter = 1
-title = "Paramètre"
-slot/0/left_enabled = false
-slot/0/left_type = 0
-slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/0/right_enabled = false
-slot/0/right_type = 0
-slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
-slot/1/left_enabled = false
-slot/1/left_type = 0
-slot/1/left_color = Color( 1, 1, 1, 1 )
-slot/1/right_enabled = true
-slot/1/right_type = 2
-slot/1/right_color = Color( 0, 1, 0, 1 )
-__meta__ = {
-"Category": "Agent",
-"Name": "GfxParam",
-"NameToShow": "Paramètres"
-}
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/GfxParam"]
-margin_left = 16.0
-margin_top = 24.0
-margin_right = 127.0
-margin_bottom = 44.0
-
-[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxParam/HBoxContainer"]
-margin_top = 3.0
-margin_right = 44.0
-margin_bottom = 17.0
-text = "Objet :"
-
-[node name="OptCdtParamObj" type="OptionButton" parent="Runtime/GfxNodes/GfxParam/HBoxContainer"]
-margin_left = 48.0
-margin_right = 111.0
-margin_bottom = 20.0
-text = "Agt-1"
-items = [ "Agt-1", null, false, 0, null, "Gp-1", null, false, 0, null, "Environnement", null, false, 1, null, "Grille", null, false, 2, null ]
-selected = 0
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/GfxParam"]
-margin_left = 16.0
-margin_top = 45.0
-margin_right = 127.0
-margin_bottom = 65.0
-
-[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxParam/HBoxContainer2"]
-margin_top = 3.0
-margin_right = 48.0
-margin_bottom = 17.0
-text = "Param :"
-
-[node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/GfxParam/HBoxContainer2"]
-margin_left = 52.0
-margin_right = 89.0
-margin_bottom = 20.0
-text = "X"
-items = [ "X", null, false, 0, null, "Y", null, false, 0, null, "Z", null, false, 1, null, "Vx", null, false, 2, null, "Horloge", null, false, 3, null, "pH", null, false, 4, null, "Température", null, false, 5, null, "Valeur Case", null, false, 6, null ]
-selected = 0
-
-[node name="GfxCompare" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxCompare" type="GraphNode" parent="Runtime/GfxNodes/Logic"]
 unique_name_in_owner = true
 visible = false
 margin_top = 150.0
@@ -2686,28 +2456,27 @@ slot/2/right_type = 0
 slot/2/right_color = Color( 1, 1, 1, 1 )
 __meta__ = {
 "Category": "Logique",
-"Name": "GfxCompare",
 "NameToShow": "Comparer"
 }
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/GfxCompare"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Logic/GfxCompare"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 127.0
 margin_bottom = 38.0
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxCompare/HBoxContainer2"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Logic/GfxCompare/HBoxContainer2"]
 margin_right = 52.0
 margin_bottom = 14.0
 text = "Valeur 1"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/GfxCompare"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Logic/GfxCompare"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 127.0
 margin_bottom = 59.0
 
-[node name="OptCdtParamObj" type="OptionButton" parent="Runtime/GfxNodes/GfxCompare/HBoxContainer3"]
+[node name="OptCdtParamObj" type="OptionButton" parent="Runtime/GfxNodes/Logic/GfxCompare/HBoxContainer3"]
 margin_right = 111.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
@@ -2715,26 +2484,28 @@ text = "="
 items = [ "=", null, false, 0, null, "=/=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
 selected = 0
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/GfxCompare"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/Logic/GfxCompare"]
 margin_left = 16.0
 margin_top = 60.0
 margin_right = 127.0
 margin_bottom = 74.0
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxCompare/HBoxContainer4"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Logic/GfxCompare/HBoxContainer4"]
 margin_right = 52.0
 margin_bottom = 14.0
 text = "Valeur 2"
 
-[node name="GfxDEL" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="Agent" type="Node" parent="Runtime/GfxNodes"]
+
+[node name="GfxADD" type="GraphNode" parent="Runtime/GfxNodes/Agent"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
 margin_top = 208.0
-margin_right = 174.0
+margin_right = 180.0
 margin_bottom = 273.0
 mouse_filter = 1
-title = "Supprimer    "
+title = "Ajouter Agent"
 slot/0/left_enabled = true
 slot/0/left_type = 0
 slot/0/left_color = Color( 1, 1, 1, 1 )
@@ -2748,24 +2519,126 @@ slot/1/right_enabled = false
 slot/1/right_type = 0
 slot/1/right_color = Color( 1, 1, 1, 1 )
 __meta__ = {
-"Category": "Truc",
-"Name": "GfxDEL",
+"Category": "Agent",
+"NameToShow": "Ajouter"
+}
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Agent/GfxADD"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+
+[node name="OptAgts" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxADD" groups=["OptEvtAgtsGp"]]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 104.0
+margin_bottom = 59.0
+
+[node name="GfxTransform" type="GraphNode" parent="Runtime/GfxNodes/Agent"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 180.0
+margin_bottom = 273.0
+mouse_filter = 1
+title = "Transformer Agent"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Agent",
+"NameToShow": "Transformer"
+}
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Agent/GfxTransform"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 134.0
+margin_bottom = 38.0
+
+[node name="OptAgts1" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxTransform" groups=["OptEvtAgtsGp"]]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 134.0
+margin_bottom = 59.0
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Agent/GfxTransform"]
+margin_left = 16.0
+margin_top = 60.0
+margin_right = 134.0
+margin_bottom = 74.0
+text = "devient"
+
+[node name="OptAgts2" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxTransform" groups=["OptEvtAgtsGp"]]
+margin_left = 16.0
+margin_top = 75.0
+margin_right = 134.0
+margin_bottom = 95.0
+
+[node name="GfxDEL" type="GraphNode" parent="Runtime/GfxNodes/Agent"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 199.0
+margin_bottom = 273.0
+mouse_filter = 1
+title = "Supprimer Agent"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Agent",
 "NameToShow": "Supprimer"
 }
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/GfxDEL"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Agent/GfxDEL"]
 margin_left = 16.0
 margin_top = 24.0
-margin_right = 98.0
+margin_right = 123.0
 margin_bottom = 38.0
 
-[node name="OptActParamAgt" type="OptionButton" parent="Runtime/GfxNodes/GfxDEL" groups=["OptEvtAgtsGp"]]
+[node name="OptActParamAgt" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxDEL" groups=["OptEvtAgtsGp"]]
 margin_left = 16.0
 margin_top = 39.0
-margin_right = 98.0
+margin_right = 123.0
 margin_bottom = 59.0
 
-[node name="GfxNumber" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="Math" type="Node" parent="Runtime/GfxNodes"]
+
+[node name="GfxNumber" type="GraphNode" parent="Runtime/GfxNodes/Math"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2773,7 +2646,7 @@ margin_top = 208.0
 margin_right = 160.0
 margin_bottom = 267.0
 mouse_filter = 1
-title = "Nombre    "
+title = "Nombre"
 slot/0/left_enabled = false
 slot/0/left_type = 1
 slot/0/left_color = Color( 1, 1, 1, 1 )
@@ -2782,17 +2655,16 @@ slot/0/right_type = 2
 slot/0/right_color = Color( 0, 1, 0, 1 )
 __meta__ = {
 "Category": "Math",
-"Name": "GfxNumber",
 "NameToShow": "Nombre"
 }
 
-[node name="Label" type="LineEdit" parent="Runtime/GfxNodes/GfxNumber"]
+[node name="Label" type="LineEdit" parent="Runtime/GfxNodes/Math/GfxNumber"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 84.0
 margin_bottom = 48.0
 
-[node name="GfxProba" type="GraphNode" parent="Runtime/GfxNodes"]
+[node name="GfxProba" type="GraphNode" parent="Runtime/GfxNodes/Math"]
 unique_name_in_owner = true
 visible = false
 margin_left = 60.0
@@ -2800,24 +2672,1057 @@ margin_top = 208.0
 margin_right = 177.0
 margin_bottom = 267.0
 mouse_filter = 1
-title = "Probabilité    "
+title = "Probabilité %"
 slot/0/left_enabled = false
 slot/0/left_type = 1
 slot/0/left_color = Color( 1, 1, 1, 1 )
 slot/0/right_enabled = true
-slot/0/right_type = 2
-slot/0/right_color = Color( 0, 1, 0, 1 )
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
 __meta__ = {
 "Category": "Math",
-"Name": "GfxProba",
-"NameToShow": "Probabilité"
+"NameToShow": "Probabilité %"
 }
 
-[node name="Label" type="LineEdit" parent="Runtime/GfxNodes/GfxProba"]
+[node name="Label" type="LineEdit" parent="Runtime/GfxNodes/Math/GfxProba"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 101.0
 margin_bottom = 48.0
+
+[node name="GfxPlus" type="GraphNode" parent="Runtime/GfxNodes/Math"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 122.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "+"
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color( 0, 1, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 2
+slot/1/left_color = Color( 0, 1, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "+"
+}
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Math/GfxPlus"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 46.0
+margin_bottom = 38.0
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Math/GfxPlus"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 46.0
+margin_bottom = 53.0
+
+[node name="GfxMinus" type="GraphNode" parent="Runtime/GfxNodes/Math"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 122.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "-"
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color( 0, 1, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 2
+slot/1/left_color = Color( 0, 1, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "-"
+}
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Math/GfxMinus"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 46.0
+margin_bottom = 38.0
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Math/GfxMinus"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 46.0
+margin_bottom = 53.0
+
+[node name="GfxMult" type="GraphNode" parent="Runtime/GfxNodes/Math"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 122.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "*"
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color( 0, 1, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 2
+slot/1/left_color = Color( 0, 1, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "*"
+}
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Math/GfxMult"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 46.0
+margin_bottom = 38.0
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Math/GfxMult"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 46.0
+margin_bottom = 53.0
+
+[node name="GfxDiv" type="GraphNode" parent="Runtime/GfxNodes/Math"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 122.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "/"
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color( 0, 1, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 2
+slot/1/left_color = Color( 0, 1, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "/"
+}
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Math/GfxDiv"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 46.0
+margin_bottom = 38.0
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Math/GfxDiv"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 46.0
+margin_bottom = 53.0
+
+[node name="Mouvment" type="Node" parent="Runtime/GfxNodes"]
+
+[node name="GfxForce" type="GraphNode" parent="Runtime/GfxNodes/Mouvment"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 160.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "Force"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color( 1, 1, 1, 1 )
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Mouvement",
+"NameToShow": "Force "
+}
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 138.0
+margin_bottom = 44.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer5"]
+margin_top = 3.0
+margin_right = 37.0
+margin_bottom = 17.0
+text = "Agent"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer5"]
+margin_left = 41.0
+margin_right = 122.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 138.0
+margin_bottom = 65.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer"]
+margin_top = 3.0
+margin_right = 45.0
+margin_bottom = 17.0
+text = "Repère"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer"]
+margin_left = 49.0
+margin_right = 122.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Absolu"
+items = [ "Absolu", null, false, -1, null, "Relatif", null, false, 0, null ]
+selected = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
+margin_left = 16.0
+margin_top = 66.0
+margin_right = 138.0
+margin_bottom = 90.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer2"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fx"
+
+[node name="Fx" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer2"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
+margin_left = 16.0
+margin_top = 91.0
+margin_right = 138.0
+margin_bottom = 115.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer3"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fy"
+
+[node name="Fy" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer3"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
+margin_left = 16.0
+margin_top = 116.0
+margin_right = 138.0
+margin_bottom = 140.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer4"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fz"
+
+[node name="Fz" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer4"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="GfxTranslation" type="GraphNode" parent="Runtime/GfxNodes/Mouvment"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 160.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "Translation"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color( 1, 1, 1, 1 )
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Mouvement",
+"NameToShow": "Translation "
+}
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 138.0
+margin_bottom = 44.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer6"]
+margin_top = 3.0
+margin_right = 37.0
+margin_bottom = 17.0
+text = "Agent"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer6"]
+margin_left = 41.0
+margin_right = 122.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 138.0
+margin_bottom = 65.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer"]
+margin_top = 3.0
+margin_right = 45.0
+margin_bottom = 17.0
+text = "Repère"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer"]
+margin_left = 49.0
+margin_right = 122.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Absolu"
+items = [ "Absolu", null, false, -1, null, "Relatif", null, false, 0, null ]
+selected = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
+margin_left = 16.0
+margin_top = 66.0
+margin_right = 138.0
+margin_bottom = 90.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer2"]
+margin_top = 5.0
+margin_right = 17.0
+margin_bottom = 19.0
+text = "Dx"
+
+[node name="Dx" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer2"]
+margin_left = 21.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
+margin_left = 16.0
+margin_top = 91.0
+margin_right = 138.0
+margin_bottom = 115.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer3"]
+margin_top = 5.0
+margin_right = 17.0
+margin_bottom = 19.0
+text = "Dy"
+
+[node name="Dy" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer3"]
+margin_left = 21.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
+margin_left = 16.0
+margin_top = 116.0
+margin_right = 138.0
+margin_bottom = 140.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer4"]
+margin_top = 5.0
+margin_right = 17.0
+margin_bottom = 19.0
+text = "Dz"
+
+[node name="Dz" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer4"]
+margin_left = 21.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="GfxPosition" type="GraphNode" parent="Runtime/GfxNodes/Mouvment"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 160.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "Position"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color( 1, 1, 1, 1 )
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Mouvement",
+"NameToShow": "Position"
+}
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 86.0
+margin_bottom = 44.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer6"]
+margin_top = 3.0
+margin_right = 37.0
+margin_bottom = 17.0
+text = "Agent"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer6"]
+margin_left = 41.0
+margin_right = 70.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 86.0
+margin_bottom = 59.0
+text = "va en"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
+margin_left = 16.0
+margin_top = 60.0
+margin_right = 86.0
+margin_bottom = 84.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer2"]
+margin_top = 5.0
+margin_right = 8.0
+margin_bottom = 19.0
+text = "X"
+
+[node name="X" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer2"]
+margin_left = 12.0
+margin_right = 70.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
+margin_left = 16.0
+margin_top = 85.0
+margin_right = 86.0
+margin_bottom = 109.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer3"]
+margin_top = 5.0
+margin_right = 7.0
+margin_bottom = 19.0
+text = "Y"
+
+[node name="Y" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer3"]
+margin_left = 11.0
+margin_right = 70.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
+margin_left = 16.0
+margin_top = 110.0
+margin_right = 86.0
+margin_bottom = 134.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer4"]
+margin_top = 5.0
+margin_right = 8.0
+margin_bottom = 19.0
+text = "Z"
+
+[node name="Z" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer4"]
+margin_left = 12.0
+margin_right = 70.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="GfxTurnAround" type="GraphNode" parent="Runtime/GfxNodes/Mouvment"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 160.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "Tourner Autour"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color( 1, 1, 1, 1 )
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color( 1, 1, 1, 1 )
+slot/5/left_enabled = false
+slot/5/left_type = 0
+slot/5/left_color = Color( 1, 1, 1, 1 )
+slot/5/right_enabled = false
+slot/5/right_type = 0
+slot/5/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Mouvement",
+"NameToShow": "Tourner Autour "
+}
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 125.0
+margin_bottom = 44.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer6"]
+margin_top = 3.0
+margin_right = 47.0
+margin_bottom = 17.0
+text = "L'Agent"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer6"]
+margin_left = 51.0
+margin_right = 109.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 125.0
+margin_bottom = 59.0
+text = "tourne autour de"
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
+margin_left = 16.0
+margin_top = 60.0
+margin_right = 125.0
+margin_bottom = 80.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer7"]
+margin_top = 3.0
+margin_right = 44.0
+margin_bottom = 17.0
+text = "l'Agent"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer7"]
+margin_left = 48.0
+margin_right = 109.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
+margin_left = 16.0
+margin_top = 81.0
+margin_right = 125.0
+margin_bottom = 101.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer"]
+margin_top = 3.0
+margin_right = 68.0
+margin_bottom = 17.0
+text = "selon l'axe"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer"]
+margin_left = 72.0
+margin_right = 109.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "X"
+items = [ "X", null, false, -1, null, "Y", null, false, 0, null, "Z", null, false, 1, null ]
+selected = 0
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
+margin_left = 16.0
+margin_top = 102.0
+margin_right = 125.0
+margin_bottom = 116.0
+text = "d'un angle de"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
+margin_left = 16.0
+margin_top = 117.0
+margin_right = 125.0
+margin_bottom = 141.0
+size_flags_horizontal = 3
+
+[node name="Dx" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer2"]
+margin_right = 99.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer2"]
+margin_left = 103.0
+margin_top = 5.0
+margin_right = 109.0
+margin_bottom = 19.0
+text = "°"
+
+[node name="GfxCross" type="GraphNode" parent="Runtime/GfxNodes/Mouvment"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 160.0
+margin_bottom = 267.0
+mouse_filter = 1
+title = "Traverser Agent"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Mouvement",
+"NameToShow": "Tourner Autour "
+}
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 116.0
+margin_bottom = 44.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer6"]
+margin_top = 3.0
+margin_right = 47.0
+margin_bottom = 17.0
+text = "L'Agent"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer6"]
+margin_left = 51.0
+margin_right = 100.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 116.0
+margin_bottom = 59.0
+text = "traverse"
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
+margin_left = 16.0
+margin_top = 60.0
+margin_right = 116.0
+margin_bottom = 80.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer7"]
+margin_top = 3.0
+margin_right = 44.0
+margin_bottom = 17.0
+text = "l'Agent"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer7"]
+margin_left = 48.0
+margin_right = 100.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="Interaction" type="Node" parent="Runtime/GfxNodes"]
+
+[node name="GfxSpring" type="GraphNode" parent="Runtime/GfxNodes/Interaction"]
+unique_name_in_owner = true
+visible = false
+margin_left = 60.0
+margin_top = 208.0
+margin_right = 192.0
+margin_bottom = 294.0
+mouse_filter = 1
+title = "Créer Lien Elastique"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color( 1, 1, 1, 1 )
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Interaction",
+"NameToShow": "Lien élastique"
+}
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 164.0
+margin_bottom = 44.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring/HBoxContainer6"]
+margin_top = 3.0
+margin_right = 47.0
+margin_bottom = 17.0
+text = "L'Agent"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Interaction/GfxSpring/HBoxContainer6"]
+margin_left = 51.0
+margin_right = 148.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 164.0
+margin_bottom = 59.0
+text = "se lie avec"
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
+margin_left = 16.0
+margin_top = 60.0
+margin_right = 164.0
+margin_bottom = 80.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring/HBoxContainer7"]
+margin_top = 3.0
+margin_right = 44.0
+margin_bottom = 17.0
+text = "l'Agent"
+
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Interaction/GfxSpring/HBoxContainer7"]
+margin_left = 48.0
+margin_right = 148.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
+margin_left = 16.0
+margin_top = 81.0
+margin_right = 164.0
+margin_bottom = 95.0
+text = "Le lien se rompt quand"
+
+[node name="HBoxContainer8" type="HBoxContainer" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
+margin_left = 16.0
+margin_top = 96.0
+margin_right = 164.0
+margin_bottom = 120.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring/HBoxContainer8"]
+margin_top = 5.0
+margin_right = 66.0
+margin_bottom = 19.0
+text = "distance >"
+
+[node name="DMax" type="LineEdit" parent="Runtime/GfxNodes/Interaction/GfxSpring/HBoxContainer8"]
+margin_left = 70.0
+margin_right = 148.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="Parameter" type="Node" parent="Runtime/GfxNodes"]
+
+[node name="GfxReadParam" type="GraphNode" parent="Runtime/GfxNodes/Parameter"]
+unique_name_in_owner = true
+visible = false
+margin_top = 150.0
+margin_right = 143.0
+margin_bottom = 221.0
+mouse_filter = 1
+title = "Lire Paramètre"
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 2
+slot/1/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Paramètres",
+"NameToShow": "Lire Paramètre"
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Parameter/GfxReadParam"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 127.0
+margin_bottom = 44.0
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Parameter/GfxReadParam/HBoxContainer"]
+margin_top = 3.0
+margin_right = 44.0
+margin_bottom = 17.0
+text = "Objet :"
+
+[node name="OptCdtParamObj" type="OptionButton" parent="Runtime/GfxNodes/Parameter/GfxReadParam/HBoxContainer"]
+margin_left = 48.0
+margin_right = 111.0
+margin_bottom = 20.0
+text = "Agt-1"
+items = [ "Agt-1", null, false, 0, null, "Gp-1", null, false, 0, null, "Environnement", null, false, 1, null, "Grille", null, false, 2, null ]
+selected = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Parameter/GfxReadParam"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 127.0
+margin_bottom = 65.0
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Parameter/GfxReadParam/HBoxContainer2"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "Param :"
+
+[node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/Parameter/GfxReadParam/HBoxContainer2"]
+margin_left = 52.0
+margin_right = 89.0
+margin_bottom = 20.0
+text = "X"
+items = [ "X", null, false, 0, null, "Y", null, false, 0, null, "Z", null, false, 1, null, "Vx", null, false, 2, null, "Horloge", null, false, 3, null, "pH", null, false, 4, null, "Température", null, false, 5, null, "Valeur Case", null, false, 6, null ]
+selected = 0
+
+[node name="GfxWriteParam" type="GraphNode" parent="Runtime/GfxNodes/Parameter"]
+unique_name_in_owner = true
+visible = false
+margin_top = 150.0
+margin_right = 143.0
+margin_bottom = 221.0
+mouse_filter = 1
+title = "Ecrire Paramètre"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 2
+slot/1/left_color = Color( 0, 1, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 2
+slot/1/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Paramètres",
+"NameToShow": "Ecrire Paramètre"
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Parameter/GfxWriteParam"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 127.0
+margin_bottom = 44.0
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParam/HBoxContainer"]
+margin_top = 3.0
+margin_right = 44.0
+margin_bottom = 17.0
+text = "Objet :"
+
+[node name="OptCdtParamObj" type="OptionButton" parent="Runtime/GfxNodes/Parameter/GfxWriteParam/HBoxContainer"]
+margin_left = 48.0
+margin_right = 111.0
+margin_bottom = 20.0
+text = "Agt-1"
+items = [ "Agt-1", null, false, 0, null, "Gp-1", null, false, 0, null, "Environnement", null, false, 1, null, "Grille", null, false, 2, null ]
+selected = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Parameter/GfxWriteParam"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 127.0
+margin_bottom = 65.0
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParam/HBoxContainer2"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "Param :"
+
+[node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/Parameter/GfxWriteParam/HBoxContainer2"]
+margin_left = 52.0
+margin_right = 89.0
+margin_bottom = 20.0
+text = "X"
+items = [ "X", null, false, 0, null, "Y", null, false, 0, null, "Z", null, false, 1, null, "Vx", null, false, 2, null, "Horloge", null, false, 3, null, "pH", null, false, 4, null, "Température", null, false, 5, null, "Valeur Case", null, false, 6, null ]
+selected = 0
 
 [connection signal="pressed" from="Toolbar/BtnLoad" to="." method="_on_BtnLoad_pressed"]
 [connection signal="pressed" from="Toolbar/BtnSave" to="." method="_on_BtnSave_pressed"]
@@ -2892,12 +3797,6 @@ margin_bottom = 48.0
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/OptGfxCategories" to="." method="_on_OptGfxCategories_item_selected"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/OptGfxNodes" to="." method="_on_OptAction_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/BtnAddGenericCdtAgtGp" to="." method="_on_BtnAddGfxNode"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxActs/OptActAgtGp" to="." method="_on_OptAction_item_selected"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxActs/BtnAddGenericActAgtGp" to="." method="_on_BtnAddGenericActAgtGp_pressed"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2/HBoxVal/OptValAgtGp" to="." method="_on_OptAction_item_selected"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer2/HBoxVal/BtnAddGenericValAgtGp" to="." method="_on_BtnAddGenericValAgtGp_pressed"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3/HBoxVal/OptValAgtGp" to="." method="_on_OptAction_item_selected"]
-[connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer3/HBoxVal/BtnAddGenericValAgtGp" to="." method="_on_BtnAddGenericValAgtGp_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer/ButtonValiderGfx" to="." method="_on_validate_graph_behav"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer/ButtonAnnulerGfx" to="." method="hide_gfx"]
 [connection signal="connection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_connection_request"]
@@ -2922,37 +3821,90 @@ margin_bottom = 48.0
 [connection signal="text_entered" from="Runtime/HBoxLineParam/ParamName" to="." method="_on_ParamName_text_entered"]
 [connection signal="focus_exited" from="Runtime/HBoxLineParam/ParamValue" to="." method="_on_ParamValue_focus_exited"]
 [connection signal="button_down" from="Runtime/HBoxLineParam/Button" to="." method="_on_Button_button_down"]
-[connection signal="close_request" from="Runtime/GfxNodes/GfxAND" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/GfxAND" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxAND" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxAND" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/GfxOR" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/GfxOR" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxOR" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxOR" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/GfxNOT" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/GfxNOT" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxNOT" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxNOT" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/GfxParam" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/GfxParam" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxParam" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxParam" to="." method="get_input_graphnode"]
-[connection signal="item_selected" from="Runtime/GfxNodes/GfxParam/HBoxContainer/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
-[connection signal="close_request" from="Runtime/GfxNodes/GfxCompare" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/GfxCompare" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxCompare" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxCompare" to="." method="get_input_graphnode"]
-[connection signal="item_selected" from="Runtime/GfxNodes/GfxCompare/HBoxContainer3/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
-[connection signal="close_request" from="Runtime/GfxNodes/GfxDEL" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/GfxDEL" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxDEL" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxDEL" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/GfxNumber" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/GfxNumber" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxNumber" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxNumber" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/GfxProba" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/GfxProba" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/GfxProba" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/GfxProba" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Logic/GfxAND" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Logic/GfxAND" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Logic/GfxAND" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Logic/GfxAND" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Logic/GfxOR" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Logic/GfxOR" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Logic/GfxOR" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Logic/GfxOR" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Logic/GfxNOT" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Logic/GfxNOT" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Logic/GfxNOT" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Logic/GfxNOT" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Logic/GfxCompare" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Logic/GfxCompare" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Logic/GfxCompare" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Logic/GfxCompare" to="." method="get_input_graphnode"]
+[connection signal="item_selected" from="Runtime/GfxNodes/Logic/GfxCompare/HBoxContainer3/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
+[connection signal="close_request" from="Runtime/GfxNodes/Agent/GfxADD" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Agent/GfxADD" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Agent/GfxADD" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Agent/GfxADD" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Agent/GfxTransform" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Agent/GfxTransform" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Agent/GfxTransform" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Agent/GfxTransform" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Agent/GfxDEL" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Agent/GfxDEL" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Agent/GfxDEL" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Agent/GfxDEL" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Math/GfxNumber" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxNumber" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxNumber" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxNumber" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Math/GfxProba" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxProba" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxProba" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxProba" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Math/GfxPlus" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxPlus" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxPlus" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxPlus" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Math/GfxMinus" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxMinus" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxMinus" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxMinus" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Math/GfxMult" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxMult" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxMult" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxMult" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Math/GfxDiv" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxDiv" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxDiv" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxDiv" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxForce" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxForce" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxForce" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxForce" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxTranslation" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxTranslation" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxTranslation" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxTranslation" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxCross" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxCross" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxCross" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxCross" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Interaction/GfxSpring" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Interaction/GfxSpring" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Interaction/GfxSpring" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Interaction/GfxSpring" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Parameter/GfxReadParam" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Parameter/GfxReadParam" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Parameter/GfxReadParam" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Parameter/GfxReadParam" to="." method="get_input_graphnode"]
+[connection signal="item_selected" from="Runtime/GfxNodes/Parameter/GfxReadParam/HBoxContainer/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
+[connection signal="close_request" from="Runtime/GfxNodes/Parameter/GfxWriteParam" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Parameter/GfxWriteParam" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Parameter/GfxWriteParam" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Parameter/GfxWriteParam" to="." method="get_input_graphnode"]
+[connection signal="item_selected" from="Runtime/GfxNodes/Parameter/GfxWriteParam/HBoxContainer/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
