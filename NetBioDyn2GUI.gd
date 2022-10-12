@@ -1809,12 +1809,51 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	var lst_input_boxes:Array = get_graphnodes_entering(box, lst_cnx)
 	var code_cdts:String = ""
 	
+	# Then
+	
 	if box == "GraphNodeThen":
 		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " : "
+	
+	# Logic ********
 	
 	if box.length() >= 6 && box.left(6) == "GfxAND":
 		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " && " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
 	
+	if box.length() >= 5 && box.left(5) == "GfxOR":
+		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " || " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+
+	if box.length() >= 6 && box.left(6) == "GfxNOT":
+		code_cdts = "!(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + ")"
+	
+	if box.length() >= 10 && box.left(10) == "GfxCompare":
+		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+		var comp:String = gfx_box.get_child(1).get_child(0).text
+		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + comp + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+
+	# Math
+	if box.length() >= 9 && box.left(9) == "GfxNumber":
+		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+		var numb:String = gfx_box.get_child(0).text
+		code_cdts = "(" + numb + ")"
+	
+	if box.length() >= 8 && box.left(8) == "GfxProba":
+		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+		var prob:String = gfx_box.get_child(0).text
+		code_cdts = "( rndf() < " + prob + ")"
+		
+	if box.length() >= 7 && box.left(7) == "GfxPlus":
+		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " + " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+
+	if box.length() >= 8 && box.left(8) == "GfxMinus":
+		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " - " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+	
+	if box.length() >= 7 && box.left(7) == "GfxMult":
+		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " * " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+
+	if box.length() >= 6 && box.left(6) == "GfxDiv":
+		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " / " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"	
+
+	# Evt
 	if box == "GraphNodeEvt":
 		var box_ref:GraphNode = gfx.find_node("GraphNodeEvt",true,false)
 		if box_ref.get_child(0).get_selected_id() == 0:
@@ -1847,7 +1886,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		
 	if box.length() >= 6 && box.left(6) == "GfxDEL":
 		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
-		R1.queue_free()"""
+		R1.queue_free()""" # TODO R1 or R2 => read the optbutton
 	
 	return code_acts
 

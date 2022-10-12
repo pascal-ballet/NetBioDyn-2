@@ -1936,7 +1936,6 @@ margin_right = 104.0
 margin_bottom = 20.0
 text = "Et"
 flat = true
-selected = 3
 
 [node name="BtnAddGenericCdtAgtGp" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts"]
 margin_left = 108.0
@@ -2480,8 +2479,8 @@ margin_bottom = 59.0
 margin_right = 111.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
-text = "="
-items = [ "=", null, false, 0, null, "=/=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
+text = "=="
+items = [ "==", null, false, 0, null, "!=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
 selected = 0
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/Logic/GfxCompare"]
@@ -2926,7 +2925,7 @@ margin_right = 122.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Absolu"
-items = [ "Absolu", null, false, -1, null, "Relatif", null, false, 0, null ]
+items = [ "Absolu", null, false, 0, null, "Relatif", null, false, 0, null ]
 selected = 0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
@@ -3068,7 +3067,7 @@ margin_right = 122.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Absolu"
-items = [ "Absolu", null, false, -1, null, "Relatif", null, false, 0, null ]
+items = [ "Absolu", null, false, 0, null, "Relatif", null, false, 0, null ]
 selected = 0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
@@ -3369,7 +3368,7 @@ margin_right = 109.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "X"
-items = [ "X", null, false, -1, null, "Y", null, false, 0, null, "Z", null, false, 1, null ]
+items = [ "X", null, false, 0, null, "Y", null, false, 0, null, "Z", null, false, 1, null ]
 selected = 0
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
