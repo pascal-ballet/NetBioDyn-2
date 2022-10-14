@@ -3171,20 +3171,20 @@ __meta__ = {
 "NameToShow": "Position"
 }
 
-[node name="HBoxContainer6" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
+[node name="HBoxContainer0" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 86.0
 margin_bottom = 44.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer6"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer0"]
 margin_top = 3.0
 margin_right = 37.0
 margin_bottom = 17.0
 text = "Agent"
 
-[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer6"]
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer0"]
 margin_left = 41.0
 margin_right = 70.0
 margin_bottom = 20.0
@@ -3429,20 +3429,20 @@ __meta__ = {
 "NameToShow": "Tourner Autour "
 }
 
-[node name="HBoxContainer6" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
+[node name="HBoxContainer0" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 116.0
 margin_bottom = 44.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer6"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer0"]
 margin_top = 3.0
 margin_right = 47.0
 margin_bottom = 17.0
 text = "L'Agent"
 
-[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer6"]
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer0"]
 margin_left = 51.0
 margin_right = 100.0
 margin_bottom = 20.0
@@ -3455,20 +3455,20 @@ margin_right = 116.0
 margin_bottom = 59.0
 text = "traverse"
 
-[node name="HBoxContainer7" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
 margin_left = 16.0
 margin_top = 60.0
 margin_right = 116.0
 margin_bottom = 80.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer7"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer2"]
 margin_top = 3.0
 margin_right = 44.0
 margin_bottom = 17.0
 text = "l'Agent"
 
-[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer7"]
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxCross/HBoxContainer2"]
 margin_left = 48.0
 margin_right = 100.0
 margin_bottom = 20.0
