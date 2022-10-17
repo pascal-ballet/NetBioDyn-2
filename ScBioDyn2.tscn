@@ -707,6 +707,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Behavior_Reaction" type="Tabs" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -2576,6 +2577,7 @@ margin_left = 16.0
 margin_top = 24.0
 margin_right = 134.0
 margin_bottom = 38.0
+text = "L'Agent"
 
 [node name="OptAgts1" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxTransform" groups=["OptEvtAgtsGp"]]
 margin_left = 16.0
@@ -2588,7 +2590,7 @@ margin_left = 16.0
 margin_top = 60.0
 margin_right = 134.0
 margin_bottom = 74.0
-text = "devient"
+text = "devient un Agent"
 
 [node name="OptAgts2" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxTransform" groups=["OptEvtAgts"]]
 margin_left = 16.0
@@ -3253,14 +3255,15 @@ margin_right = 70.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
-[node name="GfxGoNear" type="GraphNode" parent="Runtime/GfxNodes/Mouvment"]
+[node name="GfxGoAround" type="GraphNode" parent="Runtime/GfxNodes/Mouvment"]
 unique_name_in_owner = true
+visible = false
 margin_left = 60.0
 margin_top = 208.0
 margin_right = 160.0
 margin_bottom = 267.0
 mouse_filter = 1
-title = "Rapprocher"
+title = "Placer autour"
 slot/0/left_enabled = true
 slot/0/left_type = 0
 slot/0/left_color = Color( 1, 1, 1, 1 )
@@ -3290,67 +3293,67 @@ __meta__ = {
 "NameToShow": "Position"
 }
 
-[node name="HBoxContainer0" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxGoNear"]
+[node name="HBoxContainer0" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
 margin_top = 24.0
-margin_right = 172.0
+margin_right = 187.0
 margin_bottom = 44.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoNear/HBoxContainer0"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround/HBoxContainer0"]
 margin_top = 3.0
 margin_right = 47.0
 margin_bottom = 17.0
 text = "L'Agent"
 
-[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxGoNear/HBoxContainer0" groups=["OptEvtAgtsGp"]]
+[node name="OptionButton" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxGoAround/HBoxContainer0" groups=["OptEvtAgtsGp"]]
 margin_left = 51.0
-margin_right = 156.0
+margin_right = 171.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoNear"]
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
 margin_top = 45.0
-margin_right = 172.0
+margin_right = 187.0
 margin_bottom = 59.0
-text = "se rapproche de"
+text = "se place autour de"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxGoNear"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
 margin_top = 60.0
-margin_right = 172.0
+margin_right = 187.0
 margin_bottom = 80.0
 size_flags_horizontal = 3
 
-[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoNear/HBoxContainer2"]
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround/HBoxContainer2"]
 margin_top = 3.0
 margin_right = 44.0
 margin_bottom = 17.0
 text = "l'Agent"
 
-[node name="OptAgt" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxGoNear/HBoxContainer2" groups=["OptEvtAgtsGp"]]
+[node name="OptAgt" type="OptionButton" parent="Runtime/GfxNodes/Mouvment/GfxGoAround/HBoxContainer2" groups=["OptEvtAgtsGp"]]
 margin_left = 48.0
-margin_right = 156.0
+margin_right = 171.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxGoNear"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
 margin_top = 81.0
-margin_right = 172.0
+margin_right = 187.0
 margin_bottom = 105.0
 size_flags_horizontal = 3
 
-[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoNear/HBoxContainer3"]
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround/HBoxContainer3"]
 margin_top = 5.0
-margin_right = 94.0
+margin_right = 109.0
 margin_bottom = 19.0
-text = "au plus loin de"
+text = "dans un rayon de"
 
-[node name="Y" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxGoNear/HBoxContainer3"]
-margin_left = 98.0
-margin_right = 156.0
+[node name="Y" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxGoAround/HBoxContainer3"]
+margin_left = 113.0
+margin_right = 171.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
@@ -3985,10 +3988,10 @@ selected = 0
 [connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="get_input_graphnode"]
 [connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="get_input_graphnode"]
 [connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="get_input_graphnode"]
-[connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxGoNear" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxGoNear" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxGoNear" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxGoNear" to="." method="get_input_graphnode"]
+[connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxGoAround" to="." method="_on_GraphNode_close_request"]
+[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxGoAround" to="." method="get_input_graphnode"]
+[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxGoAround" to="." method="get_input_graphnode"]
+[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxGoAround" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="_on_GraphNode_close_request"]
 [connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="get_input_graphnode"]
 [connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="get_input_graphnode"]

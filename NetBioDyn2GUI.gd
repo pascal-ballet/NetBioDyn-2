@@ -1112,26 +1112,6 @@ func GUI_evt_gfx_R1_changed(i:int)->void:
 func GUI_evt_gfx_R2_changed(i:int)->void:
 	update_evt_gfx_names()
 
-func update_evt_gfx_names()->void:
-	for box in _gfx_code_current.get_children():
-		var lst_widg:Array = node_get_children_array(box)
-		for widg in lst_widg: #box.get_children():
-			if widg.is_in_group("OptEvtAgtsGp") :
-				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
-				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
-				widg.clear()
-				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 2:
-					populate_option_btn_from_list(widg, "", [opt_R1.text, opt_R2.text])
-				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 1:
-					populate_option_btn_from_list(widg, "", [opt_R1.text])	
-				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 0:
-					populate_option_btn_from_list(widg, "", [])
-			if widg.is_in_group("OptEvtAgts") :
-				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
-				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
-				widg.clear()
-				populate_option_btn_with_agents(widg, "", false, false, false, false, false,false,false)
-
 func GUI_param_updated(param=null)->void:
 	behavior_GUI_to_META()
 
@@ -1567,7 +1547,7 @@ func key_param_exists(var key_name:String) -> int:
 			nb = nb+1
 	return nb
 
-# Population Option Button
+# Populate Option Button
 func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add_groups:bool, add_zero:bool, add_R1:bool, add_R2:bool, add_P1:bool, add_P2:bool, add_P3:bool) -> void:
 		# Remove all items
 		opt.clear()
@@ -2136,6 +2116,50 @@ func get_input_graphnode(evt=null):
 				_sel_gfx_node = node
 			else:
 				node.show_close = false
+
+
+
+func update_evt_gfx_names()->void:
+	# TO DO : find all the R & P agents => list of Agents instances of the current gfx diagram
+	var lst_r_P:Array = find_R_P_agents()
+	# (Re)-Fill Option Buttons
+	for box in _gfx_code_current.get_children():
+		var lst_widg:Array = node_get_children_array(box)
+		for widg in lst_widg: #box.get_children():
+			if widg.is_in_group("OptEvtAgtsGp") : # TO DO : use the list of R & P
+				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
+				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
+				var sel:String = widg.text
+				widg.clear()
+				populate_option_btn_from_list(widg, sel, lst_r_P)
+
+			if widg.is_in_group("OptEvtAgts") :
+				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
+				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
+				var sel:String = widg.text
+				widg.clear()
+				populate_option_btn_with_agents(widg, sel, false, false, false, false, false,false,false)
+
+# Find all R & P agents
+func find_R_P_agents()->Array:
+	var lst_R_P:Array = []
+
+	# Explore the widgets for R and P agents
+	for box in _gfx_code_current.get_children():
+		# R from Gfx Evt
+		if ("GraphNodeEvt" in box.name) == true:
+			if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 1:
+				lst_R_P.append(box.get_child(1).text)
+			if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 2:
+				lst_R_P.append(box.get_child(1).text)
+				lst_R_P.append(box.get_child(2).text)
+		# P from Gfx ADD
+		if ("GfxADD" in box.name) == true:
+			var pos_str = String(lst_R_P.size()+1)
+			lst_R_P.append(pos_str + box.get_child(1).text)
+
+	return lst_R_P
+
 
 # OPEN GFX Code
 func _on_show_graph_behav()->void:
