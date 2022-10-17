@@ -2149,14 +2149,14 @@ func find_R_P_agents()->Array:
 		# R from Gfx Evt
 		if ("GraphNodeEvt" in box.name) == true:
 			if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 1:
-				lst_R_P.append(box.get_child(1).text)
+				lst_R_P.append(box.get_child(1).text + " (1)")
 			if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 2:
-				lst_R_P.append(box.get_child(1).text)
-				lst_R_P.append(box.get_child(2).text)
+				lst_R_P.append(box.get_child(1).text + " (1)")
+				lst_R_P.append(box.get_child(2).text + " (2)")
 		# P from Gfx ADD
 		if ("GfxADD" in box.name) == true:
 			var pos_str = String(lst_R_P.size()+1)
-			lst_R_P.append(pos_str + box.get_child(1).text)
+			lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
 
 	return lst_R_P
 
