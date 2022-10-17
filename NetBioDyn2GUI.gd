@@ -1058,7 +1058,7 @@ func _on_ListBehav_item_selected(param) -> void:
 		# Reaction: Set behavior Name
 		get_node("%BehavGenericName").set_text(behav.get_meta("Name"))
 
-
+# Behavior REACTION ********************************
 func GUI_Evt_Changed(i:int)->void:
 	if i == 0: # 1 Agent
 		get_node("%LabelR1").text = "L'Agent"
@@ -1088,6 +1088,8 @@ func GUI_Evt_Changed(i:int)->void:
 #		get_node("%LabelP2").text = "avec"
 #		get_node("%LabelP3").text = "et"
 
+
+# Behavior GFX **************************************
 func GUI_evt_gfx_changed(i:int):
 	var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
 	var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
@@ -1112,17 +1114,23 @@ func GUI_evt_gfx_R2_changed(i:int)->void:
 
 func update_evt_gfx_names()->void:
 	for box in _gfx_code_current.get_children():
-		for widg in box.get_children():
+		var lst_widg:Array = node_get_children_array(box)
+		for widg in lst_widg: #box.get_children():
 			if widg.is_in_group("OptEvtAgtsGp") :
 				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
 				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
-				widg	.clear()
+				widg.clear()
 				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 2:
 					populate_option_btn_from_list(widg, "", [opt_R1.text, opt_R2.text])
 				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 1:
 					populate_option_btn_from_list(widg, "", [opt_R1.text])	
 				if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 0:
 					populate_option_btn_from_list(widg, "", [])
+			if widg.is_in_group("OptEvtAgts") :
+				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
+				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
+				widg.clear()
+				populate_option_btn_with_agents(widg, "", false, false, false, false, false,false,false)
 
 func GUI_param_updated(param=null)->void:
 	behavior_GUI_to_META()
@@ -1544,8 +1552,6 @@ func get_node_recursive(var node:Node, var name:String) -> Node:
 	return null
 	
 
-
-
 func key_param_exists(var key_name:String) -> int:
 	var vbox:VBoxContainer = get_node("%VBoxAgentParam")
 	var nb_param:float = vbox.get_child_count()
@@ -1615,7 +1621,6 @@ func populate_option_btn_with_agents(opt:OptionButton, selected_name:String, add
 		# Set the selected agent / group
 		opt.set_text(selected_name)
 
-
 func populate_option_btn_with_params(opt:OptionButton, selected_name:String, type:String) -> void:
 		# Remove all items
 		opt.clear()
@@ -1634,7 +1639,12 @@ func populate_option_btn_from_list(opt:OptionButton, selected_name:String, lst:A
 		for i in range(0, lst.size()):
 			opt.add_item(  lst[i]   )
 
-
+func node_get_children_array(node:Node)->Array:
+	var arr:Array = []
+	for n in node.get_children():
+		arr.append(n)
+		arr = arr + node_get_children_array(n)
+	return arr
 # Window / App control -------------------------
 func _on_BtnClose_pressed():
 	get_tree().quit()
