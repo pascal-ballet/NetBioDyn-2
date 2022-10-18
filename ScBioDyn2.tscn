@@ -2051,7 +2051,7 @@ margin_left = 16.0
 margin_top = 24.0
 margin_right = 104.0
 margin_bottom = 38.0
-text = ">          >"
+text = ">     >     >"
 align = 1
 
 [node name="GraphNodeEnd" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric"]
@@ -2526,6 +2526,8 @@ margin_left = 16.0
 margin_top = 24.0
 margin_right = 104.0
 margin_bottom = 38.0
+text = ">     >     >"
+align = 1
 
 [node name="OptAgts" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxADD" groups=["OptEvtAgts"]]
 margin_left = 16.0
@@ -2548,9 +2550,9 @@ slot/0/left_color = Color( 1, 1, 1, 1 )
 slot/0/right_enabled = true
 slot/0/right_type = 0
 slot/0/right_color = Color( 1, 1, 1, 1 )
-slot/1/left_enabled = false
-slot/1/left_type = 0
-slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
 slot/1/right_enabled = false
 slot/1/right_type = 0
 slot/1/right_color = Color( 1, 1, 1, 1 )
@@ -2576,26 +2578,28 @@ margin_left = 16.0
 margin_top = 24.0
 margin_right = 134.0
 margin_bottom = 38.0
-text = "L'Agent"
+text = ">     >     >"
+align = 1
 
-[node name="OptAgts1" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxTransform" groups=["OptEvtAgtsGp"]]
+[node name="Label3" type="Label" parent="Runtime/GfxNodes/Agent/GfxTransform"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 134.0
-margin_bottom = 59.0
+margin_bottom = 53.0
+text = "Agent"
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Agent/GfxTransform"]
 margin_left = 16.0
-margin_top = 60.0
+margin_top = 54.0
 margin_right = 134.0
-margin_bottom = 74.0
+margin_bottom = 68.0
 text = "devient un Agent"
 
 [node name="OptAgts2" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxTransform" groups=["OptEvtAgts"]]
 margin_left = 16.0
-margin_top = 75.0
+margin_top = 69.0
 margin_right = 134.0
-margin_bottom = 95.0
+margin_bottom = 89.0
 
 [node name="GfxDEL" type="GraphNode" parent="Runtime/GfxNodes/Agent"]
 unique_name_in_owner = true
