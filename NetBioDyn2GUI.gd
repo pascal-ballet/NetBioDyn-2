@@ -1769,19 +1769,31 @@ func behav_script_generic(gfx:GraphEdit) -> String:
 	else:
 		if gfx.get_connection_list().size() == 0:
 			is_gfx_coherent = false
-	if is_gfx_coherent == false:
+	# The gfx code is empty (null), create a default one
+	if gfx == null:
 		return """
 extends Node
 # Default Behavior
 func action(tree, agent, nb_agents) -> void:
 	pass
 """
-	else:
-		var then:GraphNode = gfx.find_node("*GraphNodeThen*",true,false)
-		return generate_code_gfx(then, gfx)
+	else: # The gfx code is NOT null, it can be coherent or NOT coherent
+		if is_gfx_coherent == true: # The gfx is coherent => create the Godot code
+			var then:GraphNode = gfx.find_node("*GraphNodeThen*",true,false)
+			return generate_code_gfx(then, gfx)
+		else: #The gfx is NOT coherent, re-put the defaut code
+			return """
+extends Node
+# Default Behavior
+func action(tree, agent, nb_agents) -> void:
+	pass
+"""
 	
 # ******** GENERATE GFX CODE **********
 func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
+	
+	var lst_R_P:Array = put_gfx_R_P_vars()
+	
 	var lst_cnx:Array = then.get_parent().get_connection_list()
 	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx, gfx)
 	var code_acts:String = generate_code_acts("GraphNodeEnd", lst_cnx, gfx)
@@ -1897,9 +1909,14 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	
 	if box.length() >= 6 && box.left(6) == "GfxDEL":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var R12:String = "R" + String(gfx_box.get_child(1).get_selected_id())
+		var box_agent:GraphNode = get_graphnode_entering_port(box,lst_cnx,1)
+		var RP:String = ""
+		if box_agent.name == "GraphNodeEvt":
+			RP = "R1"
+		else:
+			RP = box_agent.get_meta("Var")
 		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
-		"""+R12+""".queue_free()
+		"""+RP+""".queue_free()
 """
 	
 	# Mouvment
@@ -1968,6 +1985,21 @@ func get_graphnodes_exiting(box:String, cnx_list:Array) ->Array:
 		if cnx.get("from")==box:
 			lst_out_boxes.append(cnx.get("to"))
 	return lst_out_boxes
+
+
+func get_graphnode_entering_port(box:String, cnx_list:Array, port:int)->GraphNode:
+	for cnx in cnx_list:
+		if cnx.get("to")==box && cnx.get("to_port")==port:
+			return _gfx_code_current.get_node(cnx.get("from")) as GraphNode
+	return null
+
+func get_graphnodes_exiting_port(box:String, cnx_list:Array) ->Array:
+	var lst_out_boxes:Array = []
+	for cnx in cnx_list:
+		if cnx.get("from")==box:
+			lst_out_boxes.append(cnx.get("to"))
+	return lst_out_boxes
+
 	
 
 # ██████  ███████ ██   ██      ██████  ██████  ██████  ███████ 
@@ -2021,10 +2053,10 @@ func _on_BtnAddGfxNode() -> void:
 	gfx_edit.add_child(gfx_node)
 
 	# Specific cases
-	if gfx_node_name == "GfxDEL":
-		var behav:Node = get_selected_behavior()
-		var opt_obj:Node   = gfx_node.get_child(1)
-		populate_option_btn_from_list( opt_obj,"", gfx_get_evt_agents() )
+	#if gfx_node_name == "GfxDEL":
+		#var behav:Node = get_selected_behavior()
+		#var opt_obj:Node   = gfx_node.get_child(1)
+		#populate_option_btn_from_list( opt_obj,"", gfx_get_evt_agents() )
 
 	if gfx_node_name == "GfxParam":
 		var behav:Node = get_selected_behavior()
@@ -2121,7 +2153,7 @@ func get_input_graphnode(evt=null):
 
 func update_evt_gfx_names()->void:
 	# TO DO : find all the R & P agents => list of Agents instances of the current gfx diagram
-	var lst_r_P:Array = put_gfx_R_P_vars()
+	var lst_R_P:Array = put_gfx_R_P_vars()
 	# (Re)-Fill Option Buttons
 	for box in _gfx_code_current.get_children():
 		var lst_widg:Array = node_get_children_array(box)
@@ -2131,7 +2163,7 @@ func update_evt_gfx_names()->void:
 				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
 				var sel:String = widg.text
 				widg.clear()
-				populate_option_btn_from_list(widg, sel, lst_r_P)
+				populate_option_btn_from_list(widg, sel, lst_R_P)
 
 			if widg.is_in_group("OptEvtAgts") :
 				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
@@ -2155,13 +2187,13 @@ func put_gfx_R_P_vars() -> Array:
 				lst_R_P.append(box.get_child(2).text + " (2)")
 		# P from Gfx ADD
 		if ("GfxADD" in box.name) == true:
-			box.set_meta("VarP", "P"+String(num_P))
+			box.set_meta("Var", "P"+String(num_P))
 			num_P = num_P + 1
 			var pos_str = String(lst_R_P.size()+1)
 			lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
 		# P from Gfx Transform
 		if ("GfxTransform" in box.name) == true:
-			box.set_meta("VarP", "P"+String(num_P))
+			box.set_meta("Var", "P"+String(num_P))
 			num_P = num_P + 1
 			var pos_str = String(lst_R_P.size()+1)
 			lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
