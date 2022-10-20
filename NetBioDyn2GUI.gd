@@ -2121,7 +2121,7 @@ func get_input_graphnode(evt=null):
 
 func update_evt_gfx_names()->void:
 	# TO DO : find all the R & P agents => list of Agents instances of the current gfx diagram
-	var lst_r_P:Array = find_R_P_agents()
+	var lst_r_P:Array = put_gfx_R_P_vars()
 	# (Re)-Fill Option Buttons
 	for box in _gfx_code_current.get_children():
 		var lst_widg:Array = node_get_children_array(box)
@@ -2141,9 +2141,9 @@ func update_evt_gfx_names()->void:
 				populate_option_btn_with_agents(widg, sel, false, false, false, false, false,false,false)
 
 # Find all R & P agents
-func find_R_P_agents()->Array:
+func put_gfx_R_P_vars() -> Array:
 	var lst_R_P:Array = []
-
+	var num_P = 1
 	# Explore the widgets for R and P agents
 	for box in _gfx_code_current.get_children():
 		# R from Gfx Evt
@@ -2155,6 +2155,14 @@ func find_R_P_agents()->Array:
 				lst_R_P.append(box.get_child(2).text + " (2)")
 		# P from Gfx ADD
 		if ("GfxADD" in box.name) == true:
+			box.set_meta("VarP", "P"+String(num_P))
+			num_P = num_P + 1
+			var pos_str = String(lst_R_P.size()+1)
+			lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
+		# P from Gfx Transform
+		if ("GfxTransform" in box.name) == true:
+			box.set_meta("VarP", "P"+String(num_P))
+			num_P = num_P + 1
 			var pos_str = String(lst_R_P.size()+1)
 			lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
 
