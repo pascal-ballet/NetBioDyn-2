@@ -1912,7 +1912,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		var box_agent:GraphNode = get_graphnode_entering_port(box,lst_cnx,1)
 		var RP:String = ""
 		if box_agent.name == "GraphNodeEvt":
-			RP = "R1"
+			RP = gfx_evt_R1_R2(box)
 		else:
 			RP = box_agent.get_meta("Var")
 		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
@@ -1986,21 +1986,29 @@ func get_graphnodes_exiting(box:String, cnx_list:Array) ->Array:
 			lst_out_boxes.append(cnx.get("to"))
 	return lst_out_boxes
 
-
-func get_graphnode_entering_port(box:String, cnx_list:Array, port:int)->GraphNode:
+# Get the GraphNode entering box by port: GraphNode -port---> box
+func get_graphnode_entering_from_port(box:String, cnx_list:Array, port:int)->GraphNode:
 	for cnx in cnx_list:
 		if cnx.get("to")==box && cnx.get("to_port")==port:
 			return _gfx_code_current.get_node(cnx.get("from")) as GraphNode
 	return null
-
-func get_graphnodes_exiting_port(box:String, cnx_list:Array) ->Array:
-	var lst_out_boxes:Array = []
+# Get the GraphNode exiting box by port : box -port---> GraphNode
+func get_graphnode_exiting_to_port(box:String, cnx_list:Array, port:int) ->Array:
 	for cnx in cnx_list:
-		if cnx.get("from")==box:
-			lst_out_boxes.append(cnx.get("to"))
-	return lst_out_boxes
+		if cnx.get("from")==box && cnx.get("from_port")==port:
+			return _gfx_code_current.get_node(cnx.get("to")) as GraphNode
+	return null
 
-	
+func gfx_evt_R1_R2(box:String, cnx_list:Array)->String:
+	var res = ""
+	var node_evt:GraphNode = _gfx_code_current.find_node("GraphNodeEvt",true,false)
+	var box1:GraphNode = et_graphnode_exiting_to_port(box, cnx_list, 0)
+	var box2:GraphNode = et_graphnode_exiting_to_port(box, cnx_list, 1)
+	if box==box1:
+		res = "R1"
+	if box==box2:
+		res = "R2"
+	return res
 
 # ██████  ███████ ██   ██      ██████  ██████  ██████  ███████ 
 #██       ██       ██ ██      ██      ██    ██ ██   ██ ██      
