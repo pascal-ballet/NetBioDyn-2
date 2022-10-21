@@ -1761,13 +1761,6 @@ func action(tree, R1, nb_agents) -> void:
 
 # Script GENERIC
 func behav_script_generic(gfx:GraphEdit) -> String:
-	# TODO Verify the gfx code can be executed
-	var is_gfx_coherent = true
-	if gfx == null:
-		is_gfx_coherent = false
-	else:
-		if gfx.get_connection_list().size() == 0:
-			is_gfx_coherent = false
 	# The gfx code is empty (null), create a default one
 	if gfx == null:
 		return """
@@ -1776,26 +1769,22 @@ extends Node
 func action(tree, agent, nb_agents) -> void:
 	pass
 """
-	else: # The gfx code is NOT null, it can be coherent or NOT coherent
-		if is_gfx_coherent == true: # The gfx is coherent => create the Godot code
-			var then:GraphNode = gfx.find_node("*GraphNodeThen*",true,false)
-			return generate_code_gfx(then, gfx)
-		else: #The gfx is NOT coherent, re-put the defaut code
-			return """
-extends Node
-# Default Behavior
-func action(tree, agent, nb_agents) -> void:
-	pass
-"""
+	var then:GraphNode = gfx.find_node("*GraphNodeThen*",true,false)
+	return generate_code_gfx(then, gfx)
 	
 # ******** GENERATE GFX CODE **********
+var _gfx_compiles   :bool = true
+var _gfx_compile_msg:String = "OK"
+
 func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
+	_gfx_compiles = true
+	_gfx_compile_msg = "OK"
 	
 	var lst_R_P:Array = put_gfx_R_P_vars()
 	
 	var lst_cnx:Array = then.get_parent().get_connection_list()
 	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx, gfx)
-	var code_acts:String = generate_code_acts("GraphNodeEnd", lst_cnx, gfx)
+	var code_acts:String = generate_code_acts("GraphNodeEnd",  lst_cnx, gfx)
 	if code_acts=="":
 		code_acts="""
 		pass
@@ -1818,6 +1807,9 @@ func action(tree, R1, nb_agents) -> void:
 	return code
 	
 func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
+	if _gfx_compiles == false:
+		return ""
+		
 	var lst_input_boxes:Array = get_graphnodes_entering(box, lst_cnx)
 	var code_cdts:String = ""
 	
@@ -1840,7 +1832,12 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if bodies.size() > 0:
 		R2 = bodies[0]
 	if R2 != null && R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")) """
-		
+	else:
+		if lst_input_boxes.size() == 0:
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite non reliée (dans la condition du comportement)"
+			return ""
+	
 	# Then
 	
 	if box == "GraphNodeThen":
@@ -1889,16 +1886,26 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	return code_cdts
 
 func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
-	var lst_output_boxes:Array = get_graphnodes_entering(box, lst_cnx)
+	if _gfx_compiles == false:
+		return ""
+
+	var lst_input_boxes:Array = get_graphnodes_entering(box, lst_cnx)
 	var code_acts:String = ""
-	if box == "GraphNodeEnd":
-		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)
+	
+	if box == "GraphNodeEnd" :
+		if lst_input_boxes.size()>0:
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)
+		else:
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite FIN reliée"
+			return ""
+
 		
 	# Agent
 	if box.length() >= 6 && box.left(6) == "GfxADD":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
 		var P:String = gfx_box.get_child(1).text
-		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		if nb_agents < tree.MAX_AGENTS:
 			NetBioDyn2gui.spawn_agent(tree,"""+in_quote(P)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
 """
@@ -1907,11 +1914,11 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
 		var R12:String = "R" + String(gfx_box.get_child(1).get_selected_id())
 		var P:String = gfx_box.get_child(3).text
-		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+R12+""".queue_free()
 		NetBioDyn2gui.spawn_agent(tree,"""+in_quote(P)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )		
 """
-	
+	# GFX DEL
 	if box.length() >= 6 && box.left(6) == "GfxDEL":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
 		var box_agent:GraphNode = get_graphnode_entering_from_port(box,lst_cnx,1)
@@ -1920,7 +1927,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 			RP = gfx_evt_R1_R2(box, lst_cnx)
 		else:
 			RP = box_agent.get_meta("Var")
-		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+RP+""".queue_free()
 """
 	
@@ -1933,11 +1940,11 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		var fy:String = gfx_box.get_child(3).get_child(1).text
 		var fz:String = gfx_box.get_child(4).get_child(1).text
 		if rel == false:
-			code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+R12+""".apply_central_impulse(Vector3(0,0,0), Vector3("""+fx+""" , """+fy+""" , """+fz+""" ))
 """
 		else:
-			code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+R12+""".apply_central_impulse(Vector3(0,0,0), """+R12+""".transform.basis.xform(Vector3("""+fx+""" , """+fy+""" , """+fz+""") )
 """
 
@@ -1949,11 +1956,11 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		var dy:String = gfx_box.get_child(3).get_child(1).text
 		var dz:String = gfx_box.get_child(4).get_child(1).text
 		if rel == false:
-			code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+R12+""".translate(Vector3("""+dx+""" , """+dy+""" , """+dz+""" ))
 """
 		else:
-			code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+R12+""".translate("""+R12+""".transform.basis.xform(Vector3("""+dx+""" , """+dy+""" , """+dz+""") )
 """
 
@@ -1963,7 +1970,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		var x:String = gfx_box.get_child(2).get_child(1).text
 		var y:String = gfx_box.get_child(3).get_child(1).text
 		var z:String = gfx_box.get_child(4).get_child(1).text
-		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+R12+""".translation(Vector3("""+x+""" , """+y+""" , """+z+""" ))
 """
 			
@@ -1971,7 +1978,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
 		var R12:String = "R" + String(gfx_box.get_child(0).get_child(1).get_selected_id())
 		var R21:String = "R" + String(gfx_box.get_child(2).get_child(1).get_selected_id())
-		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
+		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+R12+""".translate(1.1*("""+R21+""".translation() - """+R12+""".translation() ))
 """
 
