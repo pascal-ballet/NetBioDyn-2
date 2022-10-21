@@ -48,7 +48,7 @@ var _env_max_y:float =  0
 var _env_min_z:float = -40
 var _env_max_z:float =  40
 # instances size
-var MAX_AGENTS:int = 2000
+var MAX_AGENTS:int = 500
 
 # Called when the node enters the scene tree for the first time.
 func my_init() -> void:
@@ -1689,7 +1689,6 @@ func action(tree, R1, nb_agents) -> void:
 		#print (str("proba ok:",proba))
 		if R1.is_queued_for_deletion() == false && (R1.get_meta("Name") == """+in_quote(r1)+""" || R1.is_in_group("""+in_quote(r1)+""")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
 			#var R1:Spatial 		= collision[0]
-			var nb_agents:int 	= R1.get_parent().get_child_count()
 			#print ("nb=", nb_agents)
 			#print("R1 is in gp : ", inputs[2])
 			# Cas avec R2 == 0 ########################################################################################
@@ -1797,7 +1796,10 @@ func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
 	var lst_cnx:Array = then.get_parent().get_connection_list()
 	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx, gfx)
 	var code_acts:String = generate_code_acts("GraphNodeEnd", lst_cnx, gfx)
-	
+	if code_acts=="":
+		code_acts="""
+		pass
+		"""
 	var code:String = """
 extends Node
 # Generic Behavior
