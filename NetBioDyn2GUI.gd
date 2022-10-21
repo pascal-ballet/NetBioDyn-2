@@ -1828,8 +1828,11 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 			var r1:String = box_ref.get_child(1).text
 			code_cdts =  """ (R1.get_meta("Name") == """ + in_quote(r1) + """ || R1.is_in_group(""" + in_quote(r1) + """))"""
 		if box_ref.get_child(0).get_selected_id() == 2:
+			var r1:String = box_ref.get_child(1).text
 			var r2:String = box_ref.get_child(2).text
 			code_cdts = """
+	if (R1.get_meta("Name") != """ + in_quote(r1) + """ && !R1.is_in_group(""" + in_quote(r1) + """)):
+		return
 	var bodies = R1.get_colliding_bodies()
 	var R2 = null
 	if bodies.size() > 0:
@@ -1909,10 +1912,10 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	
 	if box.length() >= 6 && box.left(6) == "GfxDEL":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var box_agent:GraphNode = get_graphnode_entering_port(box,lst_cnx,1)
+		var box_agent:GraphNode = get_graphnode_entering_from_port(box,lst_cnx,1)
 		var RP:String = ""
 		if box_agent.name == "GraphNodeEvt":
-			RP = gfx_evt_R1_R2(box)
+			RP = gfx_evt_R1_R2(box, lst_cnx)
 		else:
 			RP = box_agent.get_meta("Var")
 		code_acts = generate_code_acts(lst_output_boxes[0], lst_cnx, gfx)+"""
@@ -1986,27 +1989,29 @@ func get_graphnodes_exiting(box:String, cnx_list:Array) ->Array:
 			lst_out_boxes.append(cnx.get("to"))
 	return lst_out_boxes
 
-# Get the GraphNode entering box by port: GraphNode -port---> box
+# Get the GraphNode entering box by port: GraphNode ---port-> box
 func get_graphnode_entering_from_port(box:String, cnx_list:Array, port:int)->GraphNode:
 	for cnx in cnx_list:
 		if cnx.get("to")==box && cnx.get("to_port")==port:
 			return _gfx_code_current.get_node(cnx.get("from")) as GraphNode
 	return null
 # Get the GraphNode exiting box by port : box -port---> GraphNode
-func get_graphnode_exiting_to_port(box:String, cnx_list:Array, port:int) ->Array:
+func get_graphnode_exiting_to_port(box:String, cnx_list:Array, port:int) ->GraphNode:
 	for cnx in cnx_list:
-		if cnx.get("from")==box && cnx.get("from_port")==port:
+		var from_port:int = cnx.get("from_port")
+		if cnx.get("from") == box && from_port == port:
+			print(cnx)
 			return _gfx_code_current.get_node(cnx.get("to")) as GraphNode
 	return null
 
 func gfx_evt_R1_R2(box:String, cnx_list:Array)->String:
 	var res = ""
 	var node_evt:GraphNode = _gfx_code_current.find_node("GraphNodeEvt",true,false)
-	var box1:GraphNode = et_graphnode_exiting_to_port(box, cnx_list, 0)
-	var box2:GraphNode = et_graphnode_exiting_to_port(box, cnx_list, 1)
-	if box==box1:
+	var box1:GraphNode = get_graphnode_exiting_to_port("GraphNodeEvt", cnx_list, 1)
+	var box2:GraphNode = get_graphnode_exiting_to_port("GraphNodeEvt", cnx_list, 2)
+	if box1 != null and box==box1.name:
 		res = "R1"
-	if box==box2:
+	if box2 != null and box==box2.name:
 		res = "R2"
 	return res
 

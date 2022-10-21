@@ -2633,7 +2633,7 @@ margin_top = 24.0
 margin_right = 123.0
 margin_bottom = 38.0
 
-[node name="OptActParamAgt" type="Label" parent="Runtime/GfxNodes/Agent/GfxDEL" groups=["OptEvtAgtsGp"]]
+[node name="OptActParamAgt" type="Label" parent="Runtime/GfxNodes/Agent/GfxDEL"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 123.0
