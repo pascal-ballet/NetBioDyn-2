@@ -1785,6 +1785,18 @@ func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
 	var lst_cnx:Array = then.get_parent().get_connection_list()
 	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx, gfx)
 	var code_acts:String = generate_code_acts("GraphNodeEnd",  lst_cnx, gfx)
+	
+	if _gfx_compiles == false:
+		print("Compilation ERREUR :")
+		print(_gfx_compile_msg)
+		return  """
+extends Node
+# Generic Behavior
+func action(tree, R1, nb_agents) -> void:
+	pass"""
+	else:
+		print("Compilation OK")		
+	
 	if code_acts=="":
 		code_acts="""
 		pass
@@ -1897,10 +1909,9 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)
 		else:
 			_gfx_compiles = false
-			_gfx_compile_msg = "Boite FIN reliée"
+			_gfx_compile_msg = "Boite FIN non-reliée"
 			return ""
 
-		
 	# Agent
 	if box.length() >= 6 && box.left(6) == "GfxADD":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
@@ -1912,21 +1923,16 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 
 	if box.length() >= 12 && box.left(12) == "GfxTransform":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var R12:String = "R" + String(gfx_box.get_child(1).get_selected_id())
+		var RP:String = get_var_R12_P(box, lst_cnx, 1)
 		var P:String = gfx_box.get_child(3).text
 		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
-		"""+R12+""".queue_free()
+		"""+RP+""".queue_free()
 		NetBioDyn2gui.spawn_agent(tree,"""+in_quote(P)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )		
 """
 	# GFX DEL
 	if box.length() >= 6 && box.left(6) == "GfxDEL":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var box_agent:GraphNode = get_graphnode_entering_from_port(box,lst_cnx,1)
-		var RP:String = ""
-		if box_agent.name == "GraphNodeEvt":
-			RP = gfx_evt_R1_R2(box, lst_cnx)
-		else:
-			RP = box_agent.get_meta("Var")
+		var RP:String = get_var_R12_P(box, lst_cnx, 1)
 		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+RP+""".queue_free()
 """
@@ -1983,6 +1989,15 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 """
 
 	return code_acts
+
+func get_var_R12_P(box:String, lst_cnx:Array, port:int)->String:
+	var box_agent:GraphNode = get_graphnode_entering_from_port(box,lst_cnx,1)
+	var RP:String = ""
+	if box_agent.name == "GraphNodeEvt":
+		RP = gfx_evt_R1_R2(box, lst_cnx)
+	else:
+		RP = box_agent.get_meta("Var")
+	return RP
 
 func get_graphnodes_entering(box:String, cnx_list:Array)->Array:
 	var lst_in_boxes:Array = []

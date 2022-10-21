@@ -3862,7 +3862,6 @@ selected = 0
 [connection signal="focus_exited" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Env/VBoxPropsEnv/HBoxProp6/EnvToric" to="." method="_on_env_size_changed"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/OptGfxCategories" to="." method="_on_OptGfxCategories_item_selected"]
-[connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/OptGfxNodes" to="." method="_on_OptAction_item_selected"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions/VBoxContainer/HBoxCdts/BtnAddGenericCdtAgtGp" to="." method="_on_BtnAddGfxNode"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer/ButtonValiderGfx" to="." method="_on_validate_graph_behav"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer/ButtonAnnulerGfx" to="." method="hide_gfx"]
