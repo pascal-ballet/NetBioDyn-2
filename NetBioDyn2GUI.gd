@@ -1844,11 +1844,11 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if bodies.size() > 0:
 		R2 = bodies[0]
 	if R2 != null && R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")) """
-	else:
-		if lst_input_boxes.size() == 0:
-			_gfx_compiles = false
-			_gfx_compile_msg = "Boite non reliée (dans la condition du comportement)"
-			return ""
+#	else:
+#		if lst_input_boxes.size() == 0:
+#			_gfx_compiles = false
+#			_gfx_compile_msg = "Boite non reliée (dans la condition du comportement)"
+#			return ""
 	
 	# Then
 	
