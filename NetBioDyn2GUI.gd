@@ -1857,7 +1857,7 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	# Then
 	
 	if box == "GraphNodeThen":
-		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " : "
+		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) #+ " : "
 	
 	# Logic ********
 	
