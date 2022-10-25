@@ -1857,7 +1857,7 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	# Then
 	
 	if box == "GraphNodeThen":
-		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " : "
+		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) #+ " : "
 	
 	# Logic ********
 	
@@ -1996,6 +1996,8 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 
 func get_var_R12_P(box:String, lst_cnx:Array, port:int)->String:
 	var box_agent:GraphNode = get_graphnode_entering_from_port(box,lst_cnx,1)
+	if box_agent == null:
+		return ""
 	var RP:String = ""
 	if box_agent.name == "GraphNodeEvt":
 		RP = gfx_evt_R1_R2(box, lst_cnx)
