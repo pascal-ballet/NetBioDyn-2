@@ -1772,9 +1772,22 @@ func action(tree, agent, nb_agents) -> void:
 	var then:GraphNode = gfx.find_node("*GraphNodeThen*",true,false)
 	return generate_code_gfx(then, gfx)
 	
-# ******** GENERATE GFX CODE **********
+#                                  ***********
+#                        *********************
+#              *******************************
+# ****************************************************************************************************************************************************
+# ******** GENERATE GFX CODE *************************************************************************************************************************
+# ****************************************************************************************************************************************************
+#              *******************************
+#                        *********************
+#                                  ***********
+
 var _gfx_compiles   :bool = true
 var _gfx_compile_msg:String = "OK"
+
+func generate_code_gfx_test()->String:
+	var then = _gfx_code_current.find_node("*GraphNodeThen*",true,false)
+	return generate_code_gfx(then, _gfx_code_current)
 
 func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
 	_gfx_compiles = true
@@ -1789,6 +1802,9 @@ func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
 	if _gfx_compiles == false:
 		print("Compilation ERREUR :")
 		print(_gfx_compile_msg)
+		get_node("%LabelGfxMsg").text = _gfx_compile_msg
+		var red = load("res://Images/bg_error.tres")
+		get_node("%LabelGfxMsg").set("custom_styles/normal",red)
 		return  """
 extends Node
 # Generic Behavior
@@ -1796,6 +1812,9 @@ func action(tree, R1, nb_agents) -> void:
 	pass"""
 	else:
 		print("Compilation OK")		
+		get_node("%LabelGfxMsg").text = "Code OK"
+		var green = load("res://Images/bg_focus.tres")
+		get_node("%LabelGfxMsg").set("custom_styles/normal",green)
 	
 	if code_acts=="":
 		code_acts="""
@@ -1809,8 +1828,12 @@ func action(tree, R1, nb_agents) -> void:
 
 	var box_ref:GraphNode = gfx.find_node("GraphNodeEvt",true,false)
 	if box_ref.get_child(0).get_selected_id() == 0: # NO agent
+		if code_cdts == "":
+			code_cdts = "true:"
 		code += "	if "+code_cdts + code_acts
 	if box_ref.get_child(0).get_selected_id() == 1: # ONE agent
+		if code_cdts == "":
+			code_cdts = "true:"
 		code += "	if "+code_cdts + code_acts
 	if box_ref.get_child(0).get_selected_id() == 2: # TWO agents in contact
 		code += code_cdts + code_acts
@@ -1937,6 +1960,11 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if box.length() >= 6 && box.left(6) == "GfxDEL":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
 		var RP:String = get_var_R12_P(box, lst_cnx, 1)
+		if RP == "": # Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Supprimer non reliée à un agent"
+			return ""
+
 		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+RP+""".queue_free()
 """
@@ -2064,10 +2092,12 @@ func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: Strin
 		if c.to == to and c.to_port == to_slot:
 			return
 	_gfx_code_current.connect_node(from, from_slot, to, to_slot)
+	generate_code_gfx_test()
 
 # Ask for a link disconnection
 func _on_GraphGeneric_disconnection_request(from, from_slot, to, to_slot):
 	_gfx_code_current.disconnect_node(from, from_slot, to, to_slot)
+	generate_code_gfx_test()
 
 # Get the list of agent names in the Event Gfx Node
 func gfx_get_evt_agents()->Array:

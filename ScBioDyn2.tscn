@@ -1887,31 +1887,44 @@ size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
 margin_right = 962.0
-margin_bottom = 55.0
+margin_bottom = 56.0
 size_flags_horizontal = 3
 
 [node name="VBoxGenericTitle" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer"]
 margin_right = 896.0
-margin_bottom = 55.0
+margin_bottom = 56.0
 size_flags_horizontal = 3
 
 [node name="LabelGfxTitle" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle"]
 margin_right = 896.0
-margin_bottom = 31.0
+margin_bottom = 14.0
 hint_tooltip = "Quand Diffusant rencontre E-Coli, alors E-Coli ' et E-Coli '' apparaissent."
 mouse_filter = 0
 size_flags_horizontal = 7
 size_flags_vertical = 5
 custom_styles/normal = ExtResource( 1 )
-text = "Division Bact
-Diffusant + E-Coli  = 0.1 => E-Coli ' + E-Coli ''"
+text = "Comportement Générique"
+align = 1
+valign = 1
+
+[node name="LabelGfxMsg" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 896.0
+margin_bottom = 32.0
+hint_tooltip = "Quand Diffusant rencontre E-Coli, alors E-Coli ' et E-Coli '' apparaissent."
+mouse_filter = 0
+size_flags_horizontal = 7
+size_flags_vertical = 5
+custom_styles/normal = ExtResource( 1 )
+text = "Code OK"
 align = 1
 valign = 1
 
 [node name="HBoxOptions" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle"]
-margin_top = 35.0
+margin_top = 36.0
 margin_right = 896.0
-margin_bottom = 55.0
+margin_bottom = 56.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxGenericTitle/HBoxOptions"]
 margin_right = 128.0
@@ -1948,24 +1961,24 @@ align = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer"]
 margin_left = 900.0
 margin_right = 962.0
-margin_bottom = 55.0
+margin_bottom = 56.0
 size_flags_vertical = 3
 
 [node name="ButtonValiderGfx" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer"]
 margin_right = 62.0
-margin_bottom = 31.0
+margin_bottom = 32.0
 size_flags_vertical = 3
 text = "Valider"
 
 [node name="ButtonAnnulerGfx" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer"]
-margin_top = 35.0
+margin_top = 36.0
 margin_right = 62.0
-margin_bottom = 55.0
+margin_bottom = 56.0
 text = "Annuler"
 
 [node name="GraphGeneric" type="GraphEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
 unique_name_in_owner = true
-margin_top = 59.0
+margin_top = 60.0
 margin_right = 962.0
 margin_bottom = 563.0
 rect_min_size = Vector2( 100, 0 )
