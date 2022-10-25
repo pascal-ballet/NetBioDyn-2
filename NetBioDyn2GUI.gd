@@ -1836,7 +1836,7 @@ func action(tree, R1, nb_agents) -> void:
 			code_cdts = "true:"
 		code += "	if "+code_cdts + code_acts
 	if box_ref.get_child(0).get_selected_id() == 2: # TWO agents in contact
-		code += code_cdts + code_acts
+		code += code_cdts + ":" + code_acts
 	print("gfx code: ")
 	print(code)
 	return code
@@ -1847,8 +1847,8 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		
 	var lst_input_boxes:Array = get_graphnodes_entering(box, lst_cnx)
 	
-	if lst_input_boxes.size() == 0:
-		return ""
+	#if lst_input_boxes.size() == 0:
+	#	return ""
 	
 	var code_cdts:String = ""
 	
@@ -1934,7 +1934,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if box == "GraphNodeEnd" :
 		if lst_input_boxes.size()>0:
 			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)
-		else:
+		else:# Manage ERRORS
 			_gfx_compiles = false
 			_gfx_compile_msg = "Boite FIN non-reliée"
 			return ""
@@ -1943,6 +1943,10 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if box.length() >= 6 && box.left(6) == "GfxADD":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
 		var P:String = gfx_box.get_child(1).text
+		if P == "": # Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Ajouter : choisir le type d'agent"
+			return ""
 		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		if nb_agents < tree.MAX_AGENTS:
 			NetBioDyn2gui.spawn_agent(tree,"""+in_quote(P)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
@@ -1951,7 +1955,16 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if box.length() >= 12 && box.left(12) == "GfxTransform":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
 		var RP:String = get_var_R12_P(box, lst_cnx, 1)
+		if RP == "": # Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Transformer non reliée à un agent"
+			return ""
 		var P:String = gfx_box.get_child(3).text
+		if P == "": # Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Transformer : choisir le nouveau type d'agent"
+			return ""
+		
 		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+RP+""".queue_free()
 		NetBioDyn2gui.spawn_agent(tree,"""+in_quote(P)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )		

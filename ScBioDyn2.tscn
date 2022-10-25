@@ -2966,6 +2966,7 @@ margin_left = 18.0
 margin_right = 122.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
+text = "0"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
 margin_left = 16.0
@@ -2985,6 +2986,7 @@ margin_left = 18.0
 margin_right = 122.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
+text = "0"
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
 margin_left = 16.0
@@ -3004,6 +3006,7 @@ margin_left = 18.0
 margin_right = 122.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
+text = "0"
 
 [node name="GfxTranslation" type="GraphNode" parent="Runtime/GfxNodes/Mouvment"]
 unique_name_in_owner = true
