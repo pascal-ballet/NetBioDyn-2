@@ -1385,7 +1385,7 @@ func _on_BtnStop_pressed() -> void:
 
 var _node_simu_init:Spatial
 # **************************************
-# Save initial state when playing
+# SAVE initial state when playing
 func duplicate_node_simu_INTO_node_simu_INIT() -> void:
 	#var nb_agts:int = _node_env.get_child_count()
 	#print(str("DUPLICATE _node_simu INTO _node_simu_INIT. _node_env.nb_agts=", nb_agts))
@@ -1396,6 +1396,7 @@ func duplicate_node_simu_INTO_node_simu_INIT() -> void:
 
 	# Remove & delete the old init
 	_node_simu_init.queue_free() #call_deferred("free")
+	
 	#_node_viewport.remove_child(_node_simu_init)
 	# Set the new init
 	_node_simu_init = new_init
@@ -1420,9 +1421,9 @@ func duplicate_node_simu_INTO_node_simu_INIT() -> void:
 	_node_simu.find_node("*Entities*",   true,false).name 	= "Entities"
 	_node_simu.find_node("*Behaviors*",  true,false).name 	= "Behaviors"
 	_node_simu.find_node("*Groups*",     true,false).name 	= "Groups"
-	_node_simu.find_node("*Environment*",true,false).name	= "Environment"
+	_node_simu.find_node("*Environment*",true,false).name		= "Environment"
 
-# Load initial state when stopping
+# LOAD initial state when stopping
 func duplicate_node_simu_INIT_INTO_node_simu() -> void:
 	# Remove current simulator
 	_node_simu.call_deferred("free")
@@ -1462,6 +1463,7 @@ func duplicate_node_simu_INIT_INTO_node_simu() -> void:
 	
 	# attach it to the Viewport
 	_node_viewport.add_child(_node_simu)
+	
 	# re-init 3D node variables
 	_node_entities 	= _node_simu.find_node("*Entities*",true,false)
 	_node_behavs 	= _node_simu.find_node("*Behaviors*",true,false)
@@ -1826,17 +1828,18 @@ extends Node
 func action(tree, R1, nb_agents) -> void:
 """
 
+	if code_cdts == "":
+		code_cdts = "true:"
+	if code_cdts.ends_with(":") == false:
+		code_cdts += ":"
+
 	var box_ref:GraphNode = gfx.find_node("GraphNodeEvt",true,false)
 	if box_ref.get_child(0).get_selected_id() == 0: # NO agent
-		if code_cdts == "":
-			code_cdts = "true:"
 		code += "	if "+code_cdts + code_acts
 	if box_ref.get_child(0).get_selected_id() == 1: # ONE agent
-		if code_cdts == "":
-			code_cdts = "true:"
 		code += "	if "+code_cdts + code_acts
 	if box_ref.get_child(0).get_selected_id() == 2: # TWO agents in contact
-		code += code_cdts + ":" + code_acts
+		code += code_cdts + code_acts
 	print("gfx code: ")
 	print(code)
 	return code
@@ -1880,7 +1883,13 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	# Then
 	
 	if box == "GraphNodeThen":
-		code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) #+ " : "
+		if lst_input_boxes.size()>0:
+			code_cdts = generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) #+ " : "
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Alors non-reliée"
+			return ""	
+	
 	
 	# Logic ********
 	
