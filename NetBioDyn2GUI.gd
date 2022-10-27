@@ -1887,19 +1887,39 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	# Logic ********
 	
 	if box.length() >= 6 && box.left(6) == "GfxAND":
-		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " && " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
-	
+		if lst_input_boxes.size()==2:
+				code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " && " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite ET non-reliée"
+			return ""
+				
 	if box.length() >= 5 && box.left(5) == "GfxOR":
-		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " || " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
-
+		if lst_input_boxes.size()==2:
+				code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " || " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite OU non-reliée"
+			return ""
+			
 	if box.length() >= 6 && box.left(6) == "GfxNOT":
-		code_cdts = "!(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + ")"
-	
+		if lst_input_boxes.size()==1:
+				code_cdts = "!(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + ")"
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite NON non-reliée"
+			return ""
+				
 	if box.length() >= 10 && box.left(10) == "GfxCompare":
-		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var comp:String = gfx_box.get_child(1).get_child(0).text
-		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + comp + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
-
+		if lst_input_boxes.size()==2:
+			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+			var comp:String = gfx_box.get_child(1).get_child(0).text
+			code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + comp + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Comparer non-reliée"
+			return ""
+			
 	# Math
 	if box.length() >= 9 && box.left(9) == "GfxNumber":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
@@ -1912,17 +1932,36 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		code_cdts = "( 100*randf() < " + prob + ")"
 		
 	if box.length() >= 7 && box.left(7) == "GfxPlus":
-		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " + " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
-
+		if lst_input_boxes.size()==2:
+			code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " + " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Plus non-reliée"
+			return ""
+			
 	if box.length() >= 8 && box.left(8) == "GfxMinus":
-		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " - " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
-	
+		if lst_input_boxes.size()==2:
+			code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " - " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Moins non-reliée"
+			return ""
+				
 	if box.length() >= 7 && box.left(7) == "GfxMult":
-		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " * " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
-
+		if lst_input_boxes.size()==2:
+			code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " * " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Multiplier non-reliée"
+			return ""
+			
 	if box.length() >= 6 && box.left(6) == "GfxDiv":
-		code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " / " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"	
-
+		if lst_input_boxes.size()==2:
+			code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " / " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"	
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Diviser non-reliée"
+			return ""
 
 	return code_cdts
 
@@ -1934,7 +1973,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	var code_acts:String = ""
 	
 	if box == "GraphNodeEnd" :
-		if lst_input_boxes.size()>0:
+		if lst_input_boxes.size()==1:
 			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)
 		else:# Manage ERRORS
 			_gfx_compiles = false
@@ -1943,17 +1982,22 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 
 	# Agent
 	if box.length() >= 6 && box.left(6) == "GfxADD":
-		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var P:String = gfx_box.get_child(1).text
-		if P == "": # Manage ERRORS
-			_gfx_compiles = false
-			_gfx_compile_msg = "Boite Ajouter : choisir le type d'agent"
-			return ""
-		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
+		if lst_input_boxes.size()==1:
+			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+			var P:String = gfx_box.get_child(1).text
+			if P == "": # Manage ERRORS
+				_gfx_compiles = false
+				_gfx_compile_msg = "Boite Ajouter : choisir le type d'agent"
+				return ""
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		if nb_agents < tree.MAX_AGENTS:
 			NetBioDyn2gui.spawn_agent(tree,"""+in_quote(P)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
 """
-
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Ajouter Agent non-reliée"
+			return ""
+			
 	if box.length() >= 12 && box.left(12) == "GfxTransform":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
 		var RP:String = get_var_R12_P(box, lst_cnx, 1)
