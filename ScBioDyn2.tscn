@@ -85,7 +85,7 @@ align = 2
 
 [node name="Marge2" type="ToolButton" parent="Toolbar"]
 margin_left = 122.0
-margin_right = 755.0
+margin_right = 674.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 disabled = true
@@ -93,8 +93,8 @@ flat = false
 
 [node name="HBoxSimuCtrl" type="HBoxContainer" parent="Toolbar"]
 unique_name_in_owner = true
-margin_left = 759.0
-margin_right = 899.0
+margin_left = 678.0
+margin_right = 981.0
 margin_bottom = 32.0
 
 [node name="BtnPlay" type="ToolButton" parent="Toolbar/HBoxSimuCtrl"]
@@ -133,8 +133,27 @@ icon = ExtResource( 5 )
 flat = false
 expand_icon = true
 
+[node name="Label" type="Label" parent="Toolbar/HBoxSimuCtrl"]
+margin_left = 144.0
+margin_top = 9.0
+margin_right = 199.0
+margin_bottom = 23.0
+text = "Vitesse :"
+
+[node name="HSlider" type="HSlider" parent="Toolbar/HBoxSimuCtrl"]
+margin_left = 203.0
+margin_right = 343.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 100, 0 )
+size_flags_vertical = 1
+min_value = 5.0
+max_value = 200.0
+step = 5.0
+value = 30.0
+tick_count = 10
+
 [node name="LblVersion" type="Label" parent="Toolbar"]
-margin_left = 903.0
+margin_left = 985.0
 margin_top = 9.0
 margin_right = 1537.0
 margin_bottom = 23.0
@@ -3813,6 +3832,7 @@ selected = 0
 [connection signal="pressed" from="Toolbar/HBoxSimuCtrl/BtnStep" to="." method="_on_BtnStep_pressed"]
 [connection signal="pressed" from="Toolbar/HBoxSimuCtrl/BtnPause" to="." method="_on_BtnPause_pressed"]
 [connection signal="pressed" from="Toolbar/HBoxSimuCtrl/BtnStop" to="." method="_on_BtnStop_pressed"]
+[connection signal="value_changed" from="Toolbar/HBoxSimuCtrl/HSlider" to="." method="_on_HSlider_value_changed"]
 [connection signal="pressed" from="Toolbar/BtnDebug" to="." method="_on_BtnDebug_pressed"]
 [connection signal="pressed" from="Toolbar/BtnClose" to="." method="_on_BtnClose_pressed"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitLeftContainer/VBoxAgentsGp/VSplitContainer/VBoxContainer/HBoxAddAgents/BtnAddAgent" to="." method="_on_ToolPlusAgent_pressed"]

@@ -52,6 +52,9 @@ var MAX_AGENTS:int = 500
 
 # Called when the node enters the scene tree for the first time.
 func my_init() -> void:
+	#PhysicsServer.set_active(false) #########
+	Engine.target_fps = 25
+	
 	var tree:SceneTree	= get_tree()
 	var scene:Node		= tree.get_current_scene()
 
@@ -1356,6 +1359,7 @@ func _on_BtnPlay_pressed() -> void:
 	_sim_pause = false
 	_sim_play_once = false
 	#var nb_agts:int = _node_env.get_child_count()
+	#PhysicsServer.set_active(true) ############
 	pass
 	
 func _on_BtnStep_pressed() -> void:
@@ -1374,6 +1378,7 @@ func _on_BtnStop_pressed() -> void:
 	if _sim_play == true:
 		duplicate_node_simu_INIT_INTO_node_simu()
 	_sim_play = false
+	#PhysicsServer.set_active(false) #############
 	_sim_pause = false
 	_sim_play_once = false
 	_step = 0
@@ -2701,4 +2706,11 @@ func group_line_edit_on_focus()->void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GROUP
 
+
+
+
+func _on_HSlider_value_changed(value: float) -> void:
+	if value == 200:
+		value = 0
+	Engine.target_fps = value
 
