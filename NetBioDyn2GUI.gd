@@ -65,7 +65,7 @@ func my_init() -> void:
 	_listBehavs 		= scene.find_node("ListBehav")
 	_node_status	 	= scene.find_node("LabelStatusbar")
 	_gfx_code_current= scene.find_node("GraphGeneric")
-	_gfx_code_init	= _gfx_code_current.duplicate(14) # copy of the GraphGeneric
+	_gfx_code_init	= _gfx_code_current.duplicate(15) # copy of the GraphGeneric
 	_gfx_nodes		= scene.find_node("GfxNodes")
 	_gfx_opt_nodes	= scene.find_node("OptGfxNodes")
 	_gfx_opt_cat 	= scene.find_node("OptGfxCategories")
@@ -83,7 +83,7 @@ func my_init() -> void:
 	populate_gfx_opt_nodes("Tous")
 
 	# New initial state
-	_node_simu_init = _node_simu.duplicate(14)
+	_node_simu_init = _node_simu.duplicate(15)
 	var nb_agts:int = _node_env.get_child_count()
 	pass
 	#get_viewport().connect("gui_focus_changed", self, "set_popup_btn")
@@ -1216,7 +1216,7 @@ var _good_gp_name:String = ""
 func _on_BtnAddGp_pressed() -> void:
 	#Add in 2D List
 	var vb:VBoxContainer = get_node("%VBoxGp")
-	var node_line_gp:Node = get_node("%HBoxLineGp").duplicate(14)
+	var node_line_gp:Node = get_node("%HBoxLineGp").duplicate(15)
 	node_line_gp.visible = true
 	vb.add_child(node_line_gp)
 	# Add in 3D Simulator
@@ -1288,7 +1288,7 @@ func set_group_from_simulator_to_GUI() -> void:
 	# Re Fill the 2D List of Groups from the Simulator
 	for gp in _node_groups.get_children():
 		var vb:VBoxContainer = get_node("%VBoxGp")
-		var node_line_gp:Node = get_node("%HBoxLineGp").duplicate(14)
+		var node_line_gp:Node = get_node("%HBoxLineGp").duplicate(15)
 		node_line_gp.visible = true
 		vb.add_child(node_line_gp)
 		node_line_gp.get_child(0).text = gp.name
@@ -1391,7 +1391,7 @@ func duplicate_node_simu_INTO_node_simu_INIT() -> void:
 	#print(str("DUPLICATE _node_simu INTO _node_simu_INIT. _node_env.nb_agts=", nb_agts))
 	
 	# Duplicate the node_simu into init
-	var new_init:Node = _node_simu.duplicate(14)
+	var new_init:Node = _node_simu.duplicate(15)
 	new_init.name="INIT"
 
 	# Remove & delete the old init
@@ -1421,21 +1421,18 @@ func duplicate_node_simu_INTO_node_simu_INIT() -> void:
 	_node_simu.find_node("*Entities*",   true,false).name 	= "Entities"
 	_node_simu.find_node("*Behaviors*",  true,false).name 	= "Behaviors"
 	_node_simu.find_node("*Groups*",     true,false).name 	= "Groups"
-	_node_simu.find_node("*Environment*",true,false).name		= "Environment"
+	_node_simu.find_node("*Environment*",true,false).name	= "Environment"
 
-# LOAD initial state when stopping
+# re-LOAD initial state when stopping
 func duplicate_node_simu_INIT_INTO_node_simu() -> void:
 	# Remove current simulator
 	_node_simu.call_deferred("free")
 	_node_viewport.remove_child(_node_simu)
 	
 	# Duplicate the _node_simu_init into _node_sim
-	_node_simu = _node_simu_init.duplicate(14)
+	_node_simu = _node_simu_init.duplicate(15)
 	_node_simu.name="Simulator"
-	
-	
-	
-	
+		
 
 	var i1:int = _node_simu.get_child_count()
 	var rg:Array = range( 5, i1 )
@@ -1452,12 +1449,6 @@ func duplicate_node_simu_INIT_INTO_node_simu() -> void:
 	_node_simu.find_node("*Environment*",true,false).name= "Environment"
 
 	
-	
-	
-	
-	
-	
-	
 	#var node_env_init:Node = get_node_direct(_node_simu_init, "Environment")
 	#var nb_agts_init:int = node_env_init.get_child_count()
 	
@@ -1469,6 +1460,8 @@ func duplicate_node_simu_INIT_INTO_node_simu() -> void:
 	_node_behavs 	= _node_simu.find_node("*Behaviors*",true,false)
 	_node_groups		= _node_simu.find_node("*Groups*",true,false)
 	_node_env 		= _node_simu.find_node("*Environment*",true,false)
+
+	
 
 	#var nb_agts:int = _node_env.get_child_count()
 	#print(str("DUPLICATE _node_simu_INIT INTO _node_simu. NEW _node_env.nb_agts=", nb_agts))
@@ -2142,7 +2135,7 @@ func _on_BtnAddGfxNode() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
 	var gfx_node_name2show:String = get_node("%OptGfxNodes").text
 	var gfx_node_name:String = gfx_get_name_from_nameToShow(gfx_node_name2show)
-	var gfx_node:GraphNode = get_node(str("%",gfx_node_name)).duplicate(14)
+	var gfx_node:GraphNode = get_node(str("%",gfx_node_name)).duplicate(15)
 	gfx_node.name = key_name_create(_gfx_code_current, gfx_node_name)
 	gfx_node.visible = true
 	gfx_edit.add_child(gfx_node)
@@ -2305,7 +2298,7 @@ func _on_show_graph_behav()->void:
 	# Re-put stored GFX code
 	if behav.get_child_count() > 0: # There is a GFX Code for this behavior
 		gfx_code_prev.queue_free() # Remove the prev gfx code
-		var gfx_code:GraphEdit = behav.get_child(0).duplicate(14) # Duplicate from the behav node
+		var gfx_code:GraphEdit = behav.get_child(0).duplicate(15) # Duplicate from the behav node
 		gfx_code.visible = true
 		get_node("%GraphBehav").add_child(gfx_code) # put the stored gfx from node to GraphBehav
 		_gfx_code_current = gfx_code
@@ -2315,10 +2308,18 @@ func _on_show_graph_behav()->void:
 		for i in lst_links.size():
 			var dico_link:Dictionary = lst_links[i]
 			_gfx_code_current.connect_node(dico_link["from"], dico_link["from_port"],dico_link["to"],dico_link["to_port"])
+			
+		# re-connect GFX signals
+		_gfx_code_current.connect("connection_request",self,"_on_GraphGeneric_connection_request")
+		_gfx_code_current.connect("delete_nodes_request",self,"_on_GraphGeneric_delete_nodes_request")
+		_gfx_code_current.connect("disconnection_request",self,"_on_GraphGeneric_disconnection_request")
+		var evt:GraphNode = _gfx_code_current.find_node("*GraphNodeEvt*",true,false)
+		evt.get_child(0).connect("item_selected", self, "GUI_evt_gfx_changed")
+		
 
 	else: # Ther is NO GFX Code for this behavior => put the default one
 		gfx_code_prev.queue_free() # Remove the current gfx code
-		var gfx_code:GraphEdit = _gfx_code_init.duplicate(14) # Duplicate from the behav node
+		var gfx_code:GraphEdit = _gfx_code_init.duplicate(15) # Duplicate from the behav node
 		gfx_code.visible = true
 		get_node("%GraphBehav").add_child(gfx_code) # put the stored gfx from node to GraphBehav
 		_gfx_code_current = gfx_code
@@ -2332,7 +2333,7 @@ func _on_validate_graph_behav()->void:
 	# Save GraphEdit in the selected behavior node
 	# --------------------------------------------
 	var behav:Node = get_selected_behavior()
-	var gfx_code:GraphEdit = _gfx_code_current.duplicate(14) #get_node("%GraphGeneric").duplicate(15)
+	var gfx_code:GraphEdit = _gfx_code_current.duplicate(15) #get_node("%GraphGeneric").duplicate(15)
 	behav.set_meta("Links", _gfx_code_current.get_connection_list())
 	# Remove previous GFX code from behav
 	if behav.get_child_count() > 0:
@@ -2403,7 +2404,7 @@ func _on_BtnLoad_pressed():
 	var new_simu:Node = next_simu_scn.instance()
 	unset_owner_recursive(new_simu, new_simu)
 
-	_node_simu = new_simu.duplicate(14) #new_simu.duplicate(14) #next_simu_scn.instance()
+	_node_simu = new_simu.duplicate(15) #new_simu.duplicate(15) #next_simu_scn.instance()
 	#var i0:int = _node_simu.get_child_count()/2
 	var i1:int = _node_simu.get_child_count()
 	for i in range( 5, i1 ):
@@ -2461,7 +2462,7 @@ func _on_BtnSave_pressed():
 	var filename = yield(dialog, "file_selected")
 	
 	# Duplicate the node
-	var simu = _node_simu.duplicate(14)
+	var simu = _node_simu.duplicate(15)
 
 	# Setting simu node as owner of all its
 	# children for saving reasons
@@ -2600,7 +2601,7 @@ func _on_BtnDebug_pressed():
 	#var behav:Node = get_selected_behavior()
 	
 	var lst_0:Array = _gfx_code_current.get_connection_list() 
-	var gfx_code:GraphEdit = _gfx_code_current.duplicate(14)
+	var gfx_code:GraphEdit = _gfx_code_current.duplicate(15)
 	var lst_1:Array = gfx_code.get_connection_list()
 		
 	# Set the good names
