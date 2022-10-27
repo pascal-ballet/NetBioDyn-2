@@ -2412,16 +2412,16 @@ func _on_GraphNode_close_request() -> void:
 
 # Show Close
 func _on_Graph_node_selected(node):
-	_selected_nodes[node] = true
 	if ("GraphNodeEvt" in node.name) or ("GraphNodeThen" in node.name) or ("GraphNodeEnd" in node.name):
 		return
+	_selected_nodes[node] = true
 	node.show_close = true
 	
 # Hide Close
 func _on_Graph_node_unselected(node):
-	_selected_nodes[node] = false
 	if ("GraphNodeEvt" in node.name) or ("GraphNodeThen" in node.name) or ("GraphNodeEnd" in node.name):
 		return
+	_selected_nodes[node] = false
 	node.show_close = false
 
 

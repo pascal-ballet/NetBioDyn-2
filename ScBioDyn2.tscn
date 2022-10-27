@@ -2635,6 +2635,7 @@ margin_bottom = 89.0
 
 [node name="GfxDEL" type="GraphNode" parent="Runtime/GfxNodes/Agent"]
 unique_name_in_owner = true
+visible = false
 margin_left = 60.0
 margin_top = 208.0
 margin_right = 220.0
