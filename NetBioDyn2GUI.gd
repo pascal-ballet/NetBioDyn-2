@@ -2262,42 +2262,10 @@ func populate_gfx_opt_nodes(c:String):
 func _on_OptGfxCategories_item_selected(index: int) -> void:
 	populate_gfx_opt_nodes(_gfx_opt_cat.get_item_text(index))
 
-# Remove a Graph Node
-#func _on_GraphNode_close_request() -> void:
-#	var gfx_edit:GraphEdit = _gfx_code_current
-#	for node in gfx_edit.get_children():
-#		if node is GraphNode && node.selected == true:
-#			remove_connections_to_node(node)
-#			node.queue_free()
-#			_sel_gfx_node = null
-
-#func _on_Graph_delete_nodes_request():
-func _on_GraphNode_close_request() -> void:
-	for node in _selected_nodes.keys():
-		if _selected_nodes[node]:
-			remove_connections_to_node(node)
-			node.queue_free()
-	_selected_nodes = {}
-
-
-
 func remove_connections_to_node(node):
 	for con in _gfx_code_current.get_connection_list():
 		if con.to == node.name or con.from == node.name:
 			_gfx_code_current.disconnect_node(con.from, con.from_port, con.to, con.to_port)
-
-# Get focus on a Graph Node => display the Delete cross
-#func get_input_graphnode(evt=null):
-#	var gfx_edit:GraphEdit = _gfx_code_current
-#	for node in gfx_edit.get_children():
-#		if node is GraphNode && node.title != "Alors" && node.title != "Fin":
-#			if  node.selected == true:
-#				node.show_close = true
-#				_sel_gfx_node = node
-#			else:
-#				node.show_close = false
-
-
 
 func update_evt_gfx_names()->void:
 	# TO DO : find all the R & P agents => list of Agents instances of the current gfx diagram
@@ -2375,7 +2343,11 @@ func _on_show_graph_behav()->void:
 		_gfx_code_current.connect("disconnection_request",self,"_on_GraphGeneric_disconnection_request")
 		var evt:GraphNode = _gfx_code_current.find_node("*GraphNodeEvt*",true,false)
 		evt.get_child(0).connect("item_selected", self, "GUI_evt_gfx_changed")
-		
+		for box in _gfx_code_current.get_children():
+				if (box is GraphNode) and !("GraphNodeEvt" in box.name) and !("GraphNodeThen" in box.name) and !("GraphNodeEnd" in box.name):
+					box.connect("close_request",self,"_on_GraphNode_close_request")
+					box.set_selected(false)
+					box.show_close = false
 
 	else: # Ther is NO GFX Code for this behavior => put the default one
 		gfx_code_prev.queue_free() # Remove the current gfx code
@@ -2392,6 +2364,7 @@ func _on_show_graph_behav()->void:
 func _on_validate_graph_behav()->void:
 	# Save GraphEdit in the selected behavior node
 	# --------------------------------------------
+	_selected_nodes = {} # unselect graphnodes
 	var behav:Node = get_selected_behavior()
 	var gfx_code:GraphEdit = _gfx_code_current.duplicate(15) #get_node("%GraphGeneric").duplicate(15)
 	behav.set_meta("Links", _gfx_code_current.get_connection_list())
@@ -2405,6 +2378,7 @@ func _on_validate_graph_behav()->void:
 	behavior_GUI_to_META()
 
 func hide_gfx()->void:
+	_selected_nodes = {} # unselect graphnodes
 	get_node("%GraphBehav").visible 			= false # Main GFX Code
 	
 	get_node("%HSplitLeftContainer").visible = true  # Agents + Behav + Gps + Grids
@@ -2425,12 +2399,25 @@ func show_gfx()->void:
 # Close / Delete selected GraphNodes
 var _selected_nodes = {}
 
+# Remove Graph Nodes
+func _on_GraphNode_close_request() -> void:
+	for node in _selected_nodes.keys():
+		if _selected_nodes[node]:
+			remove_connections_to_node(node)
+					
+	for node in _selected_nodes.keys():
+		if _selected_nodes[node]:
+			node.queue_free()
+	_selected_nodes = {}
+
+# Show Close
 func _on_Graph_node_selected(node):
 	_selected_nodes[node] = true
 	if ("GraphNodeEvt" in node.name) or ("GraphNodeThen" in node.name) or ("GraphNodeEnd" in node.name):
 		return
 	node.show_close = true
-
+	
+# Hide Close
 func _on_Graph_node_unselected(node):
 	_selected_nodes[node] = false
 	if ("GraphNodeEvt" in node.name) or ("GraphNodeThen" in node.name) or ("GraphNodeEnd" in node.name):
