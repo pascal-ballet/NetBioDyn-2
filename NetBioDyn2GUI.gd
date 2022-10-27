@@ -2224,18 +2224,19 @@ func _on_BtnAddGfxNode() -> void:
 			var sel_agt:String = r1 # TODO Change to the saved agent/gp
 			populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(r1) )
 
-var _sel_gfx_node:GraphNode = null
+#var _sel_gfx_node:GraphNode = null
 
 # Populate option btn of Cdt Param Box
 func _on_OptCdtParamObj_item_selected(i:int) -> void:
-	if _sel_gfx_node == null || _sel_gfx_node.title != "Paramètre":
-		return
-	var opt_obj:Node   	= _sel_gfx_node.get_child(0).get_child(1)
-	var opt_param:Node 	= _sel_gfx_node.get_child(1).get_child(1)
-	var agt_gp:String 	= opt_obj.get_item_text(i)
-	agt_gp = agt_gp.right(3)
-	opt_param.clear()
-	populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agt_gp) )
+	pass
+#	if _sel_gfx_node == null || _sel_gfx_node.title != "Paramètre":
+#		return
+#	var opt_obj:Node   	= _sel_gfx_node.get_child(0).get_child(1)
+#	var opt_param:Node 	= _sel_gfx_node.get_child(1).get_child(1)
+#	var agt_gp:String 	= opt_obj.get_item_text(i)
+#	agt_gp = agt_gp.right(3)
+#	opt_param.clear()
+#	populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agt_gp) )
 
 # Populate the GFX OptButton Categories
 func populate_gfx_opt_cat():
@@ -2262,13 +2263,23 @@ func _on_OptGfxCategories_item_selected(index: int) -> void:
 	populate_gfx_opt_nodes(_gfx_opt_cat.get_item_text(index))
 
 # Remove a Graph Node
+#func _on_GraphNode_close_request() -> void:
+#	var gfx_edit:GraphEdit = _gfx_code_current
+#	for node in gfx_edit.get_children():
+#		if node is GraphNode && node.selected == true:
+#			remove_connections_to_node(node)
+#			node.queue_free()
+#			_sel_gfx_node = null
+
+#func _on_Graph_delete_nodes_request():
 func _on_GraphNode_close_request() -> void:
-	var gfx_edit:GraphEdit = _gfx_code_current
-	for node in gfx_edit.get_children():
-		if node is GraphNode && node.selected == true:
+	for node in _selected_nodes.keys():
+		if _selected_nodes[node]:
 			remove_connections_to_node(node)
 			node.queue_free()
-			_sel_gfx_node = null
+	_selected_nodes = {}
+
+
 
 func remove_connections_to_node(node):
 	for con in _gfx_code_current.get_connection_list():
@@ -2276,15 +2287,15 @@ func remove_connections_to_node(node):
 			_gfx_code_current.disconnect_node(con.from, con.from_port, con.to, con.to_port)
 
 # Get focus on a Graph Node => display the Delete cross
-func get_input_graphnode(evt=null):
-	var gfx_edit:GraphEdit = _gfx_code_current
-	for node in gfx_edit.get_children():
-		if node is GraphNode && node.title != "Alors" && node.title != "Fin":
-			if  node.selected == true:
-				node.show_close = true
-				_sel_gfx_node = node
-			else:
-				node.show_close = false
+#func get_input_graphnode(evt=null):
+#	var gfx_edit:GraphEdit = _gfx_code_current
+#	for node in gfx_edit.get_children():
+#		if node is GraphNode && node.title != "Alors" && node.title != "Fin":
+#			if  node.selected == true:
+#				node.show_close = true
+#				_sel_gfx_node = node
+#			else:
+#				node.show_close = false
 
 
 
@@ -2360,7 +2371,7 @@ func _on_show_graph_behav()->void:
 			
 		# re-connect GFX signals
 		_gfx_code_current.connect("connection_request",self,"_on_GraphGeneric_connection_request")
-		_gfx_code_current.connect("delete_nodes_request",self,"_on_GraphGeneric_delete_nodes_request")
+		_gfx_code_current.connect("delete_nodes_request",self,"_on_Graph_delete_nodes_request")
 		_gfx_code_current.connect("disconnection_request",self,"_on_GraphGeneric_disconnection_request")
 		var evt:GraphNode = _gfx_code_current.find_node("*GraphNodeEvt*",true,false)
 		evt.get_child(0).connect("item_selected", self, "GUI_evt_gfx_changed")
@@ -2411,6 +2422,20 @@ func show_gfx()->void:
 	
 	get_node("%GraphBehav").visible 			= true  # Main GFX Code
 
+# Close / Delete selected GraphNodes
+var _selected_nodes = {}
+
+func _on_Graph_node_selected(node):
+	_selected_nodes[node] = true
+	if ("GraphNodeEvt" in node.name) or ("GraphNodeThen" in node.name) or ("GraphNodeEnd" in node.name):
+		return
+	node.show_close = true
+
+func _on_Graph_node_unselected(node):
+	_selected_nodes[node] = false
+	if ("GraphNodeEvt" in node.name) or ("GraphNodeThen" in node.name) or ("GraphNodeEnd" in node.name):
+		return
+	node.show_close = false
 
 
 #██       ██████   █████  ██████          ██     ███████  █████  ██    ██ ███████ 

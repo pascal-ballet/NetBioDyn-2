@@ -2635,10 +2635,9 @@ margin_bottom = 89.0
 
 [node name="GfxDEL" type="GraphNode" parent="Runtime/GfxNodes/Agent"]
 unique_name_in_owner = true
-visible = false
 margin_left = 60.0
 margin_top = 208.0
-margin_right = 199.0
+margin_right = 220.0
 margin_bottom = 273.0
 mouse_filter = 1
 title = "Supprimer Agent"
@@ -2662,13 +2661,13 @@ __meta__ = {
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Agent/GfxDEL"]
 margin_left = 16.0
 margin_top = 24.0
-margin_right = 123.0
+margin_right = 144.0
 margin_bottom = 38.0
 
 [node name="OptActParamAgt" type="Label" parent="Runtime/GfxNodes/Agent/GfxDEL"]
 margin_left = 16.0
 margin_top = 39.0
-margin_right = 123.0
+margin_right = 144.0
 margin_bottom = 53.0
 text = "Agent"
 
@@ -3902,8 +3901,10 @@ selected = 0
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer/ButtonValiderGfx" to="." method="_on_validate_graph_behav"]
 [connection signal="pressed" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/HBoxContainer/VBoxContainer/ButtonAnnulerGfx" to="." method="hide_gfx"]
 [connection signal="connection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_connection_request"]
-[connection signal="delete_nodes_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_delete_nodes_request"]
+[connection signal="delete_nodes_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_Graph_delete_nodes_request"]
 [connection signal="disconnection_request" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_GraphGeneric_disconnection_request"]
+[connection signal="node_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_Graph_node_selected"]
+[connection signal="node_unselected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric" to="." method="_on_Graph_node_unselected"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeEvt/OptEvt" to="." method="GUI_evt_gfx_changed"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeEvt/OptAgentR1" to="." method="GUI_evt_gfx_R1_changed"]
 [connection signal="item_selected" from="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeEvt/OptAgentR2" to="." method="GUI_evt_gfx_R2_changed"]
@@ -3924,90 +3925,27 @@ selected = 0
 [connection signal="focus_exited" from="Runtime/HBoxLineParam/ParamValue" to="." method="_on_ParamValue_focus_exited"]
 [connection signal="button_down" from="Runtime/HBoxLineParam/Button" to="." method="_on_Button_button_down"]
 [connection signal="close_request" from="Runtime/GfxNodes/Logic/GfxAND" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Logic/GfxAND" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Logic/GfxAND" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Logic/GfxAND" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Logic/GfxOR" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Logic/GfxOR" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Logic/GfxOR" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Logic/GfxOR" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Logic/GfxNOT" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Logic/GfxNOT" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Logic/GfxNOT" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Logic/GfxNOT" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Logic/GfxCompare" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Logic/GfxCompare" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Logic/GfxCompare" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Logic/GfxCompare" to="." method="get_input_graphnode"]
 [connection signal="item_selected" from="Runtime/GfxNodes/Logic/GfxCompare/HBoxContainer3/OptCdtParamObj" to="." method="_on_OptCdtParamObj_item_selected"]
 [connection signal="close_request" from="Runtime/GfxNodes/Agent/GfxADD" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Agent/GfxADD" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Agent/GfxADD" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Agent/GfxADD" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Agent/GfxTransform" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Agent/GfxTransform" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Agent/GfxTransform" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Agent/GfxTransform" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Agent/GfxDEL" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Agent/GfxDEL" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Agent/GfxDEL" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Agent/GfxDEL" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Math/GfxNumber" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxNumber" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxNumber" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxNumber" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Math/GfxProba" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxProba" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxProba" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxProba" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Math/GfxPlus" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxPlus" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxPlus" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxPlus" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Math/GfxMinus" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxMinus" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxMinus" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxMinus" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Math/GfxMult" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxMult" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxMult" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxMult" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Math/GfxDiv" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Math/GfxDiv" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Math/GfxDiv" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Math/GfxDiv" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxForce" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxForce" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxForce" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxForce" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxTranslation" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxTranslation" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxTranslation" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxTranslation" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxPosition" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxGoAround" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxGoAround" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxGoAround" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxGoAround" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxTurnAround" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Mouvment/GfxCross" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Mouvment/GfxCross" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Mouvment/GfxCross" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Mouvment/GfxCross" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Interaction/GfxSpring" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Interaction/GfxSpring" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Interaction/GfxSpring" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Interaction/GfxSpring" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Parameter/GfxReadParamAgent" to="." method="_on_GraphNode_close_request"]
-[connection signal="gui_input" from="Runtime/GfxNodes/Parameter/GfxReadParamAgent" to="." method="get_input_graphnode"]
-[connection signal="mouse_entered" from="Runtime/GfxNodes/Parameter/GfxReadParamAgent" to="." method="get_input_graphnode"]
-[connection signal="mouse_exited" from="Runtime/GfxNodes/Parameter/GfxReadParamAgent" to="." method="get_input_graphnode"]
 [connection signal="close_request" from="Runtime/GfxNodes/Parameter/GfxWriteParamAgent" to="." method="_on_GraphNode_close_request"]
 [connection signal="gui_input" from="Runtime/GfxNodes/Parameter/GfxWriteParamAgent" to="." method="get_input_graphnode"]
 [connection signal="mouse_entered" from="Runtime/GfxNodes/Parameter/GfxWriteParamAgent" to="." method="get_input_graphnode"]
