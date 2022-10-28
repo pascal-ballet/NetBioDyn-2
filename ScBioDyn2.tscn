@@ -142,7 +142,7 @@ text = "Vitesse :"
 
 [node name="HSlider" type="HSlider" parent="Toolbar/HBoxSimuCtrl"]
 margin_left = 203.0
-margin_right = 343.0
+margin_right = 303.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 100, 0 )
 size_flags_vertical = 1

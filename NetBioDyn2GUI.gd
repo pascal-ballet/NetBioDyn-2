@@ -52,7 +52,6 @@ var MAX_AGENTS:int = 500
 
 # Called when the node enters the scene tree for the first time.
 func my_init() -> void:
-	#PhysicsServer.set_active(false) #########
 	Engine.target_fps = 25
 	
 	var tree:SceneTree	= get_tree()
@@ -122,7 +121,7 @@ func _process(delta):
 		updateStatus()
 		
 	# PLAY ONE step
-	if _step % 100 == 0:
+	if _step % 10 == 0:
 		updateStatus()
 		
 	if _step % 200 == 0:
@@ -1860,7 +1859,7 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 			code_cdts =  """ true """
 		if box_ref.get_child(0).get_selected_id() == 1:
 			var r1:String = box_ref.get_child(1).text
-			code_cdts =  """ (R1.get_meta("Name") == """ + in_quote(r1) + """ || R1.is_in_group(""" + in_quote(r1) + """))"""
+			code_cdts =  """ (R1.get_meta("Name") == """ + in_quote(r1) + """ or R1.is_in_group(""" + in_quote(r1) + """)) and  100*randf() < 10.0 """
 		if box_ref.get_child(0).get_selected_id() == 2:
 			var r1:String = box_ref.get_child(1).text
 			var r2:String = box_ref.get_child(2).text
@@ -2179,7 +2178,7 @@ func gfx_get_name_from_nameToShow(name_to_show:String)->String:
 				return g.name
 	return ""
 	
-# Add a GFX Node
+# Add a NEW GFX Node
 func _on_BtnAddGfxNode() -> void:
 	var gfx_edit:GraphEdit = _gfx_code_current
 	var gfx_node_name2show:String = get_node("%OptGfxNodes").text
@@ -2190,11 +2189,14 @@ func _on_BtnAddGfxNode() -> void:
 	gfx_edit.add_child(gfx_node)
 
 	# Specific cases
-	#if gfx_node_name == "GfxDEL":
-		#var behav:Node = get_selected_behavior()
-		#var opt_obj:Node   = gfx_node.get_child(1)
-		#populate_option_btn_from_list( opt_obj,"", gfx_get_evt_agents() )
+	if gfx_node_name == "GfxADD":
+		var opt_obj:Node   = gfx_node.get_child(1)
+		populate_option_btn_with_agents( opt_obj,"", false,false,false,false,false,false,false )
 
+	if gfx_node_name == "GfxTransform":
+		var opt_obj:Node   = gfx_node.get_child(3)
+		populate_option_btn_with_agents( opt_obj,"", false,false,false,false,false,false,false )
+		
 	if gfx_node_name == "GfxParam":
 		var behav:Node = get_selected_behavior()
 		var type = behav.get_meta("Type")
@@ -2317,7 +2319,7 @@ func put_gfx_R_P_vars() -> Array:
 	return lst_R_P
 
 
-# OPEN GFX Code
+# OPEN EXISTING or NEW GFX Code
 func _on_show_graph_behav()->void:
 	# Load GraphEdit of the selected behavior node
 	# --------------------------------------------
@@ -2344,10 +2346,19 @@ func _on_show_graph_behav()->void:
 		var evt:GraphNode = _gfx_code_current.find_node("*GraphNodeEvt*",true,false)
 		evt.get_child(0).connect("item_selected", self, "GUI_evt_gfx_changed")
 		for box in _gfx_code_current.get_children():
-				if (box is GraphNode) and !("GraphNodeEvt" in box.name) and !("GraphNodeThen" in box.name) and !("GraphNodeEnd" in box.name):
+			if (box is GraphNode):
+				var box_type = box.name
+				if !("GraphNodeEvt" in box.name) and !("GraphNodeThen" in box.name) and !("GraphNodeEnd" in box.name):
 					box.connect("close_request",self,"_on_GraphNode_close_request")
 					box.set_selected(false)
 					box.show_close = false
+				if "GfxADD" in box.name:
+					var opt_obj:Node   = box.get_child(1)
+					populate_option_btn_with_agents( opt_obj,box.get_child(1).text, false,false,false,false,false,false,false )
+				if "GfxTransform" in box.name:
+					var opt_obj:Node   = box.get_child(3)
+					populate_option_btn_with_agents( opt_obj,box.get_child(3).text, false,false,false,false,false,false,false )
+					
 
 	else: # Ther is NO GFX Code for this behavior => put the default one
 		gfx_code_prev.queue_free() # Remove the current gfx code
