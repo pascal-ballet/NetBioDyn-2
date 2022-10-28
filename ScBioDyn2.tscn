@@ -2006,8 +2006,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 right_disconnects = true
 scroll_offset = Vector2( 0, -113 )
-zoom_min = 1.0
-zoom_max = 1.0
+show_zoom_label = true
 minimap_enabled = false
 
 [node name="GraphNodeEvt" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric"]
@@ -2550,7 +2549,7 @@ slot/1/right_type = 3
 slot/1/right_color = Color( 0, 1, 1, 1 )
 __meta__ = {
 "Category": "Agent",
-"NameToShow": "Ajouter"
+"NameToShow": "Ajouter Agent"
 }
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Agent/GfxADD"]
@@ -2560,6 +2559,7 @@ margin_right = 104.0
 margin_bottom = 38.0
 text = ">     >     >"
 align = 1
+valign = 1
 
 [node name="OptAgts" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxADD" groups=["OptEvtAgts"]]
 margin_left = 16.0
@@ -2602,7 +2602,7 @@ slot/3/right_type = 3
 slot/3/right_color = Color( 0, 1, 1, 1 )
 __meta__ = {
 "Category": "Agent",
-"NameToShow": "Transformer"
+"NameToShow": "Transformer Agent"
 }
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Agent/GfxTransform"]
@@ -2618,7 +2618,7 @@ margin_left = 16.0
 margin_top = 39.0
 margin_right = 134.0
 margin_bottom = 53.0
-text = "Agent"
+text = "Cet Agent"
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Agent/GfxTransform"]
 margin_left = 16.0
@@ -2656,7 +2656,7 @@ slot/1/right_type = 0
 slot/1/right_color = Color( 1, 1, 1, 1 )
 __meta__ = {
 "Category": "Agent",
-"NameToShow": "Supprimer"
+"NameToShow": "Supprimer Agent"
 }
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Agent/GfxDEL"]

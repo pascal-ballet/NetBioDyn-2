@@ -2352,6 +2352,11 @@ func _on_show_graph_behav()->void:
 					box.connect("close_request",self,"_on_GraphNode_close_request")
 					box.set_selected(false)
 					box.show_close = false
+				if "GraphNodeEvt" in box.name:
+					var opt_obj1:Node   = box.get_child(1)
+					populate_option_btn_with_agents( opt_obj1,box.get_child(1).text, false,false,false,false,false,false,false )
+					var opt_obj2:Node   = box.get_child(2)
+					populate_option_btn_with_agents( opt_obj2,box.get_child(2).text, false,false,false,false,false,false,false )
 				if "GfxADD" in box.name:
 					var opt_obj:Node   = box.get_child(1)
 					populate_option_btn_with_agents( opt_obj,box.get_child(1).text, false,false,false,false,false,false,false )
