@@ -2943,7 +2943,7 @@ margin_left = 16.0
 margin_top = 39.0
 margin_right = 138.0
 margin_bottom = 53.0
-text = "Agent"
+text = "Cet Agent reçoit F"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
 margin_left = 16.0

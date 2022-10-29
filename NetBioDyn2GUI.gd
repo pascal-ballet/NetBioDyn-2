@@ -840,7 +840,7 @@ func get_object_under_mouse(mouse_pos:Vector2) -> Dictionary:
 	var selection:Dictionary = space_state.intersect_ray(from, cursorPos)
 	return selection
 	
-func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
+func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> RigidBody:
 	# Spawn the new entity
 	var n_agents:Node 	= tree._node_env #tree.get_node("%Environment")
 	var rb:RigidBody 	= tree.get_entity(name)
@@ -852,6 +852,8 @@ func spawn_agent(var tree:Node, var name:String, var pos:Vector3) -> void:
 	# Attach the instance to env
 	n_agents.add_child(agent)
 	agent.global_transform.origin = pos
+	# Return the Spawned Agent
+	return agent
 
 func _on_ButtonClearEnv_pressed() -> void:
 	for rb in _node_env.get_children():
@@ -1792,7 +1794,7 @@ func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
 	_gfx_compiles = true
 	_gfx_compile_msg = "OK"
 	
-	var lst_R_P:Array = put_gfx_R_P_vars()
+	var code_P:String = put_gfx_R_P_vars()
 	
 	var lst_cnx:Array = then.get_parent().get_connection_list()
 	var code_cdts:String = generate_code_cdts("GraphNodeThen", lst_cnx, gfx)
@@ -1821,6 +1823,7 @@ func action(tree, R1, nb_agents) -> void:
 		"""
 	var code:String = """
 extends Node
+""" + code_P + """
 # Generic Behavior
 func action(tree, R1, nb_agents) -> void:
 """
@@ -2017,7 +2020,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		
 		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
 		"""+RP+""".queue_free()
-		NetBioDyn2gui.spawn_agent(tree,"""+in_quote(P)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )		
+		""" + gfx_box.get_meta("Var")  + """ = NetBioDyn2gui.spawn_agent(tree,"""+in_quote(P)+""", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )		
 """
 	# GFX DEL
 	if box.length() >= 6 && box.left(6) == "GfxDEL":
@@ -2034,21 +2037,27 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	
 	# Mouvment
 	if box.length() >= 8 && box.left(8) == "GfxForce":
-		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var R12:String = "R" + String(gfx_box.get_child(0).get_child(1).get_selected_id())
-		var rel:bool = gfx_box.get_child(1).get_child(1).get_selected_id() == 1
-		var fx:String = gfx_box.get_child(2).get_child(1).text
-		var fy:String = gfx_box.get_child(3).get_child(1).text
-		var fz:String = gfx_box.get_child(4).get_child(1).text
-		if rel == false:
-			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
-		"""+R12+""".apply_central_impulse(Vector3(0,0,0), Vector3("""+fx+""" , """+fy+""" , """+fz+""" ))
+		if lst_input_boxes.size()==2:
+			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+			var RP:String = get_var_R12_P(box, lst_cnx, 1)
+			var rel:bool = gfx_box.get_child(2).get_child(1).get_selected_id() == 1
+			var fx:String = gfx_box.get_child(3).get_child(1).text
+			var fy:String = gfx_box.get_child(4).get_child(1).text
+			var fz:String = gfx_box.get_child(5).get_child(1).text
+			if rel == false:
+				code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
+		"""+RP+""".apply_central_impulse(Vector3("""+fx+""" , """+fy+""" , """+fz+""" ))
 """
-		else:
-			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
-		"""+R12+""".apply_central_impulse(Vector3(0,0,0), """+R12+""".transform.basis.xform(Vector3("""+fx+""" , """+fy+""" , """+fz+""") )
+			else:
+				code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
+		"""+RP+""".apply_central_impulse( """+RP+""".transform.basis.xform(Vector3("""+fx+""" , """+fy+""" , """+fz+""") )
 """
-
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Force non-reliée"
+			return ""
+			
+			
 	if box.length() >= 14 && box.left(14) == "GfxTranslation":
 		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
 		var R12:String = "R" + String(gfx_box.get_child(0).get_child(1).get_selected_id())
@@ -2271,52 +2280,54 @@ func remove_connections_to_node(node):
 
 func update_evt_gfx_names()->void:
 	# TO DO : find all the R & P agents => list of Agents instances of the current gfx diagram
-	var lst_R_P:Array = put_gfx_R_P_vars()
+	var str_P:String = put_gfx_R_P_vars()
 	# (Re)-Fill Option Buttons
 	for box in _gfx_code_current.get_children():
 		var lst_widg:Array = node_get_children_array(box)
-		for widg in lst_widg: #box.get_children():
-			if widg.is_in_group("OptEvtAgtsGp") : # TO DO : use the list of R & P
-				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
-				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
-				var sel:String = widg.text
-				widg.clear()
-				populate_option_btn_from_list(widg, sel, lst_R_P)
+#		for widg in lst_widg: #box.get_children():
+#			if widg.is_in_group("OptEvtAgtsGp") : # TO DO : use the list of R & P
+#				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgentR1*", true,false)
+#				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgentR2*", true,false)
+#				var sel:String = widg.text
+#				widg.clear()
+#				populate_option_btn_from_list(widg, sel, lst_R_P)
 
-			if widg.is_in_group("OptEvtAgts") :
-				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
-				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
-				var sel:String = widg.text
-				widg.clear()
-				populate_option_btn_with_agents(widg, sel, false, false, false, false, false,false,false)
+#			if widg.is_in_group("OptEvtAgts") :
+#				var opt_R1:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
+#				var opt_R2:OptionButton = _gfx_code_current.find_node("*OptAgent*", true,false)
+#				var sel:String = widg.text
+#				widg.clear()
+#				populate_option_btn_with_agents(widg, sel, false, false, false, false, false,false,false)
 
 # Find all R & P agents
-func put_gfx_R_P_vars() -> Array:
-	var lst_R_P:Array = []
+func put_gfx_R_P_vars() -> String:
+	var str_R_P:String = ""
 	var num_P = 1
 	# Explore the widgets for R and P agents
 	for box in _gfx_code_current.get_children():
 		# R from Gfx Evt
-		if ("GraphNodeEvt" in box.name) == true:
-			if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 1:
-				lst_R_P.append(box.get_child(1).text + " (1)")
-			if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 2:
-				lst_R_P.append(box.get_child(1).text + " (1)")
-				lst_R_P.append(box.get_child(2).text + " (2)")
+#		if ("GraphNodeEvt" in box.name) == true:
+#			if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 1:
+#				lst_R_P.append(box.get_child(1).text + " (1)")
+#			if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 2:
+#				lst_R_P.append(box.get_child(1).text + " (1)")
+#				lst_R_P.append(box.get_child(2).text + " (2)")
 		# P from Gfx ADD
 		if ("GfxADD" in box.name) == true:
 			box.set_meta("Var", "P"+String(num_P))
+			str_R_P += "var P" + String(num_P) + "\n"
 			num_P = num_P + 1
-			var pos_str = String(lst_R_P.size()+1)
-			lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
+			#var pos_str = String(lst_R_P.size()+1)
+			#lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
 		# P from Gfx Transform
 		if ("GfxTransform" in box.name) == true:
 			box.set_meta("Var", "P"+String(num_P))
+			str_R_P += "var P" + String(num_P) + "\n"
 			num_P = num_P + 1
-			var pos_str = String(lst_R_P.size()+1)
-			lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
+			#var pos_str = String(lst_R_P.size()+1)
+			#lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
 
-	return lst_R_P
+	return str_R_P
 
 
 # OPEN EXISTING or NEW GFX Code
