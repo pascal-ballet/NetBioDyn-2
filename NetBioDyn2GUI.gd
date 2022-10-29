@@ -2057,40 +2057,54 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 			_gfx_compile_msg = "Boite Force non-reliée"
 			return ""
 			
-			
 	if box.length() >= 14 && box.left(14) == "GfxTranslation":
-		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var R12:String = "R" + String(gfx_box.get_child(0).get_child(1).get_selected_id())
-		var rel:bool = gfx_box.get_child(1).get_child(1).get_selected_id() == 1
-		var dx:String = gfx_box.get_child(2).get_child(1).text
-		var dy:String = gfx_box.get_child(3).get_child(1).text
-		var dz:String = gfx_box.get_child(4).get_child(1).text
-		if rel == false:
-			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
-		"""+R12+""".translate(Vector3("""+dx+""" , """+dy+""" , """+dz+""" ))
+		if lst_input_boxes.size()==2:
+			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+			var RP:String = get_var_R12_P(box, lst_cnx, 1)
+			var rel:bool = gfx_box.get_child(2).get_child(1).get_selected_id() == 1
+			var dx:String = gfx_box.get_child(2).get_child(1).text
+			var dy:String = gfx_box.get_child(3).get_child(1).text
+			var dz:String = gfx_box.get_child(4).get_child(1).text
+			if rel == false:
+				code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
+		"""+RP+""".translate(Vector3("""+dx+""" , """+dy+""" , """+dz+""" ))
 """
-		else:
-			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
-		"""+R12+""".translate("""+R12+""".transform.basis.xform(Vector3("""+dx+""" , """+dy+""" , """+dz+""") )
+			else:
+				code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
+		"""+RP+""".translate("""+RP+""".transform.basis.xform(Vector3("""+dx+""" , """+dy+""" , """+dz+""") )
 """
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Translation non-reliée"
+			return ""
 
 	if box.length() >= 11 && box.left(11) == "GfxPosition":
-		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var R12:String = "R" + String(gfx_box.get_child(0).get_child(1).get_selected_id())
-		var x:String = gfx_box.get_child(2).get_child(1).text
-		var y:String = gfx_box.get_child(3).get_child(1).text
-		var z:String = gfx_box.get_child(4).get_child(1).text
-		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
-		"""+R12+""".translation(Vector3("""+x+""" , """+y+""" , """+z+""" ))
+		if lst_input_boxes.size()==2:
+			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+			var RP:String = get_var_R12_P(box, lst_cnx, 1)
+			var x:String = gfx_box.get_child(2).get_child(1).text
+			var y:String = gfx_box.get_child(3).get_child(1).text
+			var z:String = gfx_box.get_child(4).get_child(1).text
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
+		"""+RP+""".translation(Vector3("""+x+""" , """+y+""" , """+z+""" ))
 """
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Position non-reliée"
+			return ""
 			
 	if box.length() >= 8 && box.left(8) == "GfxCross":
-		var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-		var R12:String = "R" + String(gfx_box.get_child(0).get_child(1).get_selected_id())
-		var R21:String = "R" + String(gfx_box.get_child(2).get_child(1).get_selected_id())
-		code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
-		"""+R12+""".translate(1.1*("""+R21+""".translation() - """+R12+""".translation() ))
+		if lst_input_boxes.size()==2:
+			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+			var RP1:String = get_var_R12_P(box, lst_cnx, 1)
+			var RP2:String = get_var_R12_P(box, lst_cnx, 3)
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"""
+		"""+RP1+""".translate(1.1*("""+RP2+""".translation() - """+RP1+""".translation() ))
 """
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Traverser non-reliée"
+			return ""
 
 	return code_acts
 

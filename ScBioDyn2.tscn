@@ -3532,7 +3532,6 @@ text = "°"
 
 [node name="GfxCross" type="GraphNode" parent="Runtime/GfxNodes/Mouvment"]
 unique_name_in_owner = true
-visible = false
 margin_left = 60.0
 margin_top = 208.0
 margin_right = 160.0
