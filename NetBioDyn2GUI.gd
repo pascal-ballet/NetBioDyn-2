@@ -2095,7 +2095,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	return code_acts
 
 func get_var_R12_P(box:String, lst_cnx:Array, port:int)->String:
-	var box_agent:GraphNode = get_graphnode_entering_from_port(box,lst_cnx,1)
+	var box_agent:GraphNode = get_graphnode_entering_from_port(box, lst_cnx, port)
 	if box_agent == null:
 		return ""
 	var RP:String = ""
@@ -2103,6 +2103,10 @@ func get_var_R12_P(box:String, lst_cnx:Array, port:int)->String:
 		RP = gfx_evt_R1_R2(box, lst_cnx)
 	else:
 		RP = box_agent.get_meta("Var")
+		if RP == "Prev":
+			var box_name:String = box_agent.name
+			#var box_prev:GraphNode = get_graphnode_entering_from_port(box_name, lst_cnx, port)		
+			return get_var_R12_P(box_name, lst_cnx, port)
 	return RP
 
 func get_graphnodes_entering(box:String, cnx_list:Array)->Array:
@@ -2317,21 +2321,47 @@ func put_gfx_R_P_vars() -> String:
 #			if _gfx_code_current.find_node("*OptEvt*", true,false).selected == 2:
 #				lst_R_P.append(box.get_child(1).text + " (1)")
 #				lst_R_P.append(box.get_child(2).text + " (2)")
+
 		# P from Gfx ADD
 		if ("GfxADD" in box.name) == true:
 			box.set_meta("Var", "P"+String(num_P))
 			str_R_P += "var P" + String(num_P) + "\n"
 			num_P = num_P + 1
-			#var pos_str = String(lst_R_P.size()+1)
-			#lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
+
 		# P from Gfx Transform
 		if ("GfxTransform" in box.name) == true:
 			box.set_meta("Var", "P"+String(num_P))
 			str_R_P += "var P" + String(num_P) + "\n"
 			num_P = num_P + 1
-			#var pos_str = String(lst_R_P.size()+1)
-			#lst_R_P.append(  box.get_child(1).text + " (" + pos_str + ")"  )
 
+		# P from Gfx Force
+		if ("GfxForce" in box.name) == true:
+			box.set_meta("Var", "Prev")
+
+		# P from Gfx Translation
+		if ("GfxTranslation" in box.name) == true:
+			box.set_meta("Var", "Prev")
+
+		# P from Gfx Position
+		if ("GfxPosition" in box.name) == true:
+			box.set_meta("Var", "Prev")
+
+		# P from Gfx GoAround
+		if ("GfxGoAround" in box.name) == true:
+			box.set_meta("Var", "Prev")
+
+		# P from Gfx TurnAround
+		if ("GfxTurnAround" in box.name) == true:
+			box.set_meta("Var", "Prev")
+
+		# P from Gfx Spring
+		if ("GfxSpring" in box.name) == true:
+			box.set_meta("Var", "Prev")
+
+		# P from Gfx ReadParamAgent
+		if ("GfxReadParamAgent" in box.name) == true:
+			box.set_meta("Var", "Prev")
+									
 	return str_R_P
 
 

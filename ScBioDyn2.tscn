@@ -2898,9 +2898,9 @@ slot/0/right_color = Color( 1, 1, 1, 1 )
 slot/1/left_enabled = true
 slot/1/left_type = 3
 slot/1/left_color = Color( 0, 1, 1, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
 slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color( 1, 1, 1, 1 )
@@ -3045,9 +3045,9 @@ slot/0/right_color = Color( 1, 1, 1, 1 )
 slot/1/left_enabled = true
 slot/1/left_type = 3
 slot/1/left_color = Color( 0, 1, 1, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
 slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color( 1, 1, 1, 1 )
@@ -3189,9 +3189,9 @@ slot/0/right_color = Color( 1, 1, 1, 1 )
 slot/1/left_enabled = true
 slot/1/left_type = 3
 slot/1/left_color = Color( 0, 1, 1, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
 slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color( 1, 1, 1, 1 )
@@ -3234,7 +3234,7 @@ margin_left = 16.0
 margin_top = 39.0
 margin_right = 86.0
 margin_bottom = 53.0
-text = "Agent"
+text = "Cet Agent"
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
 margin_left = 16.0
@@ -3318,9 +3318,9 @@ slot/0/right_color = Color( 1, 1, 1, 1 )
 slot/1/left_enabled = true
 slot/1/left_type = 3
 slot/1/left_color = Color( 0, 1, 1, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
 slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color( 1, 1, 1, 1 )
@@ -3330,9 +3330,9 @@ slot/2/right_color = Color( 1, 1, 1, 1 )
 slot/3/left_enabled = true
 slot/3/left_type = 3
 slot/3/left_color = Color( 0, 1, 1, 1 )
-slot/3/right_enabled = false
-slot/3/right_type = 0
-slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = true
+slot/3/right_type = 3
+slot/3/right_color = Color( 0, 1, 1, 1 )
 slot/4/left_enabled = false
 slot/4/left_type = 0
 slot/4/left_color = Color( 1, 1, 1, 1 )
@@ -3341,7 +3341,7 @@ slot/4/right_type = 0
 slot/4/right_color = Color( 1, 1, 1, 1 )
 __meta__ = {
 "Category": "Mouvement",
-"NameToShow": "Position"
+"NameToShow": "Placer Autour"
 }
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
@@ -3357,21 +3357,21 @@ margin_left = 16.0
 margin_top = 39.0
 margin_right = 187.0
 margin_bottom = 53.0
-text = "Agent"
+text = "Cet Agent sera"
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
 margin_top = 54.0
 margin_right = 187.0
 margin_bottom = 68.0
-text = "A placer autour de"
+text = "placé autour de cet"
 
 [node name="Label4" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
 margin_top = 69.0
 margin_right = 187.0
 margin_bottom = 83.0
-text = "Agent"
+text = "autre Agent, et ce"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
@@ -3409,10 +3409,10 @@ slot/0/right_type = 0
 slot/0/right_color = Color( 1, 1, 1, 1 )
 slot/1/left_enabled = true
 slot/1/left_type = 3
-slot/1/left_color = Color( 0, 0.976471, 1, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
 slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color( 1, 1, 1, 1 )
@@ -3422,9 +3422,9 @@ slot/2/right_color = Color( 1, 1, 1, 1 )
 slot/3/left_enabled = true
 slot/3/left_type = 3
 slot/3/left_color = Color( 0, 1, 1, 1 )
-slot/3/right_enabled = false
-slot/3/right_type = 0
-slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = true
+slot/3/right_type = 3
+slot/3/right_color = Color( 0, 1, 1, 1 )
 slot/4/left_enabled = false
 slot/4/left_type = 0
 slot/4/left_color = Color( 1, 1, 1, 1 )
@@ -3548,9 +3548,9 @@ slot/0/right_color = Color( 1, 1, 1, 1 )
 slot/1/left_enabled = true
 slot/1/left_type = 3
 slot/1/left_color = Color( 0, 1, 1, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
 slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color( 1, 1, 1, 1 )
@@ -3560,9 +3560,9 @@ slot/2/right_color = Color( 1, 1, 1, 1 )
 slot/3/left_enabled = true
 slot/3/left_type = 3
 slot/3/left_color = Color( 0, 1, 1, 1 )
-slot/3/right_enabled = false
-slot/3/right_type = 0
-slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = true
+slot/3/right_type = 3
+slot/3/right_color = Color( 0, 1, 1, 1 )
 __meta__ = {
 "Category": "Mouvement",
 "NameToShow": "Traverser"
@@ -3571,7 +3571,7 @@ __meta__ = {
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
 margin_left = 16.0
 margin_top = 24.0
-margin_right = 116.0
+margin_right = 129.0
 margin_bottom = 38.0
 text = ">     >     >"
 align = 1
@@ -3579,23 +3579,26 @@ align = 1
 [node name="Label3" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
 margin_left = 16.0
 margin_top = 39.0
-margin_right = 116.0
+margin_right = 129.0
 margin_bottom = 53.0
-text = "Agent"
+text = "Cet Agent"
+align = 1
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
 margin_left = 16.0
 margin_top = 54.0
-margin_right = 116.0
+margin_right = 129.0
 margin_bottom = 68.0
-text = "traverse"
+text = "traverse cet autre"
+align = 1
 
 [node name="Label4" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
 margin_left = 16.0
 margin_top = 69.0
-margin_right = 116.0
+margin_right = 129.0
 margin_bottom = 83.0
 text = "Agent"
+align = 1
 
 [node name="Interaction" type="Node" parent="Runtime/GfxNodes"]
 
@@ -3617,9 +3620,9 @@ slot/0/right_color = Color( 1, 1, 1, 1 )
 slot/1/left_enabled = true
 slot/1/left_type = 3
 slot/1/left_color = Color( 0, 1, 1, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
 slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color( 1, 1, 1, 1 )
@@ -3629,9 +3632,9 @@ slot/2/right_color = Color( 1, 1, 1, 1 )
 slot/3/left_enabled = true
 slot/3/left_type = 3
 slot/3/left_color = Color( 0, 1, 1, 1 )
-slot/3/right_enabled = false
-slot/3/right_type = 0
-slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = true
+slot/3/right_type = 3
+slot/3/right_color = Color( 0, 1, 1, 1 )
 slot/4/left_enabled = false
 slot/4/left_type = 0
 slot/4/left_color = Color( 1, 1, 1, 1 )
@@ -3662,14 +3665,16 @@ margin_left = 16.0
 margin_top = 39.0
 margin_right = 164.0
 margin_bottom = 53.0
-text = "Agent"
+text = "Cet Agent"
+align = 1
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
 margin_left = 16.0
 margin_top = 54.0
 margin_right = 164.0
 margin_bottom = 68.0
-text = "se lie avec"
+text = "se lie avec cet autre"
+align = 1
 
 [node name="Label5" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
 margin_left = 16.0
@@ -3677,6 +3682,7 @@ margin_top = 69.0
 margin_right = 164.0
 margin_bottom = 83.0
 text = "Agent"
+align = 1
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
 margin_left = 16.0
@@ -3717,9 +3723,9 @@ title = "Lire Paramètre Agent"
 slot/0/left_enabled = true
 slot/0/left_type = 3
 slot/0/left_color = Color( 0, 1, 1, 1 )
-slot/0/right_enabled = false
-slot/0/right_type = 0
-slot/0/right_color = Color( 0, 0.564706, 0.27451, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 3
+slot/0/right_color = Color( 0, 1, 1, 1 )
 slot/1/left_enabled = false
 slot/1/left_type = 0
 slot/1/left_color = Color( 1, 1, 1, 1 )
@@ -3737,6 +3743,7 @@ margin_top = 24.0
 margin_right = 151.0
 margin_bottom = 38.0
 text = "Agent"
+align = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Parameter/GfxReadParamAgent"]
 margin_left = 16.0
@@ -3775,9 +3782,9 @@ slot/0/right_color = Color( 1, 1, 1, 1 )
 slot/1/left_enabled = true
 slot/1/left_type = 3
 slot/1/left_color = Color( 0, 1, 1, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 2
-slot/1/right_color = Color( 0, 1, 0, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
 slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color( 1, 1, 1, 1 )
@@ -3798,7 +3805,7 @@ __meta__ = {
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
 margin_top = 24.0
-margin_right = 127.0
+margin_right = 152.0
 margin_bottom = 38.0
 text = ">     >     >"
 align = 1
@@ -3806,21 +3813,23 @@ align = 1
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
 margin_top = 39.0
-margin_right = 127.0
+margin_right = 152.0
 margin_bottom = 53.0
-text = "Agent"
+text = "Cet Agent"
+align = 1
 
 [node name="Label3" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
 margin_top = 54.0
-margin_right = 127.0
+margin_right = 152.0
 margin_bottom = 68.0
-text = "Dans Param :"
+text = "fixe cette valeur pour"
+align = 1
 
 [node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
 margin_top = 69.0
-margin_right = 127.0
+margin_right = 152.0
 margin_bottom = 89.0
 text = "X"
 items = [ "X", null, false, 0, null, "Y", null, false, 0, null, "Z", null, false, 1, null, "Vx", null, false, 2, null, "Horloge", null, false, 3, null, "pH", null, false, 4, null, "Température", null, false, 5, null, "Valeur Case", null, false, 6, null ]
