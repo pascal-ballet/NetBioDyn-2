@@ -2163,6 +2163,11 @@ func _on_GraphGeneric_connection_request(from: String, from_slot: int, to: Strin
 	for c in _gfx_code_current.get_connection_list():
 		if c.to == to and c.to_port == to_slot:
 			return
+	# Don't connect to output that is already connected
+	for c in _gfx_code_current.get_connection_list():
+		if c.from == from and c.from_port == from_slot:
+			return
+			
 	_gfx_code_current.connect_node(from, from_slot, to, to_slot)
 	generate_code_gfx_test()
 
