@@ -8,8 +8,8 @@
 
 # MVC
 # This class is the Controler
-# The View is scene called ScBioDyn2.tscn
-# The Model is the 3D scene
+# The View is the scene called ScBioDyn2.tscn
+# The Model is the 3D scene (node Simulator)
 
 extends Node
 
@@ -1389,6 +1389,12 @@ func _on_BtnStop_pressed() -> void:
 	#var nb_agts:int = _node_env.get_child_count()
 	updateStatus()
 
+# Simulation Speed ctrl
+func _on_HSlider_value_changed(value: float) -> void:
+	if value == 200:
+		value = 0
+	Engine.target_fps = value
+
 var _node_simu_init:Spatial
 # **************************************
 # SAVE initial state when playing
@@ -2170,8 +2176,6 @@ func gfx_evt_R1_R2(box:String, cnx_list:Array)->String:
 # ██████  ██      ██   ██      ██████  ██████  ██████  ███████ 
 															 
 
-
-
 # ************************************
 #             GFX CODE               *
 # ************************************
@@ -2403,6 +2407,8 @@ func _on_show_graph_behav()->void:
 		_gfx_code_current.connect("connection_request",self,"_on_GraphGeneric_connection_request")
 		_gfx_code_current.connect("delete_nodes_request",self,"_on_Graph_delete_nodes_request")
 		_gfx_code_current.connect("disconnection_request",self,"_on_GraphGeneric_disconnection_request")
+		_gfx_code_current.connect("node_selected",self,"_on_Graph_node_selected")
+		_gfx_code_current.connect("node_unselected",self,"_on_Graph_node_unselected")
 		var evt:GraphNode = _gfx_code_current.find_node("*GraphNodeEvt*",true,false)
 		evt.get_child(0).connect("item_selected", self, "GUI_evt_gfx_changed")
 		for box in _gfx_code_current.get_children():
@@ -2487,14 +2493,14 @@ func _on_GraphNode_close_request() -> void:
 	_selected_nodes = {}
 
 # Show Close
-func _on_Graph_node_selected(node):
+func _on_Graph_node_selected(node:Node):
 	if ("GraphNodeEvt" in node.name) or ("GraphNodeThen" in node.name) or ("GraphNodeEnd" in node.name):
 		return
 	_selected_nodes[node] = true
 	node.show_close = true
 	
 # Hide Close
-func _on_Graph_node_unselected(node):
+func _on_Graph_node_unselected(node:Node):
 	if ("GraphNodeEvt" in node.name) or ("GraphNodeThen" in node.name) or ("GraphNodeEnd" in node.name):
 		return
 	_selected_nodes[node] = false
@@ -2796,9 +2802,4 @@ func group_line_edit_on_focus()->void:
 
 
 
-
-func _on_HSlider_value_changed(value: float) -> void:
-	if value == 200:
-		value = 0
-	Engine.target_fps = value
 

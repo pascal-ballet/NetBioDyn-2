@@ -1,0 +1,2416 @@
+[gd_scene load_steps=19 format=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0.735984, 0.621225, 0.962688, 1 )
+
+[sub_resource type="SphereMesh" id=2]
+
+[sub_resource type="SphereShape" id=3]
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.978975, 0.256011, 0.734578, 1 )
+
+[sub_resource type="SphereMesh" id=5]
+
+[sub_resource type="SphereShape" id=6]
+
+[sub_resource type="GDScript" id=7]
+script/source = "
+extends Node
+var P1
+
+# Generic Behavior
+func action(tree, R1, nb_agents) -> void:
+	if  (R1.get_meta(\"Name\") == \"Agent-1\" or R1.is_in_group(\"Agent-1\")) and  100*randf() < 10.0 :
+		R1.queue_free()
+		P1 = NetBioDyn2gui.spawn_agent(tree,\"Agent-2\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )		
+
+		P1.apply_central_impulse(Vector3(5 , 0 , 0 ))
+
+		P1.apply_central_impulse(Vector3(0 , 5 , 0 ))
+"
+
+[sub_resource type="Image" id=8]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 0, 0, 0, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=9]
+flags = 4
+flags = 4
+image = SubResource( 8 )
+size = Vector2( 16, 16 )
+
+[sub_resource type="Image" id=10]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 225, 86, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 225, 86, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 230, 20, 224, 233, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 230, 20, 224, 233, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 224, 170, 224, 255, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 170, 224, 255, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=11]
+flags = 4
+flags = 4
+image = SubResource( 10 )
+size = Vector2( 16, 16 )
+
+[sub_resource type="Image" id=12]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 0, 0, 0, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 255, 224, 255, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=13]
+flags = 4
+flags = 4
+image = SubResource( 12 )
+size = Vector2( 16, 16 )
+
+[sub_resource type="Image" id=14]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 132, 132, 29, 255, 132, 132, 172, 255, 132, 132, 242, 255, 132, 132, 242, 255, 133, 133, 175, 255, 131, 131, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 132, 132, 29, 255, 132, 132, 237, 255, 132, 132, 255, 255, 132, 132, 255, 255, 132, 132, 255, 255, 132, 132, 255, 255, 132, 132, 238, 255, 132, 132, 29, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 132, 132, 172, 255, 132, 132, 255, 255, 132, 132, 180, 255, 132, 132, 27, 255, 128, 128, 28, 255, 132, 132, 182, 255, 132, 132, 255, 255, 132, 132, 170, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 132, 132, 242, 255, 132, 132, 255, 255, 128, 128, 28, 0, 0, 0, 0, 0, 0, 0, 0, 255, 132, 132, 29, 255, 132, 132, 255, 255, 132, 132, 241, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 132, 132, 255, 255, 132, 132, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 132, 132, 255, 255, 132, 132, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 132, 132, 255, 255, 132, 132, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 132, 132, 255, 255, 132, 132, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 243, 243, 255, 243, 243, 243, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "RGBA8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=15]
+flags = 4
+flags = 4
+image = SubResource( 14 )
+size = Vector2( 16, 16 )
+
+[sub_resource type="Image" id=16]
+data = {
+"data": PoolByteArray( 222, 222, 222, 70, 223, 223, 223, 112, 230, 230, 230, 10, 255, 148, 148, 95, 255, 150, 150, 187, 255, 149, 149, 186, 255, 149, 149, 94, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 230, 230, 230, 10, 223, 223, 223, 112, 224, 224, 224, 75, 225, 225, 225, 159, 224, 224, 224, 255, 234, 200, 200, 60, 255, 149, 149, 232, 255, 149, 149, 234, 255, 149, 149, 234, 255, 149, 149, 232, 255, 156, 156, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 230, 230, 230, 10, 224, 224, 224, 114, 224, 224, 224, 232, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 255, 156, 156, 49, 255, 149, 149, 234, 255, 149, 149, 234, 255, 149, 149, 234, 255, 149, 149, 234, 247, 166, 166, 60, 223, 223, 223, 153, 223, 223, 223, 153, 224, 224, 224, 155, 224, 224, 224, 232, 224, 224, 224, 232, 224, 224, 224, 114, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 255, 128, 128, 6, 255, 149, 149, 214, 255, 149, 149, 234, 255, 149, 149, 234, 255, 150, 150, 213, 226, 204, 204, 35, 223, 223, 223, 153, 223, 223, 223, 153, 224, 224, 224, 255, 225, 225, 225, 152, 230, 230, 230, 10, 0, 0, 0, 0, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 227, 227, 227, 9, 255, 149, 149, 72, 255, 149, 149, 233, 255, 149, 149, 233, 255, 149, 149, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 224, 224, 255, 223, 223, 223, 96, 0, 0, 0, 0, 227, 227, 227, 9, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 224, 224, 224, 230, 223, 223, 223, 95, 255, 149, 149, 106, 255, 149, 149, 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 224, 224, 255, 223, 223, 223, 105, 225, 225, 225, 111, 224, 224, 224, 230, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 224, 224, 224, 131, 224, 224, 224, 241, 224, 224, 224, 116, 224, 224, 224, 98, 224, 224, 224, 170, 224, 224, 224, 170, 224, 224, 224, 170, 224, 224, 224, 170, 224, 224, 224, 255, 224, 224, 224, 251, 224, 224, 224, 241, 224, 224, 224, 131, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 0, 0, 0, 0, 227, 227, 227, 18, 224, 224, 224, 163, 224, 224, 224, 255, 224, 224, 224, 187, 224, 224, 224, 187, 224, 224, 224, 187, 224, 224, 224, 187, 224, 224, 224, 255, 224, 224, 224, 163, 227, 227, 227, 18, 0, 0, 0, 0, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 227, 227, 227, 9, 0, 0, 0, 0, 223, 223, 223, 96, 224, 224, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 224, 224, 255, 223, 223, 223, 96, 0, 0, 0, 0, 227, 227, 227, 9, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 224, 224, 224, 234, 225, 225, 225, 119, 223, 223, 223, 105, 224, 224, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 224, 224, 255, 225, 225, 225, 102, 225, 225, 225, 102, 224, 224, 224, 228, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 225, 225, 225, 135, 224, 224, 224, 243, 224, 224, 224, 251, 224, 224, 224, 255, 224, 224, 224, 170, 224, 224, 224, 170, 224, 224, 224, 170, 224, 224, 224, 170, 224, 224, 224, 255, 224, 224, 224, 251, 224, 224, 224, 243, 225, 225, 225, 135, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 0, 0, 0, 0, 230, 230, 230, 20, 224, 224, 224, 165, 224, 224, 224, 255, 224, 224, 224, 187, 224, 224, 224, 187, 224, 224, 224, 187, 224, 224, 224, 187, 224, 224, 224, 255, 224, 224, 224, 165, 230, 230, 230, 20, 0, 0, 0, 0, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 159, 224, 224, 224, 255, 230, 230, 230, 10, 0, 0, 0, 0, 223, 223, 223, 96, 224, 224, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 224, 224, 255, 223, 223, 223, 96, 0, 0, 0, 0, 230, 230, 230, 10, 224, 224, 224, 255, 225, 225, 225, 159, 225, 225, 225, 77, 224, 224, 224, 232, 224, 224, 224, 232, 224, 224, 224, 114, 224, 224, 224, 106, 224, 224, 224, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 224, 224, 255, 224, 224, 224, 106, 224, 224, 224, 114, 224, 224, 224, 232, 224, 224, 224, 232, 225, 225, 225, 77, 0, 0, 0, 0, 230, 230, 230, 10, 224, 224, 224, 114, 224, 224, 224, 232, 224, 224, 224, 252, 224, 224, 224, 255, 223, 223, 223, 153, 223, 223, 223, 153, 223, 223, 223, 153, 223, 223, 223, 153, 224, 224, 224, 255, 224, 224, 224, 252, 224, 224, 224, 232, 224, 224, 224, 114, 230, 230, 230, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 230, 230, 230, 10, 223, 223, 223, 112, 223, 223, 223, 153, 223, 223, 223, 153, 223, 223, 223, 153, 223, 223, 223, 153, 223, 223, 223, 153, 223, 223, 223, 153, 223, 223, 223, 112, 230, 230, 230, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "RGBA8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=17]
+flags = 4
+flags = 4
+image = SubResource( 16 )
+size = Vector2( 16, 16 )
+
+[sub_resource type="GDScript" id=18]
+script/source = "
+extends Node
+var P1
+
+# Generic Behavior
+func action(tree, R1, nb_agents) -> void:
+	if  (R1.get_meta(\"Name\") == \"Agent-2\" or R1.is_in_group(\"Agent-2\")) and  100*randf() < 10.0 :
+		R1.queue_free()
+		P1 = NetBioDyn2gui.spawn_agent(tree,\"Agent-1\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )		
+
+		P1.apply_central_impulse(Vector3(-5 , 0 , 0 ))
+"
+
+[node name="Simulator" type="Spatial"]
+
+[node name="Entities" type="Node" parent="."]
+
+[node name="Agent-1" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -997.976, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Entities/Agent-1"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Entities/Agent-1"]
+shape = SubResource( 3 )
+
+[node name="Agent-2" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1000.02, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2"
+}
+
+[node name="259" type="MeshInstance" parent="Entities/Agent-2"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Entities/Agent-2"]
+shape = SubResource( 6 )
+
+[node name="Behaviors" type="Node" parent="."]
+
+[node name="261" type="Node" parent="Behaviors"]
+script = SubResource( 7 )
+__meta__ = {
+"Links": [ {
+"from": "GraphNodeEvt",
+"from_port": 0,
+"to": "GraphNodeThen",
+"to_port": 0
+}, {
+"from": "GraphNodeThen",
+"from_port": 0,
+"to": "GfxTransform1",
+"to_port": 0
+}, {
+"from": "GraphNodeEvt",
+"from_port": 1,
+"to": "GfxTransform1",
+"to_port": 1
+}, {
+"from": "GfxTransform1",
+"from_port": 0,
+"to": "GfxForce1",
+"to_port": 0
+}, {
+"from": "GfxTransform1",
+"from_port": 1,
+"to": "GfxForce1",
+"to_port": 1
+}, {
+"from": "GfxForce1",
+"from_port": 0,
+"to": "GfxForce2",
+"to_port": 0
+}, {
+"from": "GfxForce2",
+"from_port": 0,
+"to": "GraphNodeEnd",
+"to_port": 0
+}, {
+"from": "GfxForce1",
+"from_port": 1,
+"to": "GfxForce2",
+"to_port": 1
+} ],
+"Name": "1=>2",
+"Type": "Generic"
+}
+
+[node name="GraphGeneric284359138918914" type="GraphEdit" parent="Behaviors/261"]
+unique_name_in_owner = true
+visible = false
+margin_top = 60.0
+margin_right = 1584.0
+margin_bottom = 848.0
+rect_min_size = Vector2( 100, 0 )
+rect_pivot_offset = Vector2( 164, 105 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+right_disconnects = true
+scroll_offset = Vector2( 0, -241 )
+show_zoom_label = true
+minimap_enabled = false
+
+[node name="GraphNodeEvt" type="GraphNode" parent="Behaviors/261/GraphGeneric284359138918914"]
+margin_left = 10.0
+margin_top = 241.0
+margin_right = 186.0
+margin_bottom = 333.0
+mouse_filter = 1
+title = "Evénement"
+offset = Vector2( 10, 0 )
+overlay = 1
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 3
+slot/2/right_color = Color( 0, 1, 1, 1 )
+
+[node name="OptEvt" type="OptionButton" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEvt"]
+unique_name_in_owner = true
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 160.0
+margin_bottom = 44.0
+text = "Agent seul"
+items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
+selected = 1
+
+[node name="@@21271" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21270" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEvt/OptEvt/@@21271"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR1" type="OptionButton" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEvt"]
+unique_name_in_owner = true
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 160.0
+margin_bottom = 65.0
+text = "Agent-1"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
+selected = 1
+
+[node name="@@21273" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false, "Agent-2", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21272" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEvt/OptAgentR1/@@21273"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR2" type="OptionButton" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEvt"]
+unique_name_in_owner = true
+visible = false
+margin_left = 16.0
+margin_top = 66.0
+margin_right = 160.0
+margin_bottom = 86.0
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
+selected = 0
+
+[node name="@@21275" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false, "Agent-2", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21274" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEvt/OptAgentR2/@@21275"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeThen" type="GraphNode" parent="Behaviors/261/GraphGeneric284359138918914"]
+margin_left = 440.0
+margin_top = 241.0
+margin_right = 560.0
+margin_bottom = 303.0
+mouse_filter = 1
+title = "Alors"
+offset = Vector2( 440, 0 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeThen"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="GfxTransform1" type="GraphNode" parent="Behaviors/261/GraphGeneric284359138918914"]
+unique_name_in_owner = true
+margin_left = 640.0
+margin_top = 301.0
+margin_right = 803.0
+margin_bottom = 396.0
+mouse_filter = 1
+title = "Transformer Agent"
+offset = Vector2( 640, 60 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = true
+slot/3/right_type = 3
+slot/3/right_color = Color( 0, 1, 1, 1 )
+__meta__ = {
+"Category": "Agent",
+"NameToShow": "Transformer Agent",
+"Var": "P1"
+}
+
+[node name="Label" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxTransform1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 147.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="Label3" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxTransform1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 147.0
+margin_bottom = 53.0
+text = "Cet Agent"
+
+[node name="Label2" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxTransform1"]
+margin_left = 16.0
+margin_top = 54.0
+margin_right = 147.0
+margin_bottom = 68.0
+text = "devient un Agent"
+
+[node name="OptAgts2" type="OptionButton" parent="Behaviors/261/GraphGeneric284359138918914/GfxTransform1" groups=["OptEvtAgts"]]
+margin_left = 16.0
+margin_top = 69.0
+margin_right = 147.0
+margin_bottom = 89.0
+text = "Agent-2"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
+selected = 2
+
+[node name="@@21277" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GfxTransform1/OptAgts2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false, "Agent-2", null, 2, true, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21276" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxTransform1/OptAgts2/@@21277"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxForce1" type="GraphNode" parent="Behaviors/261/GraphGeneric284359138918914"]
+unique_name_in_owner = true
+margin_left = 880.0
+margin_top = 361.0
+margin_right = 1034.0
+margin_bottom = 516.0
+mouse_filter = 1
+title = "Force"
+offset = Vector2( 880, 120 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color( 1, 1, 1, 1 )
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color( 1, 1, 1, 1 )
+slot/5/left_enabled = false
+slot/5/left_type = 0
+slot/5/left_color = Color( 1, 1, 1, 1 )
+slot/5/right_enabled = false
+slot/5/right_type = 0
+slot/5/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Mouvement",
+"NameToShow": "Force ",
+"Var": "Prev"
+}
+
+[node name="Label" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 138.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="Label2" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 138.0
+margin_bottom = 53.0
+text = "Cet Agent reçoit F"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1"]
+margin_left = 16.0
+margin_top = 54.0
+margin_right = 138.0
+margin_bottom = 74.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer"]
+margin_top = 3.0
+margin_right = 45.0
+margin_bottom = 17.0
+text = "Repère"
+
+[node name="OptionButton" type="OptionButton" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer"]
+margin_left = 49.0
+margin_right = 122.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Absolu"
+items = [ "Absolu", null, false, 0, null, "Relatif", null, false, 0, null ]
+selected = 0
+
+[node name="@@21279" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer/OptionButton"]
+input_pass_on_modal_close_click = false
+items = [ "Absolu", null, 2, true, false, 0, 0, null, "", false, "Relatif", null, 2, false, false, 0, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21278" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer/OptionButton/@@21279"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1"]
+margin_left = 16.0
+margin_top = 75.0
+margin_right = 138.0
+margin_bottom = 99.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer2"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fx"
+
+[node name="Fx" type="LineEdit" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer2"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "5"
+caret_position = 1
+
+[node name="@@21280" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer2/Fx"]
+wait_time = 0.65
+
+[node name="@@21282" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer2/Fx"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21281" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer2/Fx/@@21282"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1"]
+margin_left = 16.0
+margin_top = 100.0
+margin_right = 138.0
+margin_bottom = 124.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer3"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fy"
+
+[node name="Fy" type="LineEdit" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer3"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "0"
+
+[node name="@@21283" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer3/Fy"]
+wait_time = 0.65
+
+[node name="@@21285" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer3/Fy"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21284" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer3/Fy/@@21285"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1"]
+margin_left = 16.0
+margin_top = 125.0
+margin_right = 138.0
+margin_bottom = 149.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer4"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fz"
+
+[node name="Fz" type="LineEdit" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer4"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "0"
+
+[node name="@@21286" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer4/Fz"]
+wait_time = 0.65
+
+[node name="@@21288" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer4/Fz"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21287" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce1/HBoxContainer4/Fz/@@21288"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxForce2" type="GraphNode" parent="Behaviors/261/GraphGeneric284359138918914"]
+unique_name_in_owner = true
+margin_left = 1080.0
+margin_top = 361.0
+margin_right = 1234.0
+margin_bottom = 516.0
+mouse_filter = 1
+title = "Force"
+offset = Vector2( 1080, 120 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color( 1, 1, 1, 1 )
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color( 1, 1, 1, 1 )
+slot/5/left_enabled = false
+slot/5/left_type = 0
+slot/5/left_color = Color( 1, 1, 1, 1 )
+slot/5/right_enabled = false
+slot/5/right_type = 0
+slot/5/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Mouvement",
+"NameToShow": "Force ",
+"Var": "Prev"
+}
+
+[node name="Label" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 138.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="Label2" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 138.0
+margin_bottom = 53.0
+text = "Cet Agent reçoit F"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2"]
+margin_left = 16.0
+margin_top = 54.0
+margin_right = 138.0
+margin_bottom = 74.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer"]
+margin_top = 3.0
+margin_right = 45.0
+margin_bottom = 17.0
+text = "Repère"
+
+[node name="OptionButton" type="OptionButton" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer"]
+margin_left = 49.0
+margin_right = 122.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Absolu"
+items = [ "Absolu", null, false, 0, null, "Relatif", null, false, 0, null ]
+selected = 0
+
+[node name="@@21290" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer/OptionButton"]
+input_pass_on_modal_close_click = false
+items = [ "Absolu", null, 2, true, false, 0, 0, null, "", false, "Relatif", null, 2, false, false, 0, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21289" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer/OptionButton/@@21290"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2"]
+margin_left = 16.0
+margin_top = 75.0
+margin_right = 138.0
+margin_bottom = 99.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer2"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fx"
+
+[node name="Fx" type="LineEdit" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer2"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "0"
+
+[node name="@@21291" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer2/Fx"]
+wait_time = 0.65
+
+[node name="@@21293" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer2/Fx"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21292" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer2/Fx/@@21293"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2"]
+margin_left = 16.0
+margin_top = 100.0
+margin_right = 138.0
+margin_bottom = 124.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer3"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fy"
+
+[node name="Fy" type="LineEdit" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer3"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "5"
+caret_position = 1
+
+[node name="@@21294" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer3/Fy"]
+wait_time = 0.65
+
+[node name="@@21296" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer3/Fy"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21295" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer3/Fy/@@21296"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2"]
+margin_left = 16.0
+margin_top = 125.0
+margin_right = 138.0
+margin_bottom = 149.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer4"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fz"
+
+[node name="Fz" type="LineEdit" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer4"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "0"
+
+[node name="@@21297" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer4/Fz"]
+wait_time = 0.65
+
+[node name="@@21299" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer4/Fz"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21298" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/GfxForce2/HBoxContainer4/Fz/@@21299"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeEnd" type="GraphNode" parent="Behaviors/261/GraphGeneric284359138918914"]
+margin_left = 1260.0
+margin_top = 241.0
+margin_right = 1380.0
+margin_bottom = 303.0
+mouse_filter = 1
+title = "Fin"
+offset = Vector2( 1260, 0 )
+selected = true
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/GraphNodeEnd"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+
+[node name="@@21254" type="GraphEditFilter" parent="Behaviors/261/GraphGeneric284359138918914"]
+_import_path = NodePath("")
+pause_mode = 0
+physics_interpolation_mode = 0
+unique_name_in_owner = false
+process_priority = 0
+visible = true
+modulate = Color( 1, 1, 1, 1 )
+self_modulate = Color( 1, 1, 1, 1 )
+show_behind_parent = false
+light_mask = 1
+material = null
+use_parent_material = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 0.0
+margin_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+rect_min_size = Vector2( 0, 0 )
+rect_rotation = 0.0
+rect_scale = Vector2( 1, 1 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+hint_tooltip = ""
+focus_neighbour_left = NodePath("")
+focus_neighbour_top = NodePath("")
+focus_neighbour_right = NodePath("")
+focus_neighbour_bottom = NodePath("")
+focus_next = NodePath("")
+focus_previous = NodePath("")
+focus_mode = 0
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+input_pass_on_modal_close_click = true
+size_flags_horizontal = 1
+size_flags_vertical = 1
+size_flags_stretch_ratio = 1.0
+theme = null
+theme_type_variation = ""
+script = null
+
+[node name="_h_scroll" type="HScrollBar" parent="Behaviors/261/GraphGeneric284359138918914/@@21254"]
+anchor_right = 1.0
+margin_right = -12.0
+min_value = -1584.0
+max_value = 1584.0
+page = 1584.0
+
+[node name="_v_scroll" type="VScrollBar" parent="Behaviors/261/GraphGeneric284359138918914/@@21254"]
+anchor_bottom = 1.0
+margin_bottom = -12.0
+min_value = -788.0
+max_value = 788.0
+page = 788.0
+value = -241.0
+
+[node name="@@21256" type="HBoxContainer" parent="Behaviors/261/GraphGeneric284359138918914/@@21254"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 10.0
+margin_bottom = 10.0
+
+[node name="@@21257" type="Label" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256"]
+rect_min_size = Vector2( 48, 0 )
+text = "100%"
+align = 1
+
+[node name="@@21258" type="ToolButton" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256"]
+hint_tooltip = "Zoom Out"
+focus_mode = 0
+icon = SubResource( 9 )
+
+[node name="@@21259" type="ToolButton" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256"]
+hint_tooltip = "Zoom Reset"
+focus_mode = 0
+icon = SubResource( 11 )
+
+[node name="@@21260" type="ToolButton" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256"]
+hint_tooltip = "Zoom In"
+focus_mode = 0
+icon = SubResource( 13 )
+
+[node name="@@21261" type="ToolButton" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256"]
+hint_tooltip = "Enable snap and show grid."
+focus_mode = 0
+toggle_mode = true
+pressed = true
+icon = SubResource( 15 )
+
+[node name="@@21267" type="SpinBox" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256"]
+min_value = 5.0
+value = 20.0
+
+[node name="@@21265" type="LineEdit" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256/@@21267"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+
+[node name="@@21262" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256/@@21267/@@21265"]
+wait_time = 0.65
+
+[node name="@@21264" type="PopupMenu" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256/@@21267/@@21265"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21263" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256/@@21267/@@21265/@@21264"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@21266" type="Timer" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256/@@21267"]
+
+[node name="@@21268" type="Button" parent="Behaviors/261/GraphGeneric284359138918914/@@21254/@@21256"]
+hint_tooltip = "Enable grid minimap."
+focus_mode = 0
+toggle_mode = true
+icon = SubResource( 17 )
+flat = true
+
+[node name="_minimap" type="GraphEditMinimap" parent="Behaviors/261/GraphGeneric284359138918914/@@21254"]
+_import_path = NodePath("")
+pause_mode = 0
+physics_interpolation_mode = 0
+unique_name_in_owner = false
+process_priority = 0
+visible = false
+modulate = Color( 1, 1, 1, 0.65 )
+self_modulate = Color( 1, 1, 1, 1 )
+show_behind_parent = false
+light_mask = 1
+material = null
+use_parent_material = false
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -252.0
+margin_top = -172.0
+margin_right = -12.0
+margin_bottom = -12.0
+grow_horizontal = 1
+grow_vertical = 1
+rect_min_size = Vector2( 50, 50 )
+rect_rotation = 0.0
+rect_scale = Vector2( 1, 1 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+hint_tooltip = ""
+focus_neighbour_left = NodePath("")
+focus_neighbour_top = NodePath("")
+focus_neighbour_right = NodePath("")
+focus_neighbour_bottom = NodePath("")
+focus_next = NodePath("")
+focus_previous = NodePath("")
+focus_mode = 0
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+input_pass_on_modal_close_click = true
+size_flags_horizontal = 1
+size_flags_vertical = 1
+size_flags_stretch_ratio = 1.0
+theme = null
+theme_type_variation = ""
+script = null
+
+[node name="CLAYER" type="Control" parent="Behaviors/261/GraphGeneric284359138918914"]
+mouse_filter = 2
+
+[node name="401" type="Node" parent="Behaviors"]
+script = SubResource( 18 )
+__meta__ = {
+"Links": [ {
+"from": "GraphNodeEvt",
+"from_port": 0,
+"to": "GraphNodeThen",
+"to_port": 0
+}, {
+"from": "GraphNodeEvt",
+"from_port": 1,
+"to": "GfxTransform1",
+"to_port": 1
+}, {
+"from": "GraphNodeThen",
+"from_port": 0,
+"to": "GfxTransform1",
+"to_port": 0
+}, {
+"from": "GfxTransform1",
+"from_port": 0,
+"to": "GfxForce1",
+"to_port": 0
+}, {
+"from": "GfxTransform1",
+"from_port": 1,
+"to": "GfxForce1",
+"to_port": 1
+}, {
+"from": "GfxForce1",
+"from_port": 0,
+"to": "GraphNodeEnd",
+"to_port": 0
+} ],
+"Name": "2=>1",
+"Type": "Generic"
+}
+
+[node name="GraphGeneric1417721095" type="GraphEdit" parent="Behaviors/401"]
+unique_name_in_owner = true
+visible = false
+margin_top = 60.0
+margin_right = 1584.0
+margin_bottom = 848.0
+rect_min_size = Vector2( 100, 0 )
+rect_pivot_offset = Vector2( 164, 105 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+right_disconnects = true
+scroll_offset = Vector2( -123.475, -303.936 )
+zoom = 1.2
+show_zoom_label = true
+minimap_enabled = false
+
+[node name="GraphNodeEvt" type="GraphNode" parent="Behaviors/401/GraphGeneric1417721095"]
+margin_left = 135.475
+margin_top = 303.936
+margin_right = 311.475
+margin_bottom = 395.936
+rect_scale = Vector2( 1.2, 1.2 )
+mouse_filter = 1
+title = "Evénement"
+offset = Vector2( 10, 0 )
+overlay = 1
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 3
+slot/2/right_color = Color( 0, 1, 1, 1 )
+
+[node name="OptEvt" type="OptionButton" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 159.0
+margin_bottom = 44.0
+text = "Agent seul"
+items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
+selected = 1
+
+[node name="@@21317" type="PopupMenu" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21316" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEvt/OptEvt/@@21317"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR1" type="OptionButton" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 159.0
+margin_bottom = 65.0
+text = "Agent-2"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
+selected = 2
+
+[node name="@@21319" type="PopupMenu" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false, "Agent-2", null, 2, true, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21318" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEvt/OptAgentR1/@@21319"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR2" type="OptionButton" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEvt"]
+visible = false
+margin_left = 16.0
+margin_top = 66.0
+margin_right = 160.0
+margin_bottom = 86.0
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
+selected = 0
+
+[node name="@@21321" type="PopupMenu" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false, "Agent-2", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21320" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEvt/OptAgentR2/@@21321"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeEnd" type="GraphNode" parent="Behaviors/401/GraphGeneric1417721095"]
+margin_left = 1467.47
+margin_top = 591.936
+margin_right = 1587.48
+margin_bottom = 653.936
+rect_scale = Vector2( 1.2, 1.2 )
+mouse_filter = 1
+title = "Fin"
+offset = Vector2( 1120, 240 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeEnd"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+
+[node name="GfxForce1" type="GraphNode" parent="Behaviors/401/GraphGeneric1417721095"]
+margin_left = 1203.47
+margin_top = 495.936
+margin_right = 1357.48
+margin_bottom = 650.936
+rect_scale = Vector2( 1.2, 1.2 )
+mouse_filter = 1
+title = "Force"
+offset = Vector2( 900, 160 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color( 1, 1, 1, 1 )
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color( 1, 1, 1, 1 )
+slot/5/left_enabled = false
+slot/5/left_type = 0
+slot/5/left_color = Color( 1, 1, 1, 1 )
+slot/5/right_enabled = false
+slot/5/right_type = 0
+slot/5/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Mouvement",
+"NameToShow": "Force ",
+"Var": "Prev"
+}
+
+[node name="Label" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 138.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="Label2" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 138.0
+margin_bottom = 53.0
+text = "Cet Agent reçoit F"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1"]
+margin_left = 16.0
+margin_top = 54.0
+margin_right = 138.0
+margin_bottom = 74.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer"]
+margin_top = 3.0
+margin_right = 45.0
+margin_bottom = 17.0
+text = "Repère"
+
+[node name="OptionButton" type="OptionButton" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer"]
+margin_left = 49.0
+margin_right = 122.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Absolu"
+items = [ "Absolu", null, false, 0, null, "Relatif", null, false, 0, null ]
+selected = 0
+
+[node name="@@21323" type="PopupMenu" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer/OptionButton"]
+input_pass_on_modal_close_click = false
+items = [ "Absolu", null, 2, true, false, 0, 0, null, "", false, "Relatif", null, 2, false, false, 0, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21322" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer/OptionButton/@@21323"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1"]
+margin_left = 16.0
+margin_top = 75.0
+margin_right = 138.0
+margin_bottom = 99.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer2"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fx"
+
+[node name="Fx" type="LineEdit" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer2"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "-5"
+caret_position = 2
+
+[node name="@@21324" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer2/Fx"]
+wait_time = 0.65
+
+[node name="@@21326" type="PopupMenu" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer2/Fx"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21325" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer2/Fx/@@21326"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1"]
+margin_left = 16.0
+margin_top = 100.0
+margin_right = 138.0
+margin_bottom = 124.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer3"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fy"
+
+[node name="Fy" type="LineEdit" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer3"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "0"
+
+[node name="@@21327" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer3/Fy"]
+wait_time = 0.65
+
+[node name="@@21329" type="PopupMenu" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer3/Fy"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21328" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer3/Fy/@@21329"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1"]
+margin_left = 16.0
+margin_top = 125.0
+margin_right = 138.0
+margin_bottom = 149.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer4"]
+margin_top = 5.0
+margin_right = 14.0
+margin_bottom = 19.0
+text = "Fz"
+
+[node name="Fz" type="LineEdit" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer4"]
+margin_left = 18.0
+margin_right = 122.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "0"
+
+[node name="@@21330" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer4/Fz"]
+wait_time = 0.65
+
+[node name="@@21332" type="PopupMenu" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer4/Fz"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21331" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GfxForce1/HBoxContainer4/Fz/@@21332"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeThen" type="GraphNode" parent="Behaviors/401/GraphGeneric1417721095"]
+margin_left = 507.475
+margin_top = 303.936
+margin_right = 627.475
+margin_bottom = 365.936
+rect_scale = Vector2( 1.2, 1.2 )
+mouse_filter = 1
+title = "Alors"
+offset = Vector2( 320, 0 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GraphNodeThen"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="GfxTransform1" type="GraphNode" parent="Behaviors/401/GraphGeneric1417721095"]
+margin_left = 867.475
+margin_top = 255.936
+margin_right = 1030.48
+margin_bottom = 350.936
+rect_scale = Vector2( 1.2, 1.2 )
+mouse_filter = 1
+title = "Transformer Agent"
+offset = Vector2( 620, -40 )
+selected = true
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = true
+slot/3/right_type = 3
+slot/3/right_color = Color( 0, 1, 1, 1 )
+__meta__ = {
+"Category": "Agent",
+"NameToShow": "Transformer Agent",
+"Var": "P1"
+}
+
+[node name="Label" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GfxTransform1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 147.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="Label3" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GfxTransform1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 147.0
+margin_bottom = 53.0
+text = "Cet Agent"
+
+[node name="Label2" type="Label" parent="Behaviors/401/GraphGeneric1417721095/GfxTransform1"]
+margin_left = 16.0
+margin_top = 54.0
+margin_right = 147.0
+margin_bottom = 68.0
+text = "devient un Agent"
+
+[node name="OptAgts2" type="OptionButton" parent="Behaviors/401/GraphGeneric1417721095/GfxTransform1" groups=["OptEvtAgts"]]
+margin_left = 16.0
+margin_top = 69.0
+margin_right = 147.0
+margin_bottom = 89.0
+text = "Agent-1"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
+selected = 1
+
+[node name="@@21334" type="PopupMenu" parent="Behaviors/401/GraphGeneric1417721095/GfxTransform1/OptAgts2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false, "Agent-2", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@21333" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/GfxTransform1/OptAgts2/@@21334"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@21300" type="GraphEditFilter" parent="Behaviors/401/GraphGeneric1417721095"]
+_import_path = NodePath("")
+pause_mode = 0
+physics_interpolation_mode = 0
+unique_name_in_owner = false
+process_priority = 0
+visible = true
+modulate = Color( 1, 1, 1, 1 )
+self_modulate = Color( 1, 1, 1, 1 )
+show_behind_parent = false
+light_mask = 1
+material = null
+use_parent_material = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 0.0
+margin_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+rect_min_size = Vector2( 0, 0 )
+rect_rotation = 0.0
+rect_scale = Vector2( 1, 1 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+hint_tooltip = ""
+focus_neighbour_left = NodePath("")
+focus_neighbour_top = NodePath("")
+focus_neighbour_right = NodePath("")
+focus_neighbour_bottom = NodePath("")
+focus_next = NodePath("")
+focus_previous = NodePath("")
+focus_mode = 0
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+input_pass_on_modal_close_click = true
+size_flags_horizontal = 1
+size_flags_vertical = 1
+size_flags_stretch_ratio = 1.0
+theme = null
+theme_type_variation = ""
+script = null
+
+[node name="_h_scroll" type="HScrollBar" parent="Behaviors/401/GraphGeneric1417721095/@@21300"]
+anchor_right = 1.0
+margin_right = -12.0
+min_value = -1584.0
+max_value = 1584.0
+page = 1584.0
+value = -123.475
+
+[node name="_v_scroll" type="VScrollBar" parent="Behaviors/401/GraphGeneric1417721095/@@21300"]
+anchor_bottom = 1.0
+margin_bottom = -12.0
+min_value = -788.0
+max_value = 788.0
+page = 788.0
+value = -303.936
+
+[node name="@@21302" type="HBoxContainer" parent="Behaviors/401/GraphGeneric1417721095/@@21300"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 10.0
+margin_bottom = 10.0
+
+[node name="@@21303" type="Label" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302"]
+rect_min_size = Vector2( 48, 0 )
+text = "120%"
+align = 1
+
+[node name="@@21304" type="ToolButton" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302"]
+hint_tooltip = "Zoom Out"
+focus_mode = 0
+icon = SubResource( 9 )
+
+[node name="@@21305" type="ToolButton" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302"]
+hint_tooltip = "Zoom Reset"
+focus_mode = 0
+icon = SubResource( 11 )
+
+[node name="@@21306" type="ToolButton" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302"]
+hint_tooltip = "Zoom In"
+focus_mode = 0
+icon = SubResource( 13 )
+
+[node name="@@21307" type="ToolButton" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302"]
+hint_tooltip = "Enable snap and show grid."
+focus_mode = 0
+toggle_mode = true
+pressed = true
+icon = SubResource( 15 )
+
+[node name="@@21313" type="SpinBox" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302"]
+min_value = 5.0
+value = 20.0
+
+[node name="@@21311" type="LineEdit" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302/@@21313"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+
+[node name="@@21308" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302/@@21313/@@21311"]
+wait_time = 0.65
+
+[node name="@@21310" type="PopupMenu" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302/@@21313/@@21311"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@21309" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302/@@21313/@@21311/@@21310"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@21312" type="Timer" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302/@@21313"]
+
+[node name="@@21314" type="Button" parent="Behaviors/401/GraphGeneric1417721095/@@21300/@@21302"]
+hint_tooltip = "Enable grid minimap."
+focus_mode = 0
+toggle_mode = true
+icon = SubResource( 17 )
+flat = true
+
+[node name="_minimap" type="GraphEditMinimap" parent="Behaviors/401/GraphGeneric1417721095/@@21300"]
+_import_path = NodePath("")
+pause_mode = 0
+physics_interpolation_mode = 0
+unique_name_in_owner = false
+process_priority = 0
+visible = false
+modulate = Color( 1, 1, 1, 0.65 )
+self_modulate = Color( 1, 1, 1, 1 )
+show_behind_parent = false
+light_mask = 1
+material = null
+use_parent_material = false
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -252.0
+margin_top = -172.0
+margin_right = -12.0
+margin_bottom = -12.0
+grow_horizontal = 1
+grow_vertical = 1
+rect_min_size = Vector2( 50, 50 )
+rect_rotation = 0.0
+rect_scale = Vector2( 1, 1 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+hint_tooltip = ""
+focus_neighbour_left = NodePath("")
+focus_neighbour_top = NodePath("")
+focus_neighbour_right = NodePath("")
+focus_neighbour_bottom = NodePath("")
+focus_next = NodePath("")
+focus_previous = NodePath("")
+focus_mode = 0
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+input_pass_on_modal_close_click = true
+size_flags_horizontal = 1
+size_flags_vertical = 1
+size_flags_stretch_ratio = 1.0
+theme = null
+theme_type_variation = ""
+script = null
+
+[node name="CLAYER" type="Control" parent="Behaviors/401/GraphGeneric1417721095"]
+mouse_filter = 2
+
+[node name="Groups" type="Node" parent="."]
+
+[node name="Grids" type="Node" parent="."]
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="Agent-1" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -39.1776, 0, 17.1215 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1"]
+shape = SubResource( 3 )
+
+[node name="Agent-1360" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -36.9346, 0, 18.4673 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1360"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1360"]
+shape = SubResource( 3 )
+
+[node name="Agent-1361" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -34.5421, 0, 18.7664 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1361"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1361"]
+shape = SubResource( 3 )
+
+[node name="Agent-1362" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -31.8505, 0, 18.7664 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1362"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1362"]
+shape = SubResource( 3 )
+
+[node name="Agent-1363" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.9065, 0, 17.5701 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1363"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1363"]
+shape = SubResource( 3 )
+
+[node name="Agent-1364" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -28.8598, 0, 15.7757 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1364"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1364"]
+shape = SubResource( 3 )
+
+[node name="Agent-1365" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -28.5607, 0, 13.2336 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1365"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1365"]
+shape = SubResource( 3 )
+
+[node name="Agent-1366" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.3084, 0, 10.5421 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1366"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1366"]
+shape = SubResource( 3 )
+
+[node name="Agent-1367" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -31.2523, 0, 8.74767 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1367"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1367"]
+shape = SubResource( 3 )
+
+[node name="Agent-1368" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -33.9439, 0, 7.40187 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1368"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1368"]
+shape = SubResource( 3 )
+
+[node name="Agent-1369" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -36.6355, 0, 7.25234 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1369"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1369"]
+shape = SubResource( 3 )
+
+[node name="Agent-1370" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -39.1776, 0, 7.85047 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1370"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1370"]
+shape = SubResource( 3 )
+
+[node name="Agent-1371" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -41.271, 0, 9.04673 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1371"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1371"]
+shape = SubResource( 3 )
+
+[node name="Agent-1372" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -42.9159, 0, 10.8411 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1372"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1372"]
+shape = SubResource( 3 )
+
+[node name="Agent-1373" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -43.8131, 0, 12.6355 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1373"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1373"]
+shape = SubResource( 3 )
+
+[node name="Agent-1374" type="RigidBody" parent="Environment"]
+transform = Transform( 0.993588, 0, -0.113061, 0, 1, 0, 0.113061, 0, 0.993588, -44.1184, 0, 14.8207 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1374"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1374"]
+shape = SubResource( 3 )
+
+[node name="Agent-1375" type="RigidBody" parent="Environment"]
+transform = Transform( 0.991254, 0, -0.13197, 0, 1, 0, 0.13197, 0, 0.991254, -44.1872, 0, 16.8219 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1375"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1375"]
+shape = SubResource( 3 )
+
+[node name="Agent-1376" type="RigidBody" parent="Environment"]
+transform = Transform( 0.987797, 0, 0.155747, 0, 1, 0, -0.155747, 0, 0.987797, -43.5257, 0, 18.7537 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1376"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1376"]
+shape = SubResource( 3 )
+
+[node name="Agent-1377" type="RigidBody" parent="Environment"]
+transform = Transform( 0.984652, 0, 0.174531, 0, 1, 0, -0.174531, 0, 0.984652, -41.9257, 0, 20.0336 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1377"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1377"]
+shape = SubResource( 3 )
+
+[node name="Agent-1378" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -39.9252, 0, 21.1589 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1378"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1378"]
+shape = SubResource( 3 )
+
+[node name="Agent-1379" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -36.0374, 0, 22.0561 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1379"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1379"]
+shape = SubResource( 3 )
+
+[node name="Agent-1380" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 22.5047 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1380"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1380"]
+shape = SubResource( 3 )
+
+[node name="Agent-1381" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -28.4112, 0, 22.6542 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1381"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1381"]
+shape = SubResource( 3 )
+
+[node name="Agent-1382" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -23.7757, 0, 22.3551 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1382"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1382"]
+shape = SubResource( 3 )
+
+[node name="Agent-1383" type="RigidBody" parent="Environment"]
+transform = Transform( 0.996865, 0, -0.0791193, 0, 1, 0, 0.0791193, 0, 0.996865, -21.4016, 0, 21.8316 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1383"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1383"]
+shape = SubResource( 3 )
+
+[node name="Agent-1384" type="RigidBody" parent="Environment"]
+transform = Transform( 0.30745, 0, -0.951564, 0, 1, 0, 0.951564, 0, 0.30745, -19.5077, 0, 21.117 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1384"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1384"]
+shape = SubResource( 3 )
+
+[node name="Agent-1385" type="RigidBody" parent="Environment"]
+transform = Transform( 0.660707, 0, -0.750644, 0, 1, 0, 0.750644, 0, 0.660707, -17.703, 0, 20.1696 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1385"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1385"]
+shape = SubResource( 3 )
+
+[node name="Agent-1386" type="RigidBody" parent="Environment"]
+transform = Transform( 0.577923, 0, 0.816091, 0, 1, 0, -0.816091, 0, 0.577923, -17.1791, 0, 18.2069 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1386"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1386"]
+shape = SubResource( 3 )
+
+[node name="Agent-1387" type="RigidBody" parent="Environment"]
+transform = Transform( 0.73229, 0, -0.680993, 0, 1, 0, 0.680993, 0, 0.73229, -17.3522, 0, 16.1985 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1387"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1387"]
+shape = SubResource( 3 )
+
+[node name="Agent-1388" type="RigidBody" parent="Environment"]
+transform = Transform( 0.984404, 0, -0.175923, 0, 1, 0, 0.175923, 0, 0.984404, -17.4905, 0, 14.1823 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1388"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1388"]
+shape = SubResource( 3 )
+
+[node name="Agent-1389" type="RigidBody" parent="Environment"]
+transform = Transform( 0.627255, 0, 0.778814, 0, 1, 0, -0.778814, 0, 0.627255, -18.6232, 0, 12.5106 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1389"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1389"]
+shape = SubResource( 3 )
+
+[node name="Agent-1390" type="RigidBody" parent="Environment"]
+transform = Transform( 0.971033, 0, -0.238944, 0, 1, 0, 0.238944, 0, 0.971033, -19.8033, 0, 10.8755 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1390"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1390"]
+shape = SubResource( 3 )
+
+[node name="Agent-1391" type="RigidBody" parent="Environment"]
+transform = Transform( 0.998028, 0, 0.0627746, 0, 1, 0, -0.0627746, 0, 0.998028, -21.0775, 0, 9.312 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1391"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1391"]
+shape = SubResource( 3 )
+
+[node name="Agent-1392" type="RigidBody" parent="Environment"]
+transform = Transform( 0.976938, 0, 0.213525, 0, 1, 0, -0.213525, 0, 0.976938, -22.5245, 0, 7.88999 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1392"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1392"]
+shape = SubResource( 3 )
+
+[node name="Agent-1393" type="RigidBody" parent="Environment"]
+transform = Transform( 0.976938, 0, 0.213521, 0, 1, 0, -0.213521, 0, 0.976938, -24.1598, 0, 6.73418 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1393"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1393"]
+shape = SubResource( 3 )
+
+[node name="Agent-1394" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -26.3178, 0, 5.60748 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1394"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1394"]
+shape = SubResource( 3 )
+
+[node name="Agent-1395" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.3084, 0, 4.71029 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1395"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1395"]
+shape = SubResource( 3 )
+
+[node name="Agent-1396" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -32.1495, 0, 4.26169 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1396"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1396"]
+shape = SubResource( 3 )
+
+[node name="Agent-1397" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, -5.43852e-08, 0, 1, 0, 5.43852e-08, 0, 1, -34.9439, 0, 3.96622 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1397"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1397"]
+shape = SubResource( 3 )
+
+[node name="Agent-1398" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 7.00626e-08, 0, 1, 0, -7.00626e-08, 0, 1, -36.9814, 0, 3.80949 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1398"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1398"]
+shape = SubResource( 3 )
+
+[node name="Agent-1399" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -39.4766, 0, 3.66356 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1399"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1399"]
+shape = SubResource( 3 )
+
+[node name="Agent-1400" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -41.7196, 0, 3.51402 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1400"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1400"]
+shape = SubResource( 3 )
