@@ -1997,7 +1997,6 @@ text = "Annuler"
 
 [node name="GraphGeneric" type="GraphEdit" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav"]
 unique_name_in_owner = true
-visible = false
 margin_top = 60.0
 margin_right = 962.0
 margin_bottom = 563.0

@@ -2448,13 +2448,23 @@ func _on_validate_graph_behav()->void:
 	# --------------------------------------------
 	_selected_nodes = {} # unselect graphnodes
 	var behav:Node = get_selected_behavior()
-	var gfx_code:GraphEdit = _gfx_code_current.duplicate(15) #get_node("%GraphGeneric").duplicate(15)
+	var gfx_code:GraphEdit = _gfx_code_current.duplicate(0) #get_node("%GraphGeneric").duplicate(15)
 	behav.set_meta("Links", _gfx_code_current.get_connection_list())
 	# Remove previous GFX code from behav
 	if behav.get_child_count() > 0:
 		behav.get_child(0).queue_free()
 	# Put the gfx code into the Behav
 	gfx_code.visible = false
+	# Remove the 2 last nodes which are not necessary (GraphNode toolbar + CLAYER)
+	var n1:Node = gfx_code.get_child(gfx_code.get_child_count()-1)
+	var n2:Node = gfx_code.get_child(gfx_code.get_child_count()-2)
+	var nom1 = n1.name
+	var nom2 = n2.name
+	#gfx_code.remove_child(n1)
+	#gfx_code.remove_child(n2)
+	#n1.queue_free()
+	#n2.queue_free()
+	# Add the gfx code to the Behavior Node
 	behav.add_child(gfx_code)
 	hide_gfx()
 	behavior_GUI_to_META()
@@ -2570,7 +2580,7 @@ func _on_BtnLoad_pressed():
 	# re-init 3D node variables
 	_node_entities 	= _node_simu.find_node("*Entities*",true,false)
 	_node_behavs 	= _node_simu.find_node("*Behaviors*",true,false)
-	_node_groups		= _node_simu.find_node("*Groups*",true,false)
+	_node_groups	= _node_simu.find_node("*Groups*",true,false)
 	_node_env 		= _node_simu.find_node("*Environment*",true,false)
 
 	# Set the new initial_state
@@ -2731,7 +2741,18 @@ func manage_graph() -> void:
 #                       TODO                     *
 # ************************************************
 
-# placer des listes déroulantes pour les agents / groupe dans les comportements
+#1 Lors de save, les gfx sauvent aussi la petite toolbar zoom => à enlever de la save
+#  Est plus grave que ça : à chaque save => ajout des 5 noeuds principaux (entities, behaviors, ... env)
+#  et doublage CLAYER + toolbar
+#  L'arbre de scene est triplé si on load/save 3 fois, etc
+#  Revoir comment les gfx sont sauvés (peut être pb lié au re-owning des children nodes ?)
+#  Idée : placer dans les behaviors un noeud Gfx (Node) qui contient tous les GraphNodes
+#         ainsi, le GraphEdit n'est jamais dupliqué ni sauvé.
+
+#2 Lors du load, les réactions à 2 agents deviennent à 1 seul agent (pb lors du save ?)
+
+#3 dans le gfx, re-tester la validité du code lors de la selection par combobox
+
 
 # ************************************************
 # WORK in PROGRESS...                            *
