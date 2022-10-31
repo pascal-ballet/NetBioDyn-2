@@ -2388,15 +2388,26 @@ func _on_show_graph_behav()->void:
 	# Load GraphEdit of the selected behavior node
 	# --------------------------------------------
 	var behav:Node = get_selected_behavior()
-	var gfx_code_prev:GraphEdit = _gfx_code_current
+
 	# Re-put stored GFX code
+
+	# Empty the gfx code connections
+	_gfx_code_current.clear_connections()
+	
+	# Empty the gfx code connections
+	for n in _gfx_code_current.get_children():
+		if n is GraphNode:
+			#n.queue_free()
+			_gfx_code_current.remove_child(n)
+			n.free()
+	
 	if behav.get_child_count() > 0: # There is a GFX Code for this behavior
-		gfx_code_prev.queue_free() # Remove the prev gfx code
-		var gfx_code:GraphEdit = behav.get_child(0).duplicate(15) # Duplicate from the behav node
-		gfx_code.visible = true
-		get_node("%GraphBehav").add_child(gfx_code) # put the stored gfx from node to GraphBehav
-		_gfx_code_current = gfx_code
-		
+		var gfx_node:Node = behav.get_child(0) # Get from the behav node
+		for n in gfx_node.get_children():
+			var node:GraphNode = n.duplicate(15)
+			_gfx_code_current.add_child(node)
+			node.show()
+
 		# Re-connect all connections
 		var lst_links:Array = behav.get_meta("Links") 
 		for i in lst_links.size():
@@ -2404,13 +2415,14 @@ func _on_show_graph_behav()->void:
 			_gfx_code_current.connect_node(dico_link["from"], dico_link["from_port"],dico_link["to"],dico_link["to_port"])
 			
 		# re-connect GFX signals
-		_gfx_code_current.connect("connection_request",self,"_on_GraphGeneric_connection_request")
-		_gfx_code_current.connect("delete_nodes_request",self,"_on_Graph_delete_nodes_request")
-		_gfx_code_current.connect("disconnection_request",self,"_on_GraphGeneric_disconnection_request")
-		_gfx_code_current.connect("node_selected",self,"_on_Graph_node_selected")
-		_gfx_code_current.connect("node_unselected",self,"_on_Graph_node_unselected")
+		#_gfx_code_current.connect("connection_request",self,"_on_GraphGeneric_connection_request")
+		#_gfx_code_current.connect("delete_nodes_request",self,"_on_Graph_delete_nodes_request")
+		#_gfx_code_current.connect("disconnection_request",self,"_on_GraphGeneric_disconnection_request")
+		#_gfx_code_current.connect("node_selected",self,"_on_Graph_node_selected")
+		#_gfx_code_current.connect("node_unselected",self,"_on_Graph_node_unselected")
 		var evt:GraphNode = _gfx_code_current.find_node("*GraphNodeEvt*",true,false)
-		evt.get_child(0).connect("item_selected", self, "GUI_evt_gfx_changed")
+		#evt.get_child(0).connect("item_selected", self, "GUI_evt_gfx_changed")
+		# Populate OptionBtn with Agents, Groups and Grids
 		for box in _gfx_code_current.get_children():
 			if (box is GraphNode):
 				var box_type = box.name
@@ -2431,43 +2443,78 @@ func _on_show_graph_behav()->void:
 					populate_option_btn_with_agents( opt_obj,box.get_child(3).text, false,false,false,false,false,false,false )
 					
 
-	else: # Ther is NO GFX Code for this behavior => put the default one
-		gfx_code_prev.queue_free() # Remove the current gfx code
-		var gfx_code:GraphEdit = _gfx_code_init.duplicate(15) # Duplicate from the behav node
-		gfx_code.visible = true
-		get_node("%GraphBehav").add_child(gfx_code) # put the stored gfx from node to GraphBehav
-		_gfx_code_current = gfx_code
-		# Fill the gfx evts box with default = collision
+	else: # There is NO GFX Code for this behavior => put the default one
+		# Put the initial gfx code : only Evt, Then and End
+		for n in _gfx_code_init.get_children():
+			if n is GraphNode:
+				var node:GraphNode = n.duplicate(15)
+				_gfx_code_current.add_child(node)
+				node.show()
+
+		# Fill the gfx evts box with default = collision between2 agents
 		GUI_evt_gfx_changed(2)
 		
 	show_gfx()
 
-# CLOSE GFX Code
+# CLOSE GFX Code (save from _gfx_code_current => Behavior 3D Node)
 func _on_validate_graph_behav()->void:
 	# Save GraphEdit in the selected behavior node
 	# --------------------------------------------
 	_selected_nodes = {} # unselect graphnodes
+	for n in _gfx_code_current.get_children():
+		if n is GraphNode and n.is_queued_for_deletion() == false:
+			n.selected = false
+				
 	var behav:Node = get_selected_behavior()
-	var gfx_code:GraphEdit = _gfx_code_current.duplicate(0) #get_node("%GraphGeneric").duplicate(15)
-	behav.set_meta("Links", _gfx_code_current.get_connection_list())
-	# Remove previous GFX code from behav
+
+	# Get previous or Create new / GFX code node / for behav
+	var gfx_node:Node = null
 	if behav.get_child_count() > 0:
-		behav.get_child(0).queue_free()
+		gfx_node = behav.get_child(0)
+		for n in gfx_node.get_children():
+			gfx_node.remove_child(n)
+			n.free()
+	else:
+		gfx_node = Node.new()
+		gfx_node.name = "GFX"
+		behav.add_child(gfx_node)
+	
+	# Store all connections in meta
+	var cnx = _gfx_code_current.get_connection_list()
+	behav.set_meta("Links", cnx)
+	
+	# Store all GraphNodes of _gfx_code_current into the GFX node's Behavior
+	for n in _gfx_code_current.get_children():
+		if n is GraphNode and n.is_queued_for_deletion() == false:
+			var node:GraphNode = n.duplicate(15)
+			node.name = n.name
+			gfx_node.add_child(node)
+
+			var n_name:String = n.name
+			var node_name:String = node.name
+
+			node.hide()
+			
+	
+	hide_gfx()
+	behavior_GUI_to_META()
+	
 	# Put the gfx code into the Behav
-	gfx_code.visible = false
+	#gfx_node.visible = false
 	# Remove the 2 last nodes which are not necessary (GraphNode toolbar + CLAYER)
-	var n1:Node = gfx_code.get_child(gfx_code.get_child_count()-1)
-	var n2:Node = gfx_code.get_child(gfx_code.get_child_count()-2)
-	var nom1 = n1.name
-	var nom2 = n2.name
+	#var n1:Node = gfx_code.get_child(gfx_code.get_child_count()-1)
+	#var n2:Node = gfx_code.get_child(gfx_code.get_child_count()-2)
+	#var nom1 = n1.name
+	#var nom2 = n2.name
 	#gfx_code.remove_child(n1)
 	#gfx_code.remove_child(n2)
 	#n1.queue_free()
 	#n2.queue_free()
+	
 	# Add the gfx code to the Behavior Node
-	behav.add_child(gfx_code)
-	hide_gfx()
-	behavior_GUI_to_META()
+	#behav.add_child(gfx_node)
+	
+
 
 func hide_gfx()->void:
 	_selected_nodes = {} # unselect graphnodes
