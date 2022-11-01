@@ -1868,7 +1868,7 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 			code_cdts =  """ true """
 		if box_ref.get_child(0).get_selected_id() == 1:
 			var r1:String = box_ref.get_child(1).text
-			code_cdts =  """ (R1.get_meta("Name") == """ + in_quote(r1) + """ or R1.is_in_group(""" + in_quote(r1) + """)) and  100*randf() < 10.0 """
+			code_cdts =  """ (R1.get_meta("Name") == """ + in_quote(r1) + """ or R1.is_in_group(""" + in_quote(r1) + """))"""
 		if box_ref.get_child(0).get_selected_id() == 2:
 			var r1:String = box_ref.get_child(1).text
 			var r2:String = box_ref.get_child(2).text
@@ -1974,6 +1974,27 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		else:# Manage ERRORS
 			_gfx_compiles = false
 			_gfx_compile_msg = "Boite Diviser non-reliée"
+			return ""
+
+	# Read Parameters for Agent
+	if box.length() >= 17 && box.left(17) == "GfxReadParamAgent":
+		if lst_input_boxes.size()==1:
+			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+			var opt_param:OptionButton = gfx_box.get_child(1).get_child(1)
+			var P:String = opt_param.text
+			if P == "": # Manage ERRORS
+				_gfx_compiles = false
+				_gfx_compile_msg = "Boite Lire Paramètre Agent : choisir un paramètre"
+				# Fill the box
+				var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 0)
+				var agent_type:String = get_var_agent_type(var_name)
+				populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agent_type ) )
+				return ""
+			var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 0)
+			code_cdts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+var_name+""".get_meta("""+in_quote(P)+""")"""
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Lire Paramètre Agent non-reliée à un Agent"
 			return ""
 
 	return code_cdts
@@ -2114,6 +2135,24 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 
 	return code_acts
 
+# Find the type of an agent stored in the variable var_name
+func get_var_agent_type(var_name:String)->String:
+	for n in _gfx_code_current.get_children():
+		if n is GraphNode:
+			if n.name == "GraphNodeEvt":
+				if var_name == "R1":
+					return n.get_child(1).text
+				if var_name == "R2":
+					return n.get_child(2).text
+			if n.name == "GfxADD":
+				if var_name == n.get_meta("Var"):
+					return n.get_child(1).text
+			if n.name == "GfxTransform":
+				if var_name == n.get_meta("Var"):
+					return n.get_child(3).text
+						
+	return ""
+
 func get_var_R12_P(box:String, lst_cnx:Array, port:int)->String:
 	var box_agent:GraphNode = get_graphnode_entering_from_port(box, lst_cnx, port)
 	if box_agent == null:
@@ -2233,34 +2272,10 @@ func _on_BtnAddGfxNode() -> void:
 		var opt_obj:Node   = gfx_node.get_child(3)
 		populate_option_btn_with_agents( opt_obj,"", false,false,false,false,false,false,false )
 		
-	if gfx_node_name == "GfxParam":
+	if gfx_node_name == "GfxReadParamAgent":
 		var behav:Node = get_selected_behavior()
-		var type = behav.get_meta("Type")
-		# Find the Behavior Type
-		if type == "Reaction":
-			var r1:String = behav.get_meta("R1")
-			var r2:String = behav.get_meta("R2")
-			var p1:String = behav.get_meta("P1")
-			var p2:String = behav.get_meta("P2")
-			var p3:String = behav.get_meta("P3")
-			var opt_obj:Node   = gfx_node.get_child(0).get_child(1)
-			var opt_param:Node = gfx_node.get_child(1).get_child(1)
-			opt_obj.clear()
-			var agts:Array = []
-			if r1 != "" && r1 != "0":
-				agts = agts + ["R1:"+r1]
-			if r2 != "" && r2 != "0":
-				agts = agts + ["R2:"+r2]
-			if p1 != "" && p1 != "0" && p1 != "R1" && p1 != "R2":
-				agts = agts + ["P1:"+p1]
-			if p2 != "" && p2 != "0" && p2 != "R1" && p2 != "R2":
-				agts = agts + ["P2:"+p2]
-			if p3 != "" && p3 != "0" && p3 != "R1" && p3 != "R2":
-				agts = agts + ["P3:"+p3]
-			populate_option_btn_from_list( opt_obj,"", agts )
-			opt_param.clear()
-			var sel_agt:String = r1 # TODO Change to the saved agent/gp
-			populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(r1) )
+		var opt_param:OptionButton = gfx_node.get_child(1).get_child(1)
+		opt_param.clear()
 
 #var _sel_gfx_node:GraphNode = null
 
@@ -2379,7 +2394,11 @@ func put_gfx_R_P_vars() -> String:
 		# P from Gfx ReadParamAgent
 		if ("GfxReadParamAgent" in box.name) == true:
 			box.set_meta("Var", "Prev")
-									
+				
+		# P from GfxWriteParamAgent
+		if ("GfxWriteParamAgent" in box.name) == true:
+			box.set_meta("Var", "Prev")
+						
 	return str_R_P
 
 
@@ -2787,14 +2806,6 @@ func manage_graph() -> void:
 # ************************************************
 #                       TODO                     *
 # ************************************************
-
-#1 Lors de save, les gfx sauvent aussi la petite toolbar zoom => à enlever de la save
-#  Est plus grave que ça : à chaque save => ajout des 5 noeuds principaux (entities, behaviors, ... env)
-#  et doublage CLAYER + toolbar
-#  L'arbre de scene est triplé si on load/save 3 fois, etc
-#  Revoir comment les gfx sont sauvés (peut être pb lié au re-owning des children nodes ?)
-#  Idée : placer dans les behaviors un noeud Gfx (Node) qui contient tous les GraphNodes
-#         ainsi, le GraphEdit n'est jamais dupliqué ni sauvé.
 
 #2 Lors du load, les réactions à 2 agents deviennent à 1 seul agent (pb lors du save ?)
 
