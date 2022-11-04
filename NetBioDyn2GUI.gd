@@ -1845,7 +1845,15 @@ func action(tree, R1, nb_agents) -> void:
 	if box_ref.get_child(0).get_selected_id() == 1: # ONE agent
 		code += "	if "+code_cdts + code_acts
 	if box_ref.get_child(0).get_selected_id() == 2: # TWO agents in contact
-		code += code_cdts + code_acts
+		var r1:String = box_ref.get_child(1).text
+		code += """
+	if (R1.get_meta("Name") != """ + in_quote(r1) + """ && !R1.is_in_group(""" + in_quote(r1) + """)):
+		return
+	var bodies = R1.get_colliding_bodies()
+	var R2 = null
+	if bodies.size() > 0:
+		R2 = bodies[0]
+	if """ + code_cdts + code_acts
 	print("gfx code: ")
 	print(code)
 	return code
@@ -1870,16 +1878,8 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 			var r1:String = box_ref.get_child(1).text
 			code_cdts =  """ (R1.get_meta("Name") == """ + in_quote(r1) + """ or R1.is_in_group(""" + in_quote(r1) + """))"""
 		if box_ref.get_child(0).get_selected_id() == 2:
-			var r1:String = box_ref.get_child(1).text
 			var r2:String = box_ref.get_child(2).text
-			code_cdts = """
-	if (R1.get_meta("Name") != """ + in_quote(r1) + """ && !R1.is_in_group(""" + in_quote(r1) + """)):
-		return
-	var bodies = R1.get_colliding_bodies()
-	var R2 = null
-	if bodies.size() > 0:
-		R2 = bodies[0]
-	if R2 != null && R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+""")) """
+			code_cdts = """ R2 != null && R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta("Name") == """+in_quote(r2)+""" || R2.is_in_group("""+in_quote(r2)+"""    ) )  """
 #	else:
 #		if lst_input_boxes.size() == 0:
 #			_gfx_compiles = false
@@ -1901,7 +1901,7 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	
 	if box.length() >= 6 && box.left(6) == "GfxAND":
 		if lst_input_boxes.size()==2:
-				code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " && " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+				code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " and " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
 		else:# Manage ERRORS
 			_gfx_compiles = false
 			_gfx_compile_msg = "Boite ET non-reliée"
@@ -1909,7 +1909,7 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 				
 	if box.length() >= 5 && box.left(5) == "GfxOR":
 		if lst_input_boxes.size()==2:
-				code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " || " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
+				code_cdts = "(" + generate_code_cdts(lst_input_boxes[0], lst_cnx, gfx) + " or " + generate_code_cdts(lst_input_boxes[1], lst_cnx, gfx) + ")"
 		else:# Manage ERRORS
 			_gfx_compiles = false
 			_gfx_compile_msg = "Boite OU non-reliée"
@@ -2135,7 +2135,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 
 	return code_acts
 
-# Find the type of an agent stored in the variable var_name
+# Find the Type of an Agent stored in the variable var_name
 func get_var_agent_type(var_name:String)->String:
 	for n in _gfx_code_current.get_children():
 		if n is GraphNode:
@@ -2153,6 +2153,7 @@ func get_var_agent_type(var_name:String)->String:
 						
 	return ""
 
+# Get the name of the Agent's variable (R1, R2, P1, P2, etc)
 func get_var_R12_P(box:String, lst_cnx:Array, port:int)->String:
 	var box_agent:GraphNode = get_graphnode_entering_from_port(box, lst_cnx, port)
 	if box_agent == null:
@@ -2878,7 +2879,5 @@ func test_texture():
 func group_line_edit_on_focus()->void:
 	var tabs:TabContainer = get_node("%TabContainer")
 	tabs.current_tab = Prop.GROUP
-
-
 
 
