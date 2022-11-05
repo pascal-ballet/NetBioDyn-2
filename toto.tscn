@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=17 format=2]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_color = Color( 0.735984, 0.621225, 0.962688, 1 )
@@ -14,29 +14,390 @@ albedo_color = Color( 0.978975, 0.256011, 0.734578, 1 )
 
 [sub_resource type="SphereShape" id=6]
 
-[sub_resource type="GDScript" id=7]
+[sub_resource type="SpatialMaterial" id=7]
+albedo_color = Color( 0.353845, 0.315224, 0.92217, 1 )
+
+[sub_resource type="SphereMesh" id=8]
+
+[sub_resource type="SphereShape" id=9]
+
+[sub_resource type="GDScript" id=10]
 script/source = "
 extends Node
+
 # Generic Behavior
 func action(tree, R1, nb_agents) -> void:
-	pass"
 
-[sub_resource type="GDScript" id=8]
+	if (R1.get_meta(\"Name\") != \"Agent-1\" && !R1.is_in_group(\"Agent-1\")):
+		return
+	var bodies = R1.get_colliding_bodies()
+	var R2 = null
+	if bodies.size() > 0:
+		R2 = bodies[0]
+	if  R2 != null && R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"Agent-2\" || R2.is_in_group(\"Agent-2\"    ) )  :
+		R1.queue_free()
+
+		R2.queue_free()
+"
+
+[sub_resource type="GDScript" id=11]
+script/source = "
+extends Node
+# Default Behavior
+func action(tree, agent, nb_agents) -> void:
+	if agent.get_meta(\"Name\") == \"Agent-1\" || agent.is_in_group(\"Agent-1\"):
+		var alpha:float = randf() * 6.283185 - 6.283185 /2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3(randf() * 1 * cos(alpha+0),0, randf() * 1*sin(alpha+0)))
+"
+
+[sub_resource type="GDScript" id=12]
+script/source = "
+extends Node
+# Default Behavior
+func action(tree, agent, nb_agents) -> void:
+	if agent.get_meta(\"Name\") == \"Agent-2\" || agent.is_in_group(\"Agent-2\"):
+		var alpha:float = randf() * 6.283185 - 6.283185 /2.0
+		agent.apply_impulse(Vector3(0,0,0), Vector3(randf() * 1 * cos(alpha+0),0, randf() * 1*sin(alpha+0)))
+"
+
+[sub_resource type="GDScript" id=13]
 script/source = "
 extends Node
 
-# Generic Behavior
+# Reaction
 func action(tree, R1, nb_agents) -> void:
-	if  (R1.get_meta(\"Name\") == \"Agent-2\" or R1.is_in_group(\"Agent-2\")) and  100*randf() < 10.0 :
-		pass
-		"
+	var proba:float = 1
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Agent-1\" || R1.is_in_group(\"Agent-1\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"0\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"R1\" != \"0\" && \"R1\" != \"R1\" && \"R1\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"R1\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"R1\" == \"0\" || \"R1\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"Agent-1\" != \"0\" && \"Agent-1\" != \"R1\" && \"Agent-1\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"Agent-1\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"Agent-1\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"0\" || R2.is_in_group(\"0\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"R1\" != \"0\" && \"R1\" != \"R1\" && \"R1\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"R1\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"R1\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"R1\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"Agent-1\" != \"0\" && \"Agent-1\" != \"R1\" && \"Agent-1\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"Agent-1\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"Agent-1\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"Agent-1\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=14]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1, nb_agents) -> void:
+	var proba:float = 1
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Agent-2\" || R1.is_in_group(\"Agent-2\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"0\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"R1\" != \"0\" && \"R1\" != \"R1\" && \"R1\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"R1\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"R1\" == \"0\" || \"R1\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"Agent-2\" != \"0\" && \"Agent-2\" != \"R1\" && \"Agent-2\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"Agent-2\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"Agent-2\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"0\" || R2.is_in_group(\"0\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"R1\" != \"0\" && \"R1\" != \"R1\" && \"R1\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"R1\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"R1\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"R1\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"Agent-2\" != \"0\" && \"Agent-2\" != \"R1\" && \"Agent-2\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"Agent-2\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"Agent-2\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"Agent-2\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=15]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1, nb_agents) -> void:
+	var proba:float = 100
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Agent-1\" || R1.is_in_group(\"Agent-1\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"Mur\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"0\" == \"0\" || \"0\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"R2\" != \"0\" && \"R2\" != \"R1\" && \"R2\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"R2\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"R2\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"Mur\" || R2.is_in_group(\"Mur\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"0\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"0\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"R2\" != \"0\" && \"R2\" != \"R1\" && \"R2\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"R2\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"R2\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"R2\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
+
+[sub_resource type="GDScript" id=16]
+script/source = "
+extends Node
+
+# Reaction
+func action(tree, R1, nb_agents) -> void:
+	var proba:float = 100
+	var alea:float = rand_range(0,100)
+	#print_debug(str(\"alea=\", alea, \", proba=\", proba))
+	if alea < proba:
+		#print (str(\"proba ok:\",proba))
+		if R1.is_queued_for_deletion() == false && (R1.get_meta(\"Name\") == \"Agent-2\" || R1.is_in_group(\"Agent-2\")   ): # R1 n'est pas déjà détruit et il appartient au bon groupe:
+			#var R1:Spatial 		= collision[0]
+			#print (\"nb=\", nb_agents)
+			#print(\"R1 is in gp : \", inputs[2])
+			# Cas avec R2 == 0 ########################################################################################
+			if \"Mur\" == \"0\": # Pas de 2nd réactif => toujours appliqué (à la proba précédente près)
+				# si R1 CHANGE en P1 (il n'est ni enlevé, ni prolongé, il est donc remplacé par P1)
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\":
+					#var P1 = null # et P1 peut être soit un nouvel agent soit du même type que R2 - Mais bon ici r2 = \"0\" donc ok pas de R2 qui compte
+					#print_debug(\"spawn P1...\")
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+					R1.queue_free()
+				# si R1 est ENLEVE (il est enlevé ou bien il MIME R2 mais qui vaut \"0\" aussi)
+				if R1.is_queued_for_deletion() == false && \"0\" == \"0\" || \"0\" == \"R2\":
+					R1.queue_free()
+				# si P2 APPARAIT (je rappelle qu'ici R2 = 0)
+				if \"R2\" != \"0\" && \"R2\" != \"R1\" && \"R2\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					NetBioDyn2gui.spawn_agent(tree,\"R2\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+				# si P2 MIME R1 il APPARAIT du meme type que R1
+				if \"R2\" == \"R1\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+					var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+					P2.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+					R1.get_parent().add_child(P2)
+				# si P3 APPARAIT
+				if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+					NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+				return
+			# Cas avec un 2nd réactif ########################################################################################
+			var bodies = R1.get_colliding_bodies()
+			if bodies.size() > 0:
+				#print(str(\"collision size:\",bodies.size() ))
+				#print(\"R1 is colliding\")
+				var R2 = bodies[0]
+				#print( str( \"List R1 : \", R1.get_meta_list()    ) )
+				#print( str( \"List R2 : \", R2.get_meta_list()    ) )
+				#print( str(\"R2.get_meta(Name) : \",  R2.get_meta(\"Name\")   ) )
+				if R2 is RigidBody && R2.is_queued_for_deletion() == false && (R2.get_meta(\"Name\") == \"Mur\" || R2.is_in_group(\"Mur\")): # R2 n'est pas détruit et appartient au bon groupe
+					#print( \"R2=>P2\" )
+					# R1 CHANGE en p1
+					if R1.is_queued_for_deletion() == false && \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\": # si R1 n'est ni enlevé, ni prolongé, il est donc remplacé par P1
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						R1.queue_free()
+					# R1 est ENLEVE
+					if R1.is_queued_for_deletion() == false && \"0\" == \"0\": # si R1 n'est pas prolongé, il est enlevé (càd soit enlevé soit remplacé)
+						R1.queue_free()
+					# R1/P1 MIME R2
+					if R1.is_queued_for_deletion() == false && \"0\" == \"R2\": # si R1 devient P1 mais du meme type que R2
+						var P1 = R2.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P1.global_translate(Vector3(R1.translation.x,R1.translation.y,R1.translation.z))
+						R1.get_parent().add_child(P1)
+						R1.queue_free()
+					# R2 CHANGE en p2
+					if R2.is_queued_for_deletion() == false && \"R2\" != \"0\" && \"R2\" != \"R1\" && \"R2\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # si R2 n'est ni enlevé, ni prolongé, il est donc remplacé par P2
+						NetBioDyn2gui.spawn_agent(tree,\"R2\", Vector3(R2.translation.x,R2.translation.y,R2.translation.z) ) #load(str(\"res://SimBioCell/3-PreFabAgents/\",p2,\".tscn\")).instance()
+						R2.queue_free()
+					# R2 est ENLEVE
+					if R2.is_queued_for_deletion() == false && \"R2\" == \"0\": # si R2 est enlevé tout simplement
+						R2.queue_free()
+					# R1/P1 MIME R2
+					if R2.is_queued_for_deletion() == false && \"R2\" == \"R1\": # si R2 devient P2 mais du meme type que R1
+						var P2 = R1.duplicate(8) # load(str(\"res://SimBioCell/3-PreFabAgents/\",p1,\".tscn\")).instance()
+						P2.global_translate(Vector3(R2.translation.x,R2.translation.y,R2.translation.z))
+						R1.get_parent().add_child(P2)
+						R2.queue_free()
+					# si P3 APPARAIT
+					if \"0\" != \"0\" && \"0\" != \"R1\" && \"0\" != \"R2\" && nb_agents < tree.MAX_AGENTS: # P3 apparait
+						NetBioDyn2gui.spawn_agent(tree,\"0\", Vector3(R1.translation.x,R1.translation.y,R1.translation.z) )
+
+					return
+
+"
 
 [node name="Simulator" type="Spatial"]
 
 [node name="Entities" type="Node" parent="."]
 
 [node name="Agent-1" type="RigidBody" parent="Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -997.976, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -996.954, 0, 0 )
 visible = false
 gravity_scale = 0.0
 contacts_reported = 1
@@ -44,19 +405,22 @@ contact_monitor = true
 sleeping = true
 linear_damp = 5.0
 __meta__ = {
-"Name": "Agent-1"
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
 }
 
-[node name="374" type="MeshInstance" parent="Entities/Agent-1"]
+[node name="257" type="MeshInstance" parent="Entities/Agent-1"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 1 )
 mesh = SubResource( 2 )
 
-[node name="375" type="CollisionShape" parent="Entities/Agent-1"]
+[node name="258" type="CollisionShape" parent="Entities/Agent-1"]
 shape = SubResource( 3 )
 
 [node name="Agent-2" type="RigidBody" parent="Entities"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1000.02, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1001.05, 0, 0 )
 visible = false
 gravity_scale = 0.0
 contacts_reported = 1
@@ -64,81 +428,180 @@ contact_monitor = true
 sleeping = true
 linear_damp = 5.0
 __meta__ = {
-"Name": "Agent-2"
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
 }
 
-[node name="376" type="MeshInstance" parent="Entities/Agent-2"]
+[node name="259" type="MeshInstance" parent="Entities/Agent-2"]
 transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
 material_override = SubResource( 4 )
 mesh = SubResource( 5 )
 
-[node name="377" type="CollisionShape" parent="Entities/Agent-2"]
+[node name="260" type="CollisionShape" parent="Entities/Agent-2"]
 shape = SubResource( 6 )
+
+[node name="Mur" type="RigidBody" parent="Entities"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -999, 0, 0 )
+visible = false
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Entities/Mur"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Entities/Mur"]
+shape = SubResource( 9 )
 
 [node name="Behaviors" type="Node" parent="."]
 
-[node name="257" type="Node" parent="Behaviors"]
-script = SubResource( 7 )
+[node name="301" type="Node" parent="Behaviors"]
+script = SubResource( 10 )
 __meta__ = {
 "Links": [ {
-"from": "@GraphNodeThen278@445",
+"from": "GraphNodeEvt",
 "from_port": 0,
-"to": "@GfxDEL1@446",
+"to": "GraphNodeThen",
 "to_port": 0
 }, {
-"from": "@GraphNodeEvt277@444",
+"from": "GraphNodeThen",
 "from_port": 0,
-"to": "@GraphNodeThen278@445",
+"to": "GfxDEL1",
 "to_port": 0
 }, {
-"from": "@GfxDEL1@446",
-"from_port": 0,
-"to": "@GraphNodeEnd279@447",
-"to_port": 0
-}, {
-"from": "@GraphNodeEvt277@444",
+"from": "GraphNodeEvt",
 "from_port": 1,
-"to": "@GfxDEL1@446",
+"to": "GfxDEL1",
+"to_port": 1
+}, {
+"from": "GfxDEL1",
+"from_port": 0,
+"to": "GfxDEL2",
+"to_port": 0
+}, {
+"from": "GfxDEL2",
+"from_port": 0,
+"to": "GraphNodeEnd",
+"to_port": 0
+}, {
+"from": "GraphNodeEvt",
+"from_port": 2,
+"to": "GfxDEL2",
 "to_port": 1
 } ],
-"Name": "Générique",
+"Name": "Supp",
 "Type": "Generic"
 }
 
-[node name="GFX454" type="Node" parent="Behaviors/257"]
+[node name="GFX" type="Node" parent="Behaviors/301"]
 
-[node name="GraphNodeEnd279447" type="GraphNode" parent="Behaviors/257/GFX454"]
+[node name="GraphNodeEvt" type="GraphNode" parent="Behaviors/301/GFX"]
 visible = false
-margin_left = 940.0
-margin_top = 153.0
-margin_right = 1060.0
-margin_bottom = 215.0
+margin_left = 10.0
+margin_top = 113.0
+margin_right = 186.0
+margin_bottom = 205.0
 mouse_filter = 1
-title = "Fin"
-offset = Vector2( 940, 40 )
+title = "Evénement"
+offset = Vector2( 10, 0 )
 overlay = 1
-slot/0/left_enabled = true
+slot/0/left_enabled = false
 slot/0/left_type = 0
-slot/0/left_color = Color( 1, 1, 1, 1 )
-slot/0/right_enabled = false
-slot/0/right_type = 0
-slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 3
+slot/2/right_color = Color( 0, 1, 1, 1 )
 
-[node name="Label" type="Label" parent="Behaviors/257/GFX454/GraphNodeEnd279447"]
+[node name="OptEvt" type="OptionButton" parent="Behaviors/301/GFX/GraphNodeEvt"]
+unique_name_in_owner = true
 margin_left = 16.0
 margin_top = 24.0
-margin_right = 104.0
-margin_bottom = 38.0
+margin_right = 160.0
+margin_bottom = 44.0
+text = "Agents en contact"
+items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
+selected = 2
 
-[node name="GraphNodeThen278445" type="GraphNode" parent="Behaviors/257/GFX454"]
+[node name="@@6877" type="PopupMenu" parent="Behaviors/301/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, false, false, 1, 0, null, "", false, "Agents en contact", null, 2, true, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@6876" type="Timer" parent="Behaviors/301/GFX/GraphNodeEvt/OptEvt/@@6877"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR1" type="OptionButton" parent="Behaviors/301/GFX/GraphNodeEvt"]
+unique_name_in_owner = true
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 160.0
+margin_bottom = 65.0
+text = "Agent-1"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
+selected = 1
+
+[node name="@@6879" type="PopupMenu" parent="Behaviors/301/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false, "Agent-2", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@6878" type="Timer" parent="Behaviors/301/GFX/GraphNodeEvt/OptAgentR1/@@6879"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR2" type="OptionButton" parent="Behaviors/301/GFX/GraphNodeEvt"]
+unique_name_in_owner = true
+margin_left = 16.0
+margin_top = 66.0
+margin_right = 160.0
+margin_bottom = 86.0
+text = "Agent-2"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
+selected = 2
+
+[node name="@@6881" type="PopupMenu" parent="Behaviors/301/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false, "Agent-2", null, 2, true, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@6880" type="Timer" parent="Behaviors/301/GFX/GraphNodeEvt/OptAgentR2/@@6881"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeThen" type="GraphNode" parent="Behaviors/301/GFX"]
 visible = false
-margin_left = 440.0
-margin_top = 133.0
-margin_right = 560.0
-margin_bottom = 195.0
+margin_left = 380.0
+margin_top = 113.0
+margin_right = 500.0
+margin_bottom = 175.0
 mouse_filter = 1
 title = "Alors"
-offset = Vector2( 440, 20 )
+offset = Vector2( 380, 0 )
 overlay = 1
 slot/0/left_enabled = true
 slot/0/left_type = 1
@@ -147,7 +610,7 @@ slot/0/right_enabled = true
 slot/0/right_type = 0
 slot/0/right_color = Color( 1, 1, 1, 1 )
 
-[node name="Label" type="Label" parent="Behaviors/257/GFX454/GraphNodeThen278445"]
+[node name="Label" type="Label" parent="Behaviors/301/GFX/GraphNodeThen"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 104.0
@@ -155,16 +618,16 @@ margin_bottom = 38.0
 text = ">     >     >"
 align = 1
 
-[node name="GfxDEL1446" type="GraphNode" parent="Behaviors/257/GFX454"]
+[node name="GfxDEL2" type="GraphNode" parent="Behaviors/301/GFX"]
 unique_name_in_owner = true
 visible = false
-margin_left = 660.0
+margin_left = 760.0
 margin_top = 253.0
-margin_right = 820.0
+margin_right = 920.0
 margin_bottom = 318.0
 mouse_filter = 1
 title = "Supprimer Agent"
-offset = Vector2( 660, 140 )
+offset = Vector2( 760, 140 )
 slot/0/left_enabled = true
 slot/0/left_type = 0
 slot/0/left_color = Color( 1, 1, 1, 1 )
@@ -182,135 +645,28 @@ __meta__ = {
 "NameToShow": "Supprimer Agent"
 }
 
-[node name="Label" type="Label" parent="Behaviors/257/GFX454/GfxDEL1446"]
+[node name="Label" type="Label" parent="Behaviors/301/GFX/GfxDEL2"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 144.0
 margin_bottom = 38.0
 
-[node name="OptActParamAgt" type="Label" parent="Behaviors/257/GFX454/GfxDEL1446"]
+[node name="OptActParamAgt" type="Label" parent="Behaviors/301/GFX/GfxDEL2"]
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 144.0
 margin_bottom = 53.0
 text = "Agent"
 
-[node name="GraphNodeEvt277444" type="GraphNode" parent="Behaviors/257/GFX454"]
+[node name="GraphNodeEnd" type="GraphNode" parent="Behaviors/301/GFX"]
 visible = false
-margin_left = 120.0
-margin_top = 153.0
-margin_right = 296.0
-margin_bottom = 245.0
-mouse_filter = 1
-title = "Evénement"
-offset = Vector2( 120, 40 )
-selected = true
-overlay = 1
-slot/0/left_enabled = false
-slot/0/left_type = 0
-slot/0/left_color = Color( 1, 0, 0, 1 )
-slot/0/right_enabled = true
-slot/0/right_type = 1
-slot/0/right_color = Color( 1, 0, 0, 1 )
-slot/1/left_enabled = false
-slot/1/left_type = 0
-slot/1/left_color = Color( 1, 1, 1, 1 )
-slot/1/right_enabled = true
-slot/1/right_type = 3
-slot/1/right_color = Color( 0, 1, 1, 1 )
-slot/2/left_enabled = false
-slot/2/left_type = 0
-slot/2/left_color = Color( 1, 1, 1, 1 )
-slot/2/right_enabled = true
-slot/2/right_type = 3
-slot/2/right_color = Color( 0, 1, 1, 1 )
-
-[node name="OptEvt" type="OptionButton" parent="Behaviors/257/GFX454/GraphNodeEvt277444"]
-unique_name_in_owner = true
-margin_left = 16.0
-margin_top = 24.0
-margin_right = 160.0
-margin_bottom = 44.0
-text = "Agents en contact"
-items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
-selected = 2
-
-[node name="@@556" type="PopupMenu" parent="Behaviors/257/GFX454/GraphNodeEvt277444/OptEvt"]
-input_pass_on_modal_close_click = false
-items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, false, false, 1, 0, null, "", false, "Agents en contact", null, 2, true, false, 2, 0, null, "", false ]
-allow_search = true
-
-[node name="@@555" type="Timer" parent="Behaviors/257/GFX454/GraphNodeEvt277444/OptEvt/@@556"]
-wait_time = 0.3
-one_shot = true
-
-[node name="OptAgentR1" type="OptionButton" parent="Behaviors/257/GFX454/GraphNodeEvt277444"]
-unique_name_in_owner = true
-margin_left = 16.0
-margin_top = 45.0
-margin_right = 160.0
-margin_bottom = 65.0
-text = "Agent-1"
-items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
-selected = 1
-
-[node name="@@558" type="PopupMenu" parent="Behaviors/257/GFX454/GraphNodeEvt277444/OptAgentR1"]
-input_pass_on_modal_close_click = false
-items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false, "Agent-2", null, 2, false, false, 2, 0, null, "", false ]
-allow_search = true
-
-[node name="@@557" type="Timer" parent="Behaviors/257/GFX454/GraphNodeEvt277444/OptAgentR1/@@558"]
-wait_time = 0.3
-one_shot = true
-
-[node name="OptAgentR2" type="OptionButton" parent="Behaviors/257/GFX454/GraphNodeEvt277444"]
-unique_name_in_owner = true
-margin_left = 16.0
-margin_top = 66.0
-margin_right = 160.0
-margin_bottom = 86.0
-text = "Agent-2"
-items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
-selected = 2
-
-[node name="@@560" type="PopupMenu" parent="Behaviors/257/GFX454/GraphNodeEvt277444/OptAgentR2"]
-input_pass_on_modal_close_click = false
-items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false, "Agent-2", null, 2, true, false, 2, 0, null, "", false ]
-allow_search = true
-
-[node name="@@559" type="Timer" parent="Behaviors/257/GFX454/GraphNodeEvt277444/OptAgentR2/@@560"]
-wait_time = 0.3
-one_shot = true
-
-[node name="258" type="Node" parent="Behaviors"]
-script = SubResource( 8 )
-__meta__ = {
-"Links": [ {
-"from": "GraphNodeEvt",
-"from_port": 0,
-"to": "GraphNodeThen",
-"to_port": 0
-}, {
-"from": "GraphNodeThen",
-"from_port": 0,
-"to": "GraphNodeEnd",
-"to_port": 0
-} ],
-"Name": "Générique",
-"Type": "Generic"
-}
-
-[node name="GFX" type="Node" parent="Behaviors/258"]
-
-[node name="GraphNodeEnd" type="GraphNode" parent="Behaviors/258/GFX"]
-visible = false
-margin_left = 780.0
-margin_top = 253.0
-margin_right = 900.0
-margin_bottom = 315.0
+margin_left = 1020.0
+margin_top = 113.0
+margin_right = 1140.0
+margin_bottom = 175.0
 mouse_filter = 1
 title = "Fin"
-offset = Vector2( 780, 140 )
+offset = Vector2( 1020, 0 )
 overlay = 1
 slot/0/left_enabled = true
 slot/0/left_type = 0
@@ -319,123 +675,2816 @@ slot/0/right_enabled = false
 slot/0/right_type = 0
 slot/0/right_color = Color( 1, 1, 1, 1 )
 
-[node name="Label" type="Label" parent="Behaviors/258/GFX/GraphNodeEnd"]
+[node name="Label" type="Label" parent="Behaviors/301/GFX/GraphNodeEnd"]
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 104.0
 margin_bottom = 38.0
 
-[node name="GraphNodeThen" type="GraphNode" parent="Behaviors/258/GFX"]
+[node name="GfxDEL1" type="GraphNode" parent="Behaviors/301/GFX"]
+unique_name_in_owner = true
 visible = false
-margin_left = 500.0
-margin_top = 353.0
-margin_right = 620.0
-margin_bottom = 415.0
+margin_left = 580.0
+margin_top = 193.0
+margin_right = 740.0
+margin_bottom = 258.0
 mouse_filter = 1
-title = "Alors"
-offset = Vector2( 500, 240 )
-overlay = 1
+title = "Supprimer Agent"
+offset = Vector2( 580, 80 )
 slot/0/left_enabled = true
-slot/0/left_type = 1
-slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
 slot/0/right_enabled = true
 slot/0/right_type = 0
 slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Agent",
+"NameToShow": "Supprimer Agent"
+}
 
-[node name="Label" type="Label" parent="Behaviors/258/GFX/GraphNodeThen"]
+[node name="Label" type="Label" parent="Behaviors/301/GFX/GfxDEL1"]
 margin_left = 16.0
 margin_top = 24.0
-margin_right = 104.0
+margin_right = 144.0
 margin_bottom = 38.0
-text = ">     >     >"
-align = 1
 
-[node name="GraphNodeEvt" type="GraphNode" parent="Behaviors/258/GFX"]
-visible = false
-margin_left = 100.0
-margin_top = 213.0
-margin_right = 276.0
-margin_bottom = 305.0
-mouse_filter = 1
-title = "Evénement"
-offset = Vector2( 100, 100 )
-selected = true
-overlay = 1
-slot/0/left_enabled = false
-slot/0/left_type = 0
-slot/0/left_color = Color( 1, 0, 0, 1 )
-slot/0/right_enabled = true
-slot/0/right_type = 1
-slot/0/right_color = Color( 1, 0, 0, 1 )
-slot/1/left_enabled = false
-slot/1/left_type = 0
-slot/1/left_color = Color( 1, 1, 1, 1 )
-slot/1/right_enabled = true
-slot/1/right_type = 3
-slot/1/right_color = Color( 0, 1, 1, 1 )
-slot/2/left_enabled = false
-slot/2/left_type = 0
-slot/2/left_color = Color( 1, 1, 1, 1 )
-slot/2/right_enabled = true
-slot/2/right_type = 3
-slot/2/right_color = Color( 0, 1, 1, 1 )
-
-[node name="OptEvt" type="OptionButton" parent="Behaviors/258/GFX/GraphNodeEvt"]
+[node name="OptActParamAgt" type="Label" parent="Behaviors/301/GFX/GfxDEL1"]
 margin_left = 16.0
-margin_top = 24.0
-margin_right = 160.0
-margin_bottom = 44.0
-text = "Agent seul"
-items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
-selected = 1
+margin_top = 39.0
+margin_right = 144.0
+margin_bottom = 53.0
+text = "Agent"
 
-[node name="@@562" type="PopupMenu" parent="Behaviors/258/GFX/GraphNodeEvt/OptEvt"]
-input_pass_on_modal_close_click = false
-items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
-allow_search = true
+[node name="588" type="Node" parent="Behaviors"]
+script = SubResource( 11 )
+__meta__ = {
+"Agents": "Agent-1",
+"Angle": "360",
+"Dir": "0",
+"Intensity": "1",
+"Name": "Force aléatoire",
+"Type": "Random Force"
+}
 
-[node name="@@561" type="Timer" parent="Behaviors/258/GFX/GraphNodeEvt/OptEvt/@@562"]
-wait_time = 0.3
-one_shot = true
+[node name="589" type="Node" parent="Behaviors"]
+script = SubResource( 12 )
+__meta__ = {
+"Agents": "Agent-2",
+"Angle": "360",
+"Dir": "0",
+"Intensity": "1",
+"Name": "Force aléatoire",
+"Type": "Random Force"
+}
 
-[node name="OptAgentR1" type="OptionButton" parent="Behaviors/258/GFX/GraphNodeEvt"]
-margin_left = 16.0
-margin_top = 45.0
-margin_right = 160.0
-margin_bottom = 65.0
-text = "Agent-2"
-items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
-selected = 2
+[node name="602" type="Node" parent="Behaviors"]
+script = SubResource( 13 )
+__meta__ = {
+"Name": "Div 1",
+"P1": "R1",
+"P2": "Agent-1",
+"P3": "0",
+"R1": "Agent-1",
+"R2": "0",
+"SubType": "OneAgent",
+"Type": "Reaction",
+"p": "1"
+}
 
-[node name="@@564" type="PopupMenu" parent="Behaviors/258/GFX/GraphNodeEvt/OptAgentR1"]
-input_pass_on_modal_close_click = false
-items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false, "Agent-2", null, 2, true, false, 2, 0, null, "", false ]
-allow_search = true
+[node name="603" type="Node" parent="Behaviors"]
+script = SubResource( 14 )
+__meta__ = {
+"Name": "Div 2",
+"P1": "R1",
+"P2": "Agent-2",
+"P3": "0",
+"R1": "Agent-2",
+"R2": "0",
+"SubType": "OneAgent",
+"Type": "Reaction",
+"p": "1"
+}
 
-[node name="@@563" type="Timer" parent="Behaviors/258/GFX/GraphNodeEvt/OptAgentR1/@@564"]
-wait_time = 0.3
-one_shot = true
+[node name="867" type="Node" parent="Behaviors"]
+script = SubResource( 15 )
+__meta__ = {
+"Name": "Mort 1",
+"P1": "0",
+"P2": "R2",
+"P3": "0",
+"R1": "Agent-1",
+"R2": "Mur",
+"SubType": "TwoAgents",
+"Type": "Reaction",
+"p": "100"
+}
 
-[node name="OptAgentR2" type="OptionButton" parent="Behaviors/258/GFX/GraphNodeEvt"]
-visible = false
-margin_left = 16.0
-margin_top = 66.0
-margin_right = 160.0
-margin_bottom = 86.0
-items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null, "Agent-2", null, false, 2, null ]
-selected = 0
-
-[node name="@@566" type="PopupMenu" parent="Behaviors/258/GFX/GraphNodeEvt/OptAgentR2"]
-input_pass_on_modal_close_click = false
-items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false, "Agent-2", null, 2, false, false, 2, 0, null, "", false ]
-allow_search = true
-
-[node name="@@565" type="Timer" parent="Behaviors/258/GFX/GraphNodeEvt/OptAgentR2/@@566"]
-wait_time = 0.3
-one_shot = true
+[node name="868" type="Node" parent="Behaviors"]
+script = SubResource( 16 )
+__meta__ = {
+"Name": "Mort 2",
+"P1": "0",
+"P2": "R2",
+"P3": "0",
+"R1": "Agent-2",
+"R2": "Mur",
+"SubType": "TwoAgents",
+"Type": "Reaction",
+"p": "100"
+}
 
 [node name="Groups" type="Node" parent="."]
 
 [node name="Grids" type="Node" parent="."]
 
 [node name="Environment" type="Node" parent="."]
+
+[node name="Agent-1" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999482, 0, 0.0321891, 0, 1, 0, -0.0321891, 0, 0.999482, -33.2388, 0, 22.4282 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1"]
+shape = SubResource( 3 )
+
+[node name="Agent-1334" type="RigidBody" parent="Environment"]
+transform = Transform( 0.678353, 0, 0.734736, 0, 1, 0, -0.734736, 0, 0.678353, -30.1883, 0, 22.2486 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1334"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1334"]
+shape = SubResource( 3 )
+
+[node name="Agent-1335" type="RigidBody" parent="Environment"]
+transform = Transform( 0.991189, 0, 0.132456, 0, 1, 0, -0.132456, 0, 0.991189, -35.8965, 0, 21.9078 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1335"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1335"]
+shape = SubResource( 3 )
+
+[node name="Agent-1336" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 2.93782e-06, 0, 1, 0, -2.93782e-06, 0, 1, -38.1128, 0, 21.8061 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1336"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1336"]
+shape = SubResource( 3 )
+
+[node name="Agent-1337" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, -1.85159e-06, 0, 1, 0, 1.85159e-06, 0, 1, -38.2984, 0, 19.764 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1337"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1337"]
+shape = SubResource( 3 )
+
+[node name="Agent-1338" type="RigidBody" parent="Environment"]
+transform = Transform( 0.9746, 0, -0.223954, 0, 1, 0, 0.223954, 0, 0.9746, -37.3245, 0, 17.7936 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1338"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1338"]
+shape = SubResource( 3 )
+
+[node name="Agent-1339" type="RigidBody" parent="Environment"]
+transform = Transform( 0.98207, 0, -0.188518, 0, 1, 0, 0.188518, 0, 0.98207, -32.0758, 0, 15.1567 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1339"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1339"]
+shape = SubResource( 3 )
+
+[node name="Agent-1340" type="RigidBody" parent="Environment"]
+transform = Transform( 0.868713, 0, -0.495315, 0, 1, 0, 0.495315, 0, 0.868713, -28.6835, 0, 15.1415 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1340"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1340"]
+shape = SubResource( 3 )
+
+[node name="Agent-1341" type="RigidBody" parent="Environment"]
+transform = Transform( 0.963259, 0, -0.268573, 0, 1, 0, 0.268573, 0, 0.963259, -26.9527, 0, 17.228 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1341"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1341"]
+shape = SubResource( 3 )
+
+[node name="Agent-1342" type="RigidBody" parent="Environment"]
+transform = Transform( 0.998097, 0, -0.0616663, 0, 1, 0, 0.0616663, 0, 0.998097, -27.9136, 0, 20.9397 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1342"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1342"]
+shape = SubResource( 3 )
+
+[node name="Agent-1343" type="RigidBody" parent="Environment"]
+transform = Transform( 0.865262, 0, -0.50132, 0, 1, 0, 0.50132, 0, 0.865262, -34.6901, 0, 20.3112 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1343"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1343"]
+shape = SubResource( 3 )
+
+[node name="Agent-1344" type="RigidBody" parent="Environment"]
+transform = Transform( 0.964869, 0, 0.26273, 0, 1, 0, -0.26273, 0, 0.964869, -35.3243, 0, 18.1769 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1344"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1344"]
+shape = SubResource( 3 )
+
+[node name="Agent-1345" type="RigidBody" parent="Environment"]
+transform = Transform( 0.95638, 0, 0.292125, 0, 1, 0, -0.292125, 0, 0.95638, -35.0382, 0, 15.9735 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1345"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1345"]
+shape = SubResource( 3 )
+
+[node name="Agent-1346" type="RigidBody" parent="Environment"]
+transform = Transform( 0.8228, 0, 0.568331, 0, 1, 0, -0.568331, 0, 0.8228, -31.1896, 0, 17.2648 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1346"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1346"]
+shape = SubResource( 3 )
+
+[node name="Agent-1347" type="RigidBody" parent="Environment"]
+transform = Transform( 0.875986, 0, -0.482336, 0, 1, 0, 0.482336, 0, 0.875986, -30.7405, 0, 19.2358 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1347"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1347"]
+shape = SubResource( 3 )
+
+[node name="Agent-1348" type="RigidBody" parent="Environment"]
+transform = Transform( 0.976313, 0, -0.216364, 0, 1, 0, 0.216364, 0, 0.976313, -31.7891, 0, 20.9828 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1348"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1348"]
+shape = SubResource( 3 )
+
+[node name="Agent-1349" type="RigidBody" parent="Environment"]
+transform = Transform( 0.996483, 0, -0.0837941, 0, 1, 0, 0.0837941, 0, 0.996483, -33.2507, 0, 18.9067 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1349"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1349"]
+shape = SubResource( 3 )
+
+[node name="Agent-1350" type="RigidBody" parent="Environment"]
+transform = Transform( 0.999604, 0, -0.0281503, 0, 1, 0, 0.0281503, 0, 0.999604, -29.1564, 0, 17.1235 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1350"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1350"]
+shape = SubResource( 3 )
+
+[node name="Agent-1351" type="RigidBody" parent="Environment"]
+transform = Transform( 0.98779, 0, 0.155793, 0, 1, 0, -0.155793, 0, 0.98779, -28.1537, 0, 18.9132 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1351"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1351"]
+shape = SubResource( 3 )
+
+[node name="Agent-1352" type="RigidBody" parent="Environment"]
+transform = Transform( 0.968171, 0, 0.250289, 0, 1, 0, -0.250289, 0, 0.968171, -33.1975, 0, 16.8657 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-1",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="257" type="MeshInstance" parent="Environment/Agent-1352"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="Environment/Agent-1352"]
+shape = SubResource( 3 )
+
+[node name="Mur" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -40.8224, 0, 29.0841 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur"]
+shape = SubResource( 9 )
+
+[node name="Mur501" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -42.3178, 0, 27.1402 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur501"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur501"]
+shape = SubResource( 9 )
+
+[node name="Mur502" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -43.3645, 0, 24.5981 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur502"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur502"]
+shape = SubResource( 9 )
+
+[node name="Mur503" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -43.514, 0, 21.9065 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur503"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur503"]
+shape = SubResource( 9 )
+
+[node name="Mur504" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -43.514, 0, 19.3645 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur504"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur504"]
+shape = SubResource( 9 )
+
+[node name="Mur505" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -43.514, 0, 19.3645 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur505"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur505"]
+shape = SubResource( 9 )
+
+[node name="Mur506" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -43.0654, 0, 16.972 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur506"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur506"]
+shape = SubResource( 9 )
+
+[node name="Mur507" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -43.0654, 0, 16.972 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur507"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur507"]
+shape = SubResource( 9 )
+
+[node name="Mur508" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -42.0187, 0, 15.1776 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur508"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur508"]
+shape = SubResource( 9 )
+
+[node name="Mur509" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -42.0187, 0, 15.1776 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur509"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur509"]
+shape = SubResource( 9 )
+
+[node name="Mur510" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -40.8224, 0, 13.5327 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur510"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur510"]
+shape = SubResource( 9 )
+
+[node name="Mur511" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -40.8224, 0, 13.3832 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur511"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur511"]
+shape = SubResource( 9 )
+
+[node name="Mur512" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -39.3271, 0, 12.0374 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur512"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur512"]
+shape = SubResource( 9 )
+
+[node name="Mur513" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -39.3271, 0, 12.0374 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur513"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur513"]
+shape = SubResource( 9 )
+
+[node name="Mur514" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -37.3832, 0, 11.1402 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur514"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur514"]
+shape = SubResource( 9 )
+
+[node name="Mur515" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -37.3832, 0, 11.1402 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur515"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur515"]
+shape = SubResource( 9 )
+
+[node name="Mur516" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -34.9907, 0, 10.6916 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur516"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur516"]
+shape = SubResource( 9 )
+
+[node name="Mur517" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -34.9907, 0, 10.6916 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur517"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur517"]
+shape = SubResource( 9 )
+
+[node name="Mur518" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -31.8505, 0, 10.5421 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur518"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur518"]
+shape = SubResource( 9 )
+
+[node name="Mur519" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.9065, 0, 10.5421 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur519"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur519"]
+shape = SubResource( 9 )
+
+[node name="Mur520" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -27.6635, 0, 10.5421 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur520"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur520"]
+shape = SubResource( 9 )
+
+[node name="Mur521" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -27.6635, 0, 10.5421 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur521"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur521"]
+shape = SubResource( 9 )
+
+[node name="Mur522" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -33.7944, 0, 9.04673 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur522"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur522"]
+shape = SubResource( 9 )
+
+[node name="Mur523" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.8692, 0, 11.2897 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur523"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur523"]
+shape = SubResource( 9 )
+
+[node name="Mur524" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -23.9252, 0, 12.9346 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur524"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur524"]
+shape = SubResource( 9 )
+
+[node name="Mur525" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -23.028, 0, 14.8785 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur525"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur525"]
+shape = SubResource( 9 )
+
+[node name="Mur528" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.8785, 0, 22.2056 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur528"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur528"]
+shape = SubResource( 9 )
+
+[node name="Mur529" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -23.4766, 0, 23.8505 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur529"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur529"]
+shape = SubResource( 9 )
+
+[node name="Mur530" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -24.0748, 0, 24.8972 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur530"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur530"]
+shape = SubResource( 9 )
+
+[node name="Mur531" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -24.5234, 0, 25.7944 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur531"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur531"]
+shape = SubResource( 9 )
+
+[node name="Mur532" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -24.972, 0, 26.8411 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur532"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur532"]
+shape = SubResource( 9 )
+
+[node name="Mur533" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.8692, 0, 27.5888 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur533"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur533"]
+shape = SubResource( 9 )
+
+[node name="Mur534" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -26.7664, 0, 28.3365 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur534"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur534"]
+shape = SubResource( 9 )
+
+[node name="Mur535" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -27.8131, 0, 29.2336 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur535"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur535"]
+shape = SubResource( 9 )
+
+[node name="Mur536" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.0093, 0, 29.8318 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur536"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur536"]
+shape = SubResource( 9 )
+
+[node name="Mur537" type="RigidBody" parent="Environment"]
+transform = Transform( -0.676813, 0, 0.736155, 0, 1, 0, -0.736155, 0, -0.676813, -30.5047, 0, 30.4299 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur537"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur537"]
+shape = SubResource( 9 )
+
+[node name="Mur538" type="RigidBody" parent="Environment"]
+transform = Transform( 0.105432, 0, 0.994426, 0, 1, 0, -0.994426, 0, 0.105432, -32, 0, 30.8785 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur538"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur538"]
+shape = SubResource( 9 )
+
+[node name="Mur539" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -33.4953, 0, 31.1776 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur539"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur539"]
+shape = SubResource( 9 )
+
+[node name="Mur540" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -34.6916, 0, 31.1776 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur540"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur540"]
+shape = SubResource( 9 )
+
+[node name="Mur541" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -35.7383, 0, 31.1776 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur541"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur541"]
+shape = SubResource( 9 )
+
+[node name="Mur542" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -36.785, 0, 30.8785 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur542"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur542"]
+shape = SubResource( 9 )
+
+[node name="Mur543" type="RigidBody" parent="Environment"]
+transform = Transform( 0.838794, 0, 0.544449, 0, 1, 0, -0.544449, 0, 0.838794, -37.6822, 0, 30.4299 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur543"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur543"]
+shape = SubResource( 9 )
+
+[node name="Mur544" type="RigidBody" parent="Environment"]
+transform = Transform( 0.752058, 0, 0.659097, 0, 1, 0, -0.659097, 0, 0.752058, -38.8785, 0, 29.8318 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur544"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur544"]
+shape = SubResource( 9 )
+
+[node name="Agent-2" type="RigidBody" parent="Environment"]
+transform = Transform( 0.998784, 0, 0.0492981, 0, 1, 0, -0.0492981, 0, 0.998784, -28.7471, 0, 24.5696 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2"]
+shape = SubResource( 6 )
+
+[node name="Agent-2565" type="RigidBody" parent="Environment"]
+transform = Transform( -0.259152, 0, -0.965837, 0, 1, 0, 0.965837, 0, -0.259152, -28.4359, 0, 26.5554 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2565"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2565"]
+shape = SubResource( 6 )
+
+[node name="Agent-2566" type="RigidBody" parent="Environment"]
+transform = Transform( -0.302224, 0, -0.953237, 0, 1, 0, 0.953237, 0, -0.302224, -30.0544, 0, 27.8109 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2566"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2566"]
+shape = SubResource( 6 )
+
+[node name="Agent-2567" type="RigidBody" parent="Environment"]
+transform = Transform( 0.00809616, 0, -0.999967, 0, 1, 0, 0.999967, 0, 0.00809616, -31.7872, 0, 28.8848 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2567"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2567"]
+shape = SubResource( 6 )
+
+[node name="Agent-2568" type="RigidBody" parent="Environment"]
+transform = Transform( -0.112349, 0, 0.993669, 0, 1, 0, -0.993669, 0, -0.112349, -33.7191, 0, 28.2841 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2568"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2568"]
+shape = SubResource( 6 )
+
+[node name="Agent-2569" type="RigidBody" parent="Environment"]
+transform = Transform( 0.985155, 0, -0.171669, 0, 1, 0, 0.171669, 0, 0.985155, -35.6054, 0, 28.9599 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2569"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2569"]
+shape = SubResource( 6 )
+
+[node name="Agent-2570" type="RigidBody" parent="Environment"]
+transform = Transform( -0.764084, 0, -0.645117, 0, 1, 0, 0.645117, 0, -0.764084, -37.5143, 0, 28.3455 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2570"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2570"]
+shape = SubResource( 6 )
+
+[node name="Agent-2571" type="RigidBody" parent="Environment"]
+transform = Transform( -0.786386, 0, 0.617735, 0, 1, 0, -0.617735, 0, -0.786386, -38.46, 0, 26.5153 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2571"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2571"]
+shape = SubResource( 6 )
+
+[node name="Agent-2572" type="RigidBody" parent="Environment"]
+transform = Transform( -0.402929, 0, -0.915231, 0, 1, 0, 0.915231, 0, -0.402929, -36.5927, 0, 25.7736 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2572"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2572"]
+shape = SubResource( 6 )
+
+[node name="Agent-2573" type="RigidBody" parent="Environment"]
+transform = Transform( 0.989227, 0, -0.146388, 0, 1, 0, 0.146388, 0, 0.989227, -34.5735, 0, 25.9375 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2573"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2573"]
+shape = SubResource( 6 )
+
+[node name="Agent-2574" type="RigidBody" parent="Environment"]
+transform = Transform( 0.242168, 0, 0.970234, 0, 1, 0, -0.970234, 0, 0.242168, -32.5336, 0, 26.023 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2574"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2574"]
+shape = SubResource( 6 )
+
+[node name="Agent-2575" type="RigidBody" parent="Environment"]
+transform = Transform( 0.887623, 0, 0.460571, 0, 1, 0, -0.460571, 0, 0.887623, -30.5001, 0, 25.8062 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-2575"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-2575"]
+shape = SubResource( 6 )
+
+[node name="Mur1335" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.785, 0, 22.3551 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1335"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1335"]
+shape = SubResource( 9 )
+
+[node name="Mur1336" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.3925, 0, 22.3551 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1336"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1336"]
+shape = SubResource( 9 )
+
+[node name="Mur1337" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.2991, 0, 22.3551 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1337"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1337"]
+shape = SubResource( 9 )
+
+[node name="Mur1338" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.2991, 0, 22.3551 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1338"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1338"]
+shape = SubResource( 9 )
+
+[node name="Mur1339" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14.0561, 0, 22.3551 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1339"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1339"]
+shape = SubResource( 9 )
+
+[node name="Mur1340" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.2336, 0, 15.6262 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1340"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1340"]
+shape = SubResource( 9 )
+
+[node name="Mur1341" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.2336, 0, 15.6262 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1341"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1341"]
+shape = SubResource( 9 )
+
+[node name="Mur1342" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -19.2897, 0, 15.6262 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1342"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1342"]
+shape = SubResource( 9 )
+
+[node name="Mur1343" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.1963, 0, 15.6262 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1343"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1343"]
+shape = SubResource( 9 )
+
+[node name="Mur1344" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.1963, 0, 15.6262 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1344"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1344"]
+shape = SubResource( 9 )
+
+[node name="Mur1345" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5047, 0, 15.7757 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1345"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1345"]
+shape = SubResource( 9 )
+
+[node name="Mur1346" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5047, 0, 15.7757 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1346"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1346"]
+shape = SubResource( 9 )
+
+[node name="Mur1347" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.7103, 0, 15.9252 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1347"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1347"]
+shape = SubResource( 9 )
+
+[node name="Mur1348" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2617, 0, 23.2523 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1348"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1348"]
+shape = SubResource( 9 )
+
+[node name="Mur1349" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2617, 0, 23.2523 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1349"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1349"]
+shape = SubResource( 9 )
+
+[node name="Mur1350" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.6636, 0, 24.2991 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1350"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1350"]
+shape = SubResource( 9 )
+
+[node name="Mur1351" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.3178, 0, 25.4953 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1351"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1351"]
+shape = SubResource( 9 )
+
+[node name="Mur1352" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.6729, 0, 26.8411 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1352"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1352"]
+shape = SubResource( 9 )
+
+[node name="Mur1353" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.42991, 0, 28.0374 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1353"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1353"]
+shape = SubResource( 9 )
+
+[node name="Mur1354" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.78505, 0, 28.785 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1354"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1354"]
+shape = SubResource( 9 )
+
+[node name="Mur1355" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.69159, 0, 29.2336 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1355"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1355"]
+shape = SubResource( 9 )
+
+[node name="Mur1356" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.897194, 0, 29.3832 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1356"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1356"]
+shape = SubResource( 9 )
+
+[node name="Mur1357" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.49532, 0, 29.3832 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1357"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1357"]
+shape = SubResource( 9 )
+
+[node name="Mur1358" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.03738, 0, 28.0374 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1358"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1358"]
+shape = SubResource( 9 )
+
+[node name="Mur1359" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.98131, 0, 26.243 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1359"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1359"]
+shape = SubResource( 9 )
+
+[node name="Mur1360" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.47664, 0, 23.5514 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1360"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1360"]
+shape = SubResource( 9 )
+
+[node name="Mur1361" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.2243, 0, 20.8598 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1361"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1361"]
+shape = SubResource( 9 )
+
+[node name="Mur1362" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.6729, 0, 17.8692 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1362"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1362"]
+shape = SubResource( 9 )
+
+[node name="Mur1363" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.6729, 0, 15.4766 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1363"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1363"]
+shape = SubResource( 9 )
+
+[node name="Mur1364" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.07476, 0, 13.3832 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1364"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1364"]
+shape = SubResource( 9 )
+
+[node name="Mur1365" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.02804, 0, 11.7383 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1365"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1365"]
+shape = SubResource( 9 )
+
+[node name="Mur1366" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.98131, 0, 10.3925 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1366"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1366"]
+shape = SubResource( 9 )
+
+[node name="Mur1367" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.63551, 0, 9.3458 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1367"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1367"]
+shape = SubResource( 9 )
+
+[node name="Mur1368" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.99065, 0, 8.59813 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1368"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1368"]
+shape = SubResource( 9 )
+
+[node name="Mur1369" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.19626, 0, 8 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1369"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1369"]
+shape = SubResource( 9 )
+
+[node name="Mur1370" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.897194, 0, 7.70094 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1370"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1370"]
+shape = SubResource( 9 )
+
+[node name="Mur1371" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.84112, 0, 7.55141 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1371"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1371"]
+shape = SubResource( 9 )
+
+[node name="Mur1372" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.63551, 0, 7.55141 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1372"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1372"]
+shape = SubResource( 9 )
+
+[node name="Mur1373" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.83178, 0, 7.85047 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1373"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1373"]
+shape = SubResource( 9 )
+
+[node name="Mur1374" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.02804, 0, 8.4486 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1374"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1374"]
+shape = SubResource( 9 )
+
+[node name="Mur1375" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.92523, 0, 9.19627 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1375"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1375"]
+shape = SubResource( 9 )
+
+[node name="Mur1376" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.82243, 0, 9.94393 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1376"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1376"]
+shape = SubResource( 9 )
+
+[node name="Mur1377" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.57009, 0, 10.9907 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1377"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1377"]
+shape = SubResource( 9 )
+
+[node name="Mur1378" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1682, 0, 12.1869 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1378"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1378"]
+shape = SubResource( 9 )
+
+[node name="Mur1379" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9159, 0, 13.8318 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1379"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1379"]
+shape = SubResource( 9 )
+
+[node name="Mur1380" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8131, 0, 15.028 )
+collision_layer = 2
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Mur"
+}
+
+[node name="499" type="MeshInstance" parent="Environment/Mur1380"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 7 )
+mesh = SubResource( 8 )
+
+[node name="500" type="CollisionShape" parent="Environment/Mur1380"]
+shape = SubResource( 9 )
+
+[node name="Agent-21401" type="RigidBody" parent="Environment"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.79439, 0, 21.1589 )
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Name": "Agent-2",
+"Param-1": "0",
+"Param-2": "0",
+"Param-3": "0"
+}
+
+[node name="259" type="MeshInstance" parent="Environment/Agent-21401"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="260" type="CollisionShape" parent="Environment/Agent-21401"]
+shape = SubResource( 6 )

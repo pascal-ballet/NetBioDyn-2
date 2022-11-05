@@ -2042,7 +2042,8 @@ unique_name_in_owner = true
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 160.0
-margin_bottom = 44.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 0, 24 )
 text = "Agents en contact"
 items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
 selected = 2
@@ -2050,16 +2051,18 @@ selected = 2
 [node name="OptAgentR1" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeEvt"]
 unique_name_in_owner = true
 margin_left = 16.0
-margin_top = 45.0
+margin_top = 49.0
 margin_right = 160.0
-margin_bottom = 65.0
+margin_bottom = 73.0
+rect_min_size = Vector2( 0, 24 )
 
 [node name="OptAgentR2" type="OptionButton" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric/GraphNodeEvt"]
 unique_name_in_owner = true
 margin_left = 16.0
-margin_top = 66.0
+margin_top = 74.0
 margin_right = 160.0
-margin_bottom = 86.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 0, 24 )
 
 [node name="GraphNodeThen" type="GraphNode" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VSplitEnvCurves/GraphBehav/GraphGeneric"]
 margin_left = 350.0
@@ -2385,13 +2388,15 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 46.0
-margin_bottom = 38.0
+margin_bottom = 55.0
+text = "
+"
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Logic/GfxAND"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 46.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 
 [node name="GfxOR" type="GraphNode" parent="Runtime/GfxNodes/Logic"]
 unique_name_in_owner = true
@@ -2423,13 +2428,15 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 53.0
-margin_bottom = 38.0
+margin_bottom = 55.0
+text = "
+"
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Logic/GfxOR"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 53.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 
 [node name="GfxNOT" type="GraphNode" parent="Runtime/GfxNodes/Logic"]
 unique_name_in_owner = true
@@ -2556,16 +2563,17 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 104.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 valign = 1
 
 [node name="OptAgts" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxADD" groups=["OptEvtAgts"]]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 104.0
-margin_bottom = 59.0
+margin_bottom = 76.0
 
 [node name="GfxTransform" type="GraphNode" parent="Runtime/GfxNodes/Agent"]
 unique_name_in_owner = true
@@ -2609,29 +2617,30 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 134.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 
 [node name="Label3" type="Label" parent="Runtime/GfxNodes/Agent/GfxTransform"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 134.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Cet Agent"
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Agent/GfxTransform"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 134.0
-margin_bottom = 68.0
+margin_bottom = 85.0
 text = "devient un Agent"
 
 [node name="OptAgts2" type="OptionButton" parent="Runtime/GfxNodes/Agent/GfxTransform" groups=["OptEvtAgts"]]
 margin_left = 16.0
-margin_top = 69.0
+margin_top = 86.0
 margin_right = 134.0
-margin_bottom = 89.0
+margin_bottom = 106.0
 
 [node name="GfxDEL" type="GraphNode" parent="Runtime/GfxNodes/Agent"]
 unique_name_in_owner = true
@@ -2663,13 +2672,15 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 144.0
-margin_bottom = 38.0
+margin_bottom = 55.0
+text = "
+"
 
 [node name="OptActParamAgt" type="Label" parent="Runtime/GfxNodes/Agent/GfxDEL"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 144.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Agent"
 
 [node name="Math" type="Node" parent="Runtime/GfxNodes"]
@@ -2756,13 +2767,15 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 46.0
-margin_bottom = 38.0
+margin_bottom = 55.0
+text = "
+"
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Math/GfxPlus"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 46.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 
 [node name="GfxMinus" type="GraphNode" parent="Runtime/GfxNodes/Math"]
 unique_name_in_owner = true
@@ -2794,13 +2807,15 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 46.0
-margin_bottom = 38.0
+margin_bottom = 55.0
+text = "
+"
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Math/GfxMinus"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 46.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 
 [node name="GfxMult" type="GraphNode" parent="Runtime/GfxNodes/Math"]
 unique_name_in_owner = true
@@ -2832,13 +2847,15 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 46.0
-margin_bottom = 38.0
+margin_bottom = 55.0
+text = "
+"
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Math/GfxMult"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 46.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 
 [node name="GfxDiv" type="GraphNode" parent="Runtime/GfxNodes/Math"]
 unique_name_in_owner = true
@@ -2870,13 +2887,15 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 46.0
-margin_bottom = 38.0
+margin_bottom = 55.0
+text = "
+"
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Math/GfxDiv"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 46.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 
 [node name="Mouvment" type="Node" parent="Runtime/GfxNodes"]
 
@@ -2934,22 +2953,23 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 138.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 138.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Cet Agent reçoit F"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 138.0
-margin_bottom = 74.0
+margin_bottom = 91.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer"]
@@ -2969,9 +2989,9 @@ selected = 0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
 margin_left = 16.0
-margin_top = 75.0
+margin_top = 92.0
 margin_right = 138.0
-margin_bottom = 99.0
+margin_bottom = 116.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer2"]
@@ -2989,9 +3009,9 @@ text = "0"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
 margin_left = 16.0
-margin_top = 100.0
+margin_top = 117.0
 margin_right = 138.0
-margin_bottom = 124.0
+margin_bottom = 141.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer3"]
@@ -3009,9 +3029,9 @@ text = "0"
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxForce"]
 margin_left = 16.0
-margin_top = 125.0
+margin_top = 142.0
 margin_right = 138.0
-margin_bottom = 149.0
+margin_bottom = 166.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxForce/HBoxContainer4"]
@@ -3081,22 +3101,23 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 138.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 138.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Agent"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 138.0
-margin_bottom = 74.0
+margin_bottom = 91.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer"]
@@ -3116,9 +3137,9 @@ selected = 0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
 margin_left = 16.0
-margin_top = 75.0
+margin_top = 92.0
 margin_right = 138.0
-margin_bottom = 99.0
+margin_bottom = 116.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer2"]
@@ -3135,9 +3156,9 @@ size_flags_horizontal = 3
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
 margin_left = 16.0
-margin_top = 100.0
+margin_top = 117.0
 margin_right = 138.0
-margin_bottom = 124.0
+margin_bottom = 141.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer3"]
@@ -3154,9 +3175,9 @@ size_flags_horizontal = 3
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTranslation"]
 margin_left = 16.0
-margin_top = 125.0
+margin_top = 142.0
 margin_right = 138.0
-margin_bottom = 149.0
+margin_bottom = 166.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTranslation/HBoxContainer4"]
@@ -3225,29 +3246,30 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 86.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 
 [node name="Label3" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 86.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Cet Agent"
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 86.0
-margin_bottom = 68.0
+margin_bottom = 85.0
 text = "va en"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
 margin_left = 16.0
-margin_top = 69.0
+margin_top = 86.0
 margin_right = 86.0
-margin_bottom = 93.0
+margin_bottom = 110.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer2"]
@@ -3264,9 +3286,9 @@ size_flags_horizontal = 3
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
 margin_left = 16.0
-margin_top = 94.0
+margin_top = 111.0
 margin_right = 86.0
-margin_bottom = 118.0
+margin_bottom = 135.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer3"]
@@ -3283,9 +3305,9 @@ size_flags_horizontal = 3
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxPosition"]
 margin_left = 16.0
-margin_top = 119.0
+margin_top = 136.0
 margin_right = 86.0
-margin_bottom = 143.0
+margin_bottom = 160.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxPosition/HBoxContainer4"]
@@ -3348,36 +3370,37 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 187.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 
 [node name="Label3" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 187.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Cet Agent sera"
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 187.0
-margin_bottom = 68.0
+margin_bottom = 85.0
 text = "placé autour de cet"
 
 [node name="Label4" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
-margin_top = 69.0
+margin_top = 86.0
 margin_right = 187.0
-margin_bottom = 83.0
+margin_bottom = 100.0
 text = "autre Agent, et ce"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxGoAround"]
 margin_left = 16.0
-margin_top = 84.0
+margin_top = 101.0
 margin_right = 187.0
-margin_bottom = 108.0
+margin_bottom = 125.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxGoAround/HBoxContainer3"]
@@ -3452,29 +3475,30 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 124.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 
 [node name="Label4" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 124.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Agent"
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 124.0
-margin_bottom = 68.0
+margin_bottom = 85.0
 text = "tourne autour de"
 
 [node name="HBoxContainer7" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
 margin_left = 16.0
-margin_top = 69.0
+margin_top = 86.0
 margin_right = 124.0
-margin_bottom = 83.0
+margin_bottom = 100.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer7"]
@@ -3484,9 +3508,9 @@ text = "Agent"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
 margin_left = 16.0
-margin_top = 84.0
+margin_top = 101.0
 margin_right = 124.0
-margin_bottom = 104.0
+margin_bottom = 121.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer"]
@@ -3506,16 +3530,16 @@ selected = 1
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
 margin_left = 16.0
-margin_top = 105.0
+margin_top = 122.0
 margin_right = 124.0
-margin_bottom = 119.0
+margin_bottom = 136.0
 text = "d'un angle de"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround"]
 margin_left = 16.0
-margin_top = 120.0
+margin_top = 137.0
 margin_right = 124.0
-margin_bottom = 144.0
+margin_bottom = 161.0
 size_flags_horizontal = 3
 
 [node name="Dx" type="LineEdit" parent="Runtime/GfxNodes/Mouvment/GfxTurnAround/HBoxContainer2"]
@@ -3572,31 +3596,32 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 129.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 
 [node name="Label3" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 129.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Cet Agent"
 align = 1
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 129.0
-margin_bottom = 68.0
+margin_bottom = 85.0
 text = "traverse cet autre"
 align = 1
 
 [node name="Label4" type="Label" parent="Runtime/GfxNodes/Mouvment/GfxCross"]
 margin_left = 16.0
-margin_top = 69.0
+margin_top = 86.0
 margin_right = 129.0
-margin_bottom = 83.0
+margin_bottom = 100.0
 text = "Agent"
 align = 1
 
@@ -3656,46 +3681,47 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 164.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 
 [node name="Label4" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 164.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Cet Agent"
 align = 1
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 164.0
-margin_bottom = 68.0
-text = "se lie avec cet autre"
+margin_bottom = 85.0
+text = "se lie avec cet"
 align = 1
 
 [node name="Label5" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
 margin_left = 16.0
-margin_top = 69.0
+margin_top = 86.0
 margin_right = 164.0
-margin_bottom = 83.0
-text = "Agent"
+margin_bottom = 100.0
+text = "autre Agent"
 align = 1
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
 margin_left = 16.0
-margin_top = 84.0
+margin_top = 101.0
 margin_right = 164.0
-margin_bottom = 98.0
+margin_bottom = 115.0
 text = "Le lien se rompt quand"
 
 [node name="HBoxContainer8" type="HBoxContainer" parent="Runtime/GfxNodes/Interaction/GfxSpring"]
 margin_left = 16.0
-margin_top = 99.0
+margin_top = 116.0
 margin_right = 164.0
-margin_bottom = 123.0
+margin_bottom = 140.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Interaction/GfxSpring/HBoxContainer8"]
@@ -3720,18 +3746,24 @@ margin_right = 143.0
 margin_bottom = 221.0
 mouse_filter = 1
 title = "Lire Paramètre Agent"
-slot/0/left_enabled = true
+slot/0/left_enabled = false
 slot/0/left_type = 3
 slot/0/left_color = Color( 0, 1, 1, 1 )
 slot/0/right_enabled = true
 slot/0/right_type = 3
 slot/0/right_color = Color( 0, 1, 1, 1 )
-slot/1/left_enabled = false
-slot/1/left_type = 0
-slot/1/left_color = Color( 1, 1, 1, 1 )
-slot/1/right_enabled = true
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = false
 slot/1/right_type = 2
 slot/1/right_color = Color( 0, 1, 0, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 2
+slot/2/right_color = Color( 0, 1, 0, 1 )
 __meta__ = {
 "Category": "Paramètres",
 "NameToShow": "Lire Paramètre Agent"
@@ -3742,14 +3774,21 @@ margin_left = 16.0
 margin_top = 24.0
 margin_right = 151.0
 margin_bottom = 38.0
+align = 1
+
+[node name="Label2" type="Label" parent="Runtime/GfxNodes/Parameter/GfxReadParamAgent"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 151.0
+margin_bottom = 53.0
 text = "Agent"
 align = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Parameter/GfxReadParamAgent"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 54.0
 margin_right = 151.0
-margin_bottom = 59.0
+margin_bottom = 74.0
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Parameter/GfxReadParamAgent/HBoxContainer2"]
 margin_top = 3.0
@@ -3806,31 +3845,32 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 24.0
 margin_right = 152.0
-margin_bottom = 38.0
-text = ">     >     >"
+margin_bottom = 55.0
+text = ">     >     >
+"
 align = 1
 
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
-margin_top = 39.0
+margin_top = 56.0
 margin_right = 152.0
-margin_bottom = 53.0
+margin_bottom = 70.0
 text = "Cet Agent"
 align = 1
 
 [node name="Label3" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 152.0
-margin_bottom = 68.0
+margin_bottom = 85.0
 text = "fixe cette valeur pour"
 align = 1
 
 [node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
-margin_top = 69.0
+margin_top = 86.0
 margin_right = 152.0
-margin_bottom = 89.0
+margin_bottom = 106.0
 text = "X"
 items = [ "X", null, false, 0, null, "Y", null, false, 0, null, "Z", null, false, 1, null, "Vx", null, false, 2, null, "Horloge", null, false, 3, null, "pH", null, false, 4, null, "Température", null, false, 5, null, "Valeur Case", null, false, 6, null ]
 selected = 0

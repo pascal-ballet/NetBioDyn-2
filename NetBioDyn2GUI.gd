@@ -1980,7 +1980,7 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if box.length() >= 17 && box.left(17) == "GfxReadParamAgent":
 		if lst_input_boxes.size()==1:
 			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
-			var opt_param:OptionButton = gfx_box.get_child(1).get_child(1)
+			var opt_param:OptionButton = gfx_box.get_child(2).get_child(1)
 			var P:String = opt_param.text
 			if P == "": # Manage ERRORS
 				_gfx_compiles = false
@@ -2275,7 +2275,7 @@ func _on_BtnAddGfxNode() -> void:
 		
 	if gfx_node_name == "GfxReadParamAgent":
 		var behav:Node = get_selected_behavior()
-		var opt_param:OptionButton = gfx_node.get_child(1).get_child(1)
+		var opt_param:OptionButton = gfx_node.get_child(2).get_child(1)
 		opt_param.clear()
 
 #var _sel_gfx_node:GraphNode = null
