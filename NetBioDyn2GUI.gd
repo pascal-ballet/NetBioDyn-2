@@ -1826,10 +1826,17 @@ func action(tree, R1, nb_agents) -> void:
 		var green = load("res://Images/bg_focus.tres")
 		get_node("%LabelGfxMsg").set("custom_styles/normal",green)
 	
+	print("==== code_acts ====")
+	print(code_acts)
+	
 	if code_acts=="":
 		code_acts="""
 		pass
 		"""
+	if code_acts.begins_with("\n") == false:
+		code_acts = """
+		""" + code_acts
+		
 	var code:String = """
 extends Node
 """ + code_P + """
@@ -1996,7 +2003,7 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 				populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agent_type ) )
 				return ""
 			var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 1)
-			code_cdts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+var_name+""".get_meta("""+in_quote(P)+""")"""
+			code_cdts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"float("+var_name+""".get_meta("""+in_quote(P)+"""))"""
 		else:# Manage ERRORS
 			_gfx_compiles = false
 			_gfx_compile_msg = "Boite Lire Paramètre Agent non-reliée à un Agent"
@@ -2153,7 +2160,7 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 				populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agent_type ) )
 				return ""
 			var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 1)
-			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+var_name+""".get_meta("""+in_quote(P)+""")"""
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+"float("+var_name+""".get_meta("""+in_quote(P)+"""))"""
 		else:# Manage ERRORS
 			_gfx_compiles = false
 			_gfx_compile_msg = "Boite Lire Paramètre Agent non-reliée à un Agent"

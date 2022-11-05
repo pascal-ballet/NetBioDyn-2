@@ -23,7 +23,8 @@ extends Node
 
 # Generic Behavior
 func action(tree, R1, nb_agents) -> void:
-	if  (R1.get_meta(\"Name\") == \"Agent-1\" or R1.is_in_group(\"Agent-1\")):R1.set_meta(\"Age\",(R1.get_meta(\"Age\") + (1)))"
+	if  (R1.get_meta(\"Name\") == \"Agent-1\" or R1.is_in_group(\"Agent-1\")):R1.set_meta(\"Age\",(R1.get_meta(\"Age\") + (1)))
+"
 
 [sub_resource type="GDScript" id=10]
 script/source = "
