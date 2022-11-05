@@ -2138,6 +2138,50 @@ func generate_code_acts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 			_gfx_compile_msg = "Boite Traverser non-reliée"
 			return ""
 
+	# Read Parameters for Agent
+	if box.length() >= 17 && box.left(17) == "GfxReadParamAgent":
+		if lst_input_boxes.size()==1:
+			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+			var opt_param:OptionButton = gfx_box.get_child(2).get_child(1)
+			var P:String = opt_param.text
+			if P == "": # Manage ERRORS
+				_gfx_compiles = false
+				_gfx_compile_msg = "Boite Lire Paramètre Agent : choisir un paramètre"
+				# Fill the box
+				var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 1)
+				var agent_type:String = get_var_agent_type(var_name)
+				populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agent_type ) )
+				return ""
+			var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 1)
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+var_name+""".get_meta("""+in_quote(P)+""")"""
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Lire Paramètre Agent non-reliée à un Agent"
+			return ""
+
+
+	# Write Parameter for Agent
+	if box.length() >= 18 && box.left(18) == "GfxWriteParamAgent":
+		if lst_input_boxes.size()==3:
+			var gfx_box:GraphNode = self._gfx_code_current.get_node(box)
+			var opt_param:OptionButton = gfx_box.get_child(3).get_child(1)
+			var P:String = opt_param.text
+			if P == "": # Manage ERRORS
+				_gfx_compiles = false
+				_gfx_compile_msg = "Boite Ecrire Paramètre Agent : choisir un paramètre"
+				# Fill the box
+				var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 1)
+				var agent_type:String = get_var_agent_type(var_name)
+				populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agent_type ) )
+				return ""
+			var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 1)
+			code_acts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+var_name+""".set_meta("""+in_quote(P)+""","""+ generate_code_cdts(lst_input_boxes[2], lst_cnx, gfx) +""")"""
+		else:# Manage ERRORS
+			_gfx_compiles = false
+			_gfx_compile_msg = "Boite Lire Paramètre Agent non-reliée à un Agent"
+			return ""
+
+
 	return code_acts
 
 # Find the Type of an Agent stored in the variable var_name
@@ -2281,6 +2325,11 @@ func _on_BtnAddGfxNode() -> void:
 	if gfx_node_name == "GfxReadParamAgent":
 		var behav:Node = get_selected_behavior()
 		var opt_param:OptionButton = gfx_node.get_child(2).get_child(1)
+		opt_param.clear()
+
+	if gfx_node_name == "GfxWriteParamAgent":
+		var behav:Node = get_selected_behavior()
+		var opt_param:OptionButton = gfx_node.get_child(3).get_child(1)
 		opt_param.clear()
 
 #var _sel_gfx_node:GraphNode = null

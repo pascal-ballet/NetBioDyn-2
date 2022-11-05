@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=12 format=2]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_color = Color( 0.735984, 0.621225, 0.962688, 1 )
@@ -6,6 +6,42 @@ albedo_color = Color( 0.735984, 0.621225, 0.962688, 1 )
 [sub_resource type="SphereMesh" id=2]
 
 [sub_resource type="SphereShape" id=3]
+
+[sub_resource type="GDScript" id=8]
+script/source = "
+extends Node
+
+# Generic Behavior
+func action(tree, R1, nb_agents) -> void:
+	if ((R1.get_meta(\"Age\")>(100)) and  (R1.get_meta(\"Name\") == \"Agent-1\" or R1.is_in_group(\"Agent-1\"))):
+		R1.queue_free()
+"
+
+[sub_resource type="GDScript" id=9]
+script/source = "
+extends Node
+
+# Generic Behavior
+func action(tree, R1, nb_agents) -> void:
+	if  (R1.get_meta(\"Name\") == \"Agent-1\" or R1.is_in_group(\"Agent-1\")):R1.set_meta(\"Age\",(R1.get_meta(\"Age\") + (1)))"
+
+[sub_resource type="GDScript" id=10]
+script/source = "
+extends Node
+
+# Generic Behavior
+func action(tree, R1, nb_agents) -> void:
+	if ((R1.get_meta(\"Age\")>(100)) and  (R1.get_meta(\"Name\") == \"Agent-1\" or R1.is_in_group(\"Agent-1\"))):
+		R1.queue_free()
+"
+
+[sub_resource type="GDScript" id=11]
+script/source = "
+extends Node
+
+# Generic Behavior
+func action(tree, R1, nb_agents) -> void:
+	if  (R1.get_meta(\"Name\") == \"Agent-1\" or R1.is_in_group(\"Agent-1\")):R1.set_meta(\"Age\",(R1.get_meta(\"Age\") + (1)))"
 
 [sub_resource type="GDScript" id=7]
 script/source = "
@@ -39,6 +75,2396 @@ func action(tree, R1, nb_agents) -> void:
 	pass"
 
 [node name="Simulator" type="Spatial"]
+
+[node name="@Entities@1989" type="Node" parent="."]
+
+[node name="Agent-1" type="RigidBody" parent="@Entities@1989"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -999, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Age": "0",
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="@Entities@1989/Agent-1"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="@Entities@1989/Agent-1"]
+shape = SubResource( 3 )
+
+[node name="@Behaviors@2027" type="Node" parent="."]
+
+[node name="259" type="Node" parent="@Behaviors@2027"]
+script = SubResource( 8 )
+__meta__ = {
+"Links": [ {
+"from": "GfxCompare1",
+"from_port": 0,
+"to": "GfxAND1",
+"to_port": 1
+}, {
+"from": "GfxReadParamAgent1",
+"from_port": 2,
+"to": "GfxCompare1",
+"to_port": 0
+}, {
+"from": "GraphNodeEvt",
+"from_port": 0,
+"to": "GfxAND1",
+"to_port": 0
+}, {
+"from": "GfxNumber1",
+"from_port": 0,
+"to": "GfxCompare1",
+"to_port": 1
+}, {
+"from": "GraphNodeEvt",
+"from_port": 1,
+"to": "GfxReadParamAgent1",
+"to_port": 1
+}, {
+"from": "GfxAND1",
+"from_port": 0,
+"to": "GraphNodeThen",
+"to_port": 0
+}, {
+"from": "GfxDEL1",
+"from_port": 0,
+"to": "GraphNodeEnd",
+"to_port": 0
+}, {
+"from": "GraphNodeThen",
+"from_port": 0,
+"to": "GfxDEL1",
+"to_port": 0
+}, {
+"from": "GfxReadParamAgent1",
+"from_port": 1,
+"to": "GfxDEL1",
+"to_port": 1
+} ],
+"Name": "Générique",
+"Type": "Generic"
+}
+
+[node name="GFX" type="Node" parent="@Behaviors@2027/259"]
+
+[node name="GraphNodeEvt" type="GraphNode" parent="@Behaviors@2027/259/GFX"]
+visible = false
+margin_left = 10.0
+margin_top = 113.0
+margin_right = 186.0
+margin_bottom = 217.0
+mouse_filter = 1
+title = "Evénement"
+offset = Vector2( 10, 0 )
+overlay = 1
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 3
+slot/2/right_color = Color( 0, 1, 1, 1 )
+
+[node name="OptEvt" type="OptionButton" parent="@Behaviors@2027/259/GFX/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 160.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 0, 24 )
+text = "Agent seul"
+items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
+selected = 1
+
+[node name="@@1991" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1990" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptEvt/@@1991"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1062" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1992" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptEvt/1062"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1061" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptEvt/1062"]
+wait_time = 0.3
+one_shot = true
+
+[node name="423" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1993" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1063" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="422" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR1" type="OptionButton" parent="@Behaviors@2027/259/GFX/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 49.0
+margin_right = 160.0
+margin_bottom = 73.0
+rect_min_size = Vector2( 0, 24 )
+text = "Agent-1"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
+selected = 1
+
+[node name="@@1995" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1994" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR1/@@1995"]
+wait_time = 0.3
+one_shot = true
+
+[node name="425" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1996" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1066" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="424" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1065" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1997" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR1/1065"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1064" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR1/1065"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR2" type="OptionButton" parent="@Behaviors@2027/259/GFX/GraphNodeEvt"]
+visible = false
+margin_left = 16.0
+margin_top = 74.0
+margin_right = 160.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 0, 24 )
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
+selected = 0
+
+[node name="@@1999" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1998" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR2/@@1999"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1068" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2000" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR2/1068"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1067" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR2/1068"]
+wait_time = 0.3
+one_shot = true
+
+[node name="427" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2001" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1069" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="426" type="Timer" parent="@Behaviors@2027/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxAND1" type="GraphNode" parent="@Behaviors@2027/259/GFX"]
+visible = false
+margin_left = 700.0
+margin_top = 93.0
+margin_right = 762.0
+margin_bottom = 169.0
+mouse_filter = 1
+title = "ET"
+offset = Vector2( 700, -20 )
+slot/0/left_enabled = true
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 1
+slot/1/left_color = Color( 1, 0, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Logique",
+"NameToShow": "Et"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@2027/259/GFX/GfxAND1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 46.0
+margin_bottom = 55.0
+text = "
+"
+
+[node name="Label2" type="Label" parent="@Behaviors@2027/259/GFX/GfxAND1"]
+margin_left = 16.0
+margin_top = 56.0
+margin_right = 46.0
+margin_bottom = 70.0
+
+[node name="GfxNumber1" type="GraphNode" parent="@Behaviors@2027/259/GFX"]
+visible = false
+margin_left = 340.0
+margin_top = 413.0
+margin_right = 440.0
+margin_bottom = 472.0
+mouse_filter = 1
+title = "Nombre"
+offset = Vector2( 340, 300 )
+slot/0/left_enabled = false
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "Nombre"
+}
+
+[node name="Label" type="LineEdit" parent="@Behaviors@2027/259/GFX/GfxNumber1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 84.0
+margin_bottom = 48.0
+text = "100"
+
+[node name="@@2002" type="Timer" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@2004" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@2003" type="Timer" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label/@@2004"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1070" type="Timer" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="1072" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@2005" type="Timer" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label/1072"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1071" type="Timer" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label/1072"]
+wait_time = 0.3
+one_shot = true
+
+[node name="428" type="Timer" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="430" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@2006" type="Timer" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1073" type="Timer" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="429" type="Timer" parent="@Behaviors@2027/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeThen" type="GraphNode" parent="@Behaviors@2027/259/GFX"]
+visible = false
+margin_left = 820.0
+margin_top = 93.0
+margin_right = 940.0
+margin_bottom = 155.0
+mouse_filter = 1
+title = "Alors"
+offset = Vector2( 820, -20 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="@Behaviors@2027/259/GFX/GraphNodeThen"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="GfxCompare1" type="GraphNode" parent="@Behaviors@2027/259/GFX"]
+visible = false
+margin_left = 500.0
+margin_top = 313.0
+margin_right = 643.0
+margin_bottom = 393.0
+mouse_filter = 1
+title = "Comparer"
+offset = Vector2( 500, 200 )
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color( 0, 1, 0, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 1
+slot/1/right_color = Color( 1, 0, 0, 1 )
+slot/2/left_enabled = true
+slot/2/left_type = 2
+slot/2/left_color = Color( 0, 1, 0, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Logique",
+"NameToShow": "Comparer"
+}
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="@Behaviors@2027/259/GFX/GfxCompare1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 127.0
+margin_bottom = 38.0
+
+[node name="Label" type="Label" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer2"]
+margin_right = 52.0
+margin_bottom = 14.0
+text = "Valeur 1"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="@Behaviors@2027/259/GFX/GfxCompare1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 127.0
+margin_bottom = 59.0
+
+[node name="OptCdtParamObj" type="OptionButton" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3"]
+margin_right = 111.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = ">"
+items = [ "==", null, false, 0, null, "!=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
+selected = 2
+
+[node name="@@2008" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2007" type="Timer" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@2008"]
+wait_time = 0.3
+one_shot = true
+
+[node name="432" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2009" type="Timer" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1076" type="Timer" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="431" type="Timer" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1075" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2010" type="Timer" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/1075"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1074" type="Timer" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/1075"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="@Behaviors@2027/259/GFX/GfxCompare1"]
+margin_left = 16.0
+margin_top = 60.0
+margin_right = 127.0
+margin_bottom = 74.0
+
+[node name="Label" type="Label" parent="@Behaviors@2027/259/GFX/GfxCompare1/HBoxContainer4"]
+margin_right = 52.0
+margin_bottom = 14.0
+text = "Valeur 2"
+
+[node name="GfxReadParamAgent1" type="GraphNode" parent="@Behaviors@2027/259/GFX"]
+visible = false
+margin_left = 280.0
+margin_top = 193.0
+margin_right = 447.0
+margin_bottom = 290.0
+mouse_filter = 1
+title = "Lire Paramètre Agent"
+offset = Vector2( 280, 80 )
+slot/0/left_enabled = true
+slot/0/left_type = -1
+slot/0/left_color = Color( 1, 1, 1, 0 )
+slot/0/right_enabled = true
+slot/0/right_type = -1
+slot/0/right_color = Color( 1, 1, 1, 0 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 2
+slot/2/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Paramètres",
+"NameToShow": "Lire Paramètre Agent",
+"Var": "Prev"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 151.0
+margin_bottom = 38.0
+align = 1
+
+[node name="Label2" type="Label" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 151.0
+margin_bottom = 70.0
+text = "Agent
+"
+align = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 71.0
+margin_right = 151.0
+margin_bottom = 91.0
+
+[node name="Label" type="Label" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1/HBoxContainer2"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "Param :"
+
+[node name="OptCdtParamParam" type="OptionButton" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1/HBoxContainer2"]
+margin_left = 52.0
+margin_right = 105.0
+margin_bottom = 20.0
+text = "Age"
+items = [ "", null, false, 0, null, "Age", null, false, 1, null ]
+selected = 1
+
+[node name="@@2012" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2011" type="Timer" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@2012"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1078" type="PopupMenu" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2013" type="Timer" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/1078"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1077" type="Timer" parent="@Behaviors@2027/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/1078"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeEnd" type="GraphNode" parent="@Behaviors@2027/259/GFX"]
+visible = false
+margin_left = 1460.0
+margin_top = 113.0
+margin_right = 1580.0
+margin_bottom = 175.0
+mouse_filter = 1
+title = "Fin"
+offset = Vector2( 1460, 0 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="@Behaviors@2027/259/GFX/GraphNodeEnd"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+
+[node name="GfxDEL1" type="GraphNode" parent="@Behaviors@2027/259/GFX"]
+visible = false
+margin_left = 1260.0
+margin_top = 113.0
+margin_right = 1420.0
+margin_bottom = 189.0
+mouse_filter = 1
+title = "Supprimer Agent"
+offset = Vector2( 1260, 0 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Agent",
+"NameToShow": "Supprimer Agent"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@2027/259/GFX/GfxDEL1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 144.0
+margin_bottom = 55.0
+text = "
+"
+
+[node name="OptActParamAgt" type="Label" parent="@Behaviors@2027/259/GFX/GfxDEL1"]
+margin_left = 16.0
+margin_top = 56.0
+margin_right = 144.0
+margin_bottom = 70.0
+text = "Agent"
+
+[node name="935" type="Node" parent="@Behaviors@2027"]
+script = SubResource( 9 )
+__meta__ = {
+"Links": [ {
+"from": "GraphNodeEvt",
+"from_port": 0,
+"to": "GraphNodeThen",
+"to_port": 0
+}, {
+"from": "GraphNodeEvt",
+"from_port": 1,
+"to": "GfxReadParamAgent1",
+"to_port": 1
+}, {
+"from": "GraphNodeThen",
+"from_port": 0,
+"to": "GfxWriteParamAgent1",
+"to_port": 0
+}, {
+"from": "GfxReadParamAgent1",
+"from_port": 1,
+"to": "GfxWriteParamAgent1",
+"to_port": 1
+}, {
+"from": "GfxPlus1",
+"from_port": 0,
+"to": "GfxWriteParamAgent1",
+"to_port": 2
+}, {
+"from": "GfxReadParamAgent1",
+"from_port": 2,
+"to": "GfxPlus1",
+"to_port": 0
+}, {
+"from": "GfxNumber1",
+"from_port": 0,
+"to": "GfxPlus1",
+"to_port": 1
+}, {
+"from": "GfxWriteParamAgent1",
+"from_port": 0,
+"to": "GraphNodeEnd",
+"to_port": 0
+} ],
+"Name": "Age++",
+"Type": "Generic"
+}
+
+[node name="GFX" type="Node" parent="@Behaviors@2027/935"]
+
+[node name="GraphNodeEvt" type="GraphNode" parent="@Behaviors@2027/935/GFX"]
+visible = false
+margin_left = 10.0
+margin_top = 113.0
+margin_right = 186.0
+margin_bottom = 217.0
+mouse_filter = 1
+title = "Evénement"
+offset = Vector2( 10, 0 )
+overlay = 1
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 3
+slot/2/right_color = Color( 0, 1, 1, 1 )
+
+[node name="OptEvt" type="OptionButton" parent="@Behaviors@2027/935/GFX/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 160.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 0, 24 )
+text = "Agent seul"
+items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
+selected = 1
+
+[node name="@@2015" type="PopupMenu" parent="@Behaviors@2027/935/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2014" type="Timer" parent="@Behaviors@2027/935/GFX/GraphNodeEvt/OptEvt/@@2015"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR1" type="OptionButton" parent="@Behaviors@2027/935/GFX/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 49.0
+margin_right = 160.0
+margin_bottom = 73.0
+rect_min_size = Vector2( 0, 24 )
+text = "Agent-1"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
+selected = 1
+
+[node name="@@2017" type="PopupMenu" parent="@Behaviors@2027/935/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2016" type="Timer" parent="@Behaviors@2027/935/GFX/GraphNodeEvt/OptAgentR1/@@2017"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR2" type="OptionButton" parent="@Behaviors@2027/935/GFX/GraphNodeEvt"]
+visible = false
+margin_left = 16.0
+margin_top = 74.0
+margin_right = 160.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 0, 24 )
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
+selected = 0
+
+[node name="@@2019" type="PopupMenu" parent="@Behaviors@2027/935/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2018" type="Timer" parent="@Behaviors@2027/935/GFX/GraphNodeEvt/OptAgentR2/@@2019"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeEnd" type="GraphNode" parent="@Behaviors@2027/935/GFX"]
+visible = false
+margin_left = 1000.0
+margin_top = 113.0
+margin_right = 1120.0
+margin_bottom = 175.0
+mouse_filter = 1
+title = "Fin"
+offset = Vector2( 1000, 0 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="@Behaviors@2027/935/GFX/GraphNodeEnd"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+
+[node name="GraphNodeThen" type="GraphNode" parent="@Behaviors@2027/935/GFX"]
+visible = false
+margin_left = 560.0
+margin_top = 113.0
+margin_right = 680.0
+margin_bottom = 175.0
+mouse_filter = 1
+title = "Alors"
+offset = Vector2( 560, 0 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="@Behaviors@2027/935/GFX/GraphNodeThen"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="GfxWriteParamAgent1" type="GraphNode" parent="@Behaviors@2027/935/GFX"]
+visible = false
+margin_left = 780.0
+margin_top = 133.0
+margin_right = 952.0
+margin_bottom = 245.0
+mouse_filter = 1
+title = "Ecrire Paramètre"
+offset = Vector2( 780, 20 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = true
+slot/3/left_type = 2
+slot/3/left_color = Color( 0, 1, 0, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Paramètres",
+"NameToShow": "Ecrire Paramètre Agent",
+"Var": "Prev"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@2027/935/GFX/GfxWriteParamAgent1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 156.0
+margin_bottom = 55.0
+text = ">     >     >
+"
+align = 1
+
+[node name="Label2" type="Label" parent="@Behaviors@2027/935/GFX/GfxWriteParamAgent1"]
+margin_left = 16.0
+margin_top = 56.0
+margin_right = 156.0
+margin_bottom = 70.0
+text = "Cet Agent"
+align = 1
+
+[node name="Label3" type="Label" parent="@Behaviors@2027/935/GFX/GfxWriteParamAgent1"]
+margin_left = 16.0
+margin_top = 71.0
+margin_right = 156.0
+margin_bottom = 85.0
+text = "met cette valeur dans"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="@Behaviors@2027/935/GFX/GfxWriteParamAgent1"]
+margin_left = 16.0
+margin_top = 86.0
+margin_right = 156.0
+margin_bottom = 106.0
+
+[node name="Label" type="Label" parent="@Behaviors@2027/935/GFX/GfxWriteParamAgent1/HBoxContainer"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "param :"
+
+[node name="OptCdtParamParam" type="OptionButton" parent="@Behaviors@2027/935/GFX/GfxWriteParamAgent1/HBoxContainer"]
+margin_left = 52.0
+margin_right = 140.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Age"
+items = [ "", null, false, 0, null, "Age", null, false, 1, null ]
+selected = 1
+
+[node name="@@2021" type="PopupMenu" parent="@Behaviors@2027/935/GFX/GfxWriteParamAgent1/HBoxContainer/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2020" type="Timer" parent="@Behaviors@2027/935/GFX/GfxWriteParamAgent1/HBoxContainer/OptCdtParamParam/@@2021"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxReadParamAgent1" type="GraphNode" parent="@Behaviors@2027/935/GFX"]
+visible = false
+margin_left = 380.0
+margin_top = 193.0
+margin_right = 547.0
+margin_bottom = 290.0
+mouse_filter = 1
+title = "Lire Paramètre Agent"
+offset = Vector2( 380, 80 )
+slot/0/left_enabled = true
+slot/0/left_type = -1
+slot/0/left_color = Color( 1, 1, 1, 0 )
+slot/0/right_enabled = true
+slot/0/right_type = -1
+slot/0/right_color = Color( 1, 1, 1, 0 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 2
+slot/2/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Paramètres",
+"NameToShow": "Lire Paramètre Agent",
+"Var": "Prev"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@2027/935/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 151.0
+margin_bottom = 38.0
+align = 1
+
+[node name="Label2" type="Label" parent="@Behaviors@2027/935/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 151.0
+margin_bottom = 70.0
+text = "Agent
+"
+align = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="@Behaviors@2027/935/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 71.0
+margin_right = 151.0
+margin_bottom = 91.0
+
+[node name="Label" type="Label" parent="@Behaviors@2027/935/GFX/GfxReadParamAgent1/HBoxContainer2"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "Param :"
+
+[node name="OptCdtParamParam" type="OptionButton" parent="@Behaviors@2027/935/GFX/GfxReadParamAgent1/HBoxContainer2"]
+margin_left = 52.0
+margin_right = 105.0
+margin_bottom = 20.0
+text = "Age"
+items = [ "", null, false, 0, null, "Age", null, false, 1, null ]
+selected = 1
+
+[node name="@@2023" type="PopupMenu" parent="@Behaviors@2027/935/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@2022" type="Timer" parent="@Behaviors@2027/935/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@2023"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxNumber1" type="GraphNode" parent="@Behaviors@2027/935/GFX"]
+visible = false
+margin_left = 420.0
+margin_top = 373.0
+margin_right = 520.0
+margin_bottom = 432.0
+mouse_filter = 1
+title = "Nombre"
+offset = Vector2( 420, 260 )
+slot/0/left_enabled = false
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "Nombre"
+}
+
+[node name="Label" type="LineEdit" parent="@Behaviors@2027/935/GFX/GfxNumber1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 84.0
+margin_bottom = 48.0
+text = "1"
+caret_position = 1
+
+[node name="@@2024" type="Timer" parent="@Behaviors@2027/935/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@2026" type="PopupMenu" parent="@Behaviors@2027/935/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@2025" type="Timer" parent="@Behaviors@2027/935/GFX/GfxNumber1/Label/@@2026"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxPlus1" type="GraphNode" parent="@Behaviors@2027/935/GFX"]
+visible = false
+margin_left = 640.0
+margin_top = 273.0
+margin_right = 702.0
+margin_bottom = 349.0
+mouse_filter = 1
+title = "+"
+offset = Vector2( 640, 160 )
+show_close = true
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color( 0, 1, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 2
+slot/1/left_color = Color( 0, 1, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "+"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@2027/935/GFX/GfxPlus1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 46.0
+margin_bottom = 55.0
+text = "
+"
+
+[node name="Label2" type="Label" parent="@Behaviors@2027/935/GFX/GfxPlus1"]
+margin_left = 16.0
+margin_top = 56.0
+margin_right = 46.0
+margin_bottom = 70.0
+
+[node name="@Groups@2028" type="Node" parent="."]
+
+[node name="Grids40510811464" type="Node" parent="."]
+
+[node name="@Environment@2029" type="Node" parent="."]
+
+[node name="@Entities@1177" type="Node" parent="."]
+
+[node name="Agent-1" type="RigidBody" parent="@Entities@1177"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -999, 0, 0 )
+visible = false
+gravity_scale = 0.0
+contacts_reported = 1
+contact_monitor = true
+sleeping = true
+linear_damp = 5.0
+__meta__ = {
+"Age": "0",
+"Name": "Agent-1"
+}
+
+[node name="257" type="MeshInstance" parent="@Entities@1177/Agent-1"]
+transform = Transform( 1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0 )
+material_override = SubResource( 1 )
+mesh = SubResource( 2 )
+
+[node name="258" type="CollisionShape" parent="@Entities@1177/Agent-1"]
+shape = SubResource( 3 )
+
+[node name="@Behaviors@1215" type="Node" parent="."]
+
+[node name="259" type="Node" parent="@Behaviors@1215"]
+script = SubResource( 10 )
+__meta__ = {
+"Links": [ {
+"from": "GfxCompare1",
+"from_port": 0,
+"to": "GfxAND1",
+"to_port": 1
+}, {
+"from": "GfxReadParamAgent1",
+"from_port": 2,
+"to": "GfxCompare1",
+"to_port": 0
+}, {
+"from": "GraphNodeEvt",
+"from_port": 0,
+"to": "GfxAND1",
+"to_port": 0
+}, {
+"from": "GfxNumber1",
+"from_port": 0,
+"to": "GfxCompare1",
+"to_port": 1
+}, {
+"from": "GraphNodeEvt",
+"from_port": 1,
+"to": "GfxReadParamAgent1",
+"to_port": 1
+}, {
+"from": "GfxAND1",
+"from_port": 0,
+"to": "GraphNodeThen",
+"to_port": 0
+}, {
+"from": "GfxDEL1",
+"from_port": 0,
+"to": "GraphNodeEnd",
+"to_port": 0
+}, {
+"from": "GraphNodeThen",
+"from_port": 0,
+"to": "GfxDEL1",
+"to_port": 0
+}, {
+"from": "GfxReadParamAgent1",
+"from_port": 1,
+"to": "GfxDEL1",
+"to_port": 1
+} ],
+"Name": "Générique",
+"Type": "Generic"
+}
+
+[node name="GFX" type="Node" parent="@Behaviors@1215/259"]
+
+[node name="GraphNodeEvt" type="GraphNode" parent="@Behaviors@1215/259/GFX"]
+visible = false
+margin_left = 10.0
+margin_top = 113.0
+margin_right = 186.0
+margin_bottom = 217.0
+mouse_filter = 1
+title = "Evénement"
+offset = Vector2( 10, 0 )
+overlay = 1
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 3
+slot/2/right_color = Color( 0, 1, 1, 1 )
+
+[node name="OptEvt" type="OptionButton" parent="@Behaviors@1215/259/GFX/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 160.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 0, 24 )
+text = "Agent seul"
+items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
+selected = 1
+
+[node name="@@1790" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1789" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/@@1790"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1179" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1791" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/@@1179"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1178" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/@@1179"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1062" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1792" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/1062"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1180" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/1062"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1061" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/1062"]
+wait_time = 0.3
+one_shot = true
+
+[node name="423" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1793" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1181" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1063" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="422" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR1" type="OptionButton" parent="@Behaviors@1215/259/GFX/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 49.0
+margin_right = 160.0
+margin_bottom = 73.0
+rect_min_size = Vector2( 0, 24 )
+text = "Agent-1"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
+selected = 1
+
+[node name="@@1795" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1794" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/@@1795"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1183" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1796" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/@@1183"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1182" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/@@1183"]
+wait_time = 0.3
+one_shot = true
+
+[node name="425" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1797" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1184" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1066" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="424" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1065" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1798" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/1065"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1185" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/1065"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1064" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR1/1065"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR2" type="OptionButton" parent="@Behaviors@1215/259/GFX/GraphNodeEvt"]
+visible = false
+margin_left = 16.0
+margin_top = 74.0
+margin_right = 160.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 0, 24 )
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
+selected = 0
+
+[node name="@@1800" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1799" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/@@1800"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1187" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1801" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/@@1187"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1186" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/@@1187"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1068" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1802" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/1068"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1188" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/1068"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1067" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/1068"]
+wait_time = 0.3
+one_shot = true
+
+[node name="427" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1803" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1189" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1069" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="426" type="Timer" parent="@Behaviors@1215/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxAND1" type="GraphNode" parent="@Behaviors@1215/259/GFX"]
+visible = false
+margin_left = 700.0
+margin_top = 93.0
+margin_right = 762.0
+margin_bottom = 169.0
+mouse_filter = 1
+title = "ET"
+offset = Vector2( 700, -20 )
+slot/0/left_enabled = true
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 1
+slot/1/left_color = Color( 1, 0, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Logique",
+"NameToShow": "Et"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@1215/259/GFX/GfxAND1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 46.0
+margin_bottom = 55.0
+text = "
+"
+
+[node name="Label2" type="Label" parent="@Behaviors@1215/259/GFX/GfxAND1"]
+margin_left = 16.0
+margin_top = 56.0
+margin_right = 46.0
+margin_bottom = 70.0
+
+[node name="GfxNumber1" type="GraphNode" parent="@Behaviors@1215/259/GFX"]
+visible = false
+margin_left = 340.0
+margin_top = 413.0
+margin_right = 440.0
+margin_bottom = 472.0
+mouse_filter = 1
+title = "Nombre"
+offset = Vector2( 340, 300 )
+slot/0/left_enabled = false
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "Nombre"
+}
+
+[node name="Label" type="LineEdit" parent="@Behaviors@1215/259/GFX/GfxNumber1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 84.0
+margin_bottom = 48.0
+text = "100"
+
+[node name="@@1804" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1806" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1805" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/@@1806"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1190" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1192" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1807" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/@@1192"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1191" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/@@1192"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1070" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="1072" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1808" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/1072"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1193" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/1072"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1071" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/1072"]
+wait_time = 0.3
+one_shot = true
+
+[node name="428" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="430" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1809" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1194" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1073" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="429" type="Timer" parent="@Behaviors@1215/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeThen" type="GraphNode" parent="@Behaviors@1215/259/GFX"]
+visible = false
+margin_left = 820.0
+margin_top = 93.0
+margin_right = 940.0
+margin_bottom = 155.0
+mouse_filter = 1
+title = "Alors"
+offset = Vector2( 820, -20 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="@Behaviors@1215/259/GFX/GraphNodeThen"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="GfxCompare1" type="GraphNode" parent="@Behaviors@1215/259/GFX"]
+visible = false
+margin_left = 500.0
+margin_top = 313.0
+margin_right = 643.0
+margin_bottom = 393.0
+mouse_filter = 1
+title = "Comparer"
+offset = Vector2( 500, 200 )
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color( 0, 1, 0, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 1
+slot/1/right_color = Color( 1, 0, 0, 1 )
+slot/2/left_enabled = true
+slot/2/left_type = 2
+slot/2/left_color = Color( 0, 1, 0, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Logique",
+"NameToShow": "Comparer"
+}
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="@Behaviors@1215/259/GFX/GfxCompare1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 127.0
+margin_bottom = 38.0
+
+[node name="Label" type="Label" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer2"]
+margin_right = 52.0
+margin_bottom = 14.0
+text = "Valeur 1"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="@Behaviors@1215/259/GFX/GfxCompare1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 127.0
+margin_bottom = 59.0
+
+[node name="OptCdtParamObj" type="OptionButton" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3"]
+margin_right = 111.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = ">"
+items = [ "==", null, false, 0, null, "!=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
+selected = 2
+
+[node name="@@1811" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1810" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1811"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1196" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1812" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1196"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1195" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1196"]
+wait_time = 0.3
+one_shot = true
+
+[node name="432" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1813" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1197" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1076" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="431" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1075" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1814" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/1075"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1198" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/1075"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1074" type="Timer" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/1075"]
+wait_time = 0.3
+one_shot = true
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="@Behaviors@1215/259/GFX/GfxCompare1"]
+margin_left = 16.0
+margin_top = 60.0
+margin_right = 127.0
+margin_bottom = 74.0
+
+[node name="Label" type="Label" parent="@Behaviors@1215/259/GFX/GfxCompare1/HBoxContainer4"]
+margin_right = 52.0
+margin_bottom = 14.0
+text = "Valeur 2"
+
+[node name="GfxReadParamAgent1" type="GraphNode" parent="@Behaviors@1215/259/GFX"]
+visible = false
+margin_left = 280.0
+margin_top = 193.0
+margin_right = 447.0
+margin_bottom = 290.0
+mouse_filter = 1
+title = "Lire Paramètre Agent"
+offset = Vector2( 280, 80 )
+slot/0/left_enabled = true
+slot/0/left_type = -1
+slot/0/left_color = Color( 1, 1, 1, 0 )
+slot/0/right_enabled = true
+slot/0/right_type = -1
+slot/0/right_color = Color( 1, 1, 1, 0 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 2
+slot/2/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Paramètres",
+"NameToShow": "Lire Paramètre Agent",
+"Var": "Prev"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 151.0
+margin_bottom = 38.0
+align = 1
+
+[node name="Label2" type="Label" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 151.0
+margin_bottom = 70.0
+text = "Agent
+"
+align = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 71.0
+margin_right = 151.0
+margin_bottom = 91.0
+
+[node name="Label" type="Label" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "Param :"
+
+[node name="OptCdtParamParam" type="OptionButton" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2"]
+margin_left = 52.0
+margin_right = 105.0
+margin_bottom = 20.0
+text = "Age"
+items = [ "", null, false, 0, null, "Age", null, false, 1, null ]
+selected = 1
+
+[node name="@@1816" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1815" type="Timer" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1816"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1200" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1817" type="Timer" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1200"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1199" type="Timer" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1200"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1078" type="PopupMenu" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1818" type="Timer" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/1078"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1201" type="Timer" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/1078"]
+wait_time = 0.3
+one_shot = true
+
+[node name="1077" type="Timer" parent="@Behaviors@1215/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/1078"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeEnd" type="GraphNode" parent="@Behaviors@1215/259/GFX"]
+visible = false
+margin_left = 1460.0
+margin_top = 113.0
+margin_right = 1580.0
+margin_bottom = 175.0
+mouse_filter = 1
+title = "Fin"
+offset = Vector2( 1460, 0 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="@Behaviors@1215/259/GFX/GraphNodeEnd"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+
+[node name="GfxDEL1" type="GraphNode" parent="@Behaviors@1215/259/GFX"]
+visible = false
+margin_left = 1260.0
+margin_top = 113.0
+margin_right = 1420.0
+margin_bottom = 189.0
+mouse_filter = 1
+title = "Supprimer Agent"
+offset = Vector2( 1260, 0 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Agent",
+"NameToShow": "Supprimer Agent"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@1215/259/GFX/GfxDEL1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 144.0
+margin_bottom = 55.0
+text = "
+"
+
+[node name="OptActParamAgt" type="Label" parent="@Behaviors@1215/259/GFX/GfxDEL1"]
+margin_left = 16.0
+margin_top = 56.0
+margin_right = 144.0
+margin_bottom = 70.0
+text = "Agent"
+
+[node name="935" type="Node" parent="@Behaviors@1215"]
+script = SubResource( 11 )
+__meta__ = {
+"Links": [ {
+"from": "GraphNodeEvt",
+"from_port": 0,
+"to": "GraphNodeThen",
+"to_port": 0
+}, {
+"from": "GraphNodeEvt",
+"from_port": 1,
+"to": "GfxReadParamAgent1",
+"to_port": 1
+}, {
+"from": "GraphNodeThen",
+"from_port": 0,
+"to": "GfxWriteParamAgent1",
+"to_port": 0
+}, {
+"from": "GfxReadParamAgent1",
+"from_port": 1,
+"to": "GfxWriteParamAgent1",
+"to_port": 1
+}, {
+"from": "GfxPlus1",
+"from_port": 0,
+"to": "GfxWriteParamAgent1",
+"to_port": 2
+}, {
+"from": "GfxReadParamAgent1",
+"from_port": 2,
+"to": "GfxPlus1",
+"to_port": 0
+}, {
+"from": "GfxNumber1",
+"from_port": 0,
+"to": "GfxPlus1",
+"to_port": 1
+}, {
+"from": "GfxWriteParamAgent1",
+"from_port": 0,
+"to": "GraphNodeEnd",
+"to_port": 0
+} ],
+"Name": "Age++",
+"Type": "Generic"
+}
+
+[node name="GFX" type="Node" parent="@Behaviors@1215/935"]
+
+[node name="GraphNodeEvt" type="GraphNode" parent="@Behaviors@1215/935/GFX"]
+visible = false
+margin_left = 10.0
+margin_top = 113.0
+margin_right = 186.0
+margin_bottom = 217.0
+mouse_filter = 1
+title = "Evénement"
+offset = Vector2( 10, 0 )
+overlay = 1
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 1
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 3
+slot/2/right_color = Color( 0, 1, 1, 1 )
+
+[node name="OptEvt" type="OptionButton" parent="@Behaviors@1215/935/GFX/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 160.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 0, 24 )
+text = "Agent seul"
+items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
+selected = 1
+
+[node name="@@1820" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1819" type="Timer" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptEvt/@@1820"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1203" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1821" type="Timer" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptEvt/@@1203"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1202" type="Timer" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptEvt/@@1203"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR1" type="OptionButton" parent="@Behaviors@1215/935/GFX/GraphNodeEvt"]
+margin_left = 16.0
+margin_top = 49.0
+margin_right = 160.0
+margin_bottom = 73.0
+rect_min_size = Vector2( 0, 24 )
+text = "Agent-1"
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
+selected = 1
+
+[node name="@@1823" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1822" type="Timer" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR1/@@1823"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1205" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1824" type="Timer" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR1/@@1205"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1204" type="Timer" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR1/@@1205"]
+wait_time = 0.3
+one_shot = true
+
+[node name="OptAgentR2" type="OptionButton" parent="@Behaviors@1215/935/GFX/GraphNodeEvt"]
+visible = false
+margin_left = 16.0
+margin_top = 74.0
+margin_right = 160.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 0, 24 )
+items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
+selected = 0
+
+[node name="@@1826" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1825" type="Timer" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR2/@@1826"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1207" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1827" type="Timer" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR2/@@1207"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1206" type="Timer" parent="@Behaviors@1215/935/GFX/GraphNodeEvt/OptAgentR2/@@1207"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GraphNodeEnd" type="GraphNode" parent="@Behaviors@1215/935/GFX"]
+visible = false
+margin_left = 1000.0
+margin_top = 113.0
+margin_right = 1120.0
+margin_bottom = 175.0
+mouse_filter = 1
+title = "Fin"
+offset = Vector2( 1000, 0 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="@Behaviors@1215/935/GFX/GraphNodeEnd"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+
+[node name="GraphNodeThen" type="GraphNode" parent="@Behaviors@1215/935/GFX"]
+visible = false
+margin_left = 560.0
+margin_top = 113.0
+margin_right = 680.0
+margin_bottom = 175.0
+mouse_filter = 1
+title = "Alors"
+offset = Vector2( 560, 0 )
+overlay = 1
+slot/0/left_enabled = true
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+
+[node name="Label" type="Label" parent="@Behaviors@1215/935/GFX/GraphNodeThen"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 104.0
+margin_bottom = 38.0
+text = ">     >     >"
+align = 1
+
+[node name="GfxWriteParamAgent1" type="GraphNode" parent="@Behaviors@1215/935/GFX"]
+unique_name_in_owner = true
+visible = false
+margin_left = 780.0
+margin_top = 133.0
+margin_right = 952.0
+margin_bottom = 245.0
+mouse_filter = 1
+title = "Ecrire Paramètre"
+offset = Vector2( 780, 20 )
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+slot/3/left_enabled = true
+slot/3/left_type = 2
+slot/3/left_color = Color( 0, 1, 0, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Paramètres",
+"NameToShow": "Ecrire Paramètre Agent",
+"Var": "Prev"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 156.0
+margin_bottom = 55.0
+text = ">     >     >
+"
+align = 1
+
+[node name="Label2" type="Label" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1"]
+margin_left = 16.0
+margin_top = 56.0
+margin_right = 156.0
+margin_bottom = 70.0
+text = "Cet Agent"
+align = 1
+
+[node name="Label3" type="Label" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1"]
+margin_left = 16.0
+margin_top = 71.0
+margin_right = 156.0
+margin_bottom = 85.0
+text = "met cette valeur dans"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1"]
+margin_left = 16.0
+margin_top = 86.0
+margin_right = 156.0
+margin_bottom = 106.0
+
+[node name="Label" type="Label" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1/HBoxContainer"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "param :"
+
+[node name="OptCdtParamParam" type="OptionButton" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1/HBoxContainer"]
+margin_left = 52.0
+margin_right = 140.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Age"
+items = [ "", null, false, 0, null, "Age", null, false, 1, null ]
+selected = 1
+
+[node name="@@1829" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1/HBoxContainer/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1828" type="Timer" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1/HBoxContainer/OptCdtParamParam/@@1829"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1209" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1/HBoxContainer/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1830" type="Timer" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1/HBoxContainer/OptCdtParamParam/@@1209"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1208" type="Timer" parent="@Behaviors@1215/935/GFX/GfxWriteParamAgent1/HBoxContainer/OptCdtParamParam/@@1209"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxReadParamAgent1" type="GraphNode" parent="@Behaviors@1215/935/GFX"]
+visible = false
+margin_left = 380.0
+margin_top = 193.0
+margin_right = 547.0
+margin_bottom = 290.0
+mouse_filter = 1
+title = "Lire Paramètre Agent"
+offset = Vector2( 380, 80 )
+slot/0/left_enabled = true
+slot/0/left_type = -1
+slot/0/left_color = Color( 1, 1, 1, 0 )
+slot/0/right_enabled = true
+slot/0/right_type = -1
+slot/0/right_color = Color( 1, 1, 1, 0 )
+slot/1/left_enabled = true
+slot/1/left_type = 3
+slot/1/left_color = Color( 0, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 2
+slot/2/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Paramètres",
+"NameToShow": "Lire Paramètre Agent",
+"Var": "Prev"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 151.0
+margin_bottom = 38.0
+align = 1
+
+[node name="Label2" type="Label" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 151.0
+margin_bottom = 70.0
+text = "Agent
+"
+align = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1"]
+margin_left = 16.0
+margin_top = 71.0
+margin_right = 151.0
+margin_bottom = 91.0
+
+[node name="Label" type="Label" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1/HBoxContainer2"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "Param :"
+
+[node name="OptCdtParamParam" type="OptionButton" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1/HBoxContainer2"]
+margin_left = 52.0
+margin_right = 105.0
+margin_bottom = 20.0
+text = "Age"
+items = [ "", null, false, 0, null, "Age", null, false, 1, null ]
+selected = 1
+
+[node name="@@1832" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1831" type="Timer" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1832"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1211" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1833" type="Timer" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1211"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1210" type="Timer" parent="@Behaviors@1215/935/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1211"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxNumber1" type="GraphNode" parent="@Behaviors@1215/935/GFX"]
+visible = false
+margin_left = 420.0
+margin_top = 373.0
+margin_right = 520.0
+margin_bottom = 432.0
+mouse_filter = 1
+title = "Nombre"
+offset = Vector2( 420, 260 )
+slot/0/left_enabled = false
+slot/0/left_type = 1
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "Nombre"
+}
+
+[node name="Label" type="LineEdit" parent="@Behaviors@1215/935/GFX/GfxNumber1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 84.0
+margin_bottom = 48.0
+text = "1"
+caret_position = 1
+
+[node name="@@1834" type="Timer" parent="@Behaviors@1215/935/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1836" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1835" type="Timer" parent="@Behaviors@1215/935/GFX/GfxNumber1/Label/@@1836"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1212" type="Timer" parent="@Behaviors@1215/935/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1214" type="PopupMenu" parent="@Behaviors@1215/935/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1837" type="Timer" parent="@Behaviors@1215/935/GFX/GfxNumber1/Label/@@1214"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1213" type="Timer" parent="@Behaviors@1215/935/GFX/GfxNumber1/Label/@@1214"]
+wait_time = 0.3
+one_shot = true
+
+[node name="GfxPlus1" type="GraphNode" parent="@Behaviors@1215/935/GFX"]
+unique_name_in_owner = true
+visible = false
+margin_left = 640.0
+margin_top = 273.0
+margin_right = 702.0
+margin_bottom = 349.0
+mouse_filter = 1
+title = "+"
+offset = Vector2( 640, 160 )
+show_close = true
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color( 0, 1, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 1, 0, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 2
+slot/1/left_color = Color( 0, 1, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"Category": "Math",
+"NameToShow": "+"
+}
+
+[node name="Label" type="Label" parent="@Behaviors@1215/935/GFX/GfxPlus1"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 46.0
+margin_bottom = 55.0
+text = "
+"
+
+[node name="Label2" type="Label" parent="@Behaviors@1215/935/GFX/GfxPlus1"]
+margin_left = 16.0
+margin_top = 56.0
+margin_right = 46.0
+margin_bottom = 70.0
+
+[node name="@Groups@1216" type="Node" parent="."]
+
+[node name="Grids4051081" type="Node" parent="."]
+
+[node name="@Environment@1217" type="Node" parent="."]
 
 [node name="@Entities@1060" type="Node" parent="."]
 
@@ -159,10 +2585,40 @@ text = "Agent seul"
 items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
 selected = 1
 
+[node name="@@1839" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1838" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt/@@1839"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1051" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1840" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt/@@1051"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1050" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt/@@1051"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1062" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt"]
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1841" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt/@@1062"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1052" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt/@@1062"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1061" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt/@@1062"]
 wait_time = 0.3
@@ -172,6 +2628,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1842" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1053" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1063" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptEvt/423"]
 wait_time = 0.3
@@ -191,10 +2655,40 @@ text = "Agent-1"
 items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
 selected = 1
 
+[node name="@@1844" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1843" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1/@@1844"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1055" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1845" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1/@@1055"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1054" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1/@@1055"]
+wait_time = 0.3
+one_shot = true
+
 [node name="425" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1846" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1056" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1066" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1/425"]
 wait_time = 0.3
@@ -208,6 +2702,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1847" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1/@@1065"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1057" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1/@@1065"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1064" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR1/@@1065"]
 wait_time = 0.3
@@ -223,10 +2725,40 @@ rect_min_size = Vector2( 0, 24 )
 items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
 selected = 0
 
+[node name="@@1849" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1848" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2/@@1849"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1059" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1850" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2/@@1059"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1058" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2/@@1059"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1068" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1851" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2/@@1068"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1060" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2/@@1068"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1067" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2/@@1068"]
 wait_time = 0.3
@@ -236,6 +2768,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1852" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1061" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1069" type="Timer" parent="@Behaviors@1079/259/GFX/GraphNodeEvt/OptAgentR2/427"]
 wait_time = 0.3
@@ -312,11 +2852,43 @@ margin_right = 84.0
 margin_bottom = 48.0
 text = "100"
 
+[node name="@@1853" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1855" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1854" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label/@@1855"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1062" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1064" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1856" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label/@@1064"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1063" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label/@@1064"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1070" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label"]
 wait_time = 0.65
 
 [node name="@@1072" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1857" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label/@@1072"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1065" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label/@@1072"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1071" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label/@@1072"]
 wait_time = 0.3
@@ -327,6 +2899,14 @@ wait_time = 0.65
 
 [node name="430" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1858" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1066" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1073" type="Timer" parent="@Behaviors@1079/259/GFX/GfxNumber1/Label/430"]
 wait_time = 0.3
@@ -482,10 +3062,40 @@ text = ">"
 items = [ "==", null, false, 0, null, "!=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
 selected = 2
 
+[node name="@@1860" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1859" type="Timer" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1860"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1068" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1861" type="Timer" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1068"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1067" type="Timer" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1068"]
+wait_time = 0.3
+one_shot = true
+
 [node name="432" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1862" type="Timer" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1069" type="Timer" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1076" type="Timer" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
 wait_time = 0.3
@@ -499,6 +3109,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1863" type="Timer" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1075"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1070" type="Timer" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1075"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1074" type="Timer" parent="@Behaviors@1079/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1075"]
 wait_time = 0.3
@@ -584,10 +3202,40 @@ text = "Age"
 items = [ "", null, false, 0, null, "Age", null, false, 1, null ]
 selected = 1
 
+[node name="@@1865" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1864" type="Timer" parent="@Behaviors@1079/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1865"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1072" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1866" type="Timer" parent="@Behaviors@1079/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1072"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1071" type="Timer" parent="@Behaviors@1079/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1072"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1078" type="PopupMenu" parent="@Behaviors@1079/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1867" type="Timer" parent="@Behaviors@1079/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1078"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1073" type="Timer" parent="@Behaviors@1079/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1078"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1077" type="Timer" parent="@Behaviors@1079/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1078"]
 wait_time = 0.3
@@ -718,10 +3366,40 @@ text = "Agent seul"
 items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
 selected = 1
 
+[node name="@@1869" type="PopupMenu" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1868" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/@@1869"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1075" type="PopupMenu" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1870" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/@@1075"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1074" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/@@1075"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@976" type="PopupMenu" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt"]
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1871" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/@@976"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1076" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/@@976"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@975" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/@@976"]
 wait_time = 0.3
@@ -731,6 +3409,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1872" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/@@832"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1077" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/@@832"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@977" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/@@832"]
 wait_time = 0.3
@@ -744,6 +3430,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1873" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1078" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@978" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptEvt/423"]
 wait_time = 0.3
@@ -767,10 +3461,40 @@ text = "Agent-1"
 items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
 selected = 1
 
+[node name="@@1875" type="PopupMenu" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1874" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/@@1875"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1080" type="PopupMenu" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1876" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/@@1080"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1079" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/@@1080"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@980" type="PopupMenu" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1877" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/@@980"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1081" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/@@980"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@979" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/@@980"]
 wait_time = 0.3
@@ -780,6 +3504,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1878" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1082" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@981" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/425"]
 wait_time = 0.3
@@ -797,6 +3529,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1879" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/@@835"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1083" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/@@835"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@982" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR1/@@835"]
 wait_time = 0.3
@@ -816,10 +3556,40 @@ rect_min_size = Vector2( 0, 24 )
 items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
 selected = 0
 
+[node name="@@1881" type="PopupMenu" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1880" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/@@1881"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1085" type="PopupMenu" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1882" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/@@1085"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1084" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/@@1085"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@984" type="PopupMenu" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1883" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/@@984"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1086" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/@@984"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@983" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/@@984"]
 wait_time = 0.3
@@ -829,6 +3599,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1884" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/@@838"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1087" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/@@838"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@985" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/@@838"]
 wait_time = 0.3
@@ -842,6 +3620,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1885" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1088" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@986" type="Timer" parent="@Behaviors@849/259/GFX/GraphNodeEvt/OptAgentR2/427"]
 wait_time = 0.3
@@ -922,11 +3708,43 @@ margin_right = 84.0
 margin_bottom = 48.0
 text = "100"
 
+[node name="@@1886" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1888" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1887" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/@@1888"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1089" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1091" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1889" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/@@1091"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1090" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/@@1091"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@987" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label"]
 wait_time = 0.65
 
 [node name="@@989" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1890" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/@@989"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1092" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/@@989"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@988" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/@@989"]
 wait_time = 0.3
@@ -937,6 +3755,14 @@ wait_time = 0.65
 
 [node name="@@842" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1891" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/@@842"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1093" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/@@842"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@990" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/@@842"]
 wait_time = 0.3
@@ -951,6 +3777,14 @@ wait_time = 0.65
 
 [node name="430" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1892" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1094" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@991" type="Timer" parent="@Behaviors@849/259/GFX/GfxNumber1/Label/430"]
 wait_time = 0.3
@@ -1110,10 +3944,40 @@ text = ">"
 items = [ "==", null, false, 0, null, "!=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
 selected = 2
 
+[node name="@@1894" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1893" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1894"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1096" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1895" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1096"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1095" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1096"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@993" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1896" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@993"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1097" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@993"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@992" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@993"]
 wait_time = 0.3
@@ -1123,6 +3987,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1897" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1098" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@994" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
 wait_time = 0.3
@@ -1140,6 +4012,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1898" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@845"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1099" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@845"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@995" type="Timer" parent="@Behaviors@849/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@845"]
 wait_time = 0.3
@@ -1229,10 +4109,40 @@ margin_bottom = 20.0
 items = [ "", null, false, 0, null ]
 selected = 0
 
+[node name="@@1900" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1899" type="Timer" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1900"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1101" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1901" type="Timer" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1101"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1100" type="Timer" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1101"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@997" type="PopupMenu" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1902" type="Timer" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@997"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1102" type="Timer" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@997"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@996" type="Timer" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@997"]
 wait_time = 0.3
@@ -1242,6 +4152,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1903" type="Timer" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@848"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1103" type="Timer" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@848"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@998" type="Timer" parent="@Behaviors@849/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@848"]
 wait_time = 0.3
@@ -1376,10 +4294,40 @@ text = "Agent seul"
 items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
 selected = 1
 
+[node name="@@1905" type="PopupMenu" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1904" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@1905"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1105" type="PopupMenu" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1906" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@1105"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1104" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@1105"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1000" type="PopupMenu" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt"]
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1907" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@1000"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1106" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@1000"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@999" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@1000"]
 wait_time = 0.3
@@ -1389,6 +4337,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1908" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@782"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1107" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@782"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1001" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@782"]
 wait_time = 0.3
@@ -1402,6 +4358,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1909" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@633"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1108" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@633"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1002" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/@@633"]
 wait_time = 0.3
@@ -1419,6 +4383,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1910" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1109" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/423"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1003" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptEvt/423"]
 wait_time = 0.3
@@ -1446,10 +4418,40 @@ text = "Agent-1"
 items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
 selected = 1
 
+[node name="@@1912" type="PopupMenu" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1911" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@1912"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1111" type="PopupMenu" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1913" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@1111"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1110" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@1111"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1005" type="PopupMenu" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1914" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@1005"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1112" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@1005"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1004" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@1005"]
 wait_time = 0.3
@@ -1459,6 +4461,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1915" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@786"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1113" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@786"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1006" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@786"]
 wait_time = 0.3
@@ -1472,6 +4482,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1916" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1114" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/425"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1007" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/425"]
 wait_time = 0.3
@@ -1493,6 +4511,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1917" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@636"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1115" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@636"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1008" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR1/@@636"]
 wait_time = 0.3
@@ -1516,10 +4542,40 @@ rect_min_size = Vector2( 0, 24 )
 items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
 selected = 0
 
+[node name="@@1919" type="PopupMenu" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1918" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@1919"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1117" type="PopupMenu" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1920" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@1117"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1116" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@1117"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1010" type="PopupMenu" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1921" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@1010"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1118" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@1010"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1009" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@1010"]
 wait_time = 0.3
@@ -1529,6 +4585,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1922" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@790"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1119" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@790"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1011" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@790"]
 wait_time = 0.3
@@ -1542,6 +4606,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1923" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@639"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1120" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@639"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1012" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/@@639"]
 wait_time = 0.3
@@ -1559,6 +4631,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1924" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1121" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/427"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1013" type="Timer" parent="@Behaviors@650/259/GFX/GraphNodeEvt/OptAgentR2/427"]
 wait_time = 0.3
@@ -1644,11 +4724,43 @@ margin_bottom = 48.0
 text = "100"
 caret_position = 3
 
+[node name="@@1925" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1927" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1926" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@1927"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1122" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1124" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1928" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@1124"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1123" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@1124"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1014" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label"]
 wait_time = 0.65
 
 [node name="@@1016" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1929" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@1016"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1125" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@1016"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1015" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@1016"]
 wait_time = 0.3
@@ -1659,6 +4771,14 @@ wait_time = 0.65
 
 [node name="@@795" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1930" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@795"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1126" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@795"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1017" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@795"]
 wait_time = 0.3
@@ -1673,6 +4793,14 @@ wait_time = 0.65
 
 [node name="@@643" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1931" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@643"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1127" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@643"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1018" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/@@643"]
 wait_time = 0.3
@@ -1691,6 +4819,14 @@ wait_time = 0.65
 
 [node name="430" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1932" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1128" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/430"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1019" type="Timer" parent="@Behaviors@650/259/GFX/GfxNumber1/Label/430"]
 wait_time = 0.3
@@ -1865,10 +5001,40 @@ margin_bottom = 20.0
 items = [ "", null, false, 0, null ]
 selected = 0
 
+[node name="@@1934" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1933" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1934"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1130" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1935" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1130"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1129" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1130"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1021" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1936" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1021"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1131" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1021"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1020" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1021"]
 wait_time = 0.3
@@ -1878,6 +5044,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1937" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@799"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1132" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@799"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1022" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@799"]
 wait_time = 0.3
@@ -1891,6 +5065,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1938" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@646"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1133" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@646"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1023" type="Timer" parent="@Behaviors@650/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@646"]
 wait_time = 0.3
@@ -1962,10 +5144,40 @@ text = ">"
 items = [ "==", null, false, 0, null, "!=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
 selected = 2
 
+[node name="@@1940" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1939" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1940"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1135" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1941" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1135"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1134" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1135"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1025" type="PopupMenu" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1942" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1025"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1136" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1025"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1024" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1025"]
 wait_time = 0.3
@@ -1975,6 +5187,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1943" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@802"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1137" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@802"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1026" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@802"]
 wait_time = 0.3
@@ -1988,6 +5208,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1944" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1138" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1027" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/432"]
 wait_time = 0.3
@@ -2009,6 +5237,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1945" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@648"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1139" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@648"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1028" type="Timer" parent="@Behaviors@650/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@648"]
 wait_time = 0.3
@@ -2159,10 +5395,40 @@ text = "Agent seul"
 items = [ "Tour de simulation", null, false, 0, null, "Agent seul", null, false, 1, null, "Agents en contact", null, false, 2, null ]
 selected = 1
 
+[node name="@@1947" type="PopupMenu" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1946" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@1947"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1141" type="PopupMenu" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt"]
+input_pass_on_modal_close_click = false
+items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1948" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@1141"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1140" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@1141"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1030" type="PopupMenu" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt"]
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1949" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@1030"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1142" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@1030"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1029" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@1030"]
 wait_time = 0.3
@@ -2172,6 +5438,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1950" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@806"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1143" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@806"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1031" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@806"]
 wait_time = 0.3
@@ -2185,6 +5459,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1951" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@613"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1144" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@613"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1032" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@613"]
 wait_time = 0.3
@@ -2202,6 +5484,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "Tour de simulation", null, 2, false, false, 0, 0, null, "", false, "Agent seul", null, 2, true, false, 1, 0, null, "", false, "Agents en contact", null, 2, false, false, 2, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1952" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@423"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1145" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@423"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1033" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptEvt/@@423"]
 wait_time = 0.3
@@ -2230,10 +5520,40 @@ text = "Agent-1"
 items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
 selected = 1
 
+[node name="@@1954" type="PopupMenu" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1953" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@1954"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1147" type="PopupMenu" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1955" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@1147"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1146" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@1147"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1035" type="PopupMenu" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1956" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@1035"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1148" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@1035"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1034" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@1035"]
 wait_time = 0.3
@@ -2243,6 +5563,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1957" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@810"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1149" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@810"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1036" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@810"]
 wait_time = 0.3
@@ -2256,6 +5584,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1958" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@616"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1150" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@616"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1037" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@616"]
 wait_time = 0.3
@@ -2273,6 +5609,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Agent-1", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1959" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@425"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1151" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@425"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1038" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR1/@@425"]
 wait_time = 0.3
@@ -2301,10 +5645,40 @@ rect_min_size = Vector2( 0, 24 )
 items = [ "", null, false, 0, null, "Agent-1", null, false, 1, null ]
 selected = 0
 
+[node name="@@1961" type="PopupMenu" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1960" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@1961"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1153" type="PopupMenu" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1962" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@1153"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1152" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@1153"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1040" type="PopupMenu" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1963" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@1040"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1154" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@1040"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1039" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@1040"]
 wait_time = 0.3
@@ -2314,6 +5688,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1964" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@814"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1155" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@814"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1041" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@814"]
 wait_time = 0.3
@@ -2327,6 +5709,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1965" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@619"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1156" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@619"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1042" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@619"]
 wait_time = 0.3
@@ -2344,6 +5734,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, true, false, 0, 0, null, "", false, "Agent-1", null, 2, false, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1966" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@427"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1157" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@427"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1043" type="Timer" parent="Behaviors/259/GFX/GraphNodeEvt/OptAgentR2/@@427"]
 wait_time = 0.3
@@ -2431,11 +5829,43 @@ margin_bottom = 48.0
 text = "100"
 caret_position = 3
 
+[node name="@@1967" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1969" type="PopupMenu" parent="Behaviors/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1968" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@1969"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1158" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label"]
+wait_time = 0.65
+
+[node name="@@1160" type="PopupMenu" parent="Behaviors/259/GFX/GfxNumber1/Label"]
+items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1970" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@1160"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1159" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@1160"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1044" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label"]
 wait_time = 0.65
 
 [node name="@@1046" type="PopupMenu" parent="Behaviors/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1971" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@1046"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1161" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@1046"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1045" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@1046"]
 wait_time = 0.3
@@ -2446,6 +5876,14 @@ wait_time = 0.65
 
 [node name="@@819" type="PopupMenu" parent="Behaviors/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1972" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@819"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1162" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@819"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1047" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@819"]
 wait_time = 0.3
@@ -2460,6 +5898,14 @@ wait_time = 0.65
 
 [node name="@@623" type="PopupMenu" parent="Behaviors/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1973" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@623"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1163" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@623"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1048" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@623"]
 wait_time = 0.3
@@ -2478,6 +5924,14 @@ wait_time = 0.65
 
 [node name="@@430" type="PopupMenu" parent="Behaviors/259/GFX/GfxNumber1/Label"]
 items = [ "Cut", null, 0, false, false, 0, 134217816, null, "", false, "Copy", null, 0, false, false, 1, 134217795, null, "", false, "Paste", null, 0, false, false, 2, 134217814, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Select All", null, 0, false, false, 4, 134217793, null, "", false, "Clear", null, 0, false, false, 3, 0, null, "", false, "", null, 0, false, false, -1, 0, null, "", true, "Undo", null, 0, false, false, 5, 134217818, null, "", false, "Redo", null, 0, false, false, 6, 167772250, null, "", false ]
+
+[node name="@@1974" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@430"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1164" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@430"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1049" type="Timer" parent="Behaviors/259/GFX/GfxNumber1/Label/@@430"]
 wait_time = 0.3
@@ -2643,10 +6097,40 @@ text = ">"
 items = [ "==", null, false, 0, null, "!=", null, false, 0, null, ">", null, false, 1, null, "<", null, false, 2, null, ">=", null, false, 4, null, "<=", null, false, 5, null ]
 selected = 2
 
+[node name="@@1976" type="PopupMenu" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1975" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1976"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1166" type="PopupMenu" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
+input_pass_on_modal_close_click = false
+items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1977" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1166"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1165" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1166"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1051" type="PopupMenu" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj"]
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1978" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1051"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1167" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1051"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1050" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@1051"]
 wait_time = 0.3
@@ -2656,6 +6140,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1979" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@823"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1168" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@823"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1052" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@823"]
 wait_time = 0.3
@@ -2669,6 +6161,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1980" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@626"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1169" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@626"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1053" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@626"]
 wait_time = 0.3
@@ -2686,6 +6186,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "==", null, 2, false, false, 0, 0, null, "", false, "!=", null, 2, false, false, 0, 0, null, "", false, ">", null, 2, true, false, 1, 0, null, "", false, "<", null, 2, false, false, 2, 0, null, "", false, ">=", null, 2, false, false, 4, 0, null, "", false, "<=", null, 2, false, false, 5, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1981" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@432"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1170" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@432"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1054" type="Timer" parent="Behaviors/259/GFX/GfxCompare1/HBoxContainer3/OptCdtParamObj/@@432"]
 wait_time = 0.3
@@ -2784,10 +6292,40 @@ text = "Age"
 items = [ "", null, false, 0, null, "Age", null, false, 1, null ]
 selected = 1
 
+[node name="@@1983" type="PopupMenu" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1982" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1983"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1172" type="PopupMenu" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
+input_pass_on_modal_close_click = false
+items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
+allow_search = true
+
+[node name="@@1984" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1172"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1171" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1172"]
+wait_time = 0.3
+one_shot = true
+
 [node name="@@1056" type="PopupMenu" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam"]
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1985" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1056"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1173" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1056"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1055" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@1056"]
 wait_time = 0.3
@@ -2797,6 +6335,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1986" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@827"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1174" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@827"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1057" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@827"]
 wait_time = 0.3
@@ -2810,6 +6356,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1987" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@629"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1175" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@629"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1058" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@629"]
 wait_time = 0.3
@@ -2827,6 +6381,14 @@ one_shot = true
 input_pass_on_modal_close_click = false
 items = [ "", null, 2, false, false, 0, 0, null, "", false, "Age", null, 2, true, false, 1, 0, null, "", false ]
 allow_search = true
+
+[node name="@@1988" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@434"]
+wait_time = 0.3
+one_shot = true
+
+[node name="@@1176" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@434"]
+wait_time = 0.3
+one_shot = true
 
 [node name="@@1059" type="Timer" parent="Behaviors/259/GFX/GfxReadParamAgent1/HBoxContainer2/OptCdtParamParam/@@434"]
 wait_time = 0.3

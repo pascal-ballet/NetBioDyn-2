@@ -3798,8 +3798,9 @@ text = "Param :"
 
 [node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/Parameter/GfxReadParamAgent/HBoxContainer2"]
 margin_left = 52.0
-margin_right = 89.0
+margin_right = 135.0
 margin_bottom = 20.0
+size_flags_horizontal = 3
 text = "X"
 items = [ "X", null, false, 0, null, "Y", null, false, 0, null, "Z", null, false, 1, null, "Vx", null, false, 2, null, "Horloge", null, false, 3, null, "pH", null, false, 4, null, "Température", null, false, 5, null, "Valeur Case", null, false, 6, null ]
 selected = 0
@@ -3844,7 +3845,7 @@ __meta__ = {
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
 margin_top = 24.0
-margin_right = 152.0
+margin_right = 156.0
 margin_bottom = 55.0
 text = ">     >     >
 "
@@ -3853,7 +3854,7 @@ align = 1
 [node name="Label2" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
 margin_top = 56.0
-margin_right = 152.0
+margin_right = 156.0
 margin_bottom = 70.0
 text = "Cet Agent"
 align = 1
@@ -3861,16 +3862,28 @@ align = 1
 [node name="Label3" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
 margin_top = 71.0
-margin_right = 152.0
+margin_right = 156.0
 margin_bottom = 85.0
-text = "fixe cette valeur pour"
+text = "met cette valeur dans"
 align = 1
 
-[node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent"]
 margin_left = 16.0
 margin_top = 86.0
-margin_right = 152.0
+margin_right = 156.0
 margin_bottom = 106.0
+
+[node name="Label" type="Label" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent/HBoxContainer"]
+margin_top = 3.0
+margin_right = 48.0
+margin_bottom = 17.0
+text = "param :"
+
+[node name="OptCdtParamParam" type="OptionButton" parent="Runtime/GfxNodes/Parameter/GfxWriteParamAgent/HBoxContainer"]
+margin_left = 52.0
+margin_right = 140.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
 text = "X"
 items = [ "X", null, false, 0, null, "Y", null, false, 0, null, "Z", null, false, 1, null, "Vx", null, false, 2, null, "Horloge", null, false, 3, null, "pH", null, false, 4, null, "Température", null, false, 5, null, "Valeur Case", null, false, 6, null ]
 selected = 0
