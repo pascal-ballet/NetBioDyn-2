@@ -1809,9 +1809,12 @@ func generate_code_gfx(then:GraphNode, gfx:GraphEdit) -> String:
 	if _gfx_compiles == false:
 		print("Compilation ERREUR :")
 		print(_gfx_compile_msg)
+		print("****    cnx   ****")
+		print(_gfx_code_current.get_connection_list())
 		get_node("%LabelGfxMsg").text = _gfx_compile_msg
 		var red = load("res://Images/bg_error.tres")
 		get_node("%LabelGfxMsg").set("custom_styles/normal",red)
+		
 		return  """
 extends Node
 # Generic Behavior
@@ -1854,7 +1857,9 @@ func action(tree, R1, nb_agents) -> void:
 	if bodies.size() > 0:
 		R2 = bodies[0]
 	if """ + code_cdts + code_acts
-	print("gfx code: ")
+	print("****    cnx   ****")
+	print(_gfx_code_current.get_connection_list())
+	print("**** gfx code ****")
 	print(code)
 	return code
 	
@@ -1986,11 +1991,11 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 				_gfx_compiles = false
 				_gfx_compile_msg = "Boite Lire Paramètre Agent : choisir un paramètre"
 				# Fill the box
-				var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 0)
+				var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 1)
 				var agent_type:String = get_var_agent_type(var_name)
 				populate_option_btn_from_list( opt_param,"", agent_get_ALL_META(agent_type ) )
 				return ""
-			var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 0)
+			var var_name:String = get_var_R12_P(box, _gfx_code_current.get_connection_list(), 1)
 			code_cdts = generate_code_acts(lst_input_boxes[0], lst_cnx, gfx)+var_name+""".get_meta("""+in_quote(P)+""")"""
 		else:# Manage ERRORS
 			_gfx_compiles = false

@@ -3740,24 +3740,23 @@ size_flags_horizontal = 3
 
 [node name="GfxReadParamAgent" type="GraphNode" parent="Runtime/GfxNodes/Parameter"]
 unique_name_in_owner = true
-visible = false
 margin_top = 150.0
 margin_right = 143.0
 margin_bottom = 221.0
 mouse_filter = 1
 title = "Lire Paramètre Agent"
-slot/0/left_enabled = false
-slot/0/left_type = 3
-slot/0/left_color = Color( 0, 1, 1, 1 )
+slot/0/left_enabled = true
+slot/0/left_type = -1
+slot/0/left_color = Color( 1, 1, 1, 0 )
 slot/0/right_enabled = true
-slot/0/right_type = 3
-slot/0/right_color = Color( 0, 1, 1, 1 )
+slot/0/right_type = -1
+slot/0/right_color = Color( 1, 1, 1, 0 )
 slot/1/left_enabled = true
 slot/1/left_type = 3
 slot/1/left_color = Color( 0, 1, 1, 1 )
-slot/1/right_enabled = false
-slot/1/right_type = 2
-slot/1/right_color = Color( 0, 1, 0, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 3
+slot/1/right_color = Color( 0, 1, 1, 1 )
 slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color( 1, 1, 1, 1 )
@@ -3780,15 +3779,16 @@ align = 1
 margin_left = 16.0
 margin_top = 39.0
 margin_right = 151.0
-margin_bottom = 53.0
-text = "Agent"
+margin_bottom = 70.0
+text = "Agent
+"
 align = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Runtime/GfxNodes/Parameter/GfxReadParamAgent"]
 margin_left = 16.0
-margin_top = 54.0
+margin_top = 71.0
 margin_right = 151.0
-margin_bottom = 74.0
+margin_bottom = 91.0
 
 [node name="Label" type="Label" parent="Runtime/GfxNodes/Parameter/GfxReadParamAgent/HBoxContainer2"]
 margin_top = 3.0
