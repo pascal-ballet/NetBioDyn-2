@@ -1874,7 +1874,13 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 	if _gfx_compiles == false:
 		return ""
 		
-	var lst_input_boxes:Array = get_graphnodes_entering(box, lst_cnx)
+	# Get input boxes from port 0 to ... (MAX = 100: box with more slot should not exist)
+	var lst_input_boxes:Array = [] #get_graphnodes_entering(box, lst_cnx)
+	for i in range(0, 100):
+		var inp = get_graphnode_entering_from_port(box, lst_cnx, i)
+		if inp != null:
+			lst_input_boxes.append(inp.name)
+	
 	
 	#if lst_input_boxes.size() == 0:
 	#	return ""
