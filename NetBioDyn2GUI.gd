@@ -263,6 +263,22 @@ func _on_BtnDelAgent_pressed() -> void:
 		# Remove Agent in 2D List
 		lst.remove_item(sel[0])
 
+# Up Agent -----------------------------
+func _on_ToolUpAgent_pressed() -> void:
+	selected_item_up(_listAgents)
+
+# Down Agent -----------------------------
+func _on_ToolDownAgent_pressed() -> void:
+	selected_item_down(_listAgents)
+
+# Up Behavior -----------------------------
+func _on_ToolUpBehavior_pressed() -> void:
+	selected_item_up(_listBehavs)
+
+# Down Behavior -----------------------------
+func _on_ToolDownBehavior_pressed() -> void:
+	selected_item_down(_listBehavs)
+	
 # List of entities -----------------------------
 var _selected_name:String = ""
 func _on_ListAgents_item_selected(index: int) -> void:
@@ -1632,6 +1648,45 @@ func node_get_children_array(node:Node)->Array:
 		arr.append(n)
 		arr = arr + node_get_children_array(n)
 	return arr
+	
+func get_item_position(item:String, lst:ItemList):
+	var items = lst.items
+	var pos:int = 0
+	for i in	 items:
+		if i is String == true and i == item:
+			return pos/3
+		pos = pos + 1
+	return -1
+
+func exchange_items(item1:String, item2:String, lst:ItemList):
+	var pos1:int = get_item_position(item1, lst)
+	var pos2:int = get_item_position(item2, lst)
+	
+	lst.set_item_text(pos1, item2)
+	lst.set_item_text(pos2, item1)
+	
+	lst.select(pos2, true)
+	
+func selected_item_up(lst:ItemList):
+	var sel:PoolIntArray = lst.get_selected_items()
+	if sel.size() == 1:
+		var agent_name:String = lst.get_item_text(sel[0])
+		var pos:int = get_item_position(agent_name, lst)
+		# Move Up the selected Instance
+		if pos > 0:
+			var item2:String = lst.get_item_text(pos-1)
+			exchange_items(agent_name, item2, lst)
+
+func selected_item_down(lst:ItemList):
+	var sel:PoolIntArray = lst.get_selected_items()
+	if sel.size() == 1:
+		var agent_name:String = lst.get_item_text(sel[0])
+		var pos:int = get_item_position(agent_name, lst)
+		# Move Up the selected Instance
+		if pos < (lst.items.size()/3)-1:
+			var item2:String = lst.get_item_text(pos+1)
+			exchange_items(agent_name, item2, lst)
+
 # Window / App control -------------------------
 func _on_BtnClose_pressed():
 	get_tree().quit()
@@ -1880,10 +1935,6 @@ func generate_code_cdts(box:String, lst_cnx:Array, gfx:GraphEdit) -> String:
 		var inp = get_graphnode_entering_from_port(box, lst_cnx, i)
 		if inp != null:
 			lst_input_boxes.append(inp.name)
-	
-	
-	#if lst_input_boxes.size() == 0:
-	#	return ""
 	
 	var code_cdts:String = ""
 	
