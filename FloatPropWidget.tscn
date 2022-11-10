@@ -1,0 +1,98 @@
+[gd_scene format=2]
+
+[node name="Node2D" type="VBoxContainer"]
+
+[node name="HBoxProp5" type="HBoxContainer" parent="."]
+margin_right = 123.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HBoxProp5"]
+margin_right = 66.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Paramètre"
+
+[node name="ButtonAddVariable" type="Button" parent="HBoxProp5"]
+margin_left = 70.0
+margin_right = 123.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+text = "+"
+
+[node name="HBoxProp7" type="HBoxContainer" parent="."]
+margin_top = 24.0
+margin_right = 123.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HBoxProp7"]
+margin_right = 31.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Nom"
+
+[node name="Label2" type="Label" parent="HBoxProp7"]
+margin_left = 35.0
+margin_right = 123.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Valeur initiale"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+margin_top = 42.0
+margin_right = 123.0
+margin_bottom = 46.0
+
+[node name="VBoxBehaviorVariable" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+margin_top = 50.0
+margin_right = 123.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator2" type="HSeparator" parent="."]
+margin_top = 54.0
+margin_right = 123.0
+margin_bottom = 58.0
+
+[node name="Runtime" type="Node" parent="."]
+
+[node name="HBoxLineVariable" type="HBoxContainer" parent="Runtime"]
+unique_name_in_owner = true
+visible = false
+margin_left = 720.0
+margin_top = 236.0
+margin_right = 1012.0
+margin_bottom = 260.0
+
+[node name="VariableName" type="LineEdit" parent="Runtime/HBoxLineVariable"]
+margin_right = 127.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "Age"
+
+[node name="Label" type="Label" parent="Runtime/HBoxLineVariable"]
+margin_left = 131.0
+margin_top = 5.0
+margin_right = 139.0
+margin_bottom = 19.0
+text = "="
+
+[node name="VariableValue" type="LineEdit" parent="Runtime/HBoxLineVariable"]
+margin_left = 143.0
+margin_right = 271.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "0"
+
+[node name="Button" type="Button" parent="Runtime/HBoxLineVariable"]
+margin_left = 275.0
+margin_right = 292.0
+margin_bottom = 24.0
+text = "-"

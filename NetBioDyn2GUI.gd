@@ -1141,7 +1141,10 @@ func behavior_GUI_to_META() -> void:
 	if sel.size() == 0:
 		return
 
-	var behav:Node = get_selected_behavior()
+	var behav:Node = get_selected_behavior() # TODO : should not be null ?
+	if behav == null:
+		return
+		
 	var type:String = behav.get_meta("Type")
 	# Find the Behavior Type
 	if type == "Reaction":
@@ -1229,18 +1232,17 @@ func behavior_GUI_to_META() -> void:
 # **********************************************************
 
 func _on_ButtonAddVariable_button_down() -> void:
-	#print(str("\nAdd GUI Param"))
-	# Crete a unique name for the parameter (Meta names are key of dictionnary)
-	var key_param:String  = key_variable_create()
+	# Create a unique name for the variable (Meta names are key of dictionnary)
+	var key_var:String  = key_variable_create()
 	# Create the line of input boxes
-	var vbox_param:	VBoxContainer = get_node("%VBoxBehaviorVariable")
-	var hbox_line :	HBoxContainer = get_node("%HBoxLineParam")
+	var vbox_var:	VBoxContainer = get_node("%VBoxBehaviorVariable")
+	var hbox_line :	HBoxContainer = get_node("%HBoxLineVariable")
 	var new_line: 	HBoxContainer = hbox_line.duplicate()
-	new_line.get_child(0).set_text(key_param)
+	new_line.get_child(0).set_text(key_var)
 	new_line.visible = true
-	vbox_param.add_child(new_line)
+	vbox_var.add_child(new_line)
 	# Save to meta
-	gfx_GUI_to_META() #agent_GUI_to_META()
+	behavior_GUI_to_META() #gfx_GUI_to_META() #agent_GUI_to_META()
 	#_debug_display_all_meta()
 	#print(str("Exit Add GUI Param\n"))
 
@@ -1290,9 +1292,7 @@ func gfx_META_to_GUI_variable() -> void:
 
 
 # GUI => META
-func gfx_GUI_to_META() -> void:
-	#printerr(str("*** Enter : GUI => META for ", _selected_name))
-	#_debug_display_all_meta()
+func gfx_GUI_to_META() -> void: # TODO replaces : agent_GUI_to_META()
 	
 	var rb:Node = get_selected_behavior() #get_entity(_selected_name)
 	if rb==null:
@@ -1302,9 +1302,6 @@ func gfx_GUI_to_META() -> void:
 		#print(str("remove:",meta_name,"=",rb.get_meta(meta_name)))
 		rb.remove_meta(meta_name)
 		
-	#######################
-	#print(str("a) nb meta=",rb.get_meta_list().size()))
-		
 	rb.set_meta("Name", rb.name)
 	var vbox_param:	VBoxContainer = get_node("%VBoxBehaviorVariable")
 	# Fill Meta
@@ -1312,16 +1309,7 @@ func gfx_GUI_to_META() -> void:
 		var line:HBoxContainer = vbox_param.get_child(i)
 		var param_name :String  = line.get_child(0).get_text()
 		var param_value			= line.get_child(2).get_text()
-		#print(str(_selected_name , " GUI=>META: ", param_name , " = " , param_value))
-		#print(str(">>>>>> add meta:",param_name,"=",param_value))
 		rb.set_meta(param_name, param_value)
-	#print(str("b) nb meta=",rb.get_meta_list().size()))
-	#######################
-	#printerr(str("***       : Before update instances" ))
-	#_debug_display_all_meta()
-	#update_behavior_instances(rb) # TODO : replace update_agent_instances(rb)
-	#printerr(str("***       : After update instances" ))
-	#_debug_display_all_meta()
 
 # META => ARRAY
 func gfx_get_ALL_META(agt_name:String) -> Array: # TODO : replace agent_get_ALL_META(agt_name:String)
@@ -1382,7 +1370,7 @@ func _on_VariableValue_focus_exited() -> void: # TODO : replaces : _on_ParamValu
 func _on_VariableName_focus_entered() -> void: # TODO replaces : _on_ParamName_focus_entered()
 	_selected_variable_pos = get_variable_line_has_focus() # TODO replaces : get_param_line_has_focus()
 	var vbox_param:	VBoxContainer = get_node("%VBoxBehaviorVariable")
-	var line:HBoxContainer = vbox_param.get_child(_selected_param_pos)
+	var line:HBoxContainer = vbox_param.get_child(_selected_variable_pos)
 	_selected_variable_name = line.get_child(0).get_text()
 
 func _on_VariableName_text_entered(new_text: String) -> void: # TODO replaces : _on_ParamName_text_entered()
@@ -1773,11 +1761,11 @@ func key_param_exists(var key_name:String) -> int:
 
 func key_variable_exists(var key_name:String) -> int:
 	var vbox:VBoxContainer = get_node("%VBoxBehaviorVariable")
-	var nb_param:float = vbox.get_child_count()
+	var nb_var:float = vbox.get_child_count()
 	#printerr(str("func key_param_exists => ", "nb_param=" , nb_param))
 	#printerr(str("range=",range(1,nb_param)))
 	var nb:int = 0
-	for n in range(0,nb_param):
+	for n in range(0,nb_var):
 		#printerr(str("	n=",n))
 		var line:HBoxContainer = vbox.get_child(n)
 		var name:String = line.get_child(0).get_text()

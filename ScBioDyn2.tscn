@@ -1214,15 +1214,10 @@ margin_top = 70.0
 margin_right = 292.0
 margin_bottom = 74.0
 
-[node name="HSeparator3" type="HSeparator" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
+[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
 margin_top = 78.0
 margin_right = 292.0
-margin_bottom = 82.0
-
-[node name="HBoxProp5" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
-margin_top = 86.0
-margin_right = 292.0
-margin_bottom = 106.0
+margin_bottom = 98.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxProp5"]
@@ -1230,7 +1225,7 @@ margin_right = 144.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "Paramètres"
+text = "Variables"
 
 [node name="ButtonAddVariable" type="Button" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxProp5"]
 margin_left = 148.0
@@ -1241,9 +1236,9 @@ size_flags_vertical = 0
 text = "+"
 
 [node name="HBoxProp7" type="HBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
-margin_top = 110.0
+margin_top = 102.0
 margin_right = 292.0
-margin_bottom = 124.0
+margin_bottom = 116.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport/HBoxProp7"]
@@ -1263,7 +1258,7 @@ text = "Valeur initiale"
 
 [node name="VBoxBehaviorVariable" type="VBoxContainer" parent="VBoxFrame/HBoxWindows/HSplitContainer/HSplitContainer2/VBoxTabContainer/TabContainer/Behavior_Generic/VBoxPropsComport"]
 unique_name_in_owner = true
-margin_top = 128.0
+margin_top = 120.0
 margin_right = 292.0
 margin_bottom = 631.0
 size_flags_horizontal = 3
